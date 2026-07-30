@@ -1,28 +1,409 @@
-function Title(props) {
+"use client";
+
+import { useState } from "react";
+import type { FormEvent } from "react";
+
+import { courses } from "../data/courses";
+import type { Course } from "../data/courses";
+
+/* -------------------- Title -------------------- */
+
+type TitleProps = {
+  text: string;
+  subtitle: string;
+};
+
+function Title({ text, subtitle }: TitleProps) {
   return (
-    <>
-      <h1>{props.text}</h1>
-      <p>{props.subtitle}</p>
-    </>
+    <header>
+      <h1 className="text-3xl font-bold">{text}</h1>
+
+      <p className="mt-2 text-gray-600">{subtitle}</p>
+    </header>
   );
 }
 
-function SearchBox() {
+/* -------------------- Search Box -------------------- */
+
+type SearchBoxProps = {
+  searchInput: string;
+  setSearchInput: (value: string) => void;
+  onSearch: () => void;
+};
+
+function SearchBox({
+  searchInput,
+  setSearchInput,
+  onSearch,
+}: SearchBoxProps) {
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    onSearch();
+  }
+
   return (
-    <div>
-      <input placeholder="Search for a subject" />
-      <button>Search</button>
-    </div>
-    
+    <form onSubmit={handleSubmit} className="mt-6 flex gap-2">
+      <input
+        type="text"
+        placeholder="Search algorithms, machine learning, 算法..."
+        value={searchInput}
+        onChange={(event) => setSearchInput(event.target.value)}
+        className="flex-1 rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-gray-700"
+      />
+
+      <button
+        type="submit"
+        className="rounded-lg bg-black px-5 py-3 text-white hover:bg-gray-800"
+      >
+        Search
+      </button>
+    </form>
   );
 }
+
+/* -------------------- Filter Bar -------------------- */
+
+type FilterBarProps = {
+  universities: string[];
+
+  universityFilter: string;
+  setUniversityFilter: (value: string) => void;
+
+  onlyVideos: boolean;
+  setOnlyVideos: (value: boolean) => void;
+
+  onlyAssignments: boolean;
+  setOnlyAssignments: (value: boolean) => void;
+
+  onlySolutions: boolean;
+  setOnlySolutions: (value: boolean) => void;
+
+  onReset: () => void;
+};
+
+function FilterBar({
+  universities,
+  universityFilter,
+  setUniversityFilter,
+  onlyVideos,
+  setOnlyVideos,
+  onlyAssignments,
+  setOnlyAssignments,
+  onlySolutions,
+  setOnlySolutions,
+  onReset,
+}: FilterBarProps) {
+  return (
+    <div className="mt-5 rounded-xl border border-gray-200 p-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
+        <label className="flex items-center gap-2 text-sm">
+          <span className="font-medium">University</span>
+
+          <select
+            value={universityFilter}
+            onChange={(event) =>
+              setUniversityFilter(event.target.value)
+            }
+            className="rounded-lg border border-gray-300 px-3 py-2 outline-none"
+          >
+            <option value="All">All universities</option>
+
+            {universities.map((university) => (
+              <option key={university} value={university}>
+                {university}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            checked={onlyVideos}
+            onChange={(event) =>
+              setOnlyVideos(event.target.checked)
+            }
+          />
+
+          Has videos
+        </label>
+
+        <label className="flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            checked={onlyAssignments}
+            onChange={(event) =>
+              setOnlyAssignments(event.target.checked)
+            }
+          />
+
+          Has assignments
+        </label>
+
+        <label className="flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            checked={onlySolutions}
+            onChange={(event) =>
+              setOnlySolutions(event.target.checked)
+            }
+          />
+
+          Has solutions
+        </label>
+
+        <button
+          type="button"
+          onClick={onReset}
+          className="text-sm text-gray-500 hover:text-black hover:underline"
+        >
+          Reset filters
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* -------------------- Course Card -------------------- */
+
+type CourseCardProps = {
+  course: Course;
+};
+
+function CourseCard({ course }: CourseCardProps) {
+  return (
+    <article className="rounded-xl border border-gray-200 p-6 shadow-sm">
+      <div>
+        <p className="text-sm font-medium text-gray-500">
+          {course.university}
+        </p>
+
+        {course.recommended && (
+          <span className="mt-2 inline-block rounded-full bg-black px-3 py-1 text-xs text-white">
+            Recommended
+          </span>
+        )}
+      </div>
+
+      <h2 className="mt-2 text-xl font-semibold">
+        {course.title}
+      </h2>
+
+      <p className="mt-1 text-sm text-gray-500">
+        {course.titleZh}
+      </p>
+
+      <p className="mt-4 text-gray-700">
+        {course.description}
+      </p>
+
+      <div className="mt-5 grid gap-2 text-sm sm:grid-cols-2">
+        <p>
+          <span className="font-medium">Subject:</span>{" "}
+          {course.subject}
+        </p>
+
+        <p>
+          <span className="font-medium">Level:</span>{" "}
+          {course.level}
+        </p>
+
+        <p>
+          <span className="font-medium">Language:</span>{" "}
+          {course.language}
+        </p>
+
+        <p>
+          <span className="font-medium">Course year:</span>{" "}
+          {course.year === null ? "Not verified" : course.year}
+        </p>
+
+        <p>
+          <span className="font-medium">Last updated:</span>{" "}
+          {course.lastUpdated === null
+            ? "Not verified"
+            : course.lastUpdated}
+        </p>
+      </div>
+
+      <div className="mt-5">
+        <p className="font-medium">Prerequisites</p>
+
+        {course.prerequisites.length === 0 ? (
+          <p className="mt-2 text-sm text-gray-500">
+            No prerequisites listed.
+          </p>
+        ) : (
+          <ul className="mt-2 space-y-1 text-sm text-gray-700">
+            {course.prerequisites.map((prerequisite) => (
+              <li key={`${course.id}-${prerequisite}`}>
+                ✓ {prerequisite}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      <div className="mt-5">
+        <p className="font-medium">Course materials</p>
+
+        <div className="mt-2 space-y-1 text-sm">
+          <p>{course.hasVideos ? "✓" : "✗"} Videos</p>
+
+          <p>
+            {course.hasAssignments ? "✓" : "✗"} Assignments
+          </p>
+
+          <p>
+            {course.hasSolutions ? "✓" : "✗"} Solutions
+          </p>
+        </div>
+      </div>
+
+      <a
+        href={course.courseUrl}
+        target="_blank"
+        rel="noreferrer"
+        className="mt-6 inline-block font-medium text-blue-600 hover:underline"
+      >
+        View official course →
+      </a>
+    </article>
+  );
+}
+
+/* -------------------- Home Page -------------------- */
 
 export default function Home() {
+  const [searchInput, setSearchInput] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const [universityFilter, setUniversityFilter] =
+    useState("All");
+
+  const [onlyVideos, setOnlyVideos] = useState(false);
+
+  const [onlyAssignments, setOnlyAssignments] =
+    useState(false);
+
+  const [onlySolutions, setOnlySolutions] =
+    useState(false);
+
+  const universities = Array.from(
+    new Set(courses.map((course) => course.university))
+  ).sort();
+
+  function handleSearch() {
+    setSearchTerm(searchInput.trim());
+  }
+
+  function handleResetFilters() {
+    setUniversityFilter("All");
+    setOnlyVideos(false);
+    setOnlyAssignments(false);
+    setOnlySolutions(false);
+  }
+
+  const normalizedSearch = searchTerm.toLowerCase();
+
+  const filteredCourses = courses.filter((course) => {
+    const searchableText = [
+      course.title,
+      course.titleZh,
+      course.university,
+      course.subject,
+      course.subjectZh,
+      course.description,
+      course.descriptionZh,
+      ...course.searchKeywords,
+    ]
+      .join(" ")
+      .toLowerCase();
+
+    const matchesSearch =
+      normalizedSearch === "" ||
+      searchableText.includes(normalizedSearch);
+
+    const matchesUniversity =
+      universityFilter === "All" ||
+      course.university === universityFilter;
+
+    const matchesVideos =
+      !onlyVideos || course.hasVideos;
+
+    const matchesAssignments =
+      !onlyAssignments || course.hasAssignments;
+
+    const matchesSolutions =
+      !onlySolutions || course.hasSolutions;
+
+    return (
+      matchesSearch &&
+      matchesUniversity &&
+      matchesVideos &&
+      matchesAssignments &&
+      matchesSolutions
+    );
+  });
+
   return (
-    <main>
-        <Title text="OpenStudy"
-               subtitle="Learn from the world's best universities."/>
-        <SearchBox />
-      </main>
+    <main className="mx-auto min-h-screen max-w-4xl px-6 py-12">
+      <Title
+        text="OpenStudy"
+        subtitle="Explore open courses from the world's leading universities."
+      />
+
+      <SearchBox
+        searchInput={searchInput}
+        setSearchInput={setSearchInput}
+        onSearch={handleSearch}
+      />
+
+      <FilterBar
+        universities={universities}
+        universityFilter={universityFilter}
+        setUniversityFilter={setUniversityFilter}
+        onlyVideos={onlyVideos}
+        setOnlyVideos={setOnlyVideos}
+        onlyAssignments={onlyAssignments}
+        setOnlyAssignments={setOnlyAssignments}
+        onlySolutions={onlySolutions}
+        setOnlySolutions={setOnlySolutions}
+        onReset={handleResetFilters}
+      />
+
+      <section className="mt-10">
+        <div className="flex items-end justify-between">
+          <h2 className="text-2xl font-semibold">
+            Courses
+          </h2>
+
+          <p className="text-sm text-gray-500">
+            {filteredCourses.length} results
+          </p>
+        </div>
+
+        {filteredCourses.length === 0 ? (
+          <div className="mt-6 rounded-xl border border-gray-200 p-8 text-center">
+            <p className="font-medium">
+              No courses found.
+            </p>
+
+            <p className="mt-2 text-sm text-gray-500">
+              Try another subject or remove some filters.
+            </p>
+          </div>
+        ) : (
+          <div className="mt-6 space-y-5">
+            {filteredCourses.map((course) => (
+              <CourseCard
+                key={course.id}
+                course={course}
+              />
+            ))}
+          </div>
+        )}
+      </section>
+    </main>
   );
 }
