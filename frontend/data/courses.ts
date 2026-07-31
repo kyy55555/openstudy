@@ -404,6 +404,11 @@ export const courses: Course[] = [
     hasAssignments: true,
     courseUrl: "https://cs50.harvard.edu/x/",
     sourceName: harvardSource,
+    resources: [
+      { type: "lectures", title: "Weeks and lectures", url: "https://cs50.harvard.edu/x/weeks/" },
+      { type: "assignments", title: "Problem sets", url: "https://cs50.harvard.edu/x/psets/" },
+      { type: "projects", title: "Final project", url: "https://cs50.harvard.edu/x/project/" },
+    ],
   }),
   course({
     id: "harvard-cs50-python",
@@ -419,6 +424,11 @@ export const courses: Course[] = [
     hasAssignments: true,
     courseUrl: "https://cs50.harvard.edu/python/",
     sourceName: harvardSource,
+    resources: [
+      { type: "lectures", title: "Weeks and lectures", url: "https://cs50.harvard.edu/python/weeks/" },
+      { type: "assignments", title: "Problem sets", url: "https://cs50.harvard.edu/python/psets/" },
+      { type: "projects", title: "Final project", url: "https://cs50.harvard.edu/python/project/" },
+    ],
   }),
   course({
     id: "harvard-cs50-ai",
@@ -434,6 +444,10 @@ export const courses: Course[] = [
     hasAssignments: true,
     courseUrl: "https://cs50.harvard.edu/ai/",
     sourceName: harvardSource,
+    resources: [
+      { type: "lectures", title: "Weeks and lectures", url: "https://cs50.harvard.edu/ai/weeks/" },
+      { type: "projects", title: "Projects", url: "https://cs50.harvard.edu/ai/projects/" },
+    ],
   }),
   course({
     id: "harvard-cs50-web",
@@ -449,6 +463,11 @@ export const courses: Course[] = [
     hasAssignments: true,
     courseUrl: "https://cs50.harvard.edu/web/",
     sourceName: harvardSource,
+    resources: [
+      { type: "lectures", title: "Weeks and lectures", url: "https://cs50.harvard.edu/web/weeks/" },
+      { type: "assignments", title: "Projects", url: "https://cs50.harvard.edu/web/projects/" },
+      { type: "projects", title: "Final project", url: "https://cs50.harvard.edu/web/project/" },
+    ],
   }),
   course({
     id: "harvard-cs50-sql",
@@ -464,6 +483,11 @@ export const courses: Course[] = [
     hasAssignments: true,
     courseUrl: "https://cs50.harvard.edu/sql/",
     sourceName: harvardSource,
+    resources: [
+      { type: "lectures", title: "Weeks and lectures", url: "https://cs50.harvard.edu/sql/weeks/" },
+      { type: "assignments", title: "Problem sets", url: "https://cs50.harvard.edu/sql/psets/" },
+      { type: "projects", title: "Final project", url: "https://cs50.harvard.edu/sql/project/" },
+    ],
   }),
   course({
     id: "harvard-cs50-cybersecurity",
@@ -479,6 +503,11 @@ export const courses: Course[] = [
     hasAssignments: true,
     courseUrl: "https://cs50.harvard.edu/cybersecurity/",
     sourceName: harvardSource,
+    resources: [
+      { type: "lectures", title: "Weeks and lectures", url: "https://cs50.harvard.edu/cybersecurity/weeks/" },
+      { type: "assignments", title: "Assignments", url: "https://cs50.harvard.edu/cybersecurity/assignments/" },
+      { type: "projects", title: "Final project", url: "https://cs50.harvard.edu/cybersecurity/project/" },
+    ],
   }),
   course({
     id: "harvard-cs50-r",
@@ -494,6 +523,11 @@ export const courses: Course[] = [
     hasAssignments: true,
     courseUrl: "https://cs50.harvard.edu/r/",
     sourceName: harvardSource,
+    resources: [
+      { type: "lectures", title: "Weeks and lectures", url: "https://cs50.harvard.edu/r/weeks/" },
+      { type: "assignments", title: "Problem sets", url: "https://cs50.harvard.edu/r/psets/" },
+      { type: "projects", title: "Final project", url: "https://cs50.harvard.edu/r/project/" },
+    ],
   }),
   course({
     id: "harvard-cs50-scratch",
@@ -509,6 +543,11 @@ export const courses: Course[] = [
     hasAssignments: true,
     courseUrl: "https://cs50.harvard.edu/scratch/",
     sourceName: harvardSource,
+    resources: [
+      { type: "lectures", title: "Weeks and lectures", url: "https://cs50.harvard.edu/scratch/weeks/" },
+      { type: "assignments", title: "Projects", url: "https://cs50.harvard.edu/scratch/projects/" },
+      { type: "projects", title: "Final project", url: "https://cs50.harvard.edu/scratch/project/" },
+    ],
   }),
   course({
     id: "princeton-cos126",
