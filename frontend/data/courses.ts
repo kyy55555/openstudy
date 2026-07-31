@@ -107,6 +107,7 @@ export const courses: Course[] = [
   course({
     id: "mit-6-100l",
     title: "Introduction to CS and Programming Using Python",
+    titleZh: "计算机科学与 Python 编程导论",
     university: "MIT",
     subject: "Programming",
     subjectZh: "编程",
@@ -126,6 +127,7 @@ export const courses: Course[] = [
   course({
     id: "mit-6-0002",
     title: "Introduction to Computational Thinking and Data Science",
+    titleZh: "计算思维与数据科学导论",
     university: "MIT",
     subject: "Data Science",
     subjectZh: "数据科学",
@@ -146,6 +148,7 @@ export const courses: Course[] = [
   course({
     id: "mit-6-006",
     title: "Introduction to Algorithms",
+    titleZh: "算法导论",
     university: "MIT",
     subject: "Algorithms",
     subjectZh: "算法",
@@ -166,6 +169,7 @@ export const courses: Course[] = [
   course({
     id: "mit-6-046j",
     title: "Design and Analysis of Algorithms",
+    titleZh: "算法设计与分析",
     university: "MIT",
     subject: "Algorithms",
     subjectZh: "算法",
@@ -186,6 +190,7 @@ export const courses: Course[] = [
   course({
     id: "mit-6-034",
     title: "Artificial Intelligence",
+    titleZh: "人工智能",
     university: "MIT",
     subject: "Artificial Intelligence",
     subjectZh: "人工智能",
@@ -206,6 +211,7 @@ export const courses: Course[] = [
   course({
     id: "mit-6-824",
     title: "Distributed Computer Systems Engineering",
+    titleZh: "分布式计算机系统工程",
     university: "MIT",
     subject: "Distributed Systems",
     subjectZh: "分布式系统",
@@ -225,6 +231,7 @@ export const courses: Course[] = [
   course({
     id: "mit-6-858",
     title: "Computer Systems Security",
+    titleZh: "计算机系统安全",
     university: "MIT",
     subject: "Cybersecurity",
     subjectZh: "网络安全",
@@ -246,6 +253,7 @@ export const courses: Course[] = [
   course({
     id: "mit-6-837",
     title: "Computer Graphics",
+    titleZh: "计算机图形学",
     university: "MIT",
     subject: "Computer Graphics",
     subjectZh: "计算机图形学",
@@ -264,6 +272,7 @@ export const courses: Course[] = [
   course({
     id: "stanford-cs106a",
     title: "Programming Methodology",
+    titleZh: "编程方法学",
     university: "Stanford University",
     subject: "Programming",
     subjectZh: "编程",
@@ -283,6 +292,7 @@ export const courses: Course[] = [
   course({
     id: "stanford-cs106b",
     title: "Programming Abstractions",
+    titleZh: "编程抽象",
     university: "Stanford University",
     subject: "Data Structures",
     subjectZh: "数据结构",
@@ -302,6 +312,7 @@ export const courses: Course[] = [
   course({
     id: "stanford-cs107",
     title: "Programming Paradigms",
+    titleZh: "编程范式",
     university: "Stanford University",
     subject: "Programming Languages",
     subjectZh: "编程语言",
@@ -321,6 +332,7 @@ export const courses: Course[] = [
   course({
     id: "stanford-cs223a",
     title: "Introduction to Robotics",
+    titleZh: "机器人学导论",
     university: "Stanford University",
     subject: "Robotics",
     subjectZh: "机器人学",
@@ -339,6 +351,7 @@ export const courses: Course[] = [
   course({
     id: "stanford-cs229",
     title: "Machine Learning",
+    titleZh: "机器学习",
     university: "Stanford University",
     subject: "Machine Learning",
     subjectZh: "机器学习",
@@ -358,6 +371,7 @@ export const courses: Course[] = [
   course({
     id: "stanford-ee261",
     title: "The Fourier Transform and Its Applications",
+    titleZh: "傅里叶变换及其应用",
     university: "Stanford University",
     subject: "Applied Mathematics",
     subjectZh: "应用数学",
@@ -376,6 +390,7 @@ export const courses: Course[] = [
   course({
     id: "stanford-ee263",
     title: "Introduction to Linear Dynamical Systems",
+    titleZh: "线性动态系统导论",
     university: "Stanford University",
     subject: "Systems",
     subjectZh: "系统",
@@ -394,6 +409,7 @@ export const courses: Course[] = [
   course({
     id: "stanford-ee364a",
     title: "Convex Optimization I",
+    titleZh: "凸优化 I",
     university: "Stanford University",
     subject: "Optimization",
     subjectZh: "优化",
@@ -412,6 +428,7 @@ export const courses: Course[] = [
   course({
     id: "stanford-ee364b",
     title: "Convex Optimization II",
+    titleZh: "凸优化 II",
     university: "Stanford University",
     subject: "Optimization",
     subjectZh: "优化",
@@ -431,6 +448,7 @@ export const courses: Course[] = [
   course({
     id: "harvard-cs50x",
     title: "CS50's Introduction to Computer Science",
+    titleZh: "CS50 计算机科学导论",
     university: "Harvard University",
     subject: "Computer Science",
     subjectZh: "计算机科学",
@@ -452,6 +470,7 @@ export const courses: Course[] = [
   course({
     id: "harvard-cs50-python",
     title: "CS50's Introduction to Programming with Python",
+    titleZh: "CS50 Python 编程导论",
     university: "Harvard University",
     subject: "Programming",
     subjectZh: "编程",
@@ -472,6 +491,7 @@ export const courses: Course[] = [
   course({
     id: "harvard-cs50-ai",
     title: "CS50's Introduction to Artificial Intelligence with Python",
+    titleZh: "CS50 Python 人工智能导论",
     university: "Harvard University",
     subject: "Artificial Intelligence",
     subjectZh: "人工智能",
@@ -491,6 +511,7 @@ export const courses: Course[] = [
   course({
     id: "harvard-cs50-web",
     title: "CS50's Web Programming with Python and JavaScript",
+    titleZh: "CS50 Python 与 JavaScript Web 编程",
     university: "Harvard University",
     subject: "Web Development",
     subjectZh: "Web 开发",
@@ -511,6 +532,7 @@ export const courses: Course[] = [
   course({
     id: "harvard-cs50-sql",
     title: "CS50's Introduction to Databases with SQL",
+    titleZh: "CS50 SQL 数据库导论",
     university: "Harvard University",
     subject: "Databases",
     subjectZh: "数据库",
@@ -531,6 +553,7 @@ export const courses: Course[] = [
   course({
     id: "harvard-cs50-cybersecurity",
     title: "CS50's Introduction to Cybersecurity",
+    titleZh: "CS50 网络安全导论",
     university: "Harvard University",
     subject: "Cybersecurity",
     subjectZh: "网络安全",
@@ -551,6 +574,7 @@ export const courses: Course[] = [
   course({
     id: "harvard-cs50-r",
     title: "CS50's Introduction to Programming with R",
+    titleZh: "CS50 R 编程导论",
     university: "Harvard University",
     subject: "Data Science",
     subjectZh: "数据科学",
@@ -571,6 +595,7 @@ export const courses: Course[] = [
   course({
     id: "harvard-cs50-scratch",
     title: "CS50's Introduction to Programming with Scratch",
+    titleZh: "CS50 Scratch 编程导论",
     university: "Harvard University",
     subject: "Programming",
     subjectZh: "编程",
@@ -591,6 +616,7 @@ export const courses: Course[] = [
   course({
     id: "princeton-cos126",
     title: "Computer Science: An Interdisciplinary Approach",
+    titleZh: "计算机科学：跨学科方法",
     university: "Princeton University",
     subject: "Computer Science",
     subjectZh: "计算机科学",
@@ -614,6 +640,7 @@ export const courses: Course[] = [
   course({
     id: "princeton-cos226",
     title: "Algorithms and Data Structures",
+    titleZh: "算法与数据结构",
     university: "Princeton University",
     subject: "Algorithms",
     subjectZh: "算法",
@@ -636,6 +663,7 @@ export const courses: Course[] = [
   course({
     id: "princeton-cos333",
     title: "Advanced Programming Techniques",
+    titleZh: "高级编程技术",
     university: "Princeton University",
     subject: "Software Engineering",
     subjectZh: "软件工程",
@@ -657,6 +685,7 @@ export const courses: Course[] = [
   course({
     id: "cornell-cs4410",
     title: "Operating Systems",
+    titleZh: "操作系统",
     university: "Cornell University",
     subject: "Operating Systems",
     subjectZh: "操作系统",
@@ -674,6 +703,7 @@ export const courses: Course[] = [
   course({
     id: "cornell-cs3780",
     title: "Introduction to Machine Learning",
+    titleZh: "机器学习导论",
     university: "Cornell University",
     subject: "Machine Learning",
     subjectZh: "机器学习",
@@ -690,6 +720,7 @@ export const courses: Course[] = [
   course({
     id: "cornell-cs4820",
     title: "Introduction to Analysis of Algorithms",
+    titleZh: "算法分析导论",
     university: "Cornell University",
     subject: "Algorithms",
     subjectZh: "算法",
@@ -708,6 +739,7 @@ export const courses: Course[] = [
   course({
     id: "cornell-cs6787",
     title: "Advanced Machine Learning Systems",
+    titleZh: "高级机器学习系统",
     university: "Cornell University",
     subject: "Machine Learning Systems",
     subjectZh: "机器学习系统",
@@ -726,6 +758,7 @@ export const courses: Course[] = [
   course({
     id: "berkeley-cs161",
     title: "Computer Security",
+    titleZh: "计算机安全",
     university: "UC Berkeley",
     subject: "Cybersecurity",
     subjectZh: "网络安全",
@@ -748,6 +781,7 @@ export const courses: Course[] = [
   course({
     id: "berkeley-cs188",
     title: "Introduction to Artificial Intelligence",
+    titleZh: "人工智能导论",
     university: "UC Berkeley",
     subject: "Artificial Intelligence",
     subjectZh: "人工智能",
@@ -768,6 +802,7 @@ export const courses: Course[] = [
   course({
     id: "washington-cse550",
     title: "Computer Systems (Systems for All)",
+    titleZh: "计算机系统（面向所有人的系统课程）",
     university: "University of Washington",
     subject: "Computer Systems",
     subjectZh: "计算机系统",

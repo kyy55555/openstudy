@@ -363,12 +363,12 @@ function CourseCard({ course, language, copy }: CourseCardProps) {
       </div>
 
       <h2 className="mt-2 text-xl font-semibold">
-        {course.title}
+        {language === "zh" ? course.titleZh : course.title}
       </h2>
 
-      {course.titleZh && (
-        <p className="mt-1 text-sm text-gray-500">{course.titleZh}</p>
-      )}
+      <p className="mt-1 text-sm text-gray-500">
+        {language === "zh" ? course.title : course.titleZh}
+      </p>
 
       <p className="mt-4 text-gray-700">
         {course.description}

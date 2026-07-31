@@ -23,6 +23,7 @@ test("course records have unique ids and real official URLs", () => {
 
   for (const course of courses) {
     assert.ok(course.title.trim());
+    assert.ok(course.titleZh?.trim(), `${course.id} has no Chinese title`);
     assert.notEqual(course.courseUrl, "#");
     assert.ok(!knownInvalidCourseUrls.has(course.courseUrl));
     assert.equal(course.courseUrl, course.sourceUrl);
