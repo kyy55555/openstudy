@@ -4,6 +4,7 @@ export type LearningPathPhase = {
   description: string;
   descriptionZh: string;
   courseIds: string[];
+  chooseCount: number | null;
 };
 
 export type LearningPath = {
@@ -28,13 +29,20 @@ const semesterNames = [
   ["Senior spring", "大四下"],
 ] as const;
 
-function semester(index: number, description: string, descriptionZh: string, courseIds: string[]): LearningPathPhase {
+function semester(
+  index: number,
+  description: string,
+  descriptionZh: string,
+  courseIds: string[],
+  chooseCount: number | null = null,
+): LearningPathPhase {
   return {
     title: semesterNames[index][0],
     titleZh: semesterNames[index][1],
     description,
     descriptionZh,
     courseIds,
+    chooseCount,
   };
 }
 
@@ -50,11 +58,11 @@ export const learningPaths: LearningPath[] = [
     phases: [
       semester(0, "Begin programming and calculus.", "开始编程与微积分基础。", ["mit-6-100l", "mit-18-01sc"]),
       semester(1, "Continue computational thinking, discrete math, and calculus.", "继续计算思维、离散数学与微积分。", ["mit-6-0002", "mit-6-042j", "mit-18-02sc"]),
-      semester(2, "Start algorithms and complete a mathematics option.", "开始算法，并完成一门数学方向课。", ["mit-6-006", "mit-18-06", "mit-18-05"]),
+      semester(2, "Take algorithms and choose one mathematics option.", "学习算法，并在线性代数和概率统计中任选一门。", ["mit-6-006", "mit-18-06", "mit-18-05"], 2),
       semester(3, "Advance into algorithm design and computer systems.", "进入算法设计与计算机系统。", ["mit-6-046j", "cornell-cs3410"]),
-      semester(4, "Explore artificial intelligence and graphics.", "探索人工智能与计算机图形学。", ["mit-6-034", "mit-6-837"]),
-      semester(5, "Take advanced systems and security electives.", "学习高阶系统与安全选修。", ["mit-6-824", "mit-6-858"]),
-      semester(6, "Deepen a chosen track and begin independent inquiry.", "深化所选方向并开始独立研究。", ["stanford-cs229"]),
+      semester(4, "Choose two track courses in AI, graphics, systems, or security.", "从人工智能、图形学、系统或安全方向中任选两门。", ["mit-6-034", "mit-6-837", "mit-6-824", "mit-6-858"], 2),
+      semester(5, "Choose two more advanced track courses.", "继续从高阶方向课池中任选两门。", ["mit-6-824", "mit-6-858", "stanford-cs229", "stanford-ee364a"], 2),
+      semester(6, "Choose one advanced elective and begin independent inquiry.", "任选一门高阶选修并开始独立研究。", ["stanford-cs229", "stanford-cs223a", "stanford-ee364a", "berkeley-cs161"], 1),
       semester(7, "Complete advanced electives and an independent project.", "完成高阶选修与独立项目。", []),
     ],
   },
@@ -71,9 +79,9 @@ export const learningPaths: LearningPath[] = [
       semester(1, "Continue programming abstractions and calculus.", "继续编程抽象与微积分。", ["stanford-cs106b", "mit-18-02sc"]),
       semester(2, "Study systems programming and linear algebra.", "学习系统编程与线性代数。", ["stanford-cs107", "mit-18-06"]),
       semester(3, "Complete probability and algorithm foundations.", "完成概率与算法基础。", ["mit-18-05", "mit-6-006"]),
-      semester(4, "Begin an artificial-intelligence or robotics depth path.", "开始人工智能或机器人深度方向。", ["stanford-cs229", "stanford-cs223a"]),
-      semester(5, "Add optimization and a depth elective.", "学习优化并增加一门深度选修。", ["stanford-ee364a"]),
-      semester(6, "Continue advanced depth work.", "继续高阶深度学习。", ["stanford-ee364b"]),
+      semester(4, "Choose two courses to begin a depth pathway.", "从方向课池中任选两门，开始专业深度方向。", ["stanford-cs229", "stanford-cs223a", "stanford-ee364a", "mit-6-034"], 2),
+      semester(5, "Choose two additional depth courses.", "再任选两门深度方向课程。", ["stanford-ee364a", "stanford-ee364b", "mit-6-837", "berkeley-cs188"], 2),
+      semester(6, "Choose advanced electives across or within the pathway.", "可在本方向内或跨方向任选两门高阶课。", ["stanford-ee364b", "mit-6-824", "mit-6-858", "berkeley-cs161"], 2),
       semester(7, "Complete a capstone and remaining electives.", "完成综合项目与剩余选修。", []),
     ],
   },
@@ -90,9 +98,9 @@ export const learningPaths: LearningPath[] = [
       semester(1, "Take Calculus II and CS 61B data structures.", "学习微积分 II 与 CS 61B 数据结构。", ["mit-18-02sc", "berkeley-cs61b"]),
       semester(2, "Complete linear algebra and CS 70.", "完成线性代数与 CS 70。", ["mit-18-06", "berkeley-cs70"]),
       semester(3, "Study machine structures; use an equivalent open systems course where needed.", "学习计算机组成；缺少本校公开课时采用等价系统课程。", ["cornell-cs3410"]),
-      semester(4, "Begin upper-division breadth with security.", "以计算机安全开始高年级广度课程。", ["berkeley-cs161"]),
-      semester(5, "Continue upper-division breadth with artificial intelligence.", "继续学习人工智能高年级广度课程。", ["berkeley-cs188"]),
-      semester(6, "Choose advanced electives and begin a project.", "选择高阶选修并开始项目。", ["stanford-cs229"]),
+      semester(4, "Choose two upper-division breadth courses.", "从高年级广度课池中任选两门。", ["berkeley-cs161", "berkeley-cs188", "cornell-cs4410", "mit-6-837"], 2),
+      semester(5, "Choose two upper-division electives.", "从高年级选修课池中任选两门。", ["berkeley-cs188", "stanford-cs229", "mit-6-034", "mit-6-858"], 2),
+      semester(6, "Choose one advanced elective and begin a project.", "任选一门高阶选修并开始项目。", ["stanford-cs229", "mit-6-824", "stanford-cs223a", "stanford-ee364a"], 1),
       semester(7, "Complete electives and a capstone project.", "完成选修与综合项目。", []),
     ],
   },
@@ -109,9 +117,9 @@ export const learningPaths: LearningPath[] = [
       semester(1, "Continue mathematics and prepare for the systems sequence.", "继续数学学习并准备系统课程。", ["mit-18-02sc"]),
       semester(2, "Take COS 217 and COS 226.", "学习 COS 217 与 COS 226。", ["princeton-cos217", "princeton-cos226"]),
       semester(3, "Build mathematical reasoning and begin departmental work.", "建立数学推理能力并开始专业课程。", ["mit-6-042j", "princeton-cos333"]),
-      semester(4, "Take systems and AI/ML core-category courses.", "学习系统与人工智能/机器学习核心类别课程。", ["cornell-cs4410", "berkeley-cs188"]),
-      semester(5, "Continue core categories and begin independent work.", "继续核心类别课程并开始独立研究。", ["mit-6-046j"]),
-      semester(6, "Complete advanced electives and thesis or independent work.", "完成高阶选修及论文或独立研究。", ["stanford-cs229"]),
+      semester(4, "Choose one systems course and one AI/ML or applications course.", "系统方向任选一门，并从人工智能、机器学习或应用方向任选一门。", ["cornell-cs4410", "mit-6-824", "berkeley-cs188", "stanford-cs229", "mit-6-837"], 2),
+      semester(5, "Choose two core-category or theory electives and begin independent work.", "从核心类别或理论选修中任选两门，并开始独立研究。", ["mit-6-046j", "berkeley-cs161", "mit-6-034", "cornell-cs4820"], 2),
+      semester(6, "Choose two advanced electives alongside thesis or independent work.", "配合论文或独立研究任选两门高阶课。", ["stanford-cs229", "stanford-cs223a", "mit-6-858", "stanford-ee364a"], 2),
       semester(7, "Finish the thesis, independent work, and remaining electives.", "完成论文、独立研究与剩余选修。", []),
     ],
   },

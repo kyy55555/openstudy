@@ -54,6 +54,13 @@ function PathsContent() {
               <div><span className="text-sm text-gray-500">{language === "zh" ? `建议学期 ${index + 1}` : `Suggested semester ${index + 1}`}</span><h3 className="mt-1 font-semibold">{language === "zh" ? phase.titleZh : phase.title}</h3></div>
               <div>
                 <p className="text-sm text-gray-600">{language === "zh" ? phase.descriptionZh : phase.description}</p>
+                {phase.courseIds.length > 0 && (
+                  <p className={`mt-3 inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${phase.chooseCount === null ? "bg-gray-100 text-gray-600" : "bg-amber-100 text-amber-900"}`}>
+                    {phase.chooseCount === null
+                      ? (language === "zh" ? "基础序列 · 建议全部完成" : "Foundation sequence · Complete all")
+                      : (language === "zh" ? `自由选课 · 以下任选 ${phase.chooseCount} 门` : `Flexible electives · Choose ${phase.chooseCount}`)}
+                  </p>
+                )}
                 {phase.courseIds.length > 0 ? <div className="mt-3 flex flex-wrap gap-2">{phase.courseIds.map((id) => { const course = courses.find((item) => item.id === id); if (!course) return null; const substitute = course.university !== path.university; return <Link key={id} href={courseHref(course.title)} className="rounded-xl border border-gray-300 px-3 py-2 text-sm hover:border-black hover:bg-gray-50"><span className="font-medium">{courseCode(course)} · {language === "zh" ? course.titleZh : course.title}</span><span className="mt-0.5 block text-xs text-gray-500">{course.university}{substitute ? ` · ${language === "zh" ? "等价替代" : "Equivalent substitute"}` : ""}</span></Link>; })}</div> : <p className="mt-3 text-sm italic text-gray-500">{language === "zh" ? "该学期以导师指导的项目、论文或尚未匹配的选修为主。" : "This semester focuses on supervised projects, a thesis, or electives not yet matched."}</p>}
               </div>
             </div>
