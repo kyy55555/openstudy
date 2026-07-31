@@ -24,7 +24,7 @@ function PathsContent() {
         <div>
           <Link href={language === "zh" ? "/?lang=zh" : "/"} className="text-sm text-gray-500 hover:text-black">← OpenStudy</Link>
           <h1 className="mt-3 text-3xl font-bold">{language === "zh" ? "顶尖大学学习路线" : "Top university learning paths"}</h1>
-          <p className="mt-2 max-w-3xl text-gray-600">{language === "zh" ? "以大学官方培养方案为骨架，连接可公开学习的课程。路线用于自学规划，不等同于大学学位或学分。" : "Official curricula provide the structure, linked to openly available courses. These paths guide self-study and do not confer university credit or a degree."}</p>
+          <p className="mt-2 max-w-3xl text-gray-600">{language === "zh" ? "以大学官方培养方案为骨架，按大一上到大四下安排建议学期。跨校课程会标注为等价替代；路线用于自学规划，不等同于大学学位或学分。" : "Official curricula provide the structure, arranged as a suggested eight-semester plan. Cross-university courses are marked as equivalents; these paths do not confer university credit or a degree."}</p>
         </div>
         <button onClick={() => setLanguage(language === "zh" ? "en" : "zh")} className="rounded-full border px-4 py-2 text-sm font-medium">{language === "zh" ? "English" : "中文"}</button>
       </header>
@@ -51,10 +51,10 @@ function PathsContent() {
         <div className="mt-8 space-y-6">
           {path.phases.map((phase, index) => (
             <div key={phase.title} className="grid gap-4 border-t border-gray-200 pt-6 sm:grid-cols-[9rem_1fr]">
-              <div><span className="text-sm text-gray-500">{language === "zh" ? `阶段 ${index + 1}` : `Stage ${index + 1}`}</span><h3 className="mt-1 font-semibold">{language === "zh" ? phase.titleZh : phase.title}</h3></div>
+              <div><span className="text-sm text-gray-500">{language === "zh" ? `建议学期 ${index + 1}` : `Suggested semester ${index + 1}`}</span><h3 className="mt-1 font-semibold">{language === "zh" ? phase.titleZh : phase.title}</h3></div>
               <div>
                 <p className="text-sm text-gray-600">{language === "zh" ? phase.descriptionZh : phase.description}</p>
-                {phase.courseIds.length > 0 ? <div className="mt-3 flex flex-wrap gap-2">{phase.courseIds.map((id) => { const course = courses.find((item) => item.id === id); return course ? <Link key={id} href={courseHref(course.title)} className="rounded-full border border-gray-300 px-3 py-1.5 text-sm hover:border-black hover:bg-gray-50">{courseCode(course)} · {language === "zh" ? course.titleZh : course.title}</Link> : null; })}</div> : <p className="mt-3 text-sm italic text-gray-500">{language === "zh" ? "该阶段需要导师指导，暂无对应公开课。" : "This stage requires supervised work; no matching open course yet."}</p>}
+                {phase.courseIds.length > 0 ? <div className="mt-3 flex flex-wrap gap-2">{phase.courseIds.map((id) => { const course = courses.find((item) => item.id === id); if (!course) return null; const substitute = course.university !== path.university; return <Link key={id} href={courseHref(course.title)} className="rounded-xl border border-gray-300 px-3 py-2 text-sm hover:border-black hover:bg-gray-50"><span className="font-medium">{courseCode(course)} · {language === "zh" ? course.titleZh : course.title}</span><span className="mt-0.5 block text-xs text-gray-500">{course.university}{substitute ? ` · ${language === "zh" ? "等价替代" : "Equivalent substitute"}` : ""}</span></Link>; })}</div> : <p className="mt-3 text-sm italic text-gray-500">{language === "zh" ? "该学期以导师指导的项目、论文或尚未匹配的选修为主。" : "This semester focuses on supervised projects, a thesis, or electives not yet matched."}</p>}
               </div>
             </div>
           ))}
