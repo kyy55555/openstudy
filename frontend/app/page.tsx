@@ -5,7 +5,14 @@ import type { FormEvent } from "react";
 
 import { courses } from "../data/courses";
 import type { Course } from "../data/courses";
-import { filterCourses, uniqueCourseValues } from "../data/courseFilters";
+import {
+  filterCourses,
+  sortCourses,
+  uniqueCourseValues,
+} from "../data/courseFilters";
+import type { CourseSort } from "../data/courseFilters";
+
+const coursesPerPage = 12;
 
 /* -------------------- Title -------------------- */
 
@@ -319,11 +326,15 @@ export default function Home() {
   const [onlySolutions, setOnlySolutions] =
     useState(false);
 
+  const [sort, setSort] = useState<CourseSort>("newest");
+  const [visibleCount, setVisibleCount] = useState(coursesPerPage);
+
   const universities = uniqueCourseValues(courses, "university");
   const subjects = uniqueCourseValues(courses, "subject");
 
   function handleSearch() {
     setSearchTerm(searchInput.trim());
+    setVisibleCount(coursesPerPage);
   }
 
   function handleResetFilters() {
@@ -334,16 +345,22 @@ export default function Home() {
     setOnlyVideos(false);
     setOnlyAssignments(false);
     setOnlySolutions(false);
+    setSort("newest");
+    setVisibleCount(coursesPerPage);
   }
 
-  const filteredCourses = filterCourses(courses, {
-    searchTerm,
-    university: universityFilter,
-    subject: subjectFilter,
-    onlyVideos,
-    onlyAssignments,
-    onlySolutions,
-  });
+  const filteredCourses = sortCourses(
+    filterCourses(courses, {
+      searchTerm,
+      university: universityFilter,
+      subject: subjectFilter,
+      onlyVideos,
+      onlyAssignments,
+      onlySolutions,
+    }),
+    sort,
+  );
+  const visibleCourses = filteredCourses.slice(0, visibleCount);
 
   return (
     <main className="mx-auto min-h-screen max-w-4xl px-6 py-12">
@@ -362,27 +379,60 @@ export default function Home() {
         universities={universities}
         subjects={subjects}
         universityFilter={universityFilter}
-        setUniversityFilter={setUniversityFilter}
+        setUniversityFilter={(value) => {
+          setUniversityFilter(value);
+          setVisibleCount(coursesPerPage);
+        }}
         subjectFilter={subjectFilter}
-        setSubjectFilter={setSubjectFilter}
+        setSubjectFilter={(value) => {
+          setSubjectFilter(value);
+          setVisibleCount(coursesPerPage);
+        }}
         onlyVideos={onlyVideos}
-        setOnlyVideos={setOnlyVideos}
+        setOnlyVideos={(value) => {
+          setOnlyVideos(value);
+          setVisibleCount(coursesPerPage);
+        }}
         onlyAssignments={onlyAssignments}
-        setOnlyAssignments={setOnlyAssignments}
+        setOnlyAssignments={(value) => {
+          setOnlyAssignments(value);
+          setVisibleCount(coursesPerPage);
+        }}
         onlySolutions={onlySolutions}
-        setOnlySolutions={setOnlySolutions}
+        setOnlySolutions={(value) => {
+          setOnlySolutions(value);
+          setVisibleCount(coursesPerPage);
+        }}
         onReset={handleResetFilters}
       />
 
       <section className="mt-10">
-        <div className="flex items-end justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <h2 className="text-2xl font-semibold">
             Courses
           </h2>
 
-          <p className="text-sm text-gray-500">
-            Showing {filteredCourses.length} of {courses.length} verified courses
-          </p>
+          <div className="flex flex-wrap items-center gap-4">
+            <label className="flex items-center gap-2 text-sm">
+              <span className="font-medium">Sort</span>
+              <select
+                value={sort}
+                onChange={(event) => {
+                  setSort(event.target.value as CourseSort);
+                  setVisibleCount(coursesPerPage);
+                }}
+                className="rounded-lg border border-gray-300 px-3 py-2 outline-none"
+              >
+                <option value="newest">Newest first</option>
+                <option value="title">Course title</option>
+                <option value="university">University</option>
+              </select>
+            </label>
+
+            <p className="text-sm text-gray-500">
+              {filteredCourses.length} of {courses.length} verified courses
+            </p>
+          </div>
         </div>
 
         {filteredCourses.length === 0 ? (
@@ -397,13 +447,23 @@ export default function Home() {
           </div>
         ) : (
           <div className="mt-6 space-y-5">
-            {filteredCourses.map((course) => (
+            {visibleCourses.map((course) => (
               <CourseCard
                 key={course.id}
                 course={course}
               />
             ))}
           </div>
+        )}
+
+        {visibleCount < filteredCourses.length && (
+          <button
+            type="button"
+            onClick={() => setVisibleCount((count) => count + coursesPerPage)}
+            className="mt-6 w-full rounded-lg border border-gray-300 px-5 py-3 font-medium hover:bg-gray-50"
+          >
+            Show more courses ({filteredCourses.length - visibleCount} remaining)
+          </button>
         )}
       </section>
     </main>

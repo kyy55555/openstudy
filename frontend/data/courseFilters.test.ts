@@ -1,7 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { filterCourses, uniqueCourseValues } from "./courseFilters.ts";
+import {
+  filterCourses,
+  sortCourses,
+  uniqueCourseValues,
+} from "./courseFilters.ts";
 import { courses } from "./courses.ts";
 
 const defaults = {
@@ -50,4 +54,24 @@ test("subject, university, and material filters compose", () => {
       ({ hasSolutions }) => hasSolutions === true,
     ),
   );
+});
+
+test("courses can be sorted without mutating the catalog", () => {
+  const originalIds = courses.map(({ id }) => id);
+  const byTitle = sortCourses(courses, "title");
+  const byUniversity = sortCourses(courses, "university");
+  const byNewest = sortCourses(courses, "newest");
+
+  assert.deepEqual(courses.map(({ id }) => id), originalIds);
+  assert.deepEqual(
+    byTitle.map(({ title }) => title),
+    byTitle.map(({ title }) => title).toSorted((a, b) => a.localeCompare(b)),
+  );
+  assert.deepEqual(
+    byUniversity.map(({ university }) => university),
+    byUniversity
+      .map(({ university }) => university)
+      .toSorted((a, b) => a.localeCompare(b)),
+  );
+  assert.equal(byNewest[0].year, Math.max(...courses.flatMap(({ year }) => year ?? [])));
 });

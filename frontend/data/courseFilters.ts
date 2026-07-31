@@ -9,6 +9,8 @@ export type CourseFilters = {
   onlySolutions: boolean;
 };
 
+export type CourseSort = "newest" | "title" | "university";
+
 export function uniqueCourseValues(
   courses: Course[],
   field: "university" | "subject",
@@ -42,5 +44,21 @@ export function filterCourses(courses: Course[], filters: CourseFilters) {
       (!filters.onlyAssignments || course.hasAssignments === true) &&
       (!filters.onlySolutions || course.hasSolutions === true)
     );
+  });
+}
+
+export function sortCourses(courses: Course[], sort: CourseSort) {
+  return [...courses].sort((a, b) => {
+    if (sort === "newest") {
+      const yearDifference = (b.year ?? -Infinity) - (a.year ?? -Infinity);
+      if (yearDifference !== 0) return yearDifference;
+    }
+
+    if (sort === "university") {
+      const universityDifference = a.university.localeCompare(b.university);
+      if (universityDifference !== 0) return universityDifference;
+    }
+
+    return a.title.localeCompare(b.title);
   });
 }
