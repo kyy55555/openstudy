@@ -179,6 +179,8 @@ const prerequisiteZh: Record<string, string> = {
   "Single Variable Calculus": "单变量微积分",
   "Multivariable Calculus": "多元微积分",
   "MIT 6.006": "MIT 6.006 算法导论",
+  "Stanford CS 103": "Stanford CS 103 计算基础的数学原理",
+  "Stanford CS 109": "Stanford CS 109 面向计算机科学家的概率论",
 };
 
 const prerequisiteCourseIds: Record<string, string> = {
@@ -206,6 +208,8 @@ const prerequisiteCourseIds: Record<string, string> = {
   "Single Variable Calculus": "mit-18-01sc",
   "Multivariable Calculus": "mit-18-02sc",
   "MIT 6.006": "mit-6-006",
+  "Stanford CS 103": "stanford-cs103",
+  "Stanford CS 109": "stanford-cs109",
 };
 
 /* -------------------- Title -------------------- */

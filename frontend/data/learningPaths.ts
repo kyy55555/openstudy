@@ -52,7 +52,7 @@ export const learningPaths: LearningPath[] = [
     scheduleStatus: "requirements-only",
     phases: [
       group("Mathematics", "数学要求", "Calculus plus approved mathematics electives.", "微积分及批准的数学选修。", ["mit-18-01sc", "mit-18-02sc", "mit-18-06", "mit-18-05"]),
-      group("Programming and systems core", "编程与系统核心", "Complete the official programming and systems core sequence.", "完成官方编程与系统核心序列。", ["stanford-cs106a", "stanford-cs106b", "stanford-cs107", "cornell-cs4410"]),
+      group("Programming and systems core", "编程与系统核心", "Complete the official programming and systems core sequence.", "完成官方编程与系统核心序列。", ["stanford-cs106a", "stanford-cs106b", "stanford-cs107", "stanford-cs103", "stanford-cs109", "stanford-cs111", "stanford-cs161"]),
       group("Depth pathway", "深度方向", "Select courses according to one approved CS pathway.", "按照一个批准的计算机科学方向选择课程。", ["stanford-cs229", "stanford-cs223a", "stanford-ee364a", "stanford-ee364b", "mit-6-034", "mit-6-837"], 4),
       group("Senior project and electives", "高年级项目与选修", "Complete remaining pathway electives and an approved senior project where required.", "完成剩余方向选修及适用的高年级项目。", ["mit-6-824", "mit-6-858", "berkeley-cs161"], 2),
     ],
@@ -68,7 +68,7 @@ export const learningPaths: LearningPath[] = [
     scheduleStatus: "requirements-only",
     phases: [
       group("Lower-division mathematics", "低年级数学", "Complete calculus and linear algebra requirements.", "完成微积分与线性代数要求。", ["mit-18-01sc", "mit-18-02sc", "mit-18-06"]),
-      group("Lower-division CS core", "低年级计算机核心", "Complete CS 61A, CS 61B/BL, CS 61C, and CS 70.", "完成 CS 61A、CS 61B/BL、CS 61C 和 CS 70。", ["berkeley-cs61a", "berkeley-cs61b", "cornell-cs3410", "berkeley-cs70"]),
+      group("Lower-division CS core", "低年级计算机核心", "Complete CS 61A, CS 61B/BL, CS 61C, and CS 70.", "完成 CS 61A、CS 61B/BL、CS 61C 和 CS 70。", ["berkeley-cs61a", "berkeley-cs61b", "berkeley-cs61c", "berkeley-cs70"]),
       group("Upper-division breadth and electives", "高年级广度与选修", "Choose approved upper-division courses while satisfying the official breadth and design rules.", "在满足官方广度与设计规则的前提下选择高年级课程。", ["berkeley-cs161", "berkeley-cs188", "stanford-cs229", "mit-6-824", "mit-6-837", "mit-6-858"], 4),
     ],
   },
@@ -83,7 +83,7 @@ export const learningPaths: LearningPath[] = [
     scheduleStatus: "requirements-only",
     phases: [
       group("Prerequisites", "专业先修", "Complete COS 126 or its alternative, COS 217, COS 226, and the applicable mathematics requirement.", "完成 COS 126 或替代课、COS 217、COS 226 及适用的数学要求。", ["princeton-cos126", "princeton-cos217", "princeton-cos226", "mit-18-06"]),
-      group("Foundation", "理论基础", "Complete COS 240 or the officially allowed advanced-mathematics alternative.", "完成 COS 240 或官方允许的高阶数学替代组合。", ["mit-6-042j"]),
+      group("Foundation", "理论基础", "Complete COS 240 or the officially allowed advanced-mathematics alternative.", "完成 COS 240 或官方允许的高阶数学替代组合。", ["princeton-cos240"]),
       group("Four core categories", "四个核心类别", "Choose one course from each official core category.", "从四个官方核心类别中各选一门。", ["cornell-cs4410", "berkeley-cs188", "mit-6-046j", "princeton-cos333"], 4),
       group("Electives", "专业选修", "Complete three eligible upper-level electives under the official rules.", "按官方规则完成三门符合条件的高年级选修。", ["stanford-cs229", "berkeley-cs161", "mit-6-824", "mit-6-858", "stanford-ee364a"], 3),
       group("Independent work", "独立研究", "Complete the independent-work or thesis requirement for the selected AB or BSE track.", "完成 AB 或 BSE 对应的独立研究或论文要求。", []),

@@ -11,6 +11,8 @@ const officialHosts = new Set([
   "cs61a.org",
   "sp26.datastructur.es",
   "www.eecs70.org",
+  "cs61c.org",
+  "web.stanford.edu",
 ]);
 
 const officialHomePaths = new Set(["/", "/index.html"]);
