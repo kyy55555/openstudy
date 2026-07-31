@@ -171,6 +171,11 @@ type CourseCardProps = {
 };
 
 function CourseCard({ course }: CourseCardProps) {
+  function materialStatus(value: Course["hasVideos"]) {
+    if (value === null) return "? Not verified";
+    return value ? "✓ Available" : "✗ Not available";
+  }
+
   return (
     <article className="rounded-xl border border-gray-200 p-6 shadow-sm">
       <div>
@@ -178,20 +183,15 @@ function CourseCard({ course }: CourseCardProps) {
           {course.university}
         </p>
 
-        {course.recommended && (
-          <span className="mt-2 inline-block rounded-full bg-black px-3 py-1 text-xs text-white">
-            Recommended
-          </span>
-        )}
       </div>
 
       <h2 className="mt-2 text-xl font-semibold">
         {course.title}
       </h2>
 
-      <p className="mt-1 text-sm text-gray-500">
-        {course.titleZh}
-      </p>
+      {course.titleZh && (
+        <p className="mt-1 text-sm text-gray-500">{course.titleZh}</p>
+      )}
 
       <p className="mt-4 text-gray-700">
         {course.description}
@@ -205,7 +205,7 @@ function CourseCard({ course }: CourseCardProps) {
 
         <p>
           <span className="font-medium">Level:</span>{" "}
-          {course.level}
+          {course.level ?? "Not verified"}
         </p>
 
         <p>
@@ -218,18 +218,14 @@ function CourseCard({ course }: CourseCardProps) {
           {course.year === null ? "Not verified" : course.year}
         </p>
 
-        <p>
-          <span className="font-medium">Last updated:</span>{" "}
-          {course.lastUpdated === null
-            ? "Not verified"
-            : course.lastUpdated}
-        </p>
       </div>
 
       <div className="mt-5">
         <p className="font-medium">Prerequisites</p>
 
-        {course.prerequisites.length === 0 ? (
+        {course.prerequisites === null ? (
+          <p className="mt-2 text-sm text-gray-500">Not verified.</p>
+        ) : course.prerequisites.length === 0 ? (
           <p className="mt-2 text-sm text-gray-500">
             No prerequisites listed.
           </p>
@@ -248,17 +244,19 @@ function CourseCard({ course }: CourseCardProps) {
         <p className="font-medium">Course materials</p>
 
         <div className="mt-2 space-y-1 text-sm">
-          <p>{course.hasVideos ? "✓" : "✗"} Videos</p>
-
-          <p>
-            {course.hasAssignments ? "✓" : "✗"} Assignments
-          </p>
-
-          <p>
-            {course.hasSolutions ? "✓" : "✗"} Solutions
-          </p>
+          <p>Videos: {materialStatus(course.hasVideos)}</p>
+          <p>Assignments: {materialStatus(course.hasAssignments)}</p>
+          <p>Solutions: {materialStatus(course.hasSolutions)}</p>
         </div>
       </div>
+
+      <p className="mt-5 text-xs text-gray-500">
+        Verified from{" "}
+        <a href={course.sourceUrl} target="_blank" rel="noreferrer" className="underline">
+          {course.sourceName}
+        </a>{" "}
+        on {course.verifiedOn}.
+      </p>
 
       <a
         href={course.courseUrl}
@@ -329,13 +327,13 @@ export default function Home() {
       course.university === universityFilter;
 
     const matchesVideos =
-      !onlyVideos || course.hasVideos;
+      !onlyVideos || course.hasVideos === true;
 
     const matchesAssignments =
-      !onlyAssignments || course.hasAssignments;
+      !onlyAssignments || course.hasAssignments === true;
 
     const matchesSolutions =
-      !onlySolutions || course.hasSolutions;
+      !onlySolutions || course.hasSolutions === true;
 
     return (
       matchesSearch &&
