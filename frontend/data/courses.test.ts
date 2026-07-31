@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { courses, suggestedStudyStage } from "./courses.ts";
+import { courseCode, courses, suggestedStudyStage } from "./courses.ts";
 
 const officialHosts = new Set([
   "ocw.mit.edu",
@@ -59,6 +59,14 @@ test("new prerequisite foundation courses are present", () => {
   ]) {
     assert.ok(ids.has(id), `${id} is missing`);
   }
+});
+
+test("every course has a stable display code", () => {
+  for (const course of courses) {
+    assert.ok(courseCode(course).trim(), `${course.id} has no display code`);
+  }
+  assert.equal(courseCode(courses.find(({ id }) => id === "princeton-cos126")!), "COS 126");
+  assert.equal(courseCode(courses.find(({ id }) => id === "mit-6-042j")!), "6.042J");
 });
 
 test("dataset spans universities and subjects without recommendation data", () => {

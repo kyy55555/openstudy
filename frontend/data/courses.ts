@@ -64,6 +64,42 @@ export function suggestedStudyStage(course: Course): SuggestedStudyStage | null 
   return null;
 }
 
+export function courseCode(course: Course): string {
+  const parts = course.id.split("-");
+  const university = parts[0];
+  const rawCode = parts.slice(1).join("-");
+
+  if (university === "mit") {
+    return rawCode.replace("-", ".").toUpperCase();
+  }
+  if (university === "stanford") {
+    return rawCode.toUpperCase();
+  }
+  if (university === "harvard") {
+    const harvardCodes: Record<string, string> = {
+      cs50x: "CS50x",
+      "cs50-python": "CS50P",
+      "cs50-ai": "CS50 AI",
+      "cs50-web": "CS50W",
+      "cs50-sql": "CS50 SQL",
+      "cs50-cybersecurity": "CS50 Cybersecurity",
+      "cs50-r": "CS50R",
+      "cs50-scratch": "CS50 Scratch",
+    };
+    return harvardCodes[rawCode] ?? rawCode.toUpperCase();
+  }
+  if (university === "princeton") {
+    return rawCode.replace(/^cos/, "COS ").toUpperCase();
+  }
+  if (university === "cornell" || university === "berkeley") {
+    return rawCode.replace(/^([a-z]+)(\d)/, "$1 $2").toUpperCase();
+  }
+  if (university === "washington") {
+    return rawCode.replace(/^cse/, "CSE ").toUpperCase();
+  }
+  return rawCode.toUpperCase();
+}
+
 const verifiedOn = "2026-07-31";
 
 type CourseSeed = Omit<

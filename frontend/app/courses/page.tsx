@@ -5,7 +5,7 @@ import type { FormEvent } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { courses, suggestedStudyStage } from "../../data/courses";
+import { courseCode, courses, suggestedStudyStage } from "../../data/courses";
 import type { Course } from "../../data/courses";
 import {
   filterCourses,
@@ -439,6 +439,7 @@ function CourseCard({ course, language, copy }: CourseCardProps) {
       </div>
 
       <h2 className="mt-2 text-xl font-semibold">
+        <span className="mr-2 text-gray-500">{courseCode(course)}</span>
         {language === "zh" ? course.titleZh : course.title}
       </h2>
 
