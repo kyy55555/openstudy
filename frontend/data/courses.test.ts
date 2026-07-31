@@ -7,6 +7,10 @@ const officialHosts = new Set([
   "ocw.mit.edu",
   "see.stanford.edu",
   "cs50.harvard.edu",
+  "www.cs.princeton.edu",
+  "www.cs.cornell.edu",
+  "inst.eecs.berkeley.edu",
+  "courses.cs.washington.edu",
 ]);
 
 const knownInvalidCourseUrls = new Set([

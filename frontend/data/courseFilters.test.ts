@@ -15,9 +15,13 @@ const defaults = {
 
 test("course options are unique and sorted", () => {
   assert.deepEqual(uniqueCourseValues(courses, "university"), [
+    "Cornell University",
     "Harvard University",
     "MIT",
+    "Princeton University",
     "Stanford University",
+    "UC Berkeley",
+    "University of Washington",
   ]);
 
   const subjects = uniqueCourseValues(courses, "subject");
