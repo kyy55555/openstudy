@@ -75,6 +75,19 @@ test("every course has a stable display code", () => {
   assert.equal(courseCode(courses.find(({ id }) => id === "mit-6-042j")!), "6.042J");
 });
 
+test("verified prerequisite chains include their official foundations", () => {
+  const byId = new Map(courses.map((course) => [course.id, course]));
+  assert.deepEqual(byId.get("mit-6-006")?.prerequisites, [
+    "Introductory Python programming",
+    "Discrete mathematics",
+  ]);
+  assert.deepEqual(byId.get("mit-6-046j")?.prerequisites, [
+    "MIT 6.006",
+    "Discrete mathematics",
+  ]);
+  assert.ok(byId.get("cornell-cs3780")?.prerequisites?.includes("Probability"));
+});
+
 test("dataset spans universities and subjects without recommendation data", () => {
   assert.ok(new Set(courses.map(({ university }) => university)).size >= 3);
   assert.ok(new Set(courses.map(({ subject }) => subject)).size >= 10);
