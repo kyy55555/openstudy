@@ -1,5 +1,18 @@
 export type Verification = boolean | null;
 
+export type CourseResourceType =
+  | "lectures"
+  | "assignments"
+  | "exams"
+  | "projects"
+  | "materials";
+
+export type CourseResource = {
+  type: CourseResourceType;
+  title: string;
+  url: string;
+};
+
 export type Course = {
   id: string;
   title: string;
@@ -21,6 +34,7 @@ export type Course = {
   sourceName: string;
   sourceUrl: string;
   verifiedOn: string;
+  resources: CourseResource[];
 };
 
 const verifiedOn = "2026-07-31";
@@ -39,6 +53,7 @@ type CourseSeed = Omit<
   | "hasSolutions"
   | "sourceUrl"
   | "verifiedOn"
+  | "resources"
 > &
   Partial<
     Pick<
@@ -54,6 +69,7 @@ type CourseSeed = Omit<
       | "hasAssignments"
       | "hasSolutions"
       | "sourceUrl"
+      | "resources"
     >
   >;
 
@@ -71,6 +87,7 @@ function course(seed: CourseSeed): Course {
     hasSolutions: null,
     sourceUrl: seed.courseUrl,
     verifiedOn,
+    resources: [],
     ...seed,
   };
 }
@@ -98,6 +115,10 @@ export const courses: Course[] = [
     hasAssignments: true,
     courseUrl: "https://ocw.mit.edu/courses/6-100l-introduction-to-cs-and-programming-using-python-fall-2022/",
     sourceName: mitSource,
+    resources: [
+      { type: "lectures", title: "Lecture videos", url: "https://ocw.mit.edu/courses/6-100l-introduction-to-cs-and-programming-using-python-fall-2022/pages/lecture-videos/" },
+      { type: "assignments", title: "Problem sets", url: "https://ocw.mit.edu/courses/6-100l-introduction-to-cs-and-programming-using-python-fall-2022/pages/problem-sets/" },
+    ],
   }),
   course({
     id: "mit-6-0002",
@@ -114,6 +135,10 @@ export const courses: Course[] = [
     hasAssignments: true,
     courseUrl: "https://ocw.mit.edu/courses/6-0002-introduction-to-computational-thinking-and-data-science-fall-2016/",
     sourceName: mitSource,
+    resources: [
+      { type: "lectures", title: "Lecture videos", url: "https://ocw.mit.edu/courses/6-0002-introduction-to-computational-thinking-and-data-science-fall-2016/pages/lecture-videos/" },
+      { type: "assignments", title: "Assignments", url: "https://ocw.mit.edu/courses/6-0002-introduction-to-computational-thinking-and-data-science-fall-2016/pages/assignments/" },
+    ],
   }),
   course({
     id: "mit-6-006",
@@ -129,6 +154,11 @@ export const courses: Course[] = [
     hasAssignments: true,
     courseUrl: "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/",
     sourceName: mitSource,
+    resources: [
+      { type: "lectures", title: "Lecture videos", url: "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/pages/lecture-videos/" },
+      { type: "assignments", title: "Assignments", url: "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/pages/assignments/" },
+      { type: "exams", title: "Quizzes and exams", url: "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/pages/quizzes/" },
+    ],
   }),
   course({
     id: "mit-6-046j",
@@ -144,6 +174,11 @@ export const courses: Course[] = [
     hasAssignments: true,
     courseUrl: "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/",
     sourceName: mitSource,
+    resources: [
+      { type: "lectures", title: "Lecture videos", url: "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/pages/lecture-videos/" },
+      { type: "assignments", title: "Assignments", url: "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/pages/assignments/" },
+      { type: "exams", title: "Exams", url: "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/pages/exams/" },
+    ],
   }),
   course({
     id: "mit-6-034",
@@ -159,6 +194,11 @@ export const courses: Course[] = [
     hasAssignments: true,
     courseUrl: "https://ocw.mit.edu/courses/6-034-artificial-intelligence-fall-2010/",
     sourceName: mitSource,
+    resources: [
+      { type: "lectures", title: "Lecture videos", url: "https://ocw.mit.edu/courses/6-034-artificial-intelligence-fall-2010/pages/lecture-videos/" },
+      { type: "assignments", title: "Assignments", url: "https://ocw.mit.edu/courses/6-034-artificial-intelligence-fall-2010/pages/assignments/" },
+      { type: "exams", title: "Exams", url: "https://ocw.mit.edu/courses/6-034-artificial-intelligence-fall-2010/pages/exams/" },
+    ],
   }),
   course({
     id: "mit-6-824",
@@ -173,6 +213,11 @@ export const courses: Course[] = [
     hasAssignments: true,
     courseUrl: "https://ocw.mit.edu/courses/6-824-distributed-computer-systems-engineering-spring-2006/",
     sourceName: mitSource,
+    resources: [
+      { type: "assignments", title: "Labs", url: "https://ocw.mit.edu/courses/6-824-distributed-computer-systems-engineering-spring-2006/pages/labs/" },
+      { type: "projects", title: "Projects", url: "https://ocw.mit.edu/courses/6-824-distributed-computer-systems-engineering-spring-2006/pages/projects/" },
+      { type: "exams", title: "Exams", url: "https://ocw.mit.edu/courses/6-824-distributed-computer-systems-engineering-spring-2006/pages/exams/" },
+    ],
   }),
   course({
     id: "mit-6-858",
@@ -189,6 +234,11 @@ export const courses: Course[] = [
     hasSolutions: true,
     courseUrl: "https://ocw.mit.edu/courses/6-858-computer-systems-security-fall-2014/",
     sourceName: mitSource,
+    resources: [
+      { type: "lectures", title: "Lecture videos", url: "https://ocw.mit.edu/courses/6-858-computer-systems-security-fall-2014/pages/lecture-videos/" },
+      { type: "assignments", title: "Labs", url: "https://ocw.mit.edu/courses/6-858-computer-systems-security-fall-2014/pages/labs/" },
+      { type: "exams", title: "Exams and solutions", url: "https://ocw.mit.edu/courses/6-858-computer-systems-security-fall-2014/pages/exams/" },
+    ],
   }),
   course({
     id: "mit-6-837",
@@ -203,6 +253,10 @@ export const courses: Course[] = [
     hasAssignments: true,
     courseUrl: "https://ocw.mit.edu/courses/6-837-computer-graphics-fall-2012/",
     sourceName: mitSource,
+    resources: [
+      { type: "assignments", title: "Assignments", url: "https://ocw.mit.edu/courses/6-837-computer-graphics-fall-2012/pages/assignments/" },
+      { type: "exams", title: "Prior-year exams", url: "https://ocw.mit.edu/courses/6-837-computer-graphics-fall-2012/pages/old-exams/" },
+    ],
   }),
   course({
     id: "stanford-cs106a",

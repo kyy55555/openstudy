@@ -12,8 +12,8 @@ const officialHosts = new Set([
 
 const officialHomePaths = new Set(["/", "/index.html"]);
 
-async function checkCourse(course) {
-  const response = await fetch(course.courseUrl, {
+async function checkUrl(course, url, label) {
+  const response = await fetch(url, {
     redirect: "follow",
     signal: AbortSignal.timeout(15_000),
   });
@@ -28,31 +28,38 @@ async function checkCourse(course) {
     errors.push(`redirected to the official site's home page`);
   }
 
-  return { course, finalUrl: finalUrl.href, errors };
+  return { course, label, requestedUrl: url, finalUrl: finalUrl.href, errors };
 }
 
 const results = await Promise.all(
-  courses.map(async (course) => {
+  courses.flatMap((course) => [
+    { course, url: course.courseUrl, label: "course" },
+    ...course.resources.map((resource) => ({
+      course,
+      url: resource.url,
+      label: resource.type,
+    })),
+  ]).map(async ({ course, url, label }) => {
     try {
-      return await checkCourse(course);
+      return await checkUrl(course, url, label);
     } catch (error) {
-      return { course, finalUrl: null, errors: [String(error)] };
+      return { course, label, requestedUrl: url, finalUrl: null, errors: [String(error)] };
     }
   }),
 );
 
 let failureCount = 0;
 
-for (const { course, finalUrl, errors } of results) {
+for (const { course, label, finalUrl, errors } of results) {
   if (errors.length === 0) {
-    console.log(`PASS ${course.id} -> ${finalUrl}`);
+    console.log(`PASS ${course.id} [${label}] -> ${finalUrl}`);
     continue;
   }
 
   failureCount += 1;
-  console.error(`FAIL ${course.id}: ${errors.join("; ")}`);
+  console.error(`FAIL ${course.id} [${label}]: ${errors.join("; ")}`);
 }
 
-console.log(`\nChecked ${results.length} official course links: ${results.length - failureCount} passed, ${failureCount} failed.`);
+console.log(`\nChecked ${results.length} official course and resource links: ${results.length - failureCount} passed, ${failureCount} failed.`);
 
 if (failureCount > 0) process.exitCode = 1;

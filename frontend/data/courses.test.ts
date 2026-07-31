@@ -28,6 +28,12 @@ test("course records have unique ids and real official URLs", () => {
     assert.equal(course.courseUrl, course.sourceUrl);
     assert.ok(officialHosts.has(new URL(course.courseUrl).hostname));
     assert.match(course.verifiedOn, /^\d{4}-\d{2}-\d{2}$/);
+
+    for (const resource of course.resources) {
+      assert.ok(resource.title.trim());
+      assert.ok(officialHosts.has(new URL(resource.url).hostname));
+      assert.notEqual(resource.url, course.courseUrl);
+    }
   }
 });
 

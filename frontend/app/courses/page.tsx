@@ -39,6 +39,14 @@ const translations = {
     prerequisites: "Prerequisites",
     noPrerequisites: "No prerequisites listed.",
     materials: "Course materials",
+    resourceLinks: "Official resource links",
+    resourceTypes: {
+      lectures: "Lectures",
+      assignments: "Assignments",
+      exams: "Exams",
+      projects: "Projects",
+      materials: "Materials",
+    },
     videos: "Videos",
     assignments: "Assignments",
     solutions: "Solutions",
@@ -78,6 +86,14 @@ const translations = {
     prerequisites: "先修要求",
     noPrerequisites: "官方未列出先修要求。",
     materials: "课程资料",
+    resourceLinks: "官方资料链接",
+    resourceTypes: {
+      lectures: "讲义与视频",
+      assignments: "作业",
+      exams: "考试与测试题",
+      projects: "课程项目",
+      materials: "其他资料",
+    },
     videos: "视频",
     assignments: "作业",
     solutions: "答案",
@@ -396,6 +412,27 @@ function CourseCard({ course, language, copy }: CourseCardProps) {
           <p>{copy.solutions}: {materialStatus(course.hasSolutions)}</p>
         </div>
       </div>
+
+      {course.resources.length > 0 && (
+        <div className="mt-5">
+          <p className="font-medium">{copy.resourceLinks}</p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {course.resources.map((resource) => (
+              <a
+                key={resource.url}
+                href={resource.url}
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-full border border-gray-300 px-3 py-1.5 text-sm text-blue-700 hover:bg-gray-50 hover:underline"
+              >
+                {language === "zh"
+                  ? copy.resourceTypes[resource.type]
+                  : resource.title}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
 
       <p className="mt-5 text-xs text-gray-500">
         {copy.verifiedFrom}{" "}
