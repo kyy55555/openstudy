@@ -123,6 +123,14 @@ const translations = {
 
 type Copy = (typeof translations)[Language];
 
+function coursesPath(searchTerm: string, language: Language) {
+  const params = new URLSearchParams();
+  if (searchTerm) params.set("q", searchTerm);
+  if (language === "zh") params.set("lang", "zh");
+  const query = params.toString();
+  return query ? `/courses?${query}` : "/courses";
+}
+
 /* -------------------- Title -------------------- */
 
 type TitleProps = {
@@ -471,7 +479,8 @@ function CourseExplorer() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialSearch = searchParams.get("q")?.trim() ?? "";
-  const [language, setLanguage] = useState<Language>("en");
+  const initialLanguage: Language = searchParams.get("lang") === "zh" ? "zh" : "en";
+  const [language, setLanguage] = useState<Language>(initialLanguage);
   const [searchInput, setSearchInput] = useState(initialSearch);
   const [searchTerm, setSearchTerm] = useState(initialSearch);
 
@@ -498,7 +507,7 @@ function CourseExplorer() {
   function handleSearch() {
     const nextSearch = searchInput.trim();
     setSearchTerm(nextSearch);
-    router.replace(nextSearch ? `/courses?q=${encodeURIComponent(nextSearch)}` : "/courses");
+    router.replace(coursesPath(nextSearch, language));
     setVisibleCount(coursesPerPage);
   }
 
@@ -512,7 +521,7 @@ function CourseExplorer() {
     setOnlySolutions(false);
     setSort("newest");
     setVisibleCount(coursesPerPage);
-    router.replace("/courses");
+    router.replace(coursesPath("", language));
   }
 
   const filteredCourses = sortCourses(
@@ -534,9 +543,11 @@ function CourseExplorer() {
         text="OpenStudy"
         subtitle={copy.subtitle}
         language={language}
-        onToggleLanguage={() =>
-          setLanguage((current) => (current === "en" ? "zh" : "en"))
-        }
+        onToggleLanguage={() => {
+          const nextLanguage = language === "en" ? "zh" : "en";
+          setLanguage(nextLanguage);
+          router.replace(coursesPath(searchTerm, nextLanguage));
+        }}
         switchLanguageLabel={copy.switchLanguage}
       />
 

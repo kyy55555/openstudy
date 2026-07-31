@@ -55,6 +55,8 @@ export default function Home() {
         </p>
 
         <form action="/courses" method="get" className="mt-10 flex gap-2">
+          {language === "zh" && <input type="hidden" name="lang" value="zh" />}
+
           <label htmlFor="course-search" className="sr-only">
             {copy.searchLabel}
           </label>
@@ -76,7 +78,7 @@ export default function Home() {
         </form>
 
         <Link
-          href="/courses"
+          href={language === "zh" ? "/courses?lang=zh" : "/courses"}
           className="mt-5 inline-block text-sm text-gray-500 hover:text-black hover:underline"
         >
           {copy.browse}
