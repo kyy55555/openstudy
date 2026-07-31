@@ -2,6 +2,7 @@ export type Verification = boolean | null;
 
 export type CourseResourceType =
   | "syllabus"
+  | "schedule"
   | "lectures"
   | "assignments"
   | "exams"
@@ -602,6 +603,13 @@ export const courses: Course[] = [
     hasAssignments: true,
     courseUrl: "https://www.cs.princeton.edu/courses/archive/spr26/cos126/",
     sourceName: princetonSource,
+    resources: [
+      { type: "syllabus", title: "Syllabus", url: "https://www.cs.princeton.edu/courses/archive/spr26/cos126/syllabus" },
+      { type: "lectures", title: "Schedule and lecture materials", url: "https://www.cs.princeton.edu/courses/archive/spr26/cos126/schedule" },
+      { type: "assignments", title: "Assignments", url: "https://www.cs.princeton.edu/courses/archive/spr26/cos126/assignments" },
+      { type: "projects", title: "Project", url: "https://www.cs.princeton.edu/courses/archive/spr26/cos126/project" },
+      { type: "exams", title: "Exams", url: "https://www.cs.princeton.edu/courses/archive/spr26/cos126/exams" },
+    ],
   }),
   course({
     id: "princeton-cos226",
@@ -617,6 +625,13 @@ export const courses: Course[] = [
     hasAssignments: true,
     courseUrl: "https://www.cs.princeton.edu/courses/archive/spring26/cos226/",
     sourceName: princetonSource,
+    resources: [
+      { type: "syllabus", title: "Syllabus", url: "https://www.cs.princeton.edu/courses/archive/spring26/cos226/syllabus.php" },
+      { type: "lectures", title: "Lectures", url: "https://www.cs.princeton.edu/courses/archive/spring26/cos226/lectures.php" },
+      { type: "assignments", title: "Assignments", url: "https://www.cs.princeton.edu/courses/archive/spring26/cos226/assignments.php" },
+      { type: "exams", title: "Quizzes", url: "https://www.cs.princeton.edu/courses/archive/spring26/cos226/quizzes.php" },
+      { type: "exams", title: "Exams", url: "https://www.cs.princeton.edu/courses/archive/spring26/cos226/exams.php" },
+    ],
   }),
   course({
     id: "princeton-cos333",
@@ -632,6 +647,12 @@ export const courses: Course[] = [
     hasAssignments: true,
     courseUrl: "https://www.cs.princeton.edu/courses/archive/spr26/cos333/",
     sourceName: princetonSource,
+    resources: [
+      { type: "lectures", title: "Lectures", url: "https://www.cs.princeton.edu/courses/archive/spr26/cos333/lectures.html" },
+      { type: "assignments", title: "Assignments", url: "https://www.cs.princeton.edu/courses/archive/spr26/cos333/assignments.html" },
+      { type: "projects", title: "Project", url: "https://www.cs.princeton.edu/courses/archive/spr26/cos333/project.html" },
+      { type: "schedule", title: "Schedule", url: "https://www.cs.princeton.edu/courses/archive/spr26/cos333/schedule.html" },
+    ],
   }),
   course({
     id: "cornell-cs4410",
@@ -646,6 +667,9 @@ export const courses: Course[] = [
     year: 2026,
     courseUrl: "https://www.cs.cornell.edu/courses/cs4410/2026su/",
     sourceName: cornellSource,
+    resources: [
+      { type: "assignments", title: "Public homework", url: "https://www.cs.cornell.edu/courses/cs4410/2026su/resources/hw1.pdf" },
+    ],
   }),
   course({
     id: "cornell-cs3780",
@@ -659,6 +683,9 @@ export const courses: Course[] = [
     year: 2025,
     courseUrl: "https://www.cs.cornell.edu/courses/cs3780/2025fa/",
     sourceName: cornellSource,
+    resources: [
+      { type: "materials", title: "Public reference materials", url: "https://www.cs.cornell.edu/courses/cs3780/2025fa/#reference-material" },
+    ],
   }),
   course({
     id: "cornell-cs4820",
@@ -673,6 +700,10 @@ export const courses: Course[] = [
     year: 2026,
     courseUrl: "https://www.cs.cornell.edu/courses/cs4820/2026sp/syllabus/",
     sourceName: cornellSource,
+    resources: [
+      { type: "syllabus", title: "Syllabus", url: "https://www.cs.cornell.edu/courses/cs4820/2026sp/syllabus/index.html" },
+      { type: "lectures", title: "Lecture notes", url: "https://www.cs.cornell.edu/courses/cs4820/2026sp/lectures/index.html" },
+    ],
   }),
   course({
     id: "cornell-cs6787",
@@ -687,6 +718,10 @@ export const courses: Course[] = [
     year: 2026,
     courseUrl: "https://www.cs.cornell.edu/courses/cs6787/2026sp/",
     sourceName: cornellSource,
+    resources: [
+      { type: "lectures", title: "Course calendar and lecture slides", url: "https://www.cs.cornell.edu/courses/cs6787/2026sp/#course-calendar" },
+      { type: "projects", title: "Final project requirements", url: "https://www.cs.cornell.edu/courses/cs6787/2026sp/#advanced-machine-learning-systems--spring-2026" },
+    ],
   }),
   course({
     id: "berkeley-cs161",
@@ -704,6 +739,11 @@ export const courses: Course[] = [
     hasSolutions: true,
     courseUrl: "https://inst.eecs.berkeley.edu/~cs161/archive/sp25/",
     sourceName: berkeleySource,
+    resources: [
+      { type: "lectures", title: "Calendar, slides, and recordings", url: "https://inst.eecs.berkeley.edu/~cs161/archive/sp25/calendar/" },
+      { type: "projects", title: "Course projects", url: "https://inst.eecs.berkeley.edu/~cs161/archive/sp25/proj1/" },
+      { type: "exams", title: "Exam materials", url: "https://inst.eecs.berkeley.edu/~cs161/archive/sp25/exam/" },
+    ],
   }),
   course({
     id: "berkeley-cs188",
@@ -719,6 +759,11 @@ export const courses: Course[] = [
     hasAssignments: true,
     courseUrl: "https://inst.eecs.berkeley.edu/~cs188/sp26/",
     sourceName: berkeleySource,
+    resources: [
+      { type: "lectures", title: "Calendar and lecture slides", url: "https://inst.eecs.berkeley.edu/~cs188/sp26/calendar/" },
+      { type: "projects", title: "Projects", url: "https://inst.eecs.berkeley.edu/~cs188/sp26/projects/" },
+      { type: "exams", title: "Exam materials", url: "https://inst.eecs.berkeley.edu/~cs188/sp26/exam/" },
+    ],
   }),
   course({
     id: "washington-cse550",
@@ -732,5 +777,8 @@ export const courses: Course[] = [
     year: 2026,
     courseUrl: "https://courses.cs.washington.edu/courses/cse550/26sp/",
     sourceName: washingtonSource,
+    resources: [
+      { type: "schedule", title: "Schedule and readings", url: "https://courses.cs.washington.edu/courses/cse550/26sp/schedule.html" },
+    ],
   }),
 ];

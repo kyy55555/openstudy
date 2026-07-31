@@ -43,6 +43,7 @@ test("dataset spans universities and subjects without recommendation data", () =
 
   for (const course of courses) {
     assert.ok(!("recommended" in course));
+    assert.ok(course.resources.length > 0, `${course.id} has no verified resource entry`);
     for (const field of ["hasVideos", "hasAssignments", "hasSolutions"] as const) {
       assert.ok(course[field] === true || course[field] === false || course[field] === null);
     }

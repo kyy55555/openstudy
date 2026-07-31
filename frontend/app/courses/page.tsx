@@ -42,6 +42,7 @@ const translations = {
     resourceLinks: "Official resource links",
     resourceTypes: {
       syllabus: "Syllabus",
+      schedule: "Schedule",
       lectures: "Lectures",
       assignments: "Assignments",
       exams: "Exams",
@@ -91,6 +92,7 @@ const translations = {
     resourceLinks: "官方资料链接",
     resourceTypes: {
       syllabus: "课程大纲",
+      schedule: "课程安排与阅读",
       lectures: "讲义与视频",
       assignments: "作业",
       exams: "考试与测试题",
