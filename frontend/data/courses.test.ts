@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { courses } from "./courses.ts";
+import { courses, suggestedStudyStage } from "./courses.ts";
 
 const officialHosts = new Set([
   "ocw.mit.edu",
@@ -36,6 +36,13 @@ test("course records have unique ids and real official URLs", () => {
       assert.ok(officialHosts.has(new URL(resource.url).hostname));
       assert.notEqual(resource.url, course.courseUrl);
     }
+  }
+});
+
+test("every course with a verified level has a suggested study stage", () => {
+  for (const course of courses) {
+    if (course.level === null) continue;
+    assert.ok(suggestedStudyStage(course), `${course.id} has no suggested study stage`);
   }
 });
 

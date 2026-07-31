@@ -5,7 +5,7 @@ import type { FormEvent } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { courses } from "../../data/courses";
+import { courses, suggestedStudyStage } from "../../data/courses";
 import type { Course } from "../../data/courses";
 import {
   filterCourses,
@@ -33,6 +33,8 @@ const translations = {
     hasSolutions: "Has solutions",
     reset: "Reset filters",
     level: "Level",
+    suggestedStage: "Suggested study stage",
+    inferred: "estimate",
     language: "Language",
     year: "Course year",
     notVerified: "Not verified",
@@ -83,6 +85,8 @@ const translations = {
     hasSolutions: "有答案",
     reset: "重置筛选",
     level: "难度",
+    suggestedStage: "建议学习阶段",
+    inferred: "推断",
     language: "语言",
     year: "课程年份",
     notVerified: "尚未核实",
@@ -137,6 +141,14 @@ const levelZh: Record<string, string> = {
   "Advanced Undergraduate": "本科高阶",
   Intermediate: "中级",
   Advanced: "高级",
+  Graduate: "研究生",
+};
+
+const studyStageZh: Record<string, string> = {
+  "Year 1": "本科一年级",
+  "Year 2": "本科二年级",
+  "Years 2–3": "本科二至三年级",
+  "Years 3–4": "本科三至四年级",
   Graduate: "研究生",
 };
 
@@ -379,6 +391,8 @@ type CourseCardProps = {
 };
 
 function CourseCard({ course, language, copy }: CourseCardProps) {
+  const studyStage = suggestedStudyStage(course);
+
   function materialStatus(value: Course["hasVideos"]) {
     if (value === null) return `? ${copy.notVerified}`;
     return value ? copy.available : copy.unavailable;
@@ -417,6 +431,18 @@ function CourseCard({ course, language, copy }: CourseCardProps) {
             : language === "zh"
               ? (levelZh[course.level] ?? course.level)
               : course.level}
+        </p>
+
+        <p>
+          <span className="font-medium">{copy.suggestedStage}:</span>{" "}
+          {studyStage === null
+            ? copy.notVerified
+            : language === "zh"
+              ? studyStageZh[studyStage]
+              : studyStage}{" "}
+          {studyStage !== null && (
+            <span className="text-gray-500">({copy.inferred})</span>
+          )}
         </p>
 
         <p>

@@ -40,6 +40,30 @@ export type Course = {
   resources: CourseResource[];
 };
 
+export type SuggestedStudyStage =
+  | "Year 1"
+  | "Year 2"
+  | "Years 2–3"
+  | "Years 3–4"
+  | "Graduate";
+
+/**
+ * A learner-facing estimate, not an official classification by the university.
+ * It is derived conservatively from the verified level and prerequisite chain.
+ */
+export function suggestedStudyStage(course: Course): SuggestedStudyStage | null {
+  if (course.level === "Graduate") return "Graduate";
+  if (course.level === "Advanced" || course.level === "Advanced Undergraduate") {
+    return "Years 3–4";
+  }
+  if (course.level === "Undergraduate") return "Years 2–3";
+  if (course.level === "Intermediate") return "Year 2";
+  if (course.level === "Introductory") {
+    return course.prerequisites?.length ? "Year 2" : "Year 1";
+  }
+  return null;
+}
+
 const verifiedOn = "2026-07-31";
 
 type CourseSeed = Omit<
