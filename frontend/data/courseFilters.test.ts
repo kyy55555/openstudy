@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   filterCourses,
   sortCourses,
+  courseDifficultyRank,
   uniqueCourseValues,
 } from "./courseFilters.ts";
 import { courses } from "./courses.ts";
@@ -61,6 +62,7 @@ test("courses can be sorted without mutating the catalog", () => {
   const byTitle = sortCourses(courses, "title");
   const byUniversity = sortCourses(courses, "university");
   const byNewest = sortCourses(courses, "newest");
+  const byDifficulty = sortCourses(courses, "easiest");
 
   assert.deepEqual(courses.map(({ id }) => id), originalIds);
   assert.deepEqual(
@@ -74,4 +76,8 @@ test("courses can be sorted without mutating the catalog", () => {
       .toSorted((a, b) => a.localeCompare(b)),
   );
   assert.equal(byNewest[0].year, Math.max(...courses.flatMap(({ year }) => year ?? [])));
+  assert.deepEqual(
+    byDifficulty.map(courseDifficultyRank),
+    byDifficulty.map(courseDifficultyRank).toSorted((a, b) => a - b),
+  );
 });

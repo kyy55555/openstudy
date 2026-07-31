@@ -62,6 +62,7 @@ const translations = {
     viewCourse: "View official course →",
     courses: "Courses",
     sort: "Sort",
+    easiest: "Easiest to hardest",
     newest: "Newest first",
     title: "Course title",
     universitySort: "University",
@@ -114,6 +115,7 @@ const translations = {
     viewCourse: "查看官方课程 →",
     courses: "课程",
     sort: "排序",
+    easiest: "由易到难",
     newest: "最新优先",
     title: "课程名称",
     universitySort: "大学",
@@ -611,7 +613,7 @@ function CourseExplorer() {
   const [onlySolutions, setOnlySolutions] =
     useState(false);
 
-  const [sort, setSort] = useState<CourseSort>("newest");
+  const [sort, setSort] = useState<CourseSort>("easiest");
   const [visibleCount, setVisibleCount] = useState(coursesPerPage);
   const copy = translations[language];
 
@@ -633,7 +635,7 @@ function CourseExplorer() {
     setOnlyVideos(false);
     setOnlyAssignments(false);
     setOnlySolutions(false);
-    setSort("newest");
+    setSort("easiest");
     setVisibleCount(coursesPerPage);
     router.replace(coursesPath("", language));
   }
@@ -721,6 +723,7 @@ function CourseExplorer() {
                 }}
                 className="rounded-lg border border-gray-300 px-3 py-2 outline-none"
               >
+                <option value="easiest">{copy.easiest}</option>
                 <option value="newest">{copy.newest}</option>
                 <option value="title">{copy.title}</option>
                 <option value="university">{copy.universitySort}</option>

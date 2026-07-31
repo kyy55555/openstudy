@@ -9,7 +9,18 @@ export type CourseFilters = {
   onlySolutions: boolean;
 };
 
-export type CourseSort = "newest" | "title" | "university";
+export type CourseSort = "easiest" | "newest" | "title" | "university";
+
+export function courseDifficultyRank(course: Course) {
+  if (course.level === "Introductory") {
+    return course.prerequisites?.length ? 1 : 0;
+  }
+  if (course.level === "Intermediate") return 1;
+  if (course.level === "Undergraduate") return 2;
+  if (course.level === "Advanced" || course.level === "Advanced Undergraduate") return 3;
+  if (course.level === "Graduate") return 4;
+  return Number.POSITIVE_INFINITY;
+}
 
 export function uniqueCourseValues(
   courses: Course[],
@@ -49,6 +60,16 @@ export function filterCourses(courses: Course[], filters: CourseFilters) {
 
 export function sortCourses(courses: Course[], sort: CourseSort) {
   return [...courses].sort((a, b) => {
+    if (sort === "easiest") {
+      const stageDifference = courseDifficultyRank(a) - courseDifficultyRank(b);
+      if (stageDifference !== 0) return stageDifference;
+
+      const prerequisiteDifference =
+        (a.prerequisites?.length ?? Number.POSITIVE_INFINITY) -
+        (b.prerequisites?.length ?? Number.POSITIVE_INFINITY);
+      if (prerequisiteDifference !== 0) return prerequisiteDifference;
+    }
+
     if (sort === "newest") {
       const yearDifference = (b.year ?? -Infinity) - (a.year ?? -Infinity);
       if (yearDifference !== 0) return yearDifference;
