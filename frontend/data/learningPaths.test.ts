@@ -9,13 +9,12 @@ test("learning paths use official sources and known courses", () => {
   assert.equal(learningPaths.length, 4);
   for (const path of learningPaths) {
     assert.equal(new URL(path.officialUrl).protocol, "https:");
-    assert.equal(path.phases.length, 8);
-    assert.deepEqual(path.phases.map(({ titleZh }) => titleZh), [
-      "大一上", "大一下", "大二上", "大二下", "大三上", "大三下", "大四上", "大四下",
-    ]);
-    for (const phase of path.phases.slice(4, 7)) {
-      assert.ok(phase.chooseCount !== null, `${path.id} ${phase.title} is not flexible`);
-      assert.ok(phase.courseIds.length >= phase.chooseCount!, `${path.id} ${phase.title} has too few choices`);
+    assert.equal(path.scheduleStatus, "requirements-only");
+    assert.ok(path.phases.length >= 3);
+    for (const phase of path.phases) {
+      if (phase.chooseCount !== null) {
+        assert.ok(phase.courseIds.length >= phase.chooseCount, `${path.id} ${phase.title} has too few choices`);
+      }
     }
     for (const id of path.phases.flatMap(({ courseIds }) => courseIds)) {
       assert.ok(courseIds.has(id), `${path.id} references missing course ${id}`);
