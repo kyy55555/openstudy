@@ -70,6 +70,10 @@ test("new prerequisite foundation courses are present", () => {
     "stanford-cs111",
     "stanford-cs161",
     "princeton-cos240",
+    "mit-8-01sc",
+    "mit-8-02",
+    "mit-5-111sc",
+    "mit-7-012",
   ]) {
     assert.ok(ids.has(id), `${id} is missing`);
   }
