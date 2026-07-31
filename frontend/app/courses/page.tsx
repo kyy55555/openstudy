@@ -131,6 +131,36 @@ function coursesPath(searchTerm: string, language: Language) {
   return query ? `/courses?${query}` : "/courses";
 }
 
+const levelZh: Record<string, string> = {
+  Introductory: "入门",
+  Undergraduate: "本科",
+  "Advanced Undergraduate": "本科高阶",
+  Intermediate: "中级",
+  Advanced: "高级",
+  Graduate: "研究生",
+};
+
+const prerequisiteZh: Record<string, string> = {
+  "Introductory Python programming": "Python 编程入门",
+  "Introductory programming": "编程入门",
+  "Programming Abstractions or equivalent": "编程抽象或同等课程",
+  Programming: "编程基础",
+  Probability: "概率论",
+  "Linear algebra": "线性代数",
+  "Convex Optimization I or equivalent": "凸优化 I 或同等课程",
+  "CS50x or prior Python experience": "CS50x 或 Python 编程经验",
+  "CS50x or prior programming experience": "CS50x 或编程经验",
+  "COS 126 or equivalent": "COS 126 或同等课程",
+  "COS 217": "COS 217",
+  "COS 226": "COS 226",
+  "CS 3410 or ECE 3140 equivalent": "CS 3410、ECE 3140 或同等课程",
+  "Discrete mathematics": "离散数学",
+  "Data structures": "数据结构",
+  "Machine learning": "机器学习",
+  "Computer architecture": "计算机体系结构",
+  "CS 61A or CS 61B equivalent": "CS 61A、CS 61B 或同等课程",
+};
+
 /* -------------------- Title -------------------- */
 
 type TitleProps = {
@@ -371,7 +401,7 @@ function CourseCard({ course, language, copy }: CourseCardProps) {
       </p>
 
       <p className="mt-4 text-gray-700">
-        {course.description}
+        {language === "zh" ? course.descriptionZh : course.description}
       </p>
 
       <div className="mt-5 grid gap-2 text-sm sm:grid-cols-2">
@@ -382,12 +412,18 @@ function CourseCard({ course, language, copy }: CourseCardProps) {
 
         <p>
           <span className="font-medium">{copy.level}:</span>{" "}
-          {course.level ?? copy.notVerified}
+          {course.level === null
+            ? copy.notVerified
+            : language === "zh"
+              ? (levelZh[course.level] ?? course.level)
+              : course.level}
         </p>
 
         <p>
           <span className="font-medium">{copy.language}:</span>{" "}
-          {course.language}
+          {language === "zh" && course.language === "English"
+            ? "英语"
+            : course.language}
         </p>
 
         <p>
@@ -410,7 +446,9 @@ function CourseCard({ course, language, copy }: CourseCardProps) {
           <ul className="mt-2 space-y-1 text-sm text-gray-700">
             {course.prerequisites.map((prerequisite) => (
               <li key={`${course.id}-${prerequisite}`}>
-                ✓ {prerequisite}
+                ✓ {language === "zh"
+                  ? (prerequisiteZh[prerequisite] ?? prerequisite)
+                  : prerequisite}
               </li>
             ))}
           </ul>
