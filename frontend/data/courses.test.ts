@@ -46,6 +46,21 @@ test("every course with a verified level has a suggested study stage", () => {
   }
 });
 
+test("new prerequisite foundation courses are present", () => {
+  const ids = new Set(courses.map(({ id }) => id));
+  for (const id of [
+    "mit-18-01sc",
+    "mit-18-02sc",
+    "mit-18-05",
+    "mit-18-06",
+    "mit-6-042j",
+    "princeton-cos217",
+    "cornell-cs3410",
+  ]) {
+    assert.ok(ids.has(id), `${id} is missing`);
+  }
+});
+
 test("dataset spans universities and subjects without recommendation data", () => {
   assert.ok(new Set(courses.map(({ university }) => university)).size >= 3);
   assert.ok(new Set(courses.map(({ subject }) => subject)).size >= 10);

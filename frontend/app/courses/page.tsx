@@ -171,6 +171,31 @@ const prerequisiteZh: Record<string, string> = {
   "Machine learning": "机器学习",
   "Computer architecture": "计算机体系结构",
   "CS 61A or CS 61B equivalent": "CS 61A、CS 61B 或同等课程",
+  "Single Variable Calculus": "单变量微积分",
+  "Multivariable Calculus": "多元微积分",
+};
+
+const prerequisiteCourseIds: Record<string, string> = {
+  "Introductory Python programming": "mit-6-100l",
+  "Introductory programming": "stanford-cs106a",
+  "Programming Abstractions or equivalent": "stanford-cs106b",
+  Programming: "stanford-cs106a",
+  Probability: "mit-18-05",
+  "Linear algebra": "mit-18-06",
+  "Convex Optimization I or equivalent": "stanford-ee364a",
+  "CS50x or prior Python experience": "harvard-cs50x",
+  "CS50x or prior programming experience": "harvard-cs50x",
+  "COS 126 or equivalent": "princeton-cos126",
+  "COS 217": "princeton-cos217",
+  "COS 226": "princeton-cos226",
+  "CS 3410 or ECE 3140 equivalent": "cornell-cs3410",
+  "Discrete mathematics": "mit-6-042j",
+  "Data structures": "princeton-cos226",
+  "Machine learning": "stanford-cs229",
+  "Computer architecture": "cornell-cs3410",
+  "CS 61A or CS 61B equivalent": "stanford-cs106b",
+  "Single Variable Calculus": "mit-18-01sc",
+  "Multivariable Calculus": "mit-18-02sc",
 };
 
 /* -------------------- Title -------------------- */
@@ -393,13 +418,20 @@ type CourseCardProps = {
 function CourseCard({ course, language, copy }: CourseCardProps) {
   const studyStage = suggestedStudyStage(course);
 
+  function prerequisiteLink(prerequisite: string) {
+    const targetId = prerequisiteCourseIds[prerequisite];
+    const target = courses.find(({ id }) => id === targetId);
+    if (!target) return null;
+    return `${coursesPath(target.title, language)}#${target.id}`;
+  }
+
   function materialStatus(value: Course["hasVideos"]) {
     if (value === null) return `? ${copy.notVerified}`;
     return value ? copy.available : copy.unavailable;
   }
 
   return (
-    <article className="rounded-xl border border-gray-200 p-6 shadow-sm">
+    <article id={course.id} className="scroll-mt-6 rounded-xl border border-gray-200 p-6 shadow-sm">
       <div>
         <p className="text-sm font-medium text-gray-500">
           {course.university}
@@ -472,9 +504,20 @@ function CourseCard({ course, language, copy }: CourseCardProps) {
           <ul className="mt-2 space-y-1 text-sm text-gray-700">
             {course.prerequisites.map((prerequisite) => (
               <li key={`${course.id}-${prerequisite}`}>
-                ✓ {language === "zh"
-                  ? (prerequisiteZh[prerequisite] ?? prerequisite)
-                  : prerequisite}
+                ✓ {prerequisiteLink(prerequisite) ? (
+                  <Link
+                    href={prerequisiteLink(prerequisite)!}
+                    className="font-medium underline decoration-gray-300 underline-offset-4 hover:decoration-black"
+                  >
+                    {language === "zh"
+                      ? (prerequisiteZh[prerequisite] ?? prerequisite)
+                      : prerequisite} →
+                  </Link>
+                ) : (
+                  language === "zh"
+                    ? (prerequisiteZh[prerequisite] ?? prerequisite)
+                    : prerequisite
+                )}
               </li>
             ))}
           </ul>
