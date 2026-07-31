@@ -5,6 +5,8 @@ export type LearningPathPhase = {
   descriptionZh: string;
   courseIds: string[];
   chooseCount: number | null;
+  requirements: string[];
+  requirementsZh: string[];
 };
 
 export type LearningPath = {
@@ -15,12 +17,22 @@ export type LearningPath = {
   officialUrl: string;
   summary: string;
   summaryZh: string;
-  scheduleStatus: "requirements-only";
+  scheduleStatus: "prerequisite-inferred";
+  calendar: "semester" | "quarter";
   phases: LearningPathPhase[];
 };
 
-function group(title: string, titleZh: string, description: string, descriptionZh: string, courseIds: string[], chooseCount: number | null = null): LearningPathPhase {
-  return { title, titleZh, description, descriptionZh, courseIds, chooseCount };
+function term(
+  title: string,
+  titleZh: string,
+  description: string,
+  descriptionZh: string,
+  courseIds: string[],
+  requirements: string[] = [],
+  requirementsZh: string[] = [],
+  chooseCount: number | null = null,
+): LearningPathPhase {
+  return { title, titleZh, description, descriptionZh, courseIds, chooseCount, requirements, requirementsZh };
 }
 
 export const learningPaths: LearningPath[] = [
@@ -30,15 +42,19 @@ export const learningPaths: LearningPath[] = [
     program: "Computer Science and Engineering (6-3)",
     programZh: "计算机科学与工程（6-3）",
     officialUrl: "https://catalog.mit.edu/degree-charts/computer-science-engineering-course-6-3/",
-    summary: "The official catalog specifies programming, algorithms and theory, systems, mathematics, track electives, advanced subjects, and independent inquiry requirements.",
-    summaryZh: "官方目录规定编程、算法与理论、系统、数学、方向选修、高阶课程和独立研究要求，但未规定统一的八学期顺序。",
-    scheduleStatus: "requirements-only",
+    summary: "All listed requirements come from MIT's Course 6-3 degree chart and GIR rules. Term placement is an OpenStudy suggestion derived from prerequisites, not an official MIT eight-term plan.",
+    summaryZh: "课程要求来自 MIT 6-3 官方学位表和全校 GIR；学期位置由 OpenStudy 根据先修关系推导，并非 MIT 官方八学期课表。",
+    scheduleStatus: "prerequisite-inferred",
+    calendar: "semester",
     phases: [
-      group("Programming requirements", "编程要求", "Programming and software construction foundation.", "编程与软件构造基础。", ["mit-6-100l", "mit-6-0002", "stanford-cs106b"]),
-      group("Algorithms and theory", "算法与理论要求", "Discrete mathematics, introductory algorithms, and an advanced theory option.", "离散数学、算法导论及一门高阶理论课程。", ["mit-6-042j", "mit-6-006", "mit-6-046j"]),
-      group("Systems requirements", "系统要求", "Low-level programming, computation structures, and a systems option.", "低级编程、计算结构及一门系统方向课。", ["cornell-cs3410", "cornell-cs4410", "mit-6-824"]),
-      group("Mathematics option", "数学选项", "Choose probability/statistics or linear algebra.", "概率统计或线性代数任选一门。", ["mit-18-05", "mit-18-06"], 1),
-      group("Tracks and advanced electives", "方向与高阶选修", "Choose advanced subjects across approved tracks; the catalog also requires advanced undergraduate and independent-inquiry work.", "从批准方向中选择高阶课程；官方还要求高阶本科课程与独立研究。", ["mit-6-034", "mit-6-837", "mit-6-824", "mit-6-858", "stanford-cs229", "stanford-ee364a"], 4),
+      term("Year 1 · Fall", "大一上", "Start the calculus and programming chains.", "先开始微积分与编程序列。", ["mit-18-01sc", "mit-6-100l"], ["Physics I (GIR)", "HASS / communication requirement"], ["物理 I（GIR）", "人文社科 / 沟通要求"]),
+      term("Year 1 · Spring", "大一下", "Finish the second GIR calculus subject and continue programming.", "完成第二门 GIR 微积分，并继续编程基础。", ["mit-18-02sc", "mit-6-0002"], ["Physics II (GIR)", "HASS requirement"], ["物理 II（GIR）", "人文社科要求"]),
+      term("Year 2 · Fall", "大二上", "Build mathematical reasoning, programming, and low-level foundations.", "建立离散数学、软件构造与底层编程基础。", ["mit-6-042j", "stanford-cs106b", "cornell-cs3410"], ["Chemistry GIR"], ["化学 GIR"]),
+      term("Year 2 · Spring", "大二下", "Take algorithms, computation structures, and the approved mathematics option.", "学习算法、计算结构，并完成获批数学选项。", ["mit-6-006", "mit-18-05", "mit-18-06"], ["Biology GIR"], ["生物学 GIR"], 2),
+      term("Year 3 · Fall", "大三上", "Move into systems and an advanced theory option.", "进入系统课程及高阶理论选项。", ["cornell-cs4410", "mit-6-046j"], ["Computer-science track subject"], ["计算机科学方向课"]),
+      term("Year 3 · Spring", "大三下", "Begin the selected track and advanced undergraduate work.", "开始方向课程和高阶本科课程。", ["mit-6-034", "mit-6-837", "mit-6-858"], ["Advanced undergraduate / CI-M subject"], ["高阶本科 / CI-M 课程"], 1),
+      term("Year 4 · Fall", "大四上", "Continue approved track electives and complete independent inquiry.", "继续批准的方向选修，并完成独立研究要求。", ["mit-6-824", "stanford-cs229", "stanford-ee364a"], ["Independent-inquiry subject", "HASS / unrestricted elective"], ["独立研究课程", "人文社科 / 自由选修"], 1),
+      term("Year 4 · Spring", "大四下", "Finish remaining track, advanced-subject, communication, and institute requirements.", "完成剩余方向、高阶课程、沟通及全校要求。", ["mit-6-824", "mit-6-858", "mit-6-837"], ["Remaining track subject", "Remaining GIR / HASS / unrestricted electives"], ["剩余方向课程", "剩余 GIR / 人文社科 / 自由选修"], 1),
     ],
   },
   {
@@ -47,14 +63,23 @@ export const learningPaths: LearningPath[] = [
     program: "Bachelor of Science in Computer Science",
     programZh: "计算机科学理学学士",
     officialUrl: "https://bulletin.stanford.edu/programs/CS-BS",
-    summary: "The official bulletin defines mathematics, science, engineering fundamentals, the CS core, and a selected depth pathway.",
-    summaryZh: "官方培养要求包括数学、科学、工程基础、计算机核心课程和一个深度方向；当前页面暂不把建议顺序冒充成官方学期表。",
-    scheduleStatus: "requirements-only",
+    summary: "Requirements follow Stanford's current bulletin. Stanford uses quarters, so this suggested sequence has twelve quarters rather than eight semesters.",
+    summaryZh: "要求来自 Stanford 当前官方 Bulletin。Stanford 采用学季制，因此建议路线按十二个学季展示，而不是八学期。",
+    scheduleStatus: "prerequisite-inferred",
+    calendar: "quarter",
     phases: [
-      group("Mathematics", "数学要求", "Calculus plus approved mathematics electives.", "微积分及批准的数学选修。", ["mit-18-01sc", "mit-18-02sc", "mit-18-06", "mit-18-05"]),
-      group("Programming and systems core", "编程与系统核心", "Complete the official programming and systems core sequence.", "完成官方编程与系统核心序列。", ["stanford-cs106a", "stanford-cs106b", "stanford-cs107", "stanford-cs103", "stanford-cs109", "stanford-cs111", "stanford-cs161"]),
-      group("Depth pathway", "深度方向", "Select courses according to one approved CS pathway.", "按照一个批准的计算机科学方向选择课程。", ["stanford-cs229", "stanford-cs223a", "stanford-ee364a", "stanford-ee364b", "mit-6-034", "mit-6-837"], 4),
-      group("Senior project and electives", "高年级项目与选修", "Complete remaining pathway electives and an approved senior project where required.", "完成剩余方向选修及适用的高年级项目。", ["mit-6-824", "mit-6-858", "berkeley-cs161"], 2),
+      term("Year 1 · Fall", "大一秋季", "Begin programming and calculus.", "开始编程与微积分。", ["stanford-cs106a", "mit-18-01sc"]),
+      term("Year 1 · Winter", "大一冬季", "Continue programming and calculus.", "继续编程与微积分。", ["stanford-cs106b", "mit-18-02sc"]),
+      term("Year 1 · Spring", "大一春季", "Start mathematical foundations and required science.", "开始数学基础与科学要求。", ["stanford-cs103"], ["Required science sequence"], ["必修科学序列"]),
+      term("Year 2 · Fall", "大二秋季", "Take systems programming and probability.", "学习系统编程与概率论。", ["stanford-cs107", "stanford-cs109"]),
+      term("Year 2 · Winter", "大二冬季", "Continue the systems core and engineering fundamentals.", "继续系统核心与工程基础。", ["stanford-cs111"], ["Engineering fundamentals"], ["工程基础"]),
+      term("Year 2 · Spring", "大二春季", "Complete the algorithms core before depth work.", "在进入深度方向前完成算法核心。", ["stanford-cs161"], ["Math elective", "Science elective"], ["数学选修", "科学选修"]),
+      term("Year 3 · Fall", "大三秋季", "Begin one approved CS depth pathway.", "开始一个获批的 CS 深度方向。", ["stanford-cs229", "stanford-cs223a", "mit-6-034"], [], [], 1),
+      term("Year 3 · Winter", "大三冬季", "Continue depth and breadth courses.", "继续深度与广度课程。", ["stanford-ee364a", "mit-6-837", "berkeley-cs161"], [], [], 1),
+      term("Year 3 · Spring", "大三春季", "Continue the selected depth pathway.", "继续所选深度方向。", ["stanford-ee364b", "mit-6-824", "mit-6-858"], [], [], 1),
+      term("Year 4 · Fall", "大四秋季", "Complete depth electives and begin the capstone.", "完成深度选修并开始毕业项目。", [], ["Approved depth elective", "Senior project / capstone"], ["批准的深度选修", "高年级项目 / 毕业项目"]),
+      term("Year 4 · Winter", "大四冬季", "Continue the capstone and writing-in-the-major work.", "继续毕业项目及专业写作要求。", [], ["Writing in the Major", "General elective"], ["专业写作", "自由选修"]),
+      term("Year 4 · Spring", "大四春季", "Finish remaining major and university requirements.", "完成剩余专业及学校要求。", [], ["Remaining depth / capstone units", "General elective"], ["剩余深度 / 毕业项目学分", "自由选修"]),
     ],
   },
   {
@@ -63,13 +88,19 @@ export const learningPaths: LearningPath[] = [
     program: "Computer Science Major",
     programZh: "计算机科学本科专业",
     officialUrl: "https://eecs.berkeley.edu/resources/undergrads/cs/degree-reqs-lowerdiv/",
-    summary: "The official requirements specify calculus, linear algebra, CS 61A, 61B/BL, 61C, CS 70, and upper-division requirements.",
-    summaryZh: "官方要求包括微积分、线性代数、CS 61A、61B/BL、61C、CS 70 和高年级课程要求。",
-    scheduleStatus: "requirements-only",
+    summary: "Lower-division requirements follow Berkeley EECS: Math 51, Math 52, linear algebra, CS 61A, 61B/BL, 61C, and CS 70. Placement is inferred from that prerequisite sequence.",
+    summaryZh: "低年级要求按 Berkeley EECS 官网：Math 51、Math 52、线性代数、CS 61A、61B/BL、61C 与 CS 70；具体学期由先修链推导。",
+    scheduleStatus: "prerequisite-inferred",
+    calendar: "semester",
     phases: [
-      group("Lower-division mathematics", "低年级数学", "Complete calculus and linear algebra requirements.", "完成微积分与线性代数要求。", ["mit-18-01sc", "mit-18-02sc", "mit-18-06"]),
-      group("Lower-division CS core", "低年级计算机核心", "Complete CS 61A, CS 61B/BL, CS 61C, and CS 70.", "完成 CS 61A、CS 61B/BL、CS 61C 和 CS 70。", ["berkeley-cs61a", "berkeley-cs61b", "berkeley-cs61c", "berkeley-cs70"]),
-      group("Upper-division breadth and electives", "高年级广度与选修", "Choose approved upper-division courses while satisfying the official breadth and design rules.", "在满足官方广度与设计规则的前提下选择高年级课程。", ["berkeley-cs161", "berkeley-cs188", "stanford-cs229", "mit-6-824", "mit-6-837", "mit-6-858"], 4),
+      term("Year 1 · Fall", "大一上", "Begin calculus and programming.", "开始微积分与编程。", ["mit-18-01sc", "berkeley-cs61a"], ["Reading and composition / breadth"], ["阅读写作 / 广度要求"]),
+      term("Year 1 · Spring", "大一下", "Continue calculus and data structures.", "继续微积分并学习数据结构。", ["mit-18-02sc", "berkeley-cs61b"], ["Breadth requirement"], ["广度要求"]),
+      term("Year 2 · Fall", "大二上", "Complete linear algebra and machine structures.", "完成线性代数与机器结构。", ["mit-18-06", "berkeley-cs61c"]),
+      term("Year 2 · Spring", "大二下", "Complete the lower-division discrete mathematics and probability requirement.", "完成低年级离散数学与概率要求。", ["berkeley-cs70"], ["Breadth requirement"], ["广度要求"]),
+      term("Year 3 · Fall", "大三上", "Start approved upper-division CS breadth and design work.", "开始获批的高年级 CS 广度与设计课程。", ["berkeley-cs161", "berkeley-cs188"], [], [], 1),
+      term("Year 3 · Spring", "大三下", "Continue upper-division technical electives.", "继续高年级技术选修。", ["stanford-cs229", "mit-6-837", "mit-6-824"], [], [], 2),
+      term("Year 4 · Fall", "大四上", "Choose advanced electives while satisfying official breadth rules.", "在满足官方广度规则的前提下选择高阶课程。", ["mit-6-858", "mit-6-824", "stanford-ee364a"], ["Upper-division CS elective"], ["高年级 CS 选修"], 1),
+      term("Year 4 · Spring", "大四下", "Finish remaining CS, college, and breadth requirements.", "完成剩余 CS、学院及广度要求。", ["mit-6-837", "berkeley-cs188", "berkeley-cs161"], ["Remaining upper-division / breadth requirement"], ["剩余高年级 / 广度要求"], 1),
     ],
   },
   {
@@ -78,15 +109,19 @@ export const learningPaths: LearningPath[] = [
     program: "Computer Science (AB/BSE)",
     programZh: "计算机科学（AB/BSE）",
     officialUrl: "https://www.cs.princeton.edu/ugrad/undergraduate-degrees-requirements",
-    summary: "The official department page defines prerequisites, a foundation course, four core categories, electives, and degree-specific independent work.",
-    summaryZh: "官方页面规定先修课、理论基础、四个核心类别、选修课及不同学位对应的独立研究要求，但未规定统一学期顺序。",
-    scheduleStatus: "requirements-only",
+    summary: "The department requirements are shared where possible; AB and BSE general education and independent-work differences are explicitly retained. Term placement is inferred from prerequisites and official completion deadlines.",
+    summaryZh: "路线合并展示 AB/BSE 共有专业要求，并明确保留两种学位在通识和独立研究上的差异；学期位置由先修关系和官方完成期限推导。",
+    scheduleStatus: "prerequisite-inferred",
+    calendar: "semester",
     phases: [
-      group("Prerequisites", "专业先修", "Complete COS 126 or its alternative, COS 217, COS 226, and the applicable mathematics requirement.", "完成 COS 126 或替代课、COS 217、COS 226 及适用的数学要求。", ["princeton-cos126", "princeton-cos217", "princeton-cos226", "mit-18-06"]),
-      group("Foundation", "理论基础", "Complete COS 240 or the officially allowed advanced-mathematics alternative.", "完成 COS 240 或官方允许的高阶数学替代组合。", ["princeton-cos240"]),
-      group("Four core categories", "四个核心类别", "Choose one course from each official core category.", "从四个官方核心类别中各选一门。", ["cornell-cs4410", "berkeley-cs188", "mit-6-046j", "princeton-cos333"], 4),
-      group("Electives", "专业选修", "Complete three eligible upper-level electives under the official rules.", "按官方规则完成三门符合条件的高年级选修。", ["stanford-cs229", "berkeley-cs161", "mit-6-824", "mit-6-858", "stanford-ee364a"], 3),
-      group("Independent work", "独立研究", "Complete the independent-work or thesis requirement for the selected AB or BSE track.", "完成 AB 或 BSE 对应的独立研究或论文要求。", []),
+      term("Year 1 · Fall", "大一上", "Begin the introductory COS and mathematics sequence.", "开始 COS 入门与数学序列。", ["princeton-cos126", "mit-18-01sc"], ["AB distribution or BSE science requirement"], ["AB 通识或 BSE 科学要求"]),
+      term("Year 1 · Spring", "大一下", "Continue mathematics and begin systems programming.", "继续数学并开始系统编程。", ["princeton-cos217", "mit-18-02sc"], ["AB distribution or BSE science requirement"], ["AB 通识或 BSE 科学要求"]),
+      term("Year 2 · Fall", "大二上", "Complete algorithms/data structures and the applicable mathematics prerequisite.", "完成算法与数据结构，以及适用的数学先修要求。", ["princeton-cos226", "mit-18-06"]),
+      term("Year 2 · Spring", "大二下", "Begin the required theory foundation.", "开始必修理论基础。", ["princeton-cos240"], ["AB distribution or BSE engineering requirement"], ["AB 通识或 BSE 工程要求"]),
+      term("Year 3 · Fall", "大三上", "Take two of the four distinct official core categories.", "修读四个官方核心类别中的两类。", ["cornell-cs4410", "berkeley-cs188", "mit-6-046j", "princeton-cos333"], ["AB/BSE independent work as applicable"], ["适用的 AB/BSE 独立研究"], 2),
+      term("Year 3 · Spring", "大三下", "Complete the other two core categories; COS 240 must be finished by the end of junior year.", "完成另外两个核心类别；COS 240 最迟须在大三结束前完成。", ["cornell-cs4410", "berkeley-cs188", "mit-6-046j", "princeton-cos333"], ["AB/BSE independent work as applicable"], ["适用的 AB/BSE 独立研究"], 2),
+      term("Year 4 · Fall", "大四上", "Complete eligible 300-level-or-higher electives and degree-specific independent work.", "完成符合规定的 300 级以上选修及对应学位的独立研究。", ["stanford-cs229", "berkeley-cs161", "mit-6-824", "mit-6-858", "stanford-ee364a"], ["AB senior thesis or BSE independent work"], ["AB 毕业论文或 BSE 独立研究"], 2),
+      term("Year 4 · Spring", "大四下", "Finish the third elective and remaining AB/BSE requirements.", "完成第三门选修及剩余 AB/BSE 要求。", ["stanford-cs229", "berkeley-cs161", "mit-6-824", "mit-6-858", "stanford-ee364a"], ["AB senior thesis continuation or remaining BSE requirement"], ["AB 毕业论文续修或剩余 BSE 要求"], 1),
     ],
   },
 ];
