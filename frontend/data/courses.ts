@@ -115,6 +115,7 @@ export const courses: Course[] = [
     descriptionZh: "使用 Python 学习计算机科学与编程基础。",
     searchKeywords: ["python", "introductory programming"],
     level: "Introductory",
+    prerequisites: [],
     year: 2022,
     hasVideos: true,
     hasAssignments: true,

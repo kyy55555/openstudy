@@ -37,7 +37,7 @@ const translations = {
     year: "Course year",
     notVerified: "Not verified",
     prerequisites: "Prerequisites",
-    noPrerequisites: "No prerequisites listed.",
+    noPrerequisites: "No prerequisites.",
     materials: "Course materials",
     resourceLinks: "Official resource links",
     resourceTypes: {
@@ -87,7 +87,7 @@ const translations = {
     year: "课程年份",
     notVerified: "尚未核实",
     prerequisites: "先修要求",
-    noPrerequisites: "官方未列出先修要求。",
+    noPrerequisites: "无需先修课。",
     materials: "课程资料",
     resourceLinks: "官方资料链接",
     resourceTypes: {
