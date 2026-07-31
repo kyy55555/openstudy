@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --test data/*.test.ts"
+    "test": "node --test data/*.test.ts",
+    "check:links": "node scripts/check-course-links.mjs"
   },
   "dependencies": {
     "next": "16.2.10",
