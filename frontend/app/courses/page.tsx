@@ -235,14 +235,19 @@ function Title({
         <p className="mt-2 text-gray-600">{subtitle}</p>
       </div>
 
-      <button
-        type="button"
-        onClick={onToggleLanguage}
-        aria-label={language === "en" ? "切换到中文" : "Switch to English"}
-        className="shrink-0 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50"
-      >
-        {switchLanguageLabel}
-      </button>
+      <div className="flex shrink-0 items-center gap-2">
+        <Link href={language === "zh" ? "/paths?lang=zh" : "/paths"} className="rounded-full border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50">
+          {language === "zh" ? "学习路线" : "Learning paths"}
+        </Link>
+        <button
+          type="button"
+          onClick={onToggleLanguage}
+          aria-label={language === "en" ? "切换到中文" : "Switch to English"}
+          className="rounded-full border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50"
+        >
+          {switchLanguageLabel}
+        </button>
+      </div>
     </header>
   );
 }

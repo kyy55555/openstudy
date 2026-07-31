@@ -10,7 +10,8 @@ const homeCopy = {
     searchLabel: "Search courses",
     placeholder: "Algorithms, machine learning, Python, 算法...",
     search: "Search",
-    browse: "Browse all 35 verified courses →",
+    browse: "Browse all 45 verified courses →",
+    paths: "Explore university learning paths →",
     switchLanguage: "中文",
     switchLabel: "切换到中文",
   },
@@ -20,7 +21,8 @@ const homeCopy = {
     searchLabel: "搜索课程",
     placeholder: "算法、机器学习、Python……",
     search: "搜索",
-    browse: "浏览全部 35 门已核实课程 →",
+    browse: "浏览全部 45 门已核实课程 →",
+    paths: "查看顶尖大学学习路线 →",
     switchLanguage: "English",
     switchLabel: "Switch to English",
   },
@@ -82,6 +84,13 @@ export default function Home() {
           className="mt-5 inline-block text-sm text-gray-500 hover:text-black hover:underline"
         >
           {copy.browse}
+        </Link>
+        <span className="mx-3 text-gray-300">·</span>
+        <Link
+          href={language === "zh" ? "/paths?lang=zh" : "/paths"}
+          className="mt-5 inline-block text-sm text-gray-500 hover:text-black hover:underline"
+        >
+          {copy.paths}
         </Link>
       </section>
     </main>
