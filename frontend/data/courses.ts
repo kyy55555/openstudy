@@ -1,11 +1,13 @@
 export type Verification = boolean | null;
 
 export type CourseResourceType =
+  | "syllabus"
   | "lectures"
   | "assignments"
   | "exams"
   | "projects"
-  | "materials";
+  | "materials"
+  | "downloads";
 
 export type CourseResource = {
   type: CourseResourceType;
@@ -272,6 +274,10 @@ export const courses: Course[] = [
     hasAssignments: true,
     courseUrl: "https://see.stanford.edu/Course/CS106A",
     sourceName: stanfordSource,
+    resources: [
+      { type: "syllabus", title: "Syllabus", url: "https://see.stanford.edu/materials/icspmcs106a/02-syllabus.pdf" },
+      { type: "downloads", title: "Download all course materials", url: "https://see.stanford.edu/materials/icspmcs106a/ProgrammingMethodologyAllMaterials.zip" },
+    ],
   }),
   course({
     id: "stanford-cs106b",
@@ -287,6 +293,10 @@ export const courses: Course[] = [
     hasAssignments: true,
     courseUrl: "https://see.stanford.edu/Course/CS106B",
     sourceName: stanfordSource,
+    resources: [
+      { type: "syllabus", title: "Syllabus", url: "https://see.stanford.edu/materials/icspacs106b/H02-GeneralInformation.pdf" },
+      { type: "downloads", title: "Download all course materials", url: "https://see.stanford.edu/materials/icspacs106b/ProgrammingAbstractionsAllMaterials.zip" },
+    ],
   }),
   course({
     id: "stanford-cs107",
@@ -302,6 +312,10 @@ export const courses: Course[] = [
     hasAssignments: true,
     courseUrl: "https://see.stanford.edu/Course/CS107",
     sourceName: stanfordSource,
+    resources: [
+      { type: "syllabus", title: "Syllabus", url: "https://see.stanford.edu/materials/icsppcs107/01-CS107-Course-Information.pdf" },
+      { type: "downloads", title: "Download all course materials", url: "https://see.stanford.edu/materials/icsppcs107/ProgrammingParadigmsAllMaterials.zip" },
+    ],
   }),
   course({
     id: "stanford-cs223a",
@@ -316,6 +330,10 @@ export const courses: Course[] = [
     hasAssignments: true,
     courseUrl: "https://see.stanford.edu/Course/CS223A",
     sourceName: stanfordSource,
+    resources: [
+      { type: "syllabus", title: "Syllabus", url: "https://see.stanford.edu/materials/aiircs223a/handout1_CourseInfo.pdf" },
+      { type: "downloads", title: "Download all course materials", url: "https://see.stanford.edu/materials/aiircs223a/IntroToRoboticsAllMaterials.zip" },
+    ],
   }),
   course({
     id: "stanford-cs229",
@@ -331,6 +349,10 @@ export const courses: Course[] = [
     hasAssignments: true,
     courseUrl: "https://see.stanford.edu/Course/CS229",
     sourceName: stanfordSource,
+    resources: [
+      { type: "syllabus", title: "Syllabus", url: "https://see.stanford.edu/materials/aimlcs229/info.pdf" },
+      { type: "downloads", title: "Download all course materials", url: "https://see.stanford.edu/materials/aimlcs229/MachineLearningAllMaterials.zip" },
+    ],
   }),
   course({
     id: "stanford-ee261",
@@ -345,6 +367,10 @@ export const courses: Course[] = [
     hasAssignments: true,
     courseUrl: "https://see.stanford.edu/Course/EE261",
     sourceName: stanfordSource,
+    resources: [
+      { type: "syllabus", title: "Syllabus", url: "https://see.stanford.edu/materials/lsoftaee261/Syllabus.pdf" },
+      { type: "downloads", title: "Download all course materials", url: "https://see.stanford.edu/materials/lsoftaee261/FourierTransformAllMaterials.zip" },
+    ],
   }),
   course({
     id: "stanford-ee263",
@@ -359,6 +385,10 @@ export const courses: Course[] = [
     hasAssignments: true,
     courseUrl: "https://see.stanford.edu/Course/EE263",
     sourceName: stanfordSource,
+    resources: [
+      { type: "syllabus", title: "Syllabus", url: "https://see.stanford.edu/materials/lsoeldsee263/Syllabus.pdf" },
+      { type: "downloads", title: "Download all course materials", url: "https://see.stanford.edu/materials/lsoeldsee263/LinearDynamicalSystemsAllMaterials.zip" },
+    ],
   }),
   course({
     id: "stanford-ee364a",
@@ -373,6 +403,10 @@ export const courses: Course[] = [
     hasAssignments: true,
     courseUrl: "https://see.stanford.edu/Course/EE364A",
     sourceName: stanfordSource,
+    resources: [
+      { type: "syllabus", title: "Syllabus", url: "https://see.stanford.edu/materials/lsocoee364a/Syllabus.pdf" },
+      { type: "downloads", title: "Download all course materials", url: "https://see.stanford.edu/materials/lsocoee364a/ConvexOptimizationIAllMaterials.zip" },
+    ],
   }),
   course({
     id: "stanford-ee364b",
@@ -388,6 +422,10 @@ export const courses: Course[] = [
     hasAssignments: true,
     courseUrl: "https://see.stanford.edu/Course/EE364B",
     sourceName: stanfordSource,
+    resources: [
+      { type: "syllabus", title: "Syllabus", url: "https://see.stanford.edu/materials/lsocoee364b/Syllabus.pdf" },
+      { type: "downloads", title: "Download all course materials", url: "https://see.stanford.edu/materials/lsocoee364b/ConvexOptimizationIIAllMaterials.zip" },
+    ],
   }),
   course({
     id: "harvard-cs50x",
