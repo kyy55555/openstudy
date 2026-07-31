@@ -8,6 +8,9 @@ const officialHosts = new Set([
   "www.cs.cornell.edu",
   "inst.eecs.berkeley.edu",
   "courses.cs.washington.edu",
+  "cs61a.org",
+  "sp26.datastructur.es",
+  "www.eecs70.org",
 ]);
 
 const officialHomePaths = new Set(["/", "/index.html"]);
@@ -24,7 +27,11 @@ async function checkUrl(course, url, label) {
   if (!officialHosts.has(finalUrl.hostname)) {
     errors.push(`redirected outside an approved official host to ${finalUrl.hostname}`);
   }
-  if (officialHomePaths.has(finalUrl.pathname)) {
+  const requestedUrl = new URL(url);
+  if (
+    officialHomePaths.has(finalUrl.pathname) &&
+    !officialHomePaths.has(requestedUrl.pathname)
+  ) {
     errors.push(`redirected to the official site's home page`);
   }
 

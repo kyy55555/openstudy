@@ -171,6 +171,9 @@ const prerequisiteZh: Record<string, string> = {
   "Machine learning": "机器学习",
   "Computer architecture": "计算机体系结构",
   "CS 61A or CS 61B equivalent": "CS 61A、CS 61B 或同等课程",
+  "CS 61A": "CS 61A",
+  "CS 61B": "CS 61B",
+  "CS 70": "CS 70",
   "Single Variable Calculus": "单变量微积分",
   "Multivariable Calculus": "多元微积分",
 };
@@ -193,7 +196,10 @@ const prerequisiteCourseIds: Record<string, string> = {
   "Data structures": "princeton-cos226",
   "Machine learning": "stanford-cs229",
   "Computer architecture": "cornell-cs3410",
-  "CS 61A or CS 61B equivalent": "stanford-cs106b",
+  "CS 61A or CS 61B equivalent": "berkeley-cs61a",
+  "CS 61A": "berkeley-cs61a",
+  "CS 61B": "berkeley-cs61b",
+  "CS 70": "berkeley-cs70",
   "Single Variable Calculus": "mit-18-01sc",
   "Multivariable Calculus": "mit-18-02sc",
 };

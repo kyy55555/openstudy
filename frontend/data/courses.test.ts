@@ -11,6 +11,9 @@ const officialHosts = new Set([
   "www.cs.cornell.edu",
   "inst.eecs.berkeley.edu",
   "courses.cs.washington.edu",
+  "cs61a.org",
+  "sp26.datastructur.es",
+  "www.eecs70.org",
 ]);
 
 const knownInvalidCourseUrls = new Set([
@@ -56,6 +59,9 @@ test("new prerequisite foundation courses are present", () => {
     "mit-6-042j",
     "princeton-cos217",
     "cornell-cs3410",
+    "berkeley-cs61a",
+    "berkeley-cs61b",
+    "berkeley-cs70",
   ]) {
     assert.ok(ids.has(id), `${id} is missing`);
   }
