@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --test data/courses.test.ts"
+    "test": "node --test data/*.test.ts"
   },
   "dependencies": {
     "next": "16.2.10",

@@ -5,6 +5,7 @@ import type { FormEvent } from "react";
 
 import { courses } from "../data/courses";
 import type { Course } from "../data/courses";
+import { filterCourses, uniqueCourseValues } from "../data/courseFilters";
 
 /* -------------------- Title -------------------- */
 
@@ -65,9 +66,13 @@ function SearchBox({
 
 type FilterBarProps = {
   universities: string[];
+  subjects: string[];
 
   universityFilter: string;
   setUniversityFilter: (value: string) => void;
+
+  subjectFilter: string;
+  setSubjectFilter: (value: string) => void;
 
   onlyVideos: boolean;
   setOnlyVideos: (value: boolean) => void;
@@ -83,8 +88,11 @@ type FilterBarProps = {
 
 function FilterBar({
   universities,
+  subjects,
   universityFilter,
   setUniversityFilter,
+  subjectFilter,
+  setSubjectFilter,
   onlyVideos,
   setOnlyVideos,
   onlyAssignments,
@@ -111,6 +119,24 @@ function FilterBar({
             {universities.map((university) => (
               <option key={university} value={university}>
                 {university}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="flex items-center gap-2 text-sm">
+          <span className="font-medium">Subject</span>
+
+          <select
+            value={subjectFilter}
+            onChange={(event) => setSubjectFilter(event.target.value)}
+            className="rounded-lg border border-gray-300 px-3 py-2 outline-none"
+          >
+            <option value="All">All subjects</option>
+
+            {subjects.map((subject) => (
+              <option key={subject} value={subject}>
+                {subject}
               </option>
             ))}
           </select>
@@ -182,7 +208,6 @@ function CourseCard({ course }: CourseCardProps) {
         <p className="text-sm font-medium text-gray-500">
           {course.university}
         </p>
-
       </div>
 
       <h2 className="mt-2 text-xl font-semibold">
@@ -252,7 +277,12 @@ function CourseCard({ course }: CourseCardProps) {
 
       <p className="mt-5 text-xs text-gray-500">
         Verified from{" "}
-        <a href={course.sourceUrl} target="_blank" rel="noreferrer" className="underline">
+        <a
+          href={course.sourceUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="underline"
+        >
           {course.sourceName}
         </a>{" "}
         on {course.verifiedOn}.
@@ -279,6 +309,8 @@ export default function Home() {
   const [universityFilter, setUniversityFilter] =
     useState("All");
 
+  const [subjectFilter, setSubjectFilter] = useState("All");
+
   const [onlyVideos, setOnlyVideos] = useState(false);
 
   const [onlyAssignments, setOnlyAssignments] =
@@ -287,61 +319,30 @@ export default function Home() {
   const [onlySolutions, setOnlySolutions] =
     useState(false);
 
-  const universities = Array.from(
-    new Set(courses.map((course) => course.university))
-  ).sort();
+  const universities = uniqueCourseValues(courses, "university");
+  const subjects = uniqueCourseValues(courses, "subject");
 
   function handleSearch() {
     setSearchTerm(searchInput.trim());
   }
 
   function handleResetFilters() {
+    setSearchInput("");
+    setSearchTerm("");
     setUniversityFilter("All");
+    setSubjectFilter("All");
     setOnlyVideos(false);
     setOnlyAssignments(false);
     setOnlySolutions(false);
   }
 
-  const normalizedSearch = searchTerm.toLowerCase();
-
-  const filteredCourses = courses.filter((course) => {
-    const searchableText = [
-      course.title,
-      course.titleZh,
-      course.university,
-      course.subject,
-      course.subjectZh,
-      course.description,
-      course.descriptionZh,
-      ...course.searchKeywords,
-    ]
-      .join(" ")
-      .toLowerCase();
-
-    const matchesSearch =
-      normalizedSearch === "" ||
-      searchableText.includes(normalizedSearch);
-
-    const matchesUniversity =
-      universityFilter === "All" ||
-      course.university === universityFilter;
-
-    const matchesVideos =
-      !onlyVideos || course.hasVideos === true;
-
-    const matchesAssignments =
-      !onlyAssignments || course.hasAssignments === true;
-
-    const matchesSolutions =
-      !onlySolutions || course.hasSolutions === true;
-
-    return (
-      matchesSearch &&
-      matchesUniversity &&
-      matchesVideos &&
-      matchesAssignments &&
-      matchesSolutions
-    );
+  const filteredCourses = filterCourses(courses, {
+    searchTerm,
+    university: universityFilter,
+    subject: subjectFilter,
+    onlyVideos,
+    onlyAssignments,
+    onlySolutions,
   });
 
   return (
@@ -359,8 +360,11 @@ export default function Home() {
 
       <FilterBar
         universities={universities}
+        subjects={subjects}
         universityFilter={universityFilter}
         setUniversityFilter={setUniversityFilter}
+        subjectFilter={subjectFilter}
+        setSubjectFilter={setSubjectFilter}
         onlyVideos={onlyVideos}
         setOnlyVideos={setOnlyVideos}
         onlyAssignments={onlyAssignments}
@@ -377,7 +381,7 @@ export default function Home() {
           </h2>
 
           <p className="text-sm text-gray-500">
-            {filteredCourses.length} results
+            Showing {filteredCourses.length} of {courses.length} verified courses
           </p>
         </div>
 
