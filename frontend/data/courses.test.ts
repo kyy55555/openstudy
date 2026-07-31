@@ -9,6 +9,10 @@ const officialHosts = new Set([
   "cs50.harvard.edu",
 ]);
 
+const knownInvalidCourseUrls = new Set([
+  "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2020/",
+]);
+
 test("course records have unique ids and real official URLs", () => {
   assert.ok(courses.length >= 20);
   assert.equal(new Set(courses.map(({ id }) => id)).size, courses.length);
@@ -16,6 +20,7 @@ test("course records have unique ids and real official URLs", () => {
   for (const course of courses) {
     assert.ok(course.title.trim());
     assert.notEqual(course.courseUrl, "#");
+    assert.ok(!knownInvalidCourseUrls.has(course.courseUrl));
     assert.equal(course.courseUrl, course.sourceUrl);
     assert.ok(officialHosts.has(new URL(course.courseUrl).hostname));
     assert.match(course.verifiedOn, /^\d{4}-\d{2}-\d{2}$/);

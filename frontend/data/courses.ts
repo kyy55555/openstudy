@@ -123,7 +123,7 @@ export const courses: Course[] = [
     year: 2020,
     hasVideos: true,
     hasAssignments: true,
-    courseUrl: "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2020/",
+    courseUrl: "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/",
     sourceName: mitSource,
   }),
   course({
