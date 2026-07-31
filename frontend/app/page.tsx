@@ -14,19 +14,124 @@ import type { CourseSort } from "../data/courseFilters";
 
 const coursesPerPage = 12;
 
+type Language = "en" | "zh";
+
+const translations = {
+  en: {
+    subtitle: "Explore open courses from the world's leading universities.",
+    switchLanguage: "中文",
+    searchPlaceholder: "Search algorithms, machine learning, 算法...",
+    search: "Search",
+    university: "University",
+    allUniversities: "All universities",
+    subject: "Subject",
+    allSubjects: "All subjects",
+    hasVideos: "Has videos",
+    hasAssignments: "Has assignments",
+    hasSolutions: "Has solutions",
+    reset: "Reset filters",
+    level: "Level",
+    language: "Language",
+    year: "Course year",
+    notVerified: "Not verified",
+    prerequisites: "Prerequisites",
+    noPrerequisites: "No prerequisites listed.",
+    materials: "Course materials",
+    videos: "Videos",
+    assignments: "Assignments",
+    solutions: "Solutions",
+    available: "✓ Available",
+    unavailable: "✗ Not available",
+    verifiedFrom: "Verified from",
+    verifiedOn: "on",
+    viewCourse: "View official course →",
+    courses: "Courses",
+    sort: "Sort",
+    newest: "Newest first",
+    title: "Course title",
+    universitySort: "University",
+    verifiedCourses: (filtered: number, total: number) =>
+      `${filtered} of ${total} verified courses`,
+    noCourses: "No courses found.",
+    noCoursesHint: "Try another subject or remove some filters.",
+    showMore: (remaining: number) => `Show more courses (${remaining} remaining)`,
+  },
+  zh: {
+    subtitle: "探索世界一流大学公开的计算机科学课程。",
+    switchLanguage: "English",
+    searchPlaceholder: "搜索算法、机器学习、Python……",
+    search: "搜索",
+    university: "大学",
+    allUniversities: "全部大学",
+    subject: "学科",
+    allSubjects: "全部学科",
+    hasVideos: "有视频",
+    hasAssignments: "有作业",
+    hasSolutions: "有答案",
+    reset: "重置筛选",
+    level: "难度",
+    language: "语言",
+    year: "课程年份",
+    notVerified: "尚未核实",
+    prerequisites: "先修要求",
+    noPrerequisites: "官方未列出先修要求。",
+    materials: "课程资料",
+    videos: "视频",
+    assignments: "作业",
+    solutions: "答案",
+    available: "✓ 有",
+    unavailable: "✗ 无",
+    verifiedFrom: "核实来源：",
+    verifiedOn: "核实日期：",
+    viewCourse: "查看官方课程 →",
+    courses: "课程",
+    sort: "排序",
+    newest: "最新优先",
+    title: "课程名称",
+    universitySort: "大学",
+    verifiedCourses: (filtered: number, total: number) =>
+      `${total} 门已核实课程，当前 ${filtered} 门`,
+    noCourses: "没有找到课程。",
+    noCoursesHint: "请尝试其他学科或减少筛选条件。",
+    showMore: (remaining: number) => `显示更多课程（剩余 ${remaining} 门）`,
+  },
+} as const;
+
+type Copy = (typeof translations)[Language];
+
 /* -------------------- Title -------------------- */
 
 type TitleProps = {
   text: string;
   subtitle: string;
+  language: Language;
+  onToggleLanguage: () => void;
+  switchLanguageLabel: string;
 };
 
-function Title({ text, subtitle }: TitleProps) {
+function Title({
+  text,
+  subtitle,
+  language,
+  onToggleLanguage,
+  switchLanguageLabel,
+}: TitleProps) {
   return (
-    <header>
-      <h1 className="text-3xl font-bold">{text}</h1>
+    <header className="flex items-start justify-between gap-4">
+      <div>
+        <h1 className="text-3xl font-bold">{text}</h1>
 
-      <p className="mt-2 text-gray-600">{subtitle}</p>
+        <p className="mt-2 text-gray-600">{subtitle}</p>
+      </div>
+
+      <button
+        type="button"
+        onClick={onToggleLanguage}
+        aria-label={language === "en" ? "切换到中文" : "Switch to English"}
+        className="shrink-0 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50"
+      >
+        {switchLanguageLabel}
+      </button>
     </header>
   );
 }
@@ -37,12 +142,14 @@ type SearchBoxProps = {
   searchInput: string;
   setSearchInput: (value: string) => void;
   onSearch: () => void;
+  copy: Copy;
 };
 
 function SearchBox({
   searchInput,
   setSearchInput,
   onSearch,
+  copy,
 }: SearchBoxProps) {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -53,7 +160,7 @@ function SearchBox({
     <form onSubmit={handleSubmit} className="mt-6 flex gap-2">
       <input
         type="text"
-        placeholder="Search algorithms, machine learning, 算法..."
+        placeholder={copy.searchPlaceholder}
         value={searchInput}
         onChange={(event) => setSearchInput(event.target.value)}
         className="flex-1 rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-gray-700"
@@ -63,7 +170,7 @@ function SearchBox({
         type="submit"
         className="rounded-lg bg-black px-5 py-3 text-white hover:bg-gray-800"
       >
-        Search
+        {copy.search}
       </button>
     </form>
   );
@@ -91,6 +198,7 @@ type FilterBarProps = {
   setOnlySolutions: (value: boolean) => void;
 
   onReset: () => void;
+  copy: Copy;
 };
 
 function FilterBar({
@@ -107,12 +215,13 @@ function FilterBar({
   onlySolutions,
   setOnlySolutions,
   onReset,
+  copy,
 }: FilterBarProps) {
   return (
     <div className="mt-5 rounded-xl border border-gray-200 p-4">
       <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
         <label className="flex items-center gap-2 text-sm">
-          <span className="font-medium">University</span>
+          <span className="font-medium">{copy.university}</span>
 
           <select
             value={universityFilter}
@@ -121,7 +230,7 @@ function FilterBar({
             }
             className="rounded-lg border border-gray-300 px-3 py-2 outline-none"
           >
-            <option value="All">All universities</option>
+            <option value="All">{copy.allUniversities}</option>
 
             {universities.map((university) => (
               <option key={university} value={university}>
@@ -132,14 +241,14 @@ function FilterBar({
         </label>
 
         <label className="flex items-center gap-2 text-sm">
-          <span className="font-medium">Subject</span>
+          <span className="font-medium">{copy.subject}</span>
 
           <select
             value={subjectFilter}
             onChange={(event) => setSubjectFilter(event.target.value)}
             className="rounded-lg border border-gray-300 px-3 py-2 outline-none"
           >
-            <option value="All">All subjects</option>
+            <option value="All">{copy.allSubjects}</option>
 
             {subjects.map((subject) => (
               <option key={subject} value={subject}>
@@ -158,7 +267,7 @@ function FilterBar({
             }
           />
 
-          Has videos
+          {copy.hasVideos}
         </label>
 
         <label className="flex items-center gap-2 text-sm">
@@ -170,7 +279,7 @@ function FilterBar({
             }
           />
 
-          Has assignments
+          {copy.hasAssignments}
         </label>
 
         <label className="flex items-center gap-2 text-sm">
@@ -182,7 +291,7 @@ function FilterBar({
             }
           />
 
-          Has solutions
+          {copy.hasSolutions}
         </label>
 
         <button
@@ -190,7 +299,7 @@ function FilterBar({
           onClick={onReset}
           className="text-sm text-gray-500 hover:text-black hover:underline"
         >
-          Reset filters
+          {copy.reset}
         </button>
       </div>
     </div>
@@ -201,12 +310,14 @@ function FilterBar({
 
 type CourseCardProps = {
   course: Course;
+  language: Language;
+  copy: Copy;
 };
 
-function CourseCard({ course }: CourseCardProps) {
+function CourseCard({ course, language, copy }: CourseCardProps) {
   function materialStatus(value: Course["hasVideos"]) {
-    if (value === null) return "? Not verified";
-    return value ? "✓ Available" : "✗ Not available";
+    if (value === null) return `? ${copy.notVerified}`;
+    return value ? copy.available : copy.unavailable;
   }
 
   return (
@@ -231,35 +342,35 @@ function CourseCard({ course }: CourseCardProps) {
 
       <div className="mt-5 grid gap-2 text-sm sm:grid-cols-2">
         <p>
-          <span className="font-medium">Subject:</span>{" "}
-          {course.subject}
+          <span className="font-medium">{copy.subject}:</span>{" "}
+          {language === "zh" ? course.subjectZh : course.subject}
         </p>
 
         <p>
-          <span className="font-medium">Level:</span>{" "}
-          {course.level ?? "Not verified"}
+          <span className="font-medium">{copy.level}:</span>{" "}
+          {course.level ?? copy.notVerified}
         </p>
 
         <p>
-          <span className="font-medium">Language:</span>{" "}
+          <span className="font-medium">{copy.language}:</span>{" "}
           {course.language}
         </p>
 
         <p>
-          <span className="font-medium">Course year:</span>{" "}
-          {course.year === null ? "Not verified" : course.year}
+          <span className="font-medium">{copy.year}:</span>{" "}
+          {course.year === null ? copy.notVerified : course.year}
         </p>
 
       </div>
 
       <div className="mt-5">
-        <p className="font-medium">Prerequisites</p>
+        <p className="font-medium">{copy.prerequisites}</p>
 
         {course.prerequisites === null ? (
-          <p className="mt-2 text-sm text-gray-500">Not verified.</p>
+          <p className="mt-2 text-sm text-gray-500">{copy.notVerified}</p>
         ) : course.prerequisites.length === 0 ? (
           <p className="mt-2 text-sm text-gray-500">
-            No prerequisites listed.
+            {copy.noPrerequisites}
           </p>
         ) : (
           <ul className="mt-2 space-y-1 text-sm text-gray-700">
@@ -273,17 +384,17 @@ function CourseCard({ course }: CourseCardProps) {
       </div>
 
       <div className="mt-5">
-        <p className="font-medium">Course materials</p>
+        <p className="font-medium">{copy.materials}</p>
 
         <div className="mt-2 space-y-1 text-sm">
-          <p>Videos: {materialStatus(course.hasVideos)}</p>
-          <p>Assignments: {materialStatus(course.hasAssignments)}</p>
-          <p>Solutions: {materialStatus(course.hasSolutions)}</p>
+          <p>{copy.videos}: {materialStatus(course.hasVideos)}</p>
+          <p>{copy.assignments}: {materialStatus(course.hasAssignments)}</p>
+          <p>{copy.solutions}: {materialStatus(course.hasSolutions)}</p>
         </div>
       </div>
 
       <p className="mt-5 text-xs text-gray-500">
-        Verified from{" "}
+        {copy.verifiedFrom}{" "}
         <a
           href={course.sourceUrl}
           target="_blank"
@@ -292,7 +403,7 @@ function CourseCard({ course }: CourseCardProps) {
         >
           {course.sourceName}
         </a>{" "}
-        on {course.verifiedOn}.
+        {copy.verifiedOn} {course.verifiedOn}.
       </p>
 
       <a
@@ -301,7 +412,7 @@ function CourseCard({ course }: CourseCardProps) {
         rel="noreferrer"
         className="mt-6 inline-block font-medium text-blue-600 hover:underline"
       >
-        View official course →
+        {copy.viewCourse}
       </a>
     </article>
   );
@@ -310,6 +421,7 @@ function CourseCard({ course }: CourseCardProps) {
 /* -------------------- Home Page -------------------- */
 
 export default function Home() {
+  const [language, setLanguage] = useState<Language>("en");
   const [searchInput, setSearchInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -328,6 +440,7 @@ export default function Home() {
 
   const [sort, setSort] = useState<CourseSort>("newest");
   const [visibleCount, setVisibleCount] = useState(coursesPerPage);
+  const copy = translations[language];
 
   const universities = uniqueCourseValues(courses, "university");
   const subjects = uniqueCourseValues(courses, "subject");
@@ -366,13 +479,19 @@ export default function Home() {
     <main className="mx-auto min-h-screen max-w-4xl px-6 py-12">
       <Title
         text="OpenStudy"
-        subtitle="Explore open courses from the world's leading universities."
+        subtitle={copy.subtitle}
+        language={language}
+        onToggleLanguage={() =>
+          setLanguage((current) => (current === "en" ? "zh" : "en"))
+        }
+        switchLanguageLabel={copy.switchLanguage}
       />
 
       <SearchBox
         searchInput={searchInput}
         setSearchInput={setSearchInput}
         onSearch={handleSearch}
+        copy={copy}
       />
 
       <FilterBar
@@ -404,17 +523,18 @@ export default function Home() {
           setVisibleCount(coursesPerPage);
         }}
         onReset={handleResetFilters}
+        copy={copy}
       />
 
       <section className="mt-10">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <h2 className="text-2xl font-semibold">
-            Courses
+            {copy.courses}
           </h2>
 
           <div className="flex flex-wrap items-center gap-4">
             <label className="flex items-center gap-2 text-sm">
-              <span className="font-medium">Sort</span>
+              <span className="font-medium">{copy.sort}</span>
               <select
                 value={sort}
                 onChange={(event) => {
@@ -423,14 +543,14 @@ export default function Home() {
                 }}
                 className="rounded-lg border border-gray-300 px-3 py-2 outline-none"
               >
-                <option value="newest">Newest first</option>
-                <option value="title">Course title</option>
-                <option value="university">University</option>
+                <option value="newest">{copy.newest}</option>
+                <option value="title">{copy.title}</option>
+                <option value="university">{copy.universitySort}</option>
               </select>
             </label>
 
             <p className="text-sm text-gray-500">
-              {filteredCourses.length} of {courses.length} verified courses
+              {copy.verifiedCourses(filteredCourses.length, courses.length)}
             </p>
           </div>
         </div>
@@ -438,11 +558,11 @@ export default function Home() {
         {filteredCourses.length === 0 ? (
           <div className="mt-6 rounded-xl border border-gray-200 p-8 text-center">
             <p className="font-medium">
-              No courses found.
+              {copy.noCourses}
             </p>
 
             <p className="mt-2 text-sm text-gray-500">
-              Try another subject or remove some filters.
+              {copy.noCoursesHint}
             </p>
           </div>
         ) : (
@@ -451,6 +571,8 @@ export default function Home() {
               <CourseCard
                 key={course.id}
                 course={course}
+                language={language}
+                copy={copy}
               />
             ))}
           </div>
@@ -462,7 +584,7 @@ export default function Home() {
             onClick={() => setVisibleCount((count) => count + coursesPerPage)}
             className="mt-6 w-full rounded-lg border border-gray-300 px-5 py-3 font-medium hover:bg-gray-50"
           >
-            Show more courses ({filteredCourses.length - visibleCount} remaining)
+            {copy.showMore(filteredCourses.length - visibleCount)}
           </button>
         )}
       </section>
