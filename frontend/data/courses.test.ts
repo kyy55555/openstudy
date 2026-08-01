@@ -16,6 +16,8 @@ const officialHosts = new Set([
   "www.eecs70.org",
   "cs61c.org",
   "web.stanford.edu",
+  "web.mit.edu",
+  "pdos.csail.mit.edu",
 ]);
 
 const knownInvalidCourseUrls = new Set([
@@ -77,6 +79,9 @@ test("new prerequisite foundation courses are present", () => {
     "princeton-cos316",
     "princeton-cos324",
     "princeton-cos423",
+    "mit-6-031",
+    "mit-6-004",
+    "mit-6-s081",
   ]) {
     assert.ok(ids.has(id), `${id} is missing`);
   }

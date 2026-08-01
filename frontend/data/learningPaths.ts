@@ -49,9 +49,9 @@ export const learningPaths: LearningPath[] = [
     phases: [
       term("Year 1 · Fall", "大一上", "Start the calculus, physics, and programming chains.", "开始微积分、物理与编程序列。", ["mit-18-01sc", "mit-8-01sc", "mit-6-100l"]),
       term("Year 1 · Spring", "大一下", "Continue calculus, physics, and programming.", "继续微积分、物理与编程基础。", ["mit-18-02sc", "mit-8-02", "mit-6-0002"]),
-      term("Year 2 · Fall", "大二上", "Build mathematical reasoning, programming, low-level, and chemistry foundations.", "建立离散数学、软件构造、底层编程与化学基础。", ["mit-6-042j", "stanford-cs106b", "cornell-cs3410", "mit-5-111sc"]),
+      term("Year 2 · Fall", "大二上", "Build mathematical reasoning, software-construction, computation-structure, and chemistry foundations.", "建立离散数学、软件构造、计算结构与化学基础。", ["mit-6-042j", "mit-6-031", "mit-6-004", "mit-5-111sc"]),
       term("Year 2 · Spring", "大二下", "Take algorithms, biology, and one approved mathematics option: probability/statistics or linear algebra.", "学习算法与生物，并在概率统计和线性代数中完成一门获批数学选项。", ["mit-6-006", "mit-7-012", "mit-18-05", "mit-18-06"]),
-      term("Year 3 · Fall", "大三上", "Move into systems and an advanced theory option.", "进入系统课程及高阶理论选项。", ["cornell-cs4410", "mit-6-046j"], ["Computer-science track subject"], ["计算机科学方向课"]),
+      term("Year 3 · Fall", "大三上", "Move into operating systems and an advanced theory option.", "进入操作系统课程及高阶理论选项。", ["mit-6-s081", "mit-6-046j"], ["Computer-science track subject"], ["计算机科学方向课"]),
       term("Year 3 · Spring", "大三下", "Begin the selected track and advanced undergraduate work.", "开始方向课程和高阶本科课程。", ["mit-6-034", "mit-6-837", "mit-6-858"], ["Advanced undergraduate / CI-M subject"], ["高阶本科 / CI-M 课程"], 1),
       term("Year 4 · Fall", "大四上", "Continue approved track electives and complete independent inquiry.", "继续批准的方向选修，并完成独立研究要求。", ["mit-6-824", "stanford-cs229", "stanford-ee364a"], ["Independent-inquiry subject"], ["独立研究课程"], 1),
       term("Year 4 · Spring", "大四下", "Finish the remaining track and advanced-subject requirements.", "完成剩余方向与高阶课程要求。", ["mit-6-824", "mit-6-858", "mit-6-837"], ["Remaining track subject"], ["剩余方向课程"], 1),

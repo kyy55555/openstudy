@@ -13,6 +13,8 @@ const officialHosts = new Set([
   "www.eecs70.org",
   "cs61c.org",
   "web.stanford.edu",
+  "web.mit.edu",
+  "pdos.csail.mit.edu",
 ]);
 
 const officialHomePaths = new Set(["/", "/index.html"]);
