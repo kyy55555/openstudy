@@ -17,6 +17,8 @@ export type LearningPath = {
   officialUrl: string;
   summary: string;
   summaryZh: string;
+  officialRequirementNotes: string[];
+  officialRequirementNotesZh: string[];
   scheduleStatus: "prerequisite-inferred";
   calendar: "semester" | "quarter";
   phases: LearningPathPhase[];
@@ -44,6 +46,8 @@ export const learningPaths: LearningPath[] = [
     officialUrl: "https://catalog.mit.edu/degree-charts/computer-science-engineering-course-6-3/",
     summary: "All listed requirements come from MIT's Course 6-3 degree chart and GIR rules. Term placement is an OpenStudy suggestion derived from prerequisites, not an official MIT eight-term plan.",
     summaryZh: "课程要求来自 MIT 6-3 官方学位表和全校 GIR；学期位置由 OpenStudy 根据先修关系推导，并非 MIT 官方八学期课表。",
+    officialRequirementNotes: ["Current required CS foundation covers programming, software construction, mathematics for CS, algorithms, theory, systems, low-level programming, and computation structures.", "Choose one approved mathematics subject in probability, inference, linear algebra, or linear algebra and optimization.", "Advanced work includes four track subjects, one additional approved subject, at least two advanced undergraduate subjects, and one independent-inquiry subject."],
+    officialRequirementNotesZh: ["当前计算机基础要求涵盖编程、软件构造、计算机数学、算法、理论、系统、底层编程和计算结构。", "概率、推断、线性代数或线性代数与优化中选一门获批数学课程。", "高阶要求包括四门方向课程、一门额外获批课程，且至少两门为本科高阶课程、一门满足独立研究要求。"],
     scheduleStatus: "prerequisite-inferred",
     calendar: "semester",
     phases: [
@@ -65,6 +69,8 @@ export const learningPaths: LearningPath[] = [
     officialUrl: "https://bulletin.stanford.edu/programs/CS-BS",
     summary: "Requirements follow Stanford's current bulletin. Stanford uses quarters, so this suggested sequence has twelve quarters rather than eight semesters.",
     summaryZh: "要求来自 Stanford 当前官方 Bulletin。Stanford 采用学季制，因此建议路线按十二个学季展示，而不是八学期。",
+    officialRequirementNotes: ["The CS BS requires mathematics, an approved science sequence and elective, engineering fundamentals, core CS, a depth track, writing in the major, and a capstone.", "The twelve-quarter placement below is an OpenStudy prerequisite-based example, not a Stanford-prescribed quarter-by-quarter plan."],
+    officialRequirementNotesZh: ["CS 本科要求包括数学、获批科学序列及科学选修、工程基础、CS 核心、深度方向、专业写作和毕业项目。", "下方十二学季仅为 OpenStudy 按先修关系生成的示例，并非 Stanford 规定的逐学季课表。"],
     scheduleStatus: "prerequisite-inferred",
     calendar: "quarter",
     phases: [
@@ -90,6 +96,8 @@ export const learningPaths: LearningPath[] = [
     officialUrl: "https://eecs.berkeley.edu/resources/undergrads/cs/degree-reqs-lowerdiv/",
     summary: "Lower-division requirements follow Berkeley EECS: Math 51, Math 52, linear algebra, CS 61A, 61B/BL, 61C, and CS 70. Placement is inferred from that prerequisite sequence.",
     summaryZh: "低年级要求按 Berkeley EECS 官网：Math 51、Math 52、线性代数、CS 61A、61B/BL、61C 与 CS 70；具体学期由先修链推导。",
+    officialRequirementNotes: ["Lower-division work includes the published mathematics sequence plus CS 61A, 61B/61BL, 61C, and CS 70.", "Upper division requires 8 units of CS, 8 units of CS/EE/EECS, and 4 units of approved technical electives; the listed courses are choices, not all mandatory."],
+    officialRequirementNotesZh: ["低年级包括官网列出的数学序列，以及 CS 61A、61B/61BL、61C 和 CS 70。", "高年级要求为 8 学分 CS、8 学分 CS/EE/EECS 和 4 学分获批技术选修；页面列出的课程是选项，并非全部必修。"],
     scheduleStatus: "prerequisite-inferred",
     calendar: "semester",
     phases: [
@@ -111,6 +119,8 @@ export const learningPaths: LearningPath[] = [
     officialUrl: "https://www.cs.princeton.edu/ugrad/undergraduate-degrees-requirements",
     summary: "The department requirements are shared where possible; AB and BSE general education and independent-work differences are explicitly retained. Term placement is inferred from prerequisites and official completion deadlines.",
     summaryZh: "路线合并展示 AB/BSE 共有专业要求，并明确保留两种学位在通识和独立研究上的差异；学期位置由先修关系和官方完成期限推导。",
+    officialRequirementNotes: ["Foundation and core courses must be taken at Princeton; linked external open courses are self-study equivalents, not Princeton degree credit.", "AB and BSE share departmental foundations but have different general-education and independent-work requirements.", "Students complete the official core categories and eligible 300-level-or-higher electives under the rules for their graduating class."],
+    officialRequirementNotesZh: ["官方规定基础与核心课程必须在 Princeton 修读；链接的外校公开课仅供自学等价参考，不代表 Princeton 学分。", "AB 与 BSE 共享院系基础要求，但通识教育和独立研究要求不同。", "学生须按所属毕业年级规则完成官方核心类别及符合条件的 300 级以上选修。"],
     scheduleStatus: "prerequisite-inferred",
     calendar: "semester",
     phases: [

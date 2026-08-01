@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { courseCode, courses } from "../../data/courses";
+import { courseDetailPath } from "../../data/courseNavigation";
 import { learningPaths } from "../../data/learningPaths";
 
 function PathsContent() {
@@ -11,12 +12,6 @@ function PathsContent() {
   const [language, setLanguage] = useState<"en" | "zh">(params.get("lang") === "zh" ? "zh" : "en");
   const [selectedId, setSelectedId] = useState(learningPaths[0].id);
   const path = learningPaths.find(({ id }) => id === selectedId) ?? learningPaths[0];
-
-  function courseHref(title: string) {
-    const search = new URLSearchParams({ q: title });
-    if (language === "zh") search.set("lang", "zh");
-    return `/courses?${search.toString()}`;
-  }
 
   return (
     <main className="mx-auto max-w-5xl px-6 py-10">
@@ -44,6 +39,10 @@ function PathsContent() {
             <p className="text-sm font-medium text-gray-500">{path.university}</p>
             <h2 className="mt-1 text-2xl font-semibold">{language === "zh" ? path.programZh : path.program}</h2>
             <p className="mt-3 max-w-3xl text-gray-700">{language === "zh" ? path.summaryZh : path.summary}</p>
+            <div className="mt-4 rounded-xl border border-blue-100 bg-blue-50 p-4">
+              <p className="text-sm font-semibold text-blue-950">{language === "zh" ? "官方要求摘要" : "Official requirement summary"}</p>
+              <ul className="mt-2 space-y-1 text-sm text-blue-900">{(language === "zh" ? path.officialRequirementNotesZh : path.officialRequirementNotes).map((note) => <li key={note}>• {note}</li>)}</ul>
+            </div>
             <p className="mt-3 inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-800">{language === "zh" ? `官方要求 · ${path.calendar === "quarter" ? "按学季" : "按学期"} · 时间位置为先修关系推导` : `Official requirements · ${path.calendar === "quarter" ? "Quarter system" : "Semester system"} · Placement inferred from prerequisites`}</p>
           </div>
           <a href={path.officialUrl} target="_blank" rel="noreferrer" className="shrink-0 text-sm font-medium underline underline-offset-4">{language === "zh" ? "查看官方培养方案 ↗" : "Official curriculum ↗"}</a>
@@ -62,7 +61,7 @@ function PathsContent() {
                       : (language === "zh" ? `自由选课 · 以下任选 ${phase.chooseCount} 门` : `Flexible electives · Choose ${phase.chooseCount}`)}
                   </p>
                 )}
-                {phase.courseIds.length > 0 && <div className="mt-3 flex flex-wrap gap-2">{phase.courseIds.map((id) => { const course = courses.find((item) => item.id === id); if (!course) return null; const substitute = course.university !== path.university; return <Link key={id} href={courseHref(course.title)} className="rounded-xl border border-gray-300 px-3 py-2 text-sm hover:border-black hover:bg-gray-50"><span className="font-medium">{courseCode(course)} · {language === "zh" ? course.titleZh : course.title}</span><span className="mt-0.5 block text-xs text-gray-500">{course.university}{substitute ? ` · ${language === "zh" ? "等价替代" : "Equivalent substitute"}` : ""}</span></Link>; })}</div>}
+                {phase.courseIds.length > 0 && <div className="mt-3 flex flex-wrap gap-2">{phase.courseIds.map((id) => { const course = courses.find((item) => item.id === id); if (!course) return null; const substitute = course.university !== path.university; return <Link key={id} href={courseDetailPath(course, language)} className="rounded-xl border border-gray-300 px-3 py-2 text-sm hover:border-black hover:bg-gray-50"><span className="font-medium">{courseCode(course)} · {language === "zh" ? course.titleZh : course.title}</span><span className="mt-0.5 block text-xs text-gray-500">{course.university}{substitute ? ` · ${language === "zh" ? "等价公开课" : "Equivalent open course"}` : ` · ${language === "zh" ? "本校公开课" : "Home-university course"}`}</span></Link>; })}</div>}
                 {(language === "zh" ? phase.requirementsZh : phase.requirements).length > 0 && <div className="mt-3 flex flex-wrap gap-2">{(language === "zh" ? phase.requirementsZh : phase.requirements).map((requirement) => <span key={requirement} className="rounded-xl border border-dashed border-blue-300 bg-blue-50 px-3 py-2 text-sm text-blue-900">{requirement}<span className="mt-0.5 block text-xs text-blue-700">{language === "zh" ? "官方要求 · 暂无公开课链接" : "Official requirement · No open-course link yet"}</span></span>)}</div>}
               </div>
             </div>

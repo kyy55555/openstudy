@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import { courseCode, courses, suggestedStudyStage } from "../../data/courses";
 import type { Course } from "../../data/courses";
+import { courseDetailPath, prerequisiteCourseIds } from "../../data/courseNavigation";
 import {
   filterCourses,
   sortCourses,
@@ -59,7 +60,8 @@ const translations = {
     unavailable: "✗ Not available",
     verifiedFrom: "Verified from",
     verifiedOn: "on",
-    viewCourse: "View official course →",
+    viewCourse: "Course details →",
+    officialCourse: "Official course ↗",
     courses: "Courses",
     sort: "Sort",
     easiest: "Easiest to hardest",
@@ -112,7 +114,8 @@ const translations = {
     unavailable: "✗ 无",
     verifiedFrom: "核实来源：",
     verifiedOn: "核实日期：",
-    viewCourse: "查看官方课程 →",
+    viewCourse: "查看课程详情 →",
+    officialCourse: "官方课程网站 ↗",
     courses: "课程",
     sort: "排序",
     easiest: "由易到难",
@@ -181,39 +184,6 @@ const prerequisiteZh: Record<string, string> = {
   "MIT 6.006": "MIT 6.006 算法导论",
   "Stanford CS 103": "Stanford CS 103 计算基础的数学原理",
   "Stanford CS 109": "Stanford CS 109 面向计算机科学家的概率论",
-};
-
-const prerequisiteCourseIds: Record<string, string> = {
-  "Introductory Python programming": "mit-6-100l",
-  "Introductory programming": "stanford-cs106a",
-  "Programming Abstractions or equivalent": "stanford-cs106b",
-  Programming: "stanford-cs106a",
-  Probability: "mit-18-05",
-  "Linear algebra": "mit-18-06",
-  "Convex Optimization I or equivalent": "stanford-ee364a",
-  "CS50x or prior Python experience": "harvard-cs50x",
-  "CS50x or prior programming experience": "harvard-cs50x",
-  "COS 126 or equivalent": "princeton-cos126",
-  "COS 217": "princeton-cos217",
-  "COS 226": "princeton-cos226",
-  "CS 3410 or ECE 3140 equivalent": "cornell-cs3410",
-  "Discrete mathematics": "mit-6-042j",
-  "Data structures": "princeton-cos226",
-  "Machine learning": "stanford-cs229",
-  "Computer architecture": "cornell-cs3410",
-  "CS 61A or CS 61B equivalent": "berkeley-cs61a",
-  "CS 61A": "berkeley-cs61a",
-  "CS 61B": "berkeley-cs61b",
-  "CS 70": "berkeley-cs70",
-  "Single Variable Calculus": "mit-18-01sc",
-  "Multivariable Calculus": "mit-18-02sc",
-  "MIT 6.006": "mit-6-006",
-  "MIT 6.004": "mit-6-004",
-  "MIT 6.031": "mit-6-031",
-  "MIT 6.033 or equivalent": "mit-6-033",
-  "Stanford CS 107": "stanford-cs107",
-  "Stanford CS 103": "stanford-cs103",
-  "Stanford CS 109": "stanford-cs109",
 };
 
 /* -------------------- Title -------------------- */
@@ -445,7 +415,7 @@ function CourseCard({ course, language, copy }: CourseCardProps) {
     const targetId = prerequisiteCourseIds[prerequisite];
     const target = courses.find(({ id }) => id === targetId);
     if (!target) return null;
-    return `${coursesPath(target.title, language)}#${target.id}`;
+    return courseDetailPath(target, language);
   }
 
   function materialStatus(value: Course["hasVideos"]) {
@@ -462,8 +432,10 @@ function CourseCard({ course, language, copy }: CourseCardProps) {
       </div>
 
       <h2 className="mt-2 text-xl font-semibold">
+        <Link href={courseDetailPath(course, language)} className="hover:underline">
         <span className="mr-2 text-gray-500">{courseCode(course)}</span>
         {language === "zh" ? course.titleZh : course.title}
+        </Link>
       </h2>
 
       <p className="mt-1 text-sm text-gray-500">
@@ -592,14 +564,10 @@ function CourseCard({ course, language, copy }: CourseCardProps) {
         {copy.verifiedOn} {course.verifiedOn}.
       </p>
 
-      <a
-        href={course.courseUrl}
-        target="_blank"
-        rel="noreferrer"
-        className="mt-6 inline-block font-medium text-blue-600 hover:underline"
-      >
-        {copy.viewCourse}
-      </a>
+      <div className="mt-6 flex flex-wrap gap-4">
+        <Link href={courseDetailPath(course, language)} className="font-medium text-blue-600 hover:underline">{copy.viewCourse}</Link>
+        <a href={course.courseUrl} target="_blank" rel="noreferrer" className="font-medium text-gray-600 hover:underline">{copy.officialCourse}</a>
+      </div>
     </article>
   );
 }

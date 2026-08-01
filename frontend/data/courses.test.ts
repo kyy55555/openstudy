@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { courseCode, courses, suggestedStudyStage } from "./courses.ts";
+import { courseDetailPath, prerequisiteCourseIds } from "./courseNavigation.ts";
 
 const officialHosts = new Set([
   "ocw.mit.edu",
@@ -106,6 +107,13 @@ test("every course has a stable display code", () => {
   }
   assert.equal(courseCode(courses.find(({ id }) => id === "princeton-cos126")!), "COS 126");
   assert.equal(courseCode(courses.find(({ id }) => id === "mit-6-042j")!), "6.042J");
+});
+
+test("course detail routes and prerequisite links resolve", () => {
+  const ids = new Set(courses.map(({ id }) => id));
+  for (const id of Object.values(prerequisiteCourseIds)) assert.ok(ids.has(id), `${id} prerequisite target is missing`);
+  assert.equal(courseDetailPath("mit-6-006", "en"), "/courses/mit-6-006");
+  assert.equal(courseDetailPath("mit-6-006", "zh"), "/courses/mit-6-006?lang=zh");
 });
 
 test("verified prerequisite chains include their official foundations", () => {

@@ -11,6 +11,8 @@ test("learning paths use official sources and known courses", () => {
     assert.equal(new URL(path.officialUrl).protocol, "https:");
     assert.equal(path.scheduleStatus, "prerequisite-inferred");
     assert.equal(path.phases.length, path.calendar === "quarter" ? 12 : 8);
+    assert.ok(path.officialRequirementNotes.length >= 2);
+    assert.equal(path.officialRequirementNotes.length, path.officialRequirementNotesZh.length);
     for (const phase of path.phases) {
       if (phase.chooseCount !== null) {
         assert.ok(phase.courseIds.length >= phase.chooseCount, `${path.id} ${phase.title} has too few choices`);
