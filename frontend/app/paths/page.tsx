@@ -13,7 +13,8 @@ import { useCourseLibrary } from "../useCourseLibrary";
 function PathsContent() {
   const params = useSearchParams();
   const [language, setLanguage] = useState<"en" | "zh">(params.get("lang") === "zh" ? "zh" : "en");
-  const [selectedId, setSelectedId] = useState(learningPaths[0].id);
+  const requestedPath = params.get("path");
+  const [selectedId, setSelectedId] = useState(learningPaths.some(({ id }) => id === requestedPath) ? requestedPath! : learningPaths[0].id);
   const path = learningPaths.find(({ id }) => id === selectedId) ?? learningPaths[0];
   const { library, loaded, setProgress } = useCourseLibrary();
   const completion = learningPathCoverage(path.phases, library.progress);

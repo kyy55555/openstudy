@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { courses } from "../data/courses";
 
 const homeCopy = {
   en: {
@@ -10,8 +11,9 @@ const homeCopy = {
     searchLabel: "Search courses",
     placeholder: "Algorithms, machine learning, Python, 算法...",
     search: "Search",
-    browse: "Browse all 45 verified courses →",
-    paths: "Explore university learning paths →",
+    browse: `Browse all ${courses.length} verified courses →`,
+    paths: "Explore university curriculum references →",
+    dashboard: "My learning →",
     switchLanguage: "中文",
     switchLabel: "切换到中文",
   },
@@ -21,8 +23,9 @@ const homeCopy = {
     searchLabel: "搜索课程",
     placeholder: "算法、机器学习、Python……",
     search: "搜索",
-    browse: "浏览全部 45 门已核实课程 →",
-    paths: "查看顶尖大学学习路线 →",
+    browse: `浏览全部 ${courses.length} 门已核实课程 →`,
+    paths: "查看顶尖大学培养方案参考 →",
+    dashboard: "我的学习 →",
     switchLanguage: "English",
     switchLabel: "Switch to English",
   },
@@ -92,6 +95,8 @@ export default function Home() {
         >
           {copy.paths}
         </Link>
+        <span className="mx-3 text-gray-300">·</span>
+        <Link href={language === "zh" ? "/dashboard?lang=zh" : "/dashboard"} className="mt-5 inline-block text-sm text-gray-500 hover:text-black hover:underline">{copy.dashboard}</Link>
       </section>
     </main>
   );
