@@ -7,6 +7,14 @@ export type LearningPathPhase = {
   chooseCount: number | null;
   requirements: string[];
   requirementsZh: string[];
+  choiceGroups: LearningPathChoiceGroup[];
+};
+
+export type LearningPathChoiceGroup = {
+  label: string;
+  labelZh: string;
+  courseIds: string[];
+  chooseCount: number;
 };
 
 export type LearningPath = {
@@ -34,7 +42,11 @@ function term(
   requirementsZh: string[] = [],
   chooseCount: number | null = null,
 ): LearningPathPhase {
-  return { title, titleZh, description, descriptionZh, courseIds, chooseCount, requirements, requirementsZh };
+  return { title, titleZh, description, descriptionZh, courseIds, chooseCount, requirements, requirementsZh, choiceGroups: [] };
+}
+
+function withChoices(phase: LearningPathPhase, ...choiceGroups: LearningPathChoiceGroup[]): LearningPathPhase {
+  return { ...phase, choiceGroups };
 }
 
 export const learningPaths: LearningPath[] = [
@@ -54,7 +66,7 @@ export const learningPaths: LearningPath[] = [
       term("Year 1 · Fall", "大一上", "Start the calculus, physics, and programming chains.", "开始微积分、物理与编程序列。", ["mit-18-01sc", "mit-8-01sc", "mit-6-100l"]),
       term("Year 1 · Spring", "大一下", "Continue calculus, physics, and programming.", "继续微积分、物理与编程基础。", ["mit-18-02sc", "mit-8-02", "mit-6-0002"]),
       term("Year 2 · Fall", "大二上", "Build mathematical reasoning, software-construction, computation-structure, and chemistry foundations.", "建立离散数学、软件构造、计算结构与化学基础。", ["mit-6-042j", "mit-6-031", "mit-6-004", "mit-5-111sc"]),
-      term("Year 2 · Spring", "大二下", "Take algorithms, biology, and one approved mathematics option: probability/statistics or linear algebra.", "学习算法与生物，并在概率统计和线性代数中完成一门获批数学选项。", ["mit-6-006", "mit-7-012", "mit-18-05", "mit-18-06"]),
+      withChoices(term("Year 2 · Spring", "大二下", "Take algorithms, biology, and one approved mathematics option: probability/statistics or linear algebra.", "学习算法与生物，并在概率统计和线性代数中完成一门获批数学选项。", ["mit-6-006", "mit-7-012"]), { label: "Approved mathematics option", labelZh: "获批数学选项", courseIds: ["mit-18-05", "mit-18-06"], chooseCount: 1 }),
       term("Year 3 · Fall", "大三上", "Move into operating systems, computer-system engineering, and advanced theory.", "进入操作系统、计算机系统工程与高阶理论。", ["mit-6-s081", "mit-6-033", "mit-6-046j"]),
       term("Year 3 · Spring", "大三下", "Begin a selected track through advanced systems, databases, AI, graphics, security, or performance engineering.", "通过高级系统、数据库、人工智能、图形学、安全或性能工程开始所选方向。", ["mit-6-172", "mit-6-830", "mit-6-034", "mit-6-837", "mit-6-858"], [], [], 2),
       term("Year 4 · Fall", "大四上", "Continue approved track electives and complete independent inquiry.", "继续批准的方向选修，并完成独立研究要求。", ["mit-6-824", "mit-6-172", "mit-6-830", "mit-6-036", "mit-6-253"], ["Independent-inquiry subject"], ["独立研究课程"], 2),
@@ -79,7 +91,7 @@ export const learningPaths: LearningPath[] = [
       term("Year 1 · Spring", "大一春季", "Start mathematical foundations and the required science sequence.", "开始数学基础与必修科学序列。", ["stanford-cs103", "mit-8-01sc"]),
       term("Year 2 · Fall", "大二秋季", "Take systems programming and probability.", "学习系统编程与概率论。", ["stanford-cs107", "stanford-cs109"]),
       term("Year 2 · Winter", "大二冬季", "Continue the systems core and science sequence while completing an approved engineering-fundamentals subject.", "继续系统核心与科学序列，并完成一门获批工程基础课程。", ["stanford-cs111", "mit-8-02"], ["Approved engineering-fundamentals subject"], ["获批工程基础课程"]),
-      term("Year 2 · Spring", "大二春季", "Complete algorithms plus approved mathematics and science electives before depth work.", "在进入深度方向前完成算法，以及获批的数学和科学选修。", ["stanford-cs161", "mit-18-06", "mit-5-111sc", "mit-7-012"]),
+      withChoices(term("Year 2 · Spring", "大二春季", "Complete algorithms plus approved mathematics and science electives before depth work.", "在进入深度方向前完成算法，以及获批的数学和科学选修。", ["stanford-cs161", "mit-18-06"]), { label: "Example approved science elective", labelZh: "获批科学选修示例", courseIds: ["mit-5-111sc", "mit-7-012"], chooseCount: 1 }),
       term("Year 3 · Fall", "大三秋季", "Begin one approved CS depth pathway using Stanford courses where public materials are available.", "使用具有公开资料的 Stanford 本校课程开始一个获批的 CS 深度方向。", ["stanford-cs229", "stanford-cs223a", "stanford-cs144", "stanford-cs221"], [], [], 1),
       term("Year 3 · Winter", "大三冬季", "Continue depth with compilers, graphics, optimization, or another approved course.", "通过编译器、图形学、优化或其他获批课程继续深度方向。", ["stanford-cs143", "stanford-cs148", "stanford-ee364a"], [], [], 1),
       term("Year 3 · Spring", "大三春季", "Continue the selected depth pathway.", "继续所选深度方向。", ["stanford-ee364b", "mit-6-824", "stanford-cs155"], [], [], 1),

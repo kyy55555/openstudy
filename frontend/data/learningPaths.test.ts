@@ -17,6 +17,11 @@ test("learning paths use official sources and known courses", () => {
       if (phase.chooseCount !== null) {
         assert.ok(phase.courseIds.length >= phase.chooseCount, `${path.id} ${phase.title} has too few choices`);
       }
+      for (const group of phase.choiceGroups) {
+        assert.ok(group.chooseCount > 0);
+        assert.ok(group.courseIds.length >= group.chooseCount);
+        for (const id of group.courseIds) assert.ok(courseIds.has(id), `${path.id} references missing choice ${id}`);
+      }
     }
     for (const id of path.phases.flatMap(({ courseIds }) => courseIds)) {
       assert.ok(courseIds.has(id), `${path.id} references missing course ${id}`);
