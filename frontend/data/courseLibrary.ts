@@ -35,3 +35,31 @@ export function pathCompletion(courseIds: string[], progress: Record<string, Cou
   const completed = uniqueIds.filter((id) => progress[id] === "completed").length;
   return { completed, total: uniqueIds.length, percent: uniqueIds.length ? Math.round(completed / uniqueIds.length * 100) : 0 };
 }
+
+type CoveragePhase = {
+  courseIds: string[];
+  chooseCount: number | null;
+  choiceGroups: { courseIds: string[]; chooseCount: number }[];
+};
+
+export function phaseCoverage(phase: CoveragePhase, progress: Record<string, CourseProgress>) {
+  const mainRequired = phase.chooseCount ?? phase.courseIds.length;
+  const mainCompleted = Math.min(mainRequired, phase.courseIds.filter((id) => progress[id] === "completed").length);
+  const groupResults = phase.choiceGroups.map((group) => ({
+    required: group.chooseCount,
+    completed: Math.min(group.chooseCount, group.courseIds.filter((id) => progress[id] === "completed").length),
+  }));
+  const required = mainRequired + groupResults.reduce((sum, group) => sum + group.required, 0);
+  const completed = mainCompleted + groupResults.reduce((sum, group) => sum + group.completed, 0);
+  const allIds = [...phase.courseIds, ...phase.choiceGroups.flatMap((group) => group.courseIds)];
+  const started = allIds.some((id) => progress[id] === "in-progress" || progress[id] === "completed");
+  const status = required > 0 && completed >= required ? "completed" : started ? "partial" : "not-started";
+  return { required, completed, status } as const;
+}
+
+export function learningPathCoverage(phases: CoveragePhase[], progress: Record<string, CourseProgress>) {
+  const results = phases.map((phase) => phaseCoverage(phase, progress));
+  const completed = results.reduce((sum, phase) => sum + phase.completed, 0);
+  const total = results.reduce((sum, phase) => sum + phase.required, 0);
+  return { completed, total, percent: total ? Math.round(completed / total * 100) : 0 };
+}
