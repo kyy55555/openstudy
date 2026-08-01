@@ -5,6 +5,8 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 import { courseCode, courses, suggestedStudyStage } from "../../../data/courses";
 import { courseDetailPath, prerequisiteCourseIds } from "../../../data/courseNavigation";
+import { useCourseLibrary } from "../../useCourseLibrary";
+import type { CourseProgress } from "../../../data/courseLibrary";
 
 const resourceZh = {
   syllabus: "课程大纲", schedule: "课程安排", lectures: "讲义与视频", assignments: "作业",
@@ -20,6 +22,7 @@ export default function CourseDetailPage() {
   const router = useRouter();
   const language = searchParams.get("lang") === "zh" ? "zh" : "en";
   const course = courses.find(({ id }) => id === params.id);
+  const { library, loaded, setProgress, toggleFavorite } = useCourseLibrary();
 
   if (!course) {
     return <main className="mx-auto max-w-3xl px-6 py-12"><h1 className="text-2xl font-bold">{language === "zh" ? "未找到课程" : "Course not found"}</h1><Link href={language === "zh" ? "/courses?lang=zh" : "/courses"} className="mt-6 inline-block underline">{language === "zh" ? "返回课程列表" : "Back to courses"}</Link></main>;
@@ -40,6 +43,8 @@ export default function CourseDetailPage() {
         <h1 className="mt-2 text-3xl font-bold">{language === "zh" ? course.titleZh : course.title}</h1>
         <p className="mt-2 text-gray-500">{language === "zh" ? course.title : course.titleZh}</p>
         <p className="mt-6 text-lg leading-8 text-gray-700">{language === "zh" ? course.descriptionZh : course.description}</p>
+
+        {loaded && <div className="mt-6 flex flex-col gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-sm font-semibold text-emerald-950">{language === "zh" ? "我的学习状态" : "My learning status"}</p><div className="mt-2 flex flex-wrap gap-2">{(["not-started", "in-progress", "completed"] as CourseProgress[]).map((status) => <button key={status} onClick={() => setProgress(course.id, status)} className={`rounded-full border px-3 py-1.5 text-sm ${library.progress[course.id] === status || (!library.progress[course.id] && status === "not-started") ? "border-emerald-800 bg-emerald-800 text-white" : "border-emerald-300 bg-white"}`}>{language === "zh" ? ({ "not-started": "未开始", "in-progress": "学习中", completed: "已完成" }[status]) : ({ "not-started": "Not started", "in-progress": "In progress", completed: "Completed" }[status])}</button>)}</div></div><button onClick={() => toggleFavorite(course.id)} className="rounded-lg border border-emerald-700 px-4 py-2 text-sm font-medium text-emerald-900">{library.favorites.includes(course.id) ? (language === "zh" ? "★ 已收藏" : "★ Saved") : (language === "zh" ? "☆ 收藏课程" : "☆ Save course")}</button></div>}
 
         <div className="mt-7 grid gap-3 rounded-xl bg-gray-50 p-5 text-sm sm:grid-cols-2 lg:grid-cols-3">
           <p><b>{language === "zh" ? "学科" : "Subject"}：</b>{language === "zh" ? course.subjectZh : course.subject}</p>
