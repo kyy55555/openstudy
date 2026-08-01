@@ -6,6 +6,8 @@ export type PlanTask = {
   kind: "session" | "assignment" | "exam" | "buffer";
 };
 
+export type PlanDay = { id: string; tasks: PlanTask[] };
+
 type Segment = {
   start: number;
   end: number;
@@ -53,19 +55,15 @@ export const structuredCoursePlans: Record<string, { sourceUrl: string; tasks: P
   "mit-18-01sc": { sourceUrl: `${base}/syllabus/`, tasks: mit1801Tasks() },
 };
 
-export function buildGentlePlan(courseId: string, days: number): { minimumDays: number; days: PlanTask[] } | null {
+export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];
-  if (!course || !Number.isInteger(days) || days < course.tasks.length) return null;
-  const bufferCount = days - course.tasks.length;
-  const result: PlanTask[] = [];
-  let inserted = 0;
-  course.tasks.forEach((task, index) => {
-    result.push(task);
-    const shouldInsert = inserted < bufferCount && Math.floor(((index + 1) * bufferCount) / course.tasks.length) > inserted;
-    if (shouldInsert) {
-      inserted += 1;
-      result.push({ id: `buffer-${inserted}`, title: "Buffer or review day", titleZh: "缓冲或复习日", url: course.sourceUrl, kind: "buffer" });
-    }
+  if (!course || !Number.isInteger(requestedDays) || requestedDays < 1) return null;
+  const plannedDays = Math.ceil(requestedDays * 1.15);
+  const result: PlanDay[] = Array.from({ length: plannedDays }, (_, dayIndex) => {
+    const start = Math.floor(dayIndex * course.tasks.length / plannedDays);
+    const end = Math.floor((dayIndex + 1) * course.tasks.length / plannedDays);
+    const tasks = course.tasks.slice(start, end);
+    return { id: `day-${dayIndex + 1}`, tasks: tasks.length ? tasks : [{ id: `buffer-${dayIndex + 1}`, title: "Buffer or review day", titleZh: "缓冲或复习日", url: course.sourceUrl, kind: "buffer" }] };
   });
-  return { minimumDays: course.tasks.length, days: result };
+  return { requestedDays, plannedDays, totalTasks: course.tasks.length, days: result };
 }
