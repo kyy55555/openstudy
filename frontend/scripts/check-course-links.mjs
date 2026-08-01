@@ -19,15 +19,27 @@ const officialHosts = new Set([
   "cs170.org",
   "cs186berkeley.net",
   "cs144.github.io",
+  "cs184.eecs.berkeley.edu",
+  "eecs189.org",
+  "openlearninglibrary.mit.edu",
+  "cs155.stanford.edu",
 ]);
 
 const officialHomePaths = new Set(["/", "/index.html"]);
 
 async function checkUrl(course, url, label) {
-  const response = await fetch(url, {
+  let response = await fetch(url, {
+    method: "HEAD",
     redirect: "follow",
-    signal: AbortSignal.timeout(15_000),
+    signal: AbortSignal.timeout(20_000),
   });
+  if (response.status === 405 || response.status === 501) {
+    response = await fetch(url, {
+      headers: { Range: "bytes=0-0" },
+      redirect: "follow",
+      signal: AbortSignal.timeout(20_000),
+    });
+  }
   const finalUrl = new URL(response.url);
   const errors = [];
 
@@ -46,22 +58,35 @@ async function checkUrl(course, url, label) {
   return { course, label, requestedUrl: url, finalUrl: finalUrl.href, errors };
 }
 
-const results = await Promise.all(
-  courses.flatMap((course) => [
+const checks = courses.flatMap((course) => [
     { course, url: course.courseUrl, label: "course" },
     ...course.resources.map((resource) => ({
       course,
       url: resource.url,
       label: resource.type,
     })),
-  ]).map(async ({ course, url, label }) => {
+  ]);
+
+const results = new Array(checks.length);
+let nextCheck = 0;
+
+async function worker() {
+  while (nextCheck < checks.length) {
+    const index = nextCheck++;
+    const { course, url, label } = checks[index];
     try {
-      return await checkUrl(course, url, label);
-    } catch (error) {
-      return { course, label, requestedUrl: url, finalUrl: null, errors: [String(error)] };
+      results[index] = await checkUrl(course, url, label);
+    } catch {
+      try {
+        results[index] = await checkUrl(course, url, label);
+      } catch (retryError) {
+        results[index] = { course, label, requestedUrl: url, finalUrl: null, errors: [String(retryError)] };
+      }
     }
-  }),
-);
+  }
+}
+
+await Promise.all(Array.from({ length: 6 }, () => worker()));
 
 let failureCount = 0;
 
