@@ -33,6 +33,7 @@ export const prerequisiteCourseIds: Record<string, string> = {
   "Stanford CS 107": "stanford-cs107",
   "Stanford CS 103": "stanford-cs103",
   "Stanford CS 109": "stanford-cs109",
+  "Stanford CS 111": "stanford-cs111",
 };
 
 export function courseDetailPath(courseOrId: Course | string, language: Language) {
