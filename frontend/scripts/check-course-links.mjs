@@ -18,6 +18,7 @@ const officialHosts = new Set([
   "cs162.org",
   "cs170.org",
   "cs186berkeley.net",
+  "cs144.github.io",
 ]);
 
 const officialHomePaths = new Set(["/", "/index.html"]);
