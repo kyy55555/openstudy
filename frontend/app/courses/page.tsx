@@ -14,6 +14,7 @@ import {
   uniqueCourseValues,
 } from "../../data/courseFilters";
 import type { CourseSort } from "../../data/courseFilters";
+import { useCourseLibrary } from "../useCourseLibrary";
 
 const coursesPerPage = 12;
 
@@ -194,6 +195,7 @@ type TitleProps = {
   language: Language;
   onToggleLanguage: () => void;
   switchLanguageLabel: string;
+  savedCount: number;
 };
 
 function Title({
@@ -202,6 +204,7 @@ function Title({
   language,
   onToggleLanguage,
   switchLanguageLabel,
+  savedCount,
 }: TitleProps) {
   return (
     <header className="flex items-start justify-between gap-4">
@@ -214,6 +217,9 @@ function Title({
       </div>
 
       <div className="flex shrink-0 items-center gap-2">
+        <Link href={language === "zh" ? "/compare?lang=zh" : "/compare"} className="rounded-full border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50">
+          {language === "zh" ? `收藏比较${savedCount ? ` (${savedCount})` : ""}` : `Compare${savedCount ? ` (${savedCount})` : ""}`}
+        </Link>
         <Link href={language === "zh" ? "/paths?lang=zh" : "/paths"} className="rounded-full border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50">
           {language === "zh" ? "学习路线" : "Learning paths"}
         </Link>
@@ -406,9 +412,11 @@ type CourseCardProps = {
   course: Course;
   language: Language;
   copy: Copy;
+  favorite: boolean;
+  onToggleFavorite: () => void;
 };
 
-function CourseCard({ course, language, copy }: CourseCardProps) {
+function CourseCard({ course, language, copy, favorite, onToggleFavorite }: CourseCardProps) {
   const studyStage = suggestedStudyStage(course);
 
   function prerequisiteLink(prerequisite: string) {
@@ -426,9 +434,7 @@ function CourseCard({ course, language, copy }: CourseCardProps) {
   return (
     <article id={course.id} className="scroll-mt-6 rounded-xl border border-gray-200 p-6 shadow-sm">
       <div>
-        <p className="text-sm font-medium text-gray-500">
-          {course.university}
-        </p>
+        <div className="flex items-start justify-between gap-3"><p className="text-sm font-medium text-gray-500">{course.university}</p><button type="button" onClick={onToggleFavorite} aria-label={favorite ? "Remove favorite" : "Save favorite"} className="text-xl leading-none" title={favorite ? (language === "zh" ? "取消收藏" : "Remove favorite") : (language === "zh" ? "收藏" : "Save")}>{favorite ? "★" : "☆"}</button></div>
       </div>
 
       <h2 className="mt-2 text-xl font-semibold">
@@ -598,6 +604,7 @@ function CourseExplorer() {
 
   const [sort, setSort] = useState<CourseSort>("easiest");
   const [visibleCount, setVisibleCount] = useState(coursesPerPage);
+  const { library, toggleFavorite } = useCourseLibrary();
   const copy = translations[language];
 
   const universities = uniqueCourseValues(courses, "university");
@@ -648,6 +655,7 @@ function CourseExplorer() {
           router.replace(coursesPath(searchTerm, nextLanguage));
         }}
         switchLanguageLabel={copy.switchLanguage}
+        savedCount={library.favorites.length}
       />
 
       <SearchBox
@@ -737,6 +745,8 @@ function CourseExplorer() {
                 course={course}
                 language={language}
                 copy={copy}
+                favorite={library.favorites.includes(course.id)}
+                onToggleFavorite={() => toggleFavorite(course.id)}
               />
             ))}
           </div>
