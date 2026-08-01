@@ -80,5 +80,22 @@ export function useCourseLibrary() {
     update({ ...library, completedResources });
   }
 
-  return { library, loaded, setProgress, toggleFavorite, toggleResource };
+  function createStudyPlan(courseId: string, days: number) {
+    update({ ...library, studyPlans: { ...library.studyPlans, [courseId]: { days, completedTaskIds: [] } } });
+  }
+
+  function toggleStudyTask(courseId: string, taskId: string) {
+    const plan = library.studyPlans[courseId];
+    if (!plan) return;
+    const completedTaskIds = plan.completedTaskIds.includes(taskId) ? plan.completedTaskIds.filter((id) => id !== taskId) : [...plan.completedTaskIds, taskId];
+    update({ ...library, studyPlans: { ...library.studyPlans, [courseId]: { ...plan, completedTaskIds } } });
+  }
+
+  function removeStudyPlan(courseId: string) {
+    const studyPlans = { ...library.studyPlans };
+    delete studyPlans[courseId];
+    update({ ...library, studyPlans });
+  }
+
+  return { library, loaded, setProgress, toggleFavorite, toggleResource, createStudyPlan, toggleStudyTask, removeStudyPlan };
 }

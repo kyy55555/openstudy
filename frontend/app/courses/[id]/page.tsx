@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 
 import { courseCode, courses, suggestedStudyStage } from "../../../data/courses";
 import { courseDetailPath, prerequisiteCourseIds } from "../../../data/courseNavigation";
 import { useCourseLibrary } from "../../useCourseLibrary";
 import { courseResourceKey } from "../../../data/courseLibrary";
 import type { CourseProgress } from "../../../data/courseLibrary";
+import { buildGentlePlan, structuredCoursePlans } from "../../../data/coursePlans";
 
 const resourceZh = {
   syllabus: "课程大纲", schedule: "课程安排", lectures: "讲义与视频", assignments: "作业",
@@ -23,7 +25,8 @@ export default function CourseDetailPage() {
   const router = useRouter();
   const language = searchParams.get("lang") === "zh" ? "zh" : "en";
   const course = courses.find(({ id }) => id === params.id);
-  const { library, loaded, setProgress, toggleFavorite, toggleResource } = useCourseLibrary();
+  const { library, loaded, setProgress, toggleFavorite, toggleResource, createStudyPlan, toggleStudyTask, removeStudyPlan } = useCourseLibrary();
+  const [planDays, setPlanDays] = useState(120);
 
   if (!course) {
     return <main className="mx-auto max-w-3xl px-6 py-12"><h1 className="text-2xl font-bold">{language === "zh" ? "未找到课程" : "Course not found"}</h1><Link href={language === "zh" ? "/courses?lang=zh" : "/courses"} className="mt-6 inline-block underline">{language === "zh" ? "返回课程列表" : "Back to courses"}</Link></main>;
@@ -31,6 +34,12 @@ export default function CourseDetailPage() {
 
   const stage = suggestedStudyStage(course);
   const completedResourceCount = course.resources.filter((resource) => library.completedResources.includes(courseResourceKey(course.id, resource.url))).length;
+  const planDefinition = structuredCoursePlans[course.id];
+  const savedPlan = library.studyPlans[course.id];
+  const generatedPlan = savedPlan ? buildGentlePlan(course.id, savedPlan.days) : null;
+  const minimumPlanDays = planDefinition?.tasks.length ?? 0;
+  const nextTask = generatedPlan?.days.find((task) => task.kind !== "buffer" && !savedPlan.completedTaskIds.includes(task.id));
+  const completedPlanTasks = savedPlan ? savedPlan.completedTaskIds.filter((id) => planDefinition?.tasks.some((task) => task.id === id)).length : 0;
   const value = (verified: boolean | null) => verified === null ? (language === "zh" ? "尚未核实" : "Not verified") : verified ? (language === "zh" ? "有" : "Available") : (language === "zh" ? "无" : "Not available");
 
   return (
@@ -62,6 +71,13 @@ export default function CourseDetailPage() {
         </section>
 
         <section className="mt-8"><div className="flex flex-wrap items-end justify-between gap-2"><div><h2 className="text-xl font-semibold">{language === "zh" ? "官方课程资料" : "Official course materials"}</h2><p className="mt-1 text-sm text-gray-500">{language === "zh" ? "打开大学官网学习后，可在这里标记完成。" : "Open the university resource, then mark it complete here."}</p></div>{loaded && course.resources.length > 0 && <span className="rounded-full bg-blue-50 px-3 py-1 text-sm font-semibold text-blue-800">{language === "zh" ? `已完成 ${completedResourceCount}/${course.resources.length}` : `${completedResourceCount}/${course.resources.length} completed`}</span>}</div><div className="mt-4 grid gap-3 sm:grid-cols-2">{course.resources.map((resource) => { const resourceKey = courseResourceKey(course.id, resource.url); const completed = library.completedResources.includes(resourceKey); return <div key={resource.url} className={`rounded-xl border p-4 ${completed ? "border-emerald-300 bg-emerald-50" : "border-gray-200"}`}><a href={resource.url} target="_blank" rel="noreferrer" className="block hover:underline"><span className="font-medium">{language === "zh" ? resourceZh[resource.type] : resource.title}</span><span className="mt-1 block text-xs text-gray-500">{course.sourceName} ↗</span></a>{loaded && <label className="mt-3 flex cursor-pointer items-center gap-2 border-t border-black/10 pt-3 text-sm"><input type="checkbox" checked={completed} onChange={() => toggleResource(course.id, resource.url)} /><span>{completed ? (language === "zh" ? "已完成" : "Completed") : (language === "zh" ? "标记为已完成" : "Mark complete")}</span></label>}</div>; })}</div></section>
+
+        {loaded && planDefinition && <section className="mt-8 rounded-2xl border border-violet-200 bg-violet-50/50 p-5"><h2 className="text-xl font-semibold text-violet-950">{language === "zh" ? "弹性学习计划" : "Flexible study plan"}</h2><p className="mt-2 text-sm text-violet-900">{language === "zh" ? `MIT 官方说明每个 Session 约为一次学习量。完整轻量计划最低 ${minimumPlanDays} 天，每天最多一个主要任务；未完成任务不会与下一天叠加。` : `MIT describes each session as roughly one sitting. The complete gentle plan needs at least ${minimumPlanDays} days, with at most one main task per day and no stacked backlog.`}</p>
+          {!savedPlan ? <form onSubmit={(event) => { event.preventDefault(); if (planDays >= minimumPlanDays) createStudyPlan(course.id, planDays); }} className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-end"><label className="text-sm font-medium text-violet-950">{language === "zh" ? "希望多少天完成？" : "How many days would you like?"}<input type="number" min={minimumPlanDays} value={planDays} onChange={(event) => setPlanDays(Number(event.target.value))} className="mt-1 block w-full rounded-lg border border-violet-300 bg-white px-3 py-2 sm:w-36" /></label><button type="submit" disabled={planDays < minimumPlanDays} className="rounded-lg bg-violet-900 px-5 py-2.5 text-sm font-medium text-white disabled:opacity-40">{language === "zh" ? "生成轻量计划" : "Create gentle plan"}</button>{planDays < minimumPlanDays && <p className="text-sm text-amber-800">{language === "zh" ? `为避免任务过重，完整课程至少需要 ${minimumPlanDays} 天。` : `To avoid overload, the complete course needs at least ${minimumPlanDays} days.`}</p>}</form> : generatedPlan && <div className="mt-5"><div className="rounded-xl border border-violet-200 bg-white p-4"><div className="flex items-center justify-between gap-3"><span className="font-semibold text-violet-950">{language === "zh" ? `${savedPlan.days} 天计划` : `${savedPlan.days}-day plan`}</span><div className="flex items-center gap-3"><span className="text-sm text-violet-800">{completedPlanTasks}/{minimumPlanDays}</span><button onClick={() => removeStudyPlan(course.id)} className="text-xs text-gray-500 hover:text-black hover:underline">{language === "zh" ? "删除并重新制定" : "Delete and recreate"}</button></div></div><div className="mt-2 h-2 overflow-hidden rounded-full bg-violet-100"><div className="h-full bg-violet-700" style={{ width: `${Math.round(completedPlanTasks / minimumPlanDays * 100)}%` }} /></div></div>
+            {nextTask ? <div className="mt-4 rounded-xl bg-violet-900 p-4 text-white"><p className="text-xs font-semibold uppercase tracking-wide text-violet-200">{language === "zh" ? "继续上次学习" : "Continue learning"}</p><a href={nextTask.url} target="_blank" rel="noreferrer" className="mt-2 block font-semibold hover:underline">{language === "zh" ? nextTask.titleZh : nextTask.title} ↗</a><button onClick={() => toggleStudyTask(course.id, nextTask.id)} className="mt-3 rounded-lg bg-white px-3 py-2 text-sm font-medium text-violet-950">{language === "zh" ? "完成这个任务" : "Complete this task"}</button></div> : <p className="mt-4 rounded-xl bg-emerald-100 p-4 font-semibold text-emerald-900">{language === "zh" ? "计划任务已全部完成。请根据实际学习情况确认是否完成整门课程。" : "All plan tasks are complete. Confirm the whole course separately when you are ready."}</p>}
+            <details className="mt-4"><summary className="cursor-pointer text-sm font-semibold text-violet-950">{language === "zh" ? "查看全部每日安排" : "View all daily tasks"}</summary><div className="mt-3 max-h-[36rem] space-y-2 overflow-y-auto pr-1">{generatedPlan.days.map((task, index) => { const completed = task.kind === "buffer" || savedPlan.completedTaskIds.includes(task.id); return <div key={`${index}-${task.id}`} className={`flex items-center gap-3 rounded-lg border p-3 ${completed ? "border-emerald-200 bg-emerald-50" : "border-violet-100 bg-white"}`}><span className="w-14 shrink-0 text-xs text-gray-500">{language === "zh" ? `第 ${index + 1} 天` : `Day ${index + 1}`}</span>{task.kind === "buffer" ? <span className="text-sm text-gray-500">{language === "zh" ? task.titleZh : task.title}</span> : <><input aria-label={`${language === "zh" ? task.titleZh : task.title} completed`} type="checkbox" checked={completed} onChange={() => toggleStudyTask(course.id, task.id)} /><a href={task.url} target="_blank" rel="noreferrer" className="text-sm hover:underline">{language === "zh" ? task.titleZh : task.title} ↗</a></>}</div>; })}</div></details>
+          </div>}
+        </section>}
 
         <section className="mt-8 border-t pt-6"><h2 className="font-semibold">{language === "zh" ? "来源与核实" : "Source and verification"}</h2><p className="mt-2 text-sm text-gray-600">{language === "zh" ? "所有链接均指向大学或课程团队的官方页面。未知信息保留为“尚未核实”，不会推测。" : "Every link points to an official university or course-team page. Unknown facts remain unverified rather than guessed."}</p><p className="mt-2 text-sm text-gray-500">{course.sourceName} · {language === "zh" ? "核实日期" : "verified"} {course.verifiedOn}</p><a href={course.courseUrl} target="_blank" rel="noreferrer" className="mt-5 inline-flex rounded-lg bg-black px-5 py-3 font-medium text-white">{language === "zh" ? "进入官方课程网站 ↗" : "Open official course ↗"}</a></section>
       </section>

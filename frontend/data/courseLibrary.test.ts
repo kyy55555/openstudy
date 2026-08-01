@@ -4,9 +4,9 @@ import test from "node:test";
 import { courseResourceKey, parseCourseLibrary, pathCompletion } from "./courseLibrary.ts";
 
 test("course library safely parses local data", () => {
-  assert.deepEqual(parseCourseLibrary(null), { progress: {}, favorites: [], completedResources: [] });
-  assert.deepEqual(parseCourseLibrary("broken"), { progress: {}, favorites: [], completedResources: [] });
-  assert.deepEqual(parseCourseLibrary('{"progress":{"a":"completed"},"favorites":["a"]}'), { progress: { a: "completed" }, favorites: ["a"], completedResources: [] });
+  assert.deepEqual(parseCourseLibrary(null), { progress: {}, favorites: [], completedResources: [], studyPlans: {} });
+  assert.deepEqual(parseCourseLibrary("broken"), { progress: {}, favorites: [], completedResources: [], studyPlans: {} });
+  assert.deepEqual(parseCourseLibrary('{"progress":{"a":"completed"},"favorites":["a"]}'), { progress: { a: "completed" }, favorites: ["a"], completedResources: [], studyPlans: {} });
 });
 
 test("resource progress keys include both course and official URL", () => {
