@@ -5,10 +5,8 @@ import { courseLibraryStorageKey, emptyCourseLibrary, parseCourseLibrary } from 
 import type { CourseLibraryState, CourseProgress } from "../data/courseLibrary";
 import { getSupabaseBrowserClient } from "../lib/supabase/client";
 
-const syncedUserStorageKey = "openstudy-synced-user-v1";
-
-function mergeLibraries(remote: CourseLibraryState, local: CourseLibraryState): CourseLibraryState {
-  return { progress: { ...remote.progress, ...local.progress }, favorites: [...new Set([...remote.favorites, ...local.favorites])] };
+function accountLibraryStorageKey(userId: string) {
+  return `${courseLibraryStorageKey}-user-${userId}`;
 }
 
 export function useCourseLibrary() {
@@ -16,6 +14,7 @@ export function useCourseLibrary() {
   const [loaded, setLoaded] = useState(false);
   const userId = useRef<string | null>(null);
   const libraryRef = useRef<CourseLibraryState>(emptyCourseLibrary);
+  const activeStorageKey = useRef(courseLibraryStorageKey);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -33,16 +32,21 @@ export function useCourseLibrary() {
     const supabase = client;
     async function sync(nextUserId: string | null) {
       userId.current = nextUserId;
-      if (!nextUserId) return;
+      if (!nextUserId) {
+        activeStorageKey.current = courseLibraryStorageKey;
+        const guest = parseCourseLibrary(window.localStorage.getItem(courseLibraryStorageKey));
+        libraryRef.current = guest;
+        setLibrary(guest);
+        setLoaded(true);
+        return;
+      }
+      activeStorageKey.current = accountLibraryStorageKey(nextUserId);
       const { data } = await supabase.from("course_libraries").select("library").eq("user_id", nextUserId).maybeSingle();
-      const remote = parseCourseLibrary(data?.library ? JSON.stringify(data.library) : null);
-      const hasSyncedBefore = window.localStorage.getItem(syncedUserStorageKey) === nextUserId;
-      const next = data && hasSyncedBefore ? remote : mergeLibraries(remote, libraryRef.current);
+      const next = data?.library ? parseCourseLibrary(JSON.stringify(data.library)) : emptyCourseLibrary;
       libraryRef.current = next;
       setLibrary(next);
       setLoaded(true);
-      window.localStorage.setItem(courseLibraryStorageKey, JSON.stringify(next));
-      window.localStorage.setItem(syncedUserStorageKey, nextUserId);
+      window.localStorage.setItem(activeStorageKey.current, JSON.stringify(next));
       await supabase.from("course_libraries").upsert({ user_id: nextUserId, library: next, updated_at: new Date().toISOString() });
     }
     void client.auth.getUser().then(({ data }) => sync(data.user?.id ?? null));
@@ -53,7 +57,7 @@ export function useCourseLibrary() {
   function update(next: CourseLibraryState) {
     libraryRef.current = next;
     setLibrary(next);
-    window.localStorage.setItem(courseLibraryStorageKey, JSON.stringify(next));
+    window.localStorage.setItem(activeStorageKey.current, JSON.stringify(next));
     const client = getSupabaseBrowserClient();
     if (client && userId.current) void client.from("course_libraries").upsert({ user_id: userId.current, library: next, updated_at: new Date().toISOString() });
   }

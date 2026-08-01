@@ -20,7 +20,7 @@ The site works without cloud configuration: guest progress and saved courses sta
 3. Copy `.env.example` to `.env.local` and enter the project URL and publishable key. Never expose a secret or service-role key.
 4. Restart the development server and use `/account` to register.
 
-Only authenticated users write to Supabase. The cloud record contains course progress, saved course IDs, the account ID, and an update timestamp; course content remains on official university websites.
+Only authenticated users write to Supabase. Guest and account records remain separate and are never merged automatically. The cloud record contains course progress, saved course IDs, the account ID, and an update timestamp; course content remains on official university websites.
 
 ## Checks
 
