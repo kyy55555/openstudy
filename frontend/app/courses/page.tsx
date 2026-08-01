@@ -208,6 +208,10 @@ const prerequisiteCourseIds: Record<string, string> = {
   "Single Variable Calculus": "mit-18-01sc",
   "Multivariable Calculus": "mit-18-02sc",
   "MIT 6.006": "mit-6-006",
+  "MIT 6.004": "mit-6-004",
+  "MIT 6.031": "mit-6-031",
+  "MIT 6.033 or equivalent": "mit-6-033",
+  "Stanford CS 107": "stanford-cs107",
   "Stanford CS 103": "stanford-cs103",
   "Stanford CS 109": "stanford-cs109",
 };
