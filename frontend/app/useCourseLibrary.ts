@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { courseLibraryStorageKey, emptyCourseLibrary, parseCourseLibrary } from "../data/courseLibrary";
 import type { CourseLibraryState, CourseProgress } from "../data/courseLibrary";
+import { courseResourceKey } from "../data/courseLibrary";
 import { getSupabaseBrowserClient } from "../lib/supabase/client";
 
 function accountLibraryStorageKey(userId: string) {
@@ -71,5 +72,13 @@ export function useCourseLibrary() {
     update({ ...library, favorites });
   }
 
-  return { library, loaded, setProgress, toggleFavorite };
+  function toggleResource(courseId: string, resourceUrl: string) {
+    const key = courseResourceKey(courseId, resourceUrl);
+    const completedResources = library.completedResources.includes(key)
+      ? library.completedResources.filter((item) => item !== key)
+      : [...library.completedResources, key];
+    update({ ...library, completedResources });
+  }
+
+  return { library, loaded, setProgress, toggleFavorite, toggleResource };
 }

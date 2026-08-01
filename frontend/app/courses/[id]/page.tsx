@@ -6,6 +6,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { courseCode, courses, suggestedStudyStage } from "../../../data/courses";
 import { courseDetailPath, prerequisiteCourseIds } from "../../../data/courseNavigation";
 import { useCourseLibrary } from "../../useCourseLibrary";
+import { courseResourceKey } from "../../../data/courseLibrary";
 import type { CourseProgress } from "../../../data/courseLibrary";
 
 const resourceZh = {
@@ -22,13 +23,14 @@ export default function CourseDetailPage() {
   const router = useRouter();
   const language = searchParams.get("lang") === "zh" ? "zh" : "en";
   const course = courses.find(({ id }) => id === params.id);
-  const { library, loaded, setProgress, toggleFavorite } = useCourseLibrary();
+  const { library, loaded, setProgress, toggleFavorite, toggleResource } = useCourseLibrary();
 
   if (!course) {
     return <main className="mx-auto max-w-3xl px-6 py-12"><h1 className="text-2xl font-bold">{language === "zh" ? "未找到课程" : "Course not found"}</h1><Link href={language === "zh" ? "/courses?lang=zh" : "/courses"} className="mt-6 inline-block underline">{language === "zh" ? "返回课程列表" : "Back to courses"}</Link></main>;
   }
 
   const stage = suggestedStudyStage(course);
+  const completedResourceCount = course.resources.filter((resource) => library.completedResources.includes(courseResourceKey(course.id, resource.url))).length;
   const value = (verified: boolean | null) => verified === null ? (language === "zh" ? "尚未核实" : "Not verified") : verified ? (language === "zh" ? "有" : "Available") : (language === "zh" ? "无" : "Not available");
 
   return (
@@ -59,7 +61,7 @@ export default function CourseDetailPage() {
           {course.prerequisites === null ? <p className="mt-3 text-gray-500">{language === "zh" ? "官方页面未明确列出，暂不猜测。" : "Not explicitly listed by the official source; no assumption made."}</p> : course.prerequisites.length === 0 ? <p className="mt-3 text-gray-500">{language === "zh" ? "无需先修课。" : "No prerequisites."}</p> : <div className="mt-3 flex flex-wrap gap-2">{course.prerequisites.map((item) => { const targetId = prerequisiteCourseIds[item]; const target = courses.find(({ id }) => id === targetId); return target ? <Link key={item} href={courseDetailPath(target, language)} className="rounded-full border px-3 py-2 text-sm hover:border-black">{item} →</Link> : <span key={item} className="rounded-full border px-3 py-2 text-sm">{item}</span>; })}</div>}
         </section>
 
-        <section className="mt-8"><h2 className="text-xl font-semibold">{language === "zh" ? "官方课程资料" : "Official course materials"}</h2><div className="mt-4 grid gap-3 sm:grid-cols-2">{course.resources.map((resource) => <a key={resource.url} href={resource.url} target="_blank" rel="noreferrer" className="rounded-xl border border-gray-200 p-4 hover:border-black"><span className="font-medium">{language === "zh" ? resourceZh[resource.type] : resource.title}</span><span className="mt-1 block text-xs text-gray-500">{course.sourceName} ↗</span></a>)}</div></section>
+        <section className="mt-8"><div className="flex flex-wrap items-end justify-between gap-2"><div><h2 className="text-xl font-semibold">{language === "zh" ? "官方课程资料" : "Official course materials"}</h2><p className="mt-1 text-sm text-gray-500">{language === "zh" ? "打开大学官网学习后，可在这里标记完成。" : "Open the university resource, then mark it complete here."}</p></div>{loaded && course.resources.length > 0 && <span className="rounded-full bg-blue-50 px-3 py-1 text-sm font-semibold text-blue-800">{language === "zh" ? `已完成 ${completedResourceCount}/${course.resources.length}` : `${completedResourceCount}/${course.resources.length} completed`}</span>}</div><div className="mt-4 grid gap-3 sm:grid-cols-2">{course.resources.map((resource) => { const resourceKey = courseResourceKey(course.id, resource.url); const completed = library.completedResources.includes(resourceKey); return <div key={resource.url} className={`rounded-xl border p-4 ${completed ? "border-emerald-300 bg-emerald-50" : "border-gray-200"}`}><a href={resource.url} target="_blank" rel="noreferrer" className="block hover:underline"><span className="font-medium">{language === "zh" ? resourceZh[resource.type] : resource.title}</span><span className="mt-1 block text-xs text-gray-500">{course.sourceName} ↗</span></a>{loaded && <label className="mt-3 flex cursor-pointer items-center gap-2 border-t border-black/10 pt-3 text-sm"><input type="checkbox" checked={completed} onChange={() => toggleResource(course.id, resource.url)} /><span>{completed ? (language === "zh" ? "已完成" : "Completed") : (language === "zh" ? "标记为已完成" : "Mark complete")}</span></label>}</div>; })}</div></section>
 
         <section className="mt-8 border-t pt-6"><h2 className="font-semibold">{language === "zh" ? "来源与核实" : "Source and verification"}</h2><p className="mt-2 text-sm text-gray-600">{language === "zh" ? "所有链接均指向大学或课程团队的官方页面。未知信息保留为“尚未核实”，不会推测。" : "Every link points to an official university or course-team page. Unknown facts remain unverified rather than guessed."}</p><p className="mt-2 text-sm text-gray-500">{course.sourceName} · {language === "zh" ? "核实日期" : "verified"} {course.verifiedOn}</p><a href={course.courseUrl} target="_blank" rel="noreferrer" className="mt-5 inline-flex rounded-lg bg-black px-5 py-3 font-medium text-white">{language === "zh" ? "进入官方课程网站 ↗" : "Open official course ↗"}</a></section>
       </section>

@@ -5,9 +5,14 @@ export const courseLibraryStorageKey = "openstudy-course-library-v1";
 export type CourseLibraryState = {
   progress: Record<string, CourseProgress>;
   favorites: string[];
+  completedResources: string[];
 };
 
-export const emptyCourseLibrary: CourseLibraryState = { progress: {}, favorites: [] };
+export const emptyCourseLibrary: CourseLibraryState = { progress: {}, favorites: [], completedResources: [] };
+
+export function courseResourceKey(courseId: string, resourceUrl: string) {
+  return `${courseId}::${resourceUrl}`;
+}
 
 export function parseCourseLibrary(value: string | null): CourseLibraryState {
   if (!value) return emptyCourseLibrary;
@@ -16,6 +21,7 @@ export function parseCourseLibrary(value: string | null): CourseLibraryState {
     return {
       progress: parsed.progress && typeof parsed.progress === "object" ? parsed.progress : {},
       favorites: Array.isArray(parsed.favorites) ? parsed.favorites.filter((id): id is string => typeof id === "string") : [],
+      completedResources: Array.isArray(parsed.completedResources) ? parsed.completedResources.filter((key): key is string => typeof key === "string") : [],
     };
   } catch {
     return emptyCourseLibrary;
