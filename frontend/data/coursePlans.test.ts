@@ -31,3 +31,12 @@ test("CS50x follows the official weeks, problem sets, AI module, and final proje
   assert.ok(definition.tasks.every(({ url }) => url.startsWith("https://cs50.harvard.edu/x/")));
   assert.equal(buildGentlePlan("harvard-cs50x", 30)?.plannedDays, 35);
 });
+
+test("verified CS50 courses expose their full official weekly sequences", () => {
+  const expected = { "harvard-cs50-python": 21, "harvard-cs50-ai": 14, "harvard-cs50-web": 19, "harvard-cs50-cybersecurity": 11 };
+  for (const [courseId, taskCount] of Object.entries(expected)) {
+    assert.equal(structuredCoursePlans[courseId].detail, "full");
+    assert.equal(structuredCoursePlans[courseId].tasks.length, taskCount);
+    assert.ok(structuredCoursePlans[courseId].tasks.every(({ url }) => url.startsWith("https://cs50.harvard.edu/")));
+  }
+});
