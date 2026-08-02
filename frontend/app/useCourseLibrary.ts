@@ -97,5 +97,14 @@ export function useCourseLibrary() {
     update({ ...library, studyPlans });
   }
 
-  return { library, loaded, setProgress, toggleFavorite, toggleResource, createStudyPlan, toggleStudyTask, removeStudyPlan };
+  function recordResourceOpen(courseId: string, url: string, title: string, titleZh: string) {
+    const progress = library.progress[courseId] === "completed" ? library.progress : { ...library.progress, [courseId]: "in-progress" as CourseProgress };
+    update({ ...library, progress, lastOpenedResource: { courseId, url, title, titleZh, openedAt: new Date().toISOString() } });
+  }
+
+  function clearLastOpenedResource() {
+    update({ ...library, lastOpenedResource: null });
+  }
+
+  return { library, loaded, setProgress, toggleFavorite, toggleResource, createStudyPlan, toggleStudyTask, removeStudyPlan, recordResourceOpen, clearLastOpenedResource };
 }

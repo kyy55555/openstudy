@@ -1,6 +1,6 @@
 create table if not exists public.course_libraries (
   user_id uuid primary key references auth.users(id) on delete cascade,
-  library jsonb not null default '{"progress":{},"favorites":[],"completedResources":[],"studyPlans":{}}'::jsonb,
+  library jsonb not null default '{"progress":{},"favorites":[],"completedResources":[],"studyPlans":{},"lastOpenedResource":null}'::jsonb,
   updated_at timestamptz not null default now()
 );
 

@@ -7,9 +7,10 @@ export type CourseLibraryState = {
   favorites: string[];
   completedResources: string[];
   studyPlans: Record<string, { days: number; completedTaskIds: string[] }>;
+  lastOpenedResource: { courseId: string; url: string; title: string; titleZh: string; openedAt: string } | null;
 };
 
-export const emptyCourseLibrary: CourseLibraryState = { progress: {}, favorites: [], completedResources: [], studyPlans: {} };
+export const emptyCourseLibrary: CourseLibraryState = { progress: {}, favorites: [], completedResources: [], studyPlans: {}, lastOpenedResource: null };
 
 export function courseResourceKey(courseId: string, resourceUrl: string) {
   return `${courseId}::${resourceUrl}`;
@@ -24,6 +25,7 @@ export function parseCourseLibrary(value: string | null): CourseLibraryState {
       favorites: Array.isArray(parsed.favorites) ? parsed.favorites.filter((id): id is string => typeof id === "string") : [],
       completedResources: Array.isArray(parsed.completedResources) ? parsed.completedResources.filter((key): key is string => typeof key === "string") : [],
       studyPlans: parsed.studyPlans && typeof parsed.studyPlans === "object" ? parsed.studyPlans : {},
+      lastOpenedResource: parsed.lastOpenedResource && typeof parsed.lastOpenedResource === "object" ? parsed.lastOpenedResource : null,
     };
   } catch {
     return emptyCourseLibrary;
