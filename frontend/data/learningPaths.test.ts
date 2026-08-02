@@ -6,7 +6,7 @@ import { learningPaths } from "./learningPaths.ts";
 
 test("learning paths use official sources and known courses", () => {
   const courseIds = new Set(courses.map(({ id }) => id));
-  assert.equal(learningPaths.length, 9);
+  assert.equal(learningPaths.length, 11);
   for (const path of learningPaths) {
     assert.equal(new URL(path.officialUrl).protocol, "https:");
     assert.equal(path.scheduleStatus, "prerequisite-inferred");

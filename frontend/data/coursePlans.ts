@@ -1,9 +1,11 @@
+import { courses } from "./courses.ts";
+
 export type PlanTask = {
   id: string;
   title: string;
   titleZh: string;
   url: string;
-  kind: "session" | "assignment" | "exam" | "buffer";
+  kind: "session" | "assignment" | "exam" | "project" | "buffer";
 };
 
 export type PlanDay = { id: string; tasks: PlanTask[] };
@@ -51,9 +53,55 @@ function mit1801Tasks(): PlanTask[] {
   return tasks;
 }
 
-export const structuredCoursePlans: Record<string, { sourceUrl: string; tasks: PlanTask[] }> = {
-  "mit-18-01sc": { sourceUrl: `${base}/syllabus/`, tasks: mit1801Tasks() },
+const cs50Topics = [
+  ["Scratch", "Scratch"], ["C", "C 语言"], ["Arrays", "数组"], ["Algorithms", "算法"],
+  ["Memory", "内存"], ["Data Structures", "数据结构"], ["Python", "Python"], ["SQL", "SQL"],
+  ["HTML, CSS, JavaScript", "HTML、CSS 与 JavaScript"], ["Flask", "Flask"],
+] as const;
+
+function cs50xTasks(): PlanTask[] {
+  const tasks = cs50Topics.flatMap(([title, titleZh], week) => [
+    { id: `week-${week}`, title: `Week ${week}: ${title}`, titleZh: `第 ${week} 周：${titleZh}`, url: `https://cs50.harvard.edu/x/weeks/${week}/`, kind: "session" as const },
+    { id: `problem-set-${week}`, title: `Problem Set ${week}: ${title}`, titleZh: `习题集 ${week}：${titleZh}`, url: `https://cs50.harvard.edu/x/psets/${week}/`, kind: "assignment" as const },
+  ]);
+  return [
+    ...tasks,
+    { id: "ai", title: "Artificial Intelligence", titleZh: "人工智能专题", url: "https://cs50.harvard.edu/x/weeks/ai/", kind: "session" },
+    { id: "week-10", title: "Week 10: The End", titleZh: "第 10 周：总结", url: "https://cs50.harvard.edu/x/weeks/10/", kind: "session" },
+    { id: "final-project", title: "Final Project", titleZh: "期末项目", url: "https://cs50.harvard.edu/x/project/", kind: "project" },
+  ];
+}
+
+export type CoursePlanDefinition = {
+  sourceUrl: string;
+  tasks: PlanTask[];
+  detail: "full" | "resources";
 };
+
+function resourcePlan(courseId: string): CoursePlanDefinition {
+  const course = courses.find(({ id }) => id === courseId);
+  if (!course) throw new Error(`Unknown course: ${courseId}`);
+  const kindByType = { assignments: "assignment", exams: "exam", projects: "project" } as const;
+  const resources = course.resources.length ? course.resources : [{ type: "materials" as const, title: "Official course page", url: course.courseUrl }];
+  return {
+    sourceUrl: course.sourceUrl,
+    detail: "resources",
+    tasks: resources.map((resource, index) => ({
+      id: `official-resource-${index + 1}`,
+      title: resource.title,
+      titleZh: ({ syllabus: "阅读课程大纲", schedule: "查看课程安排", lectures: "学习讲义与视频", assignments: "完成官方作业", exams: "完成官方考试与测试题", projects: "完成官方课程项目", materials: "学习官方课程资料", downloads: "下载并学习完整资料包" } as const)[resource.type],
+      url: resource.url,
+      kind: kindByType[resource.type as keyof typeof kindByType] ?? "session",
+    })),
+  };
+}
+
+export const structuredCoursePlans: Record<string, CoursePlanDefinition> = Object.fromEntries(
+  courses.map((course) => [course.id, resourcePlan(course.id)]),
+);
+
+structuredCoursePlans["mit-18-01sc"] = { sourceUrl: `${base}/syllabus/`, tasks: mit1801Tasks(), detail: "full" };
+structuredCoursePlans["harvard-cs50x"] = { sourceUrl: "https://cs50.harvard.edu/x/syllabus/", tasks: cs50xTasks(), detail: "full" };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];
