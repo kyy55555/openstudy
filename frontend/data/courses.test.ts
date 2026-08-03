@@ -59,6 +59,9 @@ const officialHosts = new Set([
   "phy.princeton.edu",
   "www.princeton.edu",
   "hpa.princeton.edu",
+  "www.math.cmu.edu",
+  "www.cmu.edu",
+  "coursecatalog.web.cmu.edu",
 ]);
 
 const knownInvalidCourseUrls = new Set([
@@ -169,6 +172,13 @@ test("Princeton BSE foundations use verified Princeton courses", () => {
 test("CMU's six official CS core courses are present", () => {
   const ids = new Set(courses.map(({ id }) => id));
   for (const id of ["cmu-15-122", "cmu-15-150", "cmu-15-210", "cmu-15-213", "cmu-15-251", "cmu-15-451"]) {
+    assert.ok(ids.has(id), `${id} is missing`);
+  }
+});
+
+test("CMU's required mathematics sequence is present", () => {
+  const ids = new Set(courses.map(({ id }) => id));
+  for (const id of ["cmu-15-151", "cmu-21-120", "cmu-21-122", "cmu-21-241", "cmu-21-266", "cmu-15-259"]) {
     assert.ok(ids.has(id), `${id} is missing`);
   }
 });
