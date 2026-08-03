@@ -62,6 +62,9 @@ const officialHosts = new Set([
   "www.math.cmu.edu",
   "www.cmu.edu",
   "coursecatalog.web.cmu.edu",
+  "db.cs.cmu.edu",
+  "15445.courses.cs.cmu.edu",
+  "graphics.cs.cmu.edu",
 ]);
 
 const knownInvalidCourseUrls = new Set([
@@ -179,6 +182,13 @@ test("CMU's six official CS core courses are present", () => {
 test("CMU's required mathematics sequence is present", () => {
   const ids = new Set(courses.map(({ id }) => id));
   for (const id of ["cmu-15-151", "cmu-21-120", "cmu-21-122", "cmu-21-241", "cmu-21-266", "cmu-15-259"]) {
+    assert.ok(ids.has(id), `${id} is missing`);
+  }
+});
+
+test("CMU advanced elective categories have native public courses", () => {
+  const ids = new Set(courses.map(({ id }) => id));
+  for (const id of ["cmu-15-312", "cmu-15-440", "cmu-15-445", "cmu-15-362", "cmu-15-281", "cmu-15-330"]) {
     assert.ok(ids.has(id), `${id} is missing`);
   }
 });
