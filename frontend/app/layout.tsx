@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import "./globals.css";
 import AccountMenu from "./AccountMenu";
 import SiteFooter from "./SiteFooter";
+import { publicSiteUrl } from "../lib/siteUrl";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+  metadataBase: new URL(publicSiteUrl()),
   title: "OpenStudy",
   description: "Verified open university courses and learning paths.",
   openGraph: {

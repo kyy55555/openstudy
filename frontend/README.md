@@ -22,6 +22,14 @@ The site works without cloud configuration: guest progress and saved courses sta
 5. In Supabase Authentication URL Configuration, set the Site URL to the public Beta URL. Add both the public Beta URL and its `/account` page to Redirect URLs so confirmation and password-recovery emails return to OpenStudy.
 6. Keep email confirmation enabled, restart the app, and use `/account` to register.
 
+Before launching, verify the host's environment configuration:
+
+```bash
+npm run check:launch-env
+```
+
+This command intentionally fails when any cloud variable is missing or when the public site URL is not HTTPS.
+
 Only authenticated users write to Supabase. Guest and account records remain separate and are never merged automatically. The cloud record contains course progress, completed resource links, saved course IDs, the account ID, and an update timestamp; course content remains on official university websites.
 
 Anonymous and authenticated visitors can submit Beta feedback, but cannot read feedback rows. The SQL script is safe to run again when policies change.
@@ -29,6 +37,7 @@ Anonymous and authenticated visitors can submit Beta feedback, but cannot read f
 ## Beta deployment checklist
 
 - Configure the three environment variables from `.env.example` in the host.
+- When importing the GitHub repository into Vercel, set the project Root Directory to `frontend` and keep the detected Next.js build settings.
 - Run `supabase/schema.sql` and verify Row Level Security is enabled on both tables.
 - Confirm a new account by email, then verify progress on a second browser.
 - Send a password-reset email and verify that its link opens `/account` and accepts a new password.

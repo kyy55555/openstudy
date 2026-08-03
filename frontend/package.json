@@ -10,7 +10,8 @@
     "lint": "eslint",
     "test": "node --test data/*.test.ts",
     "check:links": "node scripts/check-course-links.mjs",
-    "check:beta": "npm test && npm run lint && npm run build && npm run check:links"
+    "check:beta": "npm test && npm run lint && npm run build && npm run check:links",
+    "check:launch-env": "node scripts/check-launch-env.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",
