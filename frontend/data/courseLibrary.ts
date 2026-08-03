@@ -20,12 +20,27 @@ export function parseCourseLibrary(value: string | null): CourseLibraryState {
   if (!value) return emptyCourseLibrary;
   try {
     const parsed = JSON.parse(value) as Partial<CourseLibraryState>;
+    const progress = parsed.progress && typeof parsed.progress === "object"
+      ? Object.fromEntries(Object.entries(parsed.progress).filter((entry): entry is [string, CourseProgress] => typeof entry[0] === "string" && ["not-started", "in-progress", "completed"].includes(entry[1] as string)))
+      : {};
+    const studyPlans = parsed.studyPlans && typeof parsed.studyPlans === "object"
+      ? Object.fromEntries(Object.entries(parsed.studyPlans).flatMap(([courseId, plan]) => {
+        if (!plan || typeof plan !== "object") return [];
+        const candidate = plan as { days?: unknown; completedTaskIds?: unknown };
+        if (!Number.isInteger(candidate.days) || (candidate.days as number) < 1 || (candidate.days as number) > 3650 || !Array.isArray(candidate.completedTaskIds)) return [];
+        return [[courseId, { days: candidate.days as number, completedTaskIds: candidate.completedTaskIds.filter((id): id is string => typeof id === "string") }]];
+      }))
+      : {};
+    const recent = parsed.lastOpenedResource;
+    const lastOpenedResource = recent && typeof recent === "object" && [recent.courseId, recent.url, recent.title, recent.titleZh, recent.openedAt].every((item) => typeof item === "string")
+      ? recent
+      : null;
     return {
-      progress: parsed.progress && typeof parsed.progress === "object" ? parsed.progress : {},
+      progress,
       favorites: Array.isArray(parsed.favorites) ? parsed.favorites.filter((id): id is string => typeof id === "string") : [],
       completedResources: Array.isArray(parsed.completedResources) ? parsed.completedResources.filter((key): key is string => typeof key === "string") : [],
-      studyPlans: parsed.studyPlans && typeof parsed.studyPlans === "object" ? parsed.studyPlans : {},
-      lastOpenedResource: parsed.lastOpenedResource && typeof parsed.lastOpenedResource === "object" ? parsed.lastOpenedResource : null,
+      studyPlans,
+      lastOpenedResource,
     };
   } catch {
     return emptyCourseLibrary;

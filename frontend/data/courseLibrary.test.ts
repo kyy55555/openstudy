@@ -18,6 +18,21 @@ test("guest records never merge into an account automatically", () => {
   assert.ok(!("guest-course" in selectSessionLibrary("new-user", guest, null).progress));
 });
 
+test("invalid synced fields are discarded without losing valid records", () => {
+  const parsed = parseCourseLibrary(JSON.stringify({
+    progress: { good: "completed", bad: "finished" },
+    favorites: ["good", 42],
+    completedResources: ["good::url", null],
+    studyPlans: { good: { days: 30, completedTaskIds: ["one", 2] }, bad: { days: -5, completedTaskIds: [] } },
+    lastOpenedResource: { courseId: "good" },
+  }));
+  assert.deepEqual(parsed.progress, { good: "completed" });
+  assert.deepEqual(parsed.favorites, ["good"]);
+  assert.deepEqual(parsed.completedResources, ["good::url"]);
+  assert.deepEqual(parsed.studyPlans, { good: { days: 30, completedTaskIds: ["one"] } });
+  assert.equal(parsed.lastOpenedResource, null);
+});
+
 test("resource progress keys include both course and official URL", () => {
   assert.equal(courseResourceKey("mit-6-006", "https://example.edu/lectures"), "mit-6-006::https://example.edu/lectures");
 });

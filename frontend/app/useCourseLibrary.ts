@@ -17,6 +17,17 @@ export function useCourseLibrary() {
   const userId = useRef<string | null>(null);
   const libraryRef = useRef<CourseLibraryState>(emptyCourseLibrary);
   const activeStorageKey = useRef(courseLibraryStorageKey);
+  const saveQueue = useRef<Promise<void>>(Promise.resolve());
+
+  function saveCloud(nextUserId: string, next: CourseLibraryState) {
+    const client = getSupabaseBrowserClient();
+    if (!client) return Promise.resolve();
+    saveQueue.current = saveQueue.current.then(async () => {
+      const { error } = await client.from("course_libraries").upsert({ user_id: nextUserId, library: next, updated_at: new Date().toISOString() });
+      setSyncIssue(Boolean(error));
+    }).catch(() => setSyncIssue(true));
+    return saveQueue.current;
+  }
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -61,8 +72,7 @@ export function useCourseLibrary() {
       window.localStorage.setItem(activeStorageKey.current, JSON.stringify(next));
       setSyncIssue(false);
       if (!data) {
-        const { error: createError } = await supabase.from("course_libraries").upsert({ user_id: nextUserId, library: next, updated_at: new Date().toISOString() });
-        setSyncIssue(Boolean(createError));
+        await saveCloud(nextUserId, next);
       }
     }
     void client.auth.getUser().then(({ data }) => sync(data.user?.id ?? null));
@@ -74,8 +84,7 @@ export function useCourseLibrary() {
     libraryRef.current = next;
     setLibrary(next);
     window.localStorage.setItem(activeStorageKey.current, JSON.stringify(next));
-    const client = getSupabaseBrowserClient();
-    if (client && userId.current) void client.from("course_libraries").upsert({ user_id: userId.current, library: next, updated_at: new Date().toISOString() }).then(({ error }) => setSyncIssue(Boolean(error)));
+    if (userId.current) void saveCloud(userId.current, next);
   }
 
   function setProgress(id: string, progress: CourseProgress) {
