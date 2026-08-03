@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "node --test data/*.test.ts",
-    "check:links": "node scripts/check-course-links.mjs"
+    "check:links": "node scripts/check-course-links.mjs",
+    "check:beta": "npm test && npm run lint && npm run build && npm run check:links"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",
