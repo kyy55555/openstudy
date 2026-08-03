@@ -46,6 +46,8 @@ const officialHosts = new Set([
   "catalog.gatech.edu",
   "cs2110.gatech.edu",
   "faculty.cc.gatech.edu",
+  "cs3110.github.io",
+  "cs61.seas.harvard.edu",
 ]);
 
 const knownInvalidCourseUrls = new Set([

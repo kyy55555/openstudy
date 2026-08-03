@@ -2025,4 +2025,32 @@ export const courses: Course[] = [
     courseUrl: "https://faculty.cc.gatech.edu/~ladha/S26/3510/", sourceName: "Georgia Tech College of Computing", verifiedOn: "2026-08-03",
     resources: [{ type: "syllabus", title: "Fall 2026 official syllabus", url: "https://syllabus.gatech.edu/sites/default/files/2026-04/CS3510_syllabus.pdf" }, { type: "lectures", title: "Public lecture schedule and videos", url: "https://faculty.cc.gatech.edu/~vigoda/3510/lectures.html" }],
   }),
+  course({
+    id: "cornell-cs1110", title: "Introduction to Computing: A Design and Development Perspective", titleZh: "计算导论：设计与开发视角", university: "Cornell University", subject: "Programming", subjectZh: "编程",
+    description: "Python programming and problem solving with software-development principles, testing, recursion, object-oriented programming, searching, sorting, laboratories, and assignments.", descriptionZh: "使用 Python 学习程序设计与问题求解，涵盖软件开发原则、测试、递归、面向对象编程、查找、排序、实验和作业。",
+    searchKeywords: ["CS 1110", "Python", "programming", "Cornell"], level: "Introductory", prerequisites: [], year: 2025, hasVideos: null, hasAssignments: true, hasSolutions: null,
+    courseUrl: "https://www.cs.cornell.edu/courses/cs1110/2025fa/", sourceName: "Cornell University Department of Computer Science", verifiedOn: "2026-08-03",
+    resources: [{ type: "lectures", title: "Official lectures", url: "https://www.cs.cornell.edu/courses/cs1110/2025fa/lectures/" }, { type: "assignments", title: "Official assignments", url: "https://www.cs.cornell.edu/courses/cs1110/2025fa/assessment/assignments/" }],
+  }),
+  course({
+    id: "cornell-cs2110", title: "Object-Oriented Programming and Data Structures", titleZh: "面向对象程序设计与数据结构", university: "Cornell University", subject: "Data Structures", subjectZh: "数据结构",
+    description: "Intermediate Java programming, software design, correctness, complexity, recursion, data structures, graph algorithms, concurrency, and event-driven programming.", descriptionZh: "使用 Java 学习中级程序设计、软件设计、正确性、复杂度、递归、数据结构、图算法、并发与事件驱动编程。",
+    searchKeywords: ["CS 2110", "Java", "data structures", "Cornell"], level: "Intermediate", prerequisites: ["Cornell CS 1110 or equivalent"], year: 2025, hasVideos: null, hasAssignments: true, hasSolutions: true,
+    courseUrl: "https://www.cs.cornell.edu/courses/cs2110/2025fa/", sourceName: "Cornell University Department of Computer Science", verifiedOn: "2026-08-03",
+    resources: [{ type: "lectures", title: "Public lecture notes and schedule", url: "https://www.cs.cornell.edu/courses/cs2110/2025fa/lectures/lec01/" }],
+  }),
+  course({
+    id: "cornell-cs3110", title: "Functional Programming and Data Structures", titleZh: "函数式编程与数据结构", university: "Cornell University", subject: "Programming Languages", subjectZh: "编程语言",
+    description: "Advanced functional programming, data structures, software design, correctness, performance analysis, abstraction, and type systems using OCaml.", descriptionZh: "使用 OCaml 学习高阶函数式编程、数据结构、软件设计、正确性、性能分析、抽象与类型系统。",
+    searchKeywords: ["CS 3110", "OCaml", "functional programming", "Cornell"], level: "Undergraduate", prerequisites: ["Cornell CS 2110", "Cornell CS 2800"], year: 2025, hasVideos: true, hasAssignments: null, hasSolutions: null,
+    courseUrl: "https://www.cs.cornell.edu/courses/cs3110/2025sp/", sourceName: "Cornell University Department of Computer Science", verifiedOn: "2026-08-03",
+    resources: [{ type: "materials", title: "Open official textbook", url: "https://cs3110.github.io/textbook/cover.html" }],
+  }),
+  course({
+    id: "harvard-cs61", title: "Systems Programming and Machine Organization", titleZh: "系统编程与机器组成", university: "Harvard University", subject: "Computer Systems", subjectZh: "计算机系统",
+    description: "Systems programming in C, C++, and assembly, including data representation, memory, caching, processes, kernels, storage, threads, and synchronization.", descriptionZh: "使用 C、C++ 和汇编学习系统编程，涵盖数据表示、内存、缓存、进程、内核、存储、线程与同步。",
+    searchKeywords: ["CS 61", "systems programming", "C++", "assembly", "Harvard"], level: "Undergraduate", prerequisites: ["Harvard CS50, CS32, CS51, or permission"], year: 2025, hasVideos: null, hasAssignments: true, hasSolutions: true,
+    courseUrl: "https://cs61.seas.harvard.edu/site/2025/", sourceName: "Harvard School of Engineering and Applied Sciences", verifiedOn: "2026-08-03",
+    resources: [{ type: "schedule", title: "Official schedule, notes, exercises, and problem sets", url: "https://cs61.seas.harvard.edu/site/2025/Schedule/" }, { type: "syllabus", title: "Course description and policies", url: "https://cs61.seas.harvard.edu/site/2025/CourseDescription/" }],
+  }),
 ];
