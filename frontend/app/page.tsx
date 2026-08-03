@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { courses } from "../data/courses";
 
 const homeCopy = {
@@ -31,8 +32,9 @@ const homeCopy = {
   },
 } as const;
 
-export default function Home() {
-  const [language, setLanguage] = useState<keyof typeof homeCopy>("en");
+function HomeContent() {
+  const params = useSearchParams();
+  const [language, setLanguage] = useState<keyof typeof homeCopy>(params.get("lang") === "zh" ? "zh" : "en");
   const copy = homeCopy[language];
 
   return (
@@ -101,3 +103,5 @@ export default function Home() {
     </main>
   );
 }
+
+export default function Home() { return <Suspense><HomeContent /></Suspense>; }

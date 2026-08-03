@@ -15,6 +15,7 @@ function AccountContent() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
+  const [accepted, setAccepted] = useState(false);
   const client = getSupabaseBrowserClient();
 
   useEffect(() => {
@@ -64,9 +65,11 @@ function AccountContent() {
       <form onSubmit={submit} className="mt-5 space-y-4">
         <label className="block text-sm font-medium">{language === "zh" ? "邮箱" : "Email"}<input required type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-black" /></label>
         <label className="block text-sm font-medium">{language === "zh" ? "密码（至少 6 位）" : "Password (at least 6 characters)"}<input required minLength={6} type="password" autoComplete={mode === "signin" ? "current-password" : "new-password"} value={password} onChange={(event) => setPassword(event.target.value)} className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-black" /></label>
-        <button disabled={busy} className="w-full rounded-lg bg-black px-4 py-3 font-medium text-white disabled:opacity-50">{busy ? (language === "zh" ? "处理中…" : "Working…") : mode === "signin" ? (language === "zh" ? "登录并同步" : "Sign in and sync") : (language === "zh" ? "创建账号" : "Create account")}</button>
+        {mode === "signup" && <label className="flex items-start gap-2 text-sm text-gray-600"><input required type="checkbox" checked={accepted} onChange={(event) => setAccepted(event.target.checked)} className="mt-1" /><span>{language === "zh" ? "我已阅读并同意" : "I have read and agree to the"} <Link href={language === "zh" ? "/terms?lang=zh" : "/terms"} className="underline">{language === "zh" ? "使用说明" : "terms"}</Link> {language === "zh" ? "和" : "and"} <Link href={language === "zh" ? "/privacy?lang=zh" : "/privacy"} className="underline">{language === "zh" ? "隐私说明" : "privacy notice"}</Link>。</span></label>}
+        <button disabled={busy || (mode === "signup" && !accepted)} className="w-full rounded-lg bg-black px-4 py-3 font-medium text-white disabled:opacity-50">{busy ? (language === "zh" ? "处理中…" : "Working…") : mode === "signin" ? (language === "zh" ? "登录并同步" : "Sign in and sync") : (language === "zh" ? "创建账号" : "Create account")}</button>
       </form>
       {message && <p className="mt-4 text-sm text-gray-700" role="status">{message}</p>}
+      <p className="mt-4 text-xs text-gray-500">{language === "zh" ? "登录不会自动合并当前游客记录；账号与游客数据保持分开。" : "Signing in does not automatically merge the current guest record; account and guest data stay separate."}</p>
     </section>}
   </main>;
 }

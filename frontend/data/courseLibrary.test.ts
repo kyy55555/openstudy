@@ -1,12 +1,21 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { courseResourceKey, learningPathCoverage, parseCourseLibrary, pathCompletion, phaseCoverage } from "./courseLibrary.ts";
+import { courseResourceKey, learningPathCoverage, parseCourseLibrary, pathCompletion, phaseCoverage, selectSessionLibrary } from "./courseLibrary.ts";
 
 test("course library safely parses local data", () => {
   assert.deepEqual(parseCourseLibrary(null), { progress: {}, favorites: [], completedResources: [], studyPlans: {}, lastOpenedResource: null });
   assert.deepEqual(parseCourseLibrary("broken"), { progress: {}, favorites: [], completedResources: [], studyPlans: {}, lastOpenedResource: null });
   assert.deepEqual(parseCourseLibrary('{"progress":{"a":"completed"},"favorites":["a"]}'), { progress: { a: "completed" }, favorites: ["a"], completedResources: [], studyPlans: {}, lastOpenedResource: null });
+});
+
+test("guest records never merge into an account automatically", () => {
+  const guest = parseCourseLibrary('{"progress":{"guest-course":"completed"},"favorites":["guest-course"]}');
+  const account = parseCourseLibrary('{"progress":{"account-course":"in-progress"},"favorites":[]}');
+  assert.deepEqual(selectSessionLibrary(null, guest, account), guest);
+  assert.deepEqual(selectSessionLibrary("user-1", guest, account), account);
+  assert.deepEqual(selectSessionLibrary("new-user", guest, null), parseCourseLibrary(null));
+  assert.ok(!("guest-course" in selectSessionLibrary("new-user", guest, null).progress));
 });
 
 test("resource progress keys include both course and official URL", () => {

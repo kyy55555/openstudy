@@ -32,6 +32,10 @@ export function parseCourseLibrary(value: string | null): CourseLibraryState {
   }
 }
 
+export function selectSessionLibrary(userId: string | null, guest: CourseLibraryState, account: CourseLibraryState | null) {
+  return userId ? (account ?? emptyCourseLibrary) : guest;
+}
+
 export function pathCompletion(courseIds: string[], progress: Record<string, CourseProgress>) {
   const uniqueIds = [...new Set(courseIds)];
   const completed = uniqueIds.filter((id) => progress[id] === "completed").length;
