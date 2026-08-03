@@ -27,6 +27,17 @@ const officialHosts = new Set([
   "eecs189.org",
   "openlearninglibrary.mit.edu",
   "cs155.stanford.edu",
+  "pacman.cs.tsinghua.edu.cn",
+  "dsa.cs.tsinghua.edu.cn",
+  "cg.cs.tsinghua.edu.cn",
+  "courseweb.pku.edu.cn",
+  "ceca.pku.edu.cn",
+  "dean.pku.edu.cn",
+  "center.pku.edu.cn",
+  "elective.pku.edu.cn",
+  "dbgroup.cs.tsinghua.edu.cn",
+  "www.cs.cmu.edu",
+  "www.csd.cs.cmu.edu",
 ]);
 
 const knownInvalidCourseUrls = new Set([
@@ -120,6 +131,11 @@ test("every course has a stable display code", () => {
   }
   assert.equal(courseCode(courses.find(({ id }) => id === "princeton-cos126")!), "COS 126");
   assert.equal(courseCode(courses.find(({ id }) => id === "mit-6-042j")!), "6.042J");
+});
+
+test("verified Tsinghua and Peking University courses are present", () => {
+  const ids = new Set(courses.map(({ id }) => id));
+  for (const id of ["tsinghua-20740112", "tsinghua-computer-graphics", "tsinghua-20740164", "tsinghua-database-technology", "pku-computing-intro", "pku-data-structures", "pku-operating-systems"]) assert.ok(ids.has(id), `${id} is missing`);
 });
 
 test("course detail routes and prerequisite links resolve", () => {

@@ -97,6 +97,12 @@ export function courseCode(course: Course): string {
   if (university === "washington") {
     return rawCode.replace(/^cse/, "CSE ").toUpperCase();
   }
+  if (university === "tsinghua") {
+    return ["computer-graphics", "database-technology"].includes(rawCode) ? "官方公开课" : rawCode.toUpperCase();
+  }
+  if (university === "pku") {
+    return rawCode === "operating-systems" ? "官方课程" : "官方公开课";
+  }
   return rawCode.toUpperCase();
 }
 
@@ -134,7 +140,7 @@ type CourseSeed = Omit<
       | "sourceUrl"
       | "resources"
     >
-  >;
+  > & { verifiedOn?: string };
 
 function course(seed: CourseSeed): Course {
   return {
@@ -1899,5 +1905,82 @@ export const courses: Course[] = [
     resources: [
       { type: "materials", title: "Course description, outcomes, assignments, and projects", url: "https://www.cs.princeton.edu/courses/archive/fall25/cos461/#course-description" },
     ],
+  }),
+  course({
+    id: "tsinghua-20740112", title: "Data Structures and Algorithms", titleZh: "数据结构与算法", university: "Tsinghua University", subject: "Data Structures", subjectZh: "数据结构",
+    description: "A foundation course covering linear structures, trees, heaps, sorting, searching, hash tables, graphs, shortest paths, and basic algorithm design.", descriptionZh: "面向非计算机专业学生的数据结构与算法基础课，涵盖线性结构、树、堆、排序、查找、散列表、图、最短路径和基础算法。",
+    searchKeywords: ["20740112", "data structures", "algorithms", "C++", "清华"], level: "Introductory", prerequisites: null, language: "Chinese", year: 2026, hasVideos: null, hasAssignments: true, hasSolutions: null,
+    courseUrl: "https://pacman.cs.tsinghua.edu.cn/~hanwentao/dsa/", sourceName: "Tsinghua University Department of Computer Science and Technology", verifiedOn: "2026-08-02",
+    resources: [{ type: "assignments", title: "Tsinghua Data Structures Online Judge", url: "https://dsa.cs.tsinghua.edu.cn/oj/" }],
+  }),
+  course({
+    id: "tsinghua-computer-graphics", title: "Fundamentals of Computer Graphics", titleZh: "计算机图形学基础", university: "Tsinghua University", subject: "Computer Graphics", subjectZh: "计算机图形学",
+    description: "An undergraduate foundation course covering color and image models, viewing transformations, BRDF, ray tracing, curves and surfaces, meshes, textures, and shadows.", descriptionZh: "清华计算机系本科专业基础课，涵盖颜色与图像模型、视图变换、BRDF、光线跟踪、曲线曲面、网格、纹理和阴影。",
+    searchKeywords: ["computer graphics", "ray tracing", "Bezier", "B-spline", "清华"], level: "Undergraduate", prerequisites: null, language: "Chinese / English", year: null, hasVideos: true, hasAssignments: true, hasSolutions: true,
+    courseUrl: "https://cg.cs.tsinghua.edu.cn/course/course_main.htm", sourceName: "Tsinghua University Department of Computer Science and Technology", verifiedOn: "2026-08-02",
+    resources: [{ type: "syllabus", title: "Syllabus, notes, exercises, solutions, labs, and recordings", url: "https://cg.cs.tsinghua.edu.cn/course/resource_main.htm" }],
+  }),
+  course({
+    id: "pku-computing-intro", title: "Introduction to Computing", titleZh: "计算概论", university: "Peking University", subject: "Computer Science", subjectZh: "计算机科学",
+    description: "Peking University's introductory course for first-year science, engineering, and medical students, covering computer systems and foundational computing concepts.", descriptionZh: "北京大学面向理、工、医科一年级学生的计算机基础课程，介绍计算机软硬件层次和基础计算概念。",
+    searchKeywords: ["计算概论", "introduction to computing", "北京大学", "PKU"], level: "Introductory", prerequisites: [], language: "Chinese", year: null, hasVideos: true, hasAssignments: null, hasSolutions: null,
+    courseUrl: "https://courseweb.pku.edu.cn/course/CourseAction.do?course_id=87&dispatch=toIndex&longa=1&view=%2Fopencourse2%2Fcourse.jsp", sourceName: "Peking University Open Video Courses", verifiedOn: "2026-08-02",
+    resources: [{ type: "materials", title: "Official course description", url: "https://dean.pku.edu.cn/service/web/courseDetail.php?flag=1&zxjhbh=BZ2223104833040_25430" }],
+  }),
+  course({
+    id: "pku-data-structures", title: "Data Structures and Algorithms", titleZh: "数据结构与算法", university: "Peking University", subject: "Data Structures", subjectZh: "数据结构",
+    description: "An undergraduate foundation course in program design, algorithms, and data structures, including advanced structures such as B+ trees and hashing.", descriptionZh: "本科基础课程，学习程序设计、算法与数据结构，并涵盖 B+ 树、散列等高阶数据结构。",
+    searchKeywords: ["数据结构与算法", "B+ tree", "hash", "北京大学", "PKU"], level: "Undergraduate", prerequisites: ["Introductory programming"], language: "Chinese", year: null, hasVideos: true, hasAssignments: null, hasSolutions: null,
+    courseUrl: "https://courseweb.pku.edu.cn/course/CourseAction.do?course_id=121&dispatch=toIndex&longa=1&view=%2Fopencourse2%2Fcourse.jsp", sourceName: "Peking University Open Video Courses", verifiedOn: "2026-08-02",
+    resources: [{ type: "materials", title: "Official computer laboratory curriculum", url: "https://center.pku.edu.cn/jxky/jxtxnr/index.htm" }],
+  }),
+  course({
+    id: "pku-operating-systems", title: "Operating Systems", titleZh: "操作系统", university: "Peking University", subject: "Operating Systems", subjectZh: "操作系统",
+    description: "An operating-systems foundation course combining classic principles with Windows and Linux kernel programming projects.", descriptionZh: "结合经典操作系统原理与 Windows、Linux 内核编程项目的专业基础课程。",
+    searchKeywords: ["operating systems", "Linux kernel", "Windows kernel", "北京大学", "PKU"], level: "Undergraduate", prerequisites: null, language: "Chinese", year: 2017, hasVideos: null, hasAssignments: true, hasSolutions: null,
+    courseUrl: "https://ceca.pku.edu.cn/courses/2017fall/45ceca1228454.htm", sourceName: "Peking University Center for Energy-Efficient Computing and Applications", verifiedOn: "2026-08-02",
+    resources: [{ type: "syllabus", title: "Official course content and objectives", url: "https://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/courseDetail/getCourseDetail.do?course_seq_no=BZ1516104830470_16375&kclx=BK" }],
+  }),
+  course({
+    id: "tsinghua-20740164", title: "Programming and Computational Thinking", titleZh: "程序设计与计算思维", university: "Tsinghua University", subject: "Programming", subjectZh: "编程",
+    description: "A 2026 Tsinghua course combining computational-thinking methods with programming, arrays, image data, and applied problem solving.", descriptionZh: "清华大学 2026 年课程，将计算思维方法与程序设计、数组、图像数据和实际问题求解结合。",
+    searchKeywords: ["20740164", "programming", "computational thinking", "程序设计", "计算思维"], level: "Introductory", prerequisites: [], language: "Chinese", year: 2026, hasVideos: null, hasAssignments: true, hasSolutions: null,
+    courseUrl: "https://pacman.cs.tsinghua.edu.cn/~hanwentao/cpct/", sourceName: "Tsinghua University Department of Computer Science and Technology", verifiedOn: "2026-08-02",
+    resources: [{ type: "materials", title: "Official notebooks and course materials", url: "https://pacman.cs.tsinghua.edu.cn/~hanwentao/cpct/#课程内容" }],
+  }),
+  course({
+    id: "tsinghua-database-technology", title: "Database Technology and Applications", titleZh: "数据库技术与应用", university: "Tsinghua University", subject: "Databases", subjectZh: "数据库",
+    description: "A 2026 Tsinghua course covering data analysis, SQL, relational modeling, application development, transactions, indexing, query optimization, and Data+AI.", descriptionZh: "清华大学 2026 年课程，涵盖数据分析、SQL、关系建模、应用开发、事务、索引、查询优化与 Data+AI。",
+    searchKeywords: ["database", "SQL", "Data+AI", "数据库", "清华"], level: "Undergraduate", prerequisites: null, language: "Chinese", year: 2026, hasVideos: null, hasAssignments: true, hasSolutions: null,
+    courseUrl: "https://dbgroup.cs.tsinghua.edu.cn/jnwang/ai-data-foundation/index.html", sourceName: "Tsinghua University Database Group", verifiedOn: "2026-08-02",
+    resources: [{ type: "schedule", title: "Official weekly schedule", url: "https://dbgroup.cs.tsinghua.edu.cn/jnwang/ai-data-foundation/index.html#schedule" }, { type: "assignments", title: "Official labs", url: "https://dbgroup.cs.tsinghua.edu.cn/jnwang/ai-data-foundation/labs/Lab7/Lab7.html" }],
+  }),
+  course({
+    id: "cmu-15-112", title: "Fundamentals of Programming and Computer Science", titleZh: "程序设计与计算机科学基础", university: "Carnegie Mellon University", subject: "Programming", subjectZh: "编程",
+    description: "CMU's established introductory programming and computer-science course, with published schedules, assessments, and prior offerings.", descriptionZh: "CMU 成熟的程序设计与计算机科学入门课程，公开课程安排、考核和历年课程资料。",
+    searchKeywords: ["15-112", "programming", "CMU"], level: "Introductory", prerequisites: [], year: 2025, hasVideos: null, hasAssignments: true, hasSolutions: null,
+    courseUrl: "https://www.cs.cmu.edu/~15112q-f25/", sourceName: "Carnegie Mellon University School of Computer Science", verifiedOn: "2026-08-02",
+    resources: [{ type: "syllabus", title: "Official syllabus and lecture schedule", url: "https://www.cs.cmu.edu/~15112q-f25/syllabus/index.html" }],
+  }),
+  course({
+    id: "cmu-15-122", title: "Principles of Imperative Computation", titleZh: "命令式计算原理", university: "Carnegie Mellon University", subject: "Data Structures", subjectZh: "数据结构",
+    description: "Correct-by-design imperative programming in C0 and C, with contracts, invariants, complexity, and fundamental data structures and algorithms.", descriptionZh: "使用 C0 和 C 学习正确性驱动的命令式编程，涵盖契约、不变量、复杂度及基础数据结构与算法。",
+    searchKeywords: ["15-122", "C0", "C", "data structures", "CMU"], level: "Intermediate", prerequisites: ["CMU 15-112 or equivalent"], year: 2026, hasVideos: null, hasAssignments: true, hasSolutions: null,
+    courseUrl: "https://www.cs.cmu.edu/~15122/", sourceName: "Carnegie Mellon University School of Computer Science", verifiedOn: "2026-08-02",
+    resources: [{ type: "syllabus", title: "Official syllabus and coursework calendar", url: "https://www.cs.cmu.edu/~15122/syllabus.shtml" }],
+  }),
+  course({
+    id: "cmu-15-213", title: "Introduction to Computer Systems", titleZh: "计算机系统导论", university: "Carnegie Mellon University", subject: "Computer Systems", subjectZh: "计算机系统",
+    description: "A programmer's view of machine code, performance, arithmetic, memory, networking, concurrency, and how systems execute programs.", descriptionZh: "从程序员视角学习机器代码、性能、计算机算术、内存、网络、并发及系统执行程序的方式。",
+    searchKeywords: ["15-213", "computer systems", "memory", "concurrency", "CMU"], level: "Undergraduate", prerequisites: ["CMU 15-122"], year: 2026, hasVideos: null, hasAssignments: true, hasSolutions: null,
+    courseUrl: "https://www.cs.cmu.edu/~213/", sourceName: "Carnegie Mellon University School of Computer Science", verifiedOn: "2026-08-02",
+    resources: [{ type: "syllabus", title: "Official course syllabus", url: "https://www.cs.cmu.edu/afs/cs/academic/class/15213-m17/www/syllabus/syllabus.pdf" }],
+  }),
+  course({
+    id: "cmu-15-451", title: "Algorithm Design and Analysis", titleZh: "算法设计与分析", university: "Carnegie Mellon University", subject: "Algorithms", subjectZh: "算法",
+    description: "Design and analysis of algorithms, including efficient data structures, graph algorithms, lower bounds, NP-completeness, approximation, and randomized algorithms.", descriptionZh: "学习算法设计与分析，包括高效数据结构、图算法、下界、NP 完全性、近似算法与随机算法。",
+    searchKeywords: ["15-451", "algorithms", "NP-completeness", "CMU"], level: "Advanced Undergraduate", prerequisites: null, year: 2026, hasVideos: null, hasAssignments: null, hasSolutions: null,
+    courseUrl: "https://www.csd.cs.cmu.edu/course/15451/s26", sourceName: "Carnegie Mellon University Computer Science Department", verifiedOn: "2026-08-02",
+    resources: [{ type: "lectures", title: "Official lecture material", url: "https://www.cs.cmu.edu/~15451-f24/lectures/lecture01-selection.pdf" }],
   }),
 ];
