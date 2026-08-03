@@ -6,16 +6,19 @@ create table if not exists public.course_libraries (
 
 alter table public.course_libraries enable row level security;
 
+drop policy if exists "Users can read their own course library" on public.course_libraries;
 create policy "Users can read their own course library"
 on public.course_libraries for select
 to authenticated
 using ((select auth.uid()) = user_id);
 
+drop policy if exists "Users can create their own course library" on public.course_libraries;
 create policy "Users can create their own course library"
 on public.course_libraries for insert
 to authenticated
 with check ((select auth.uid()) = user_id);
 
+drop policy if exists "Users can update their own course library" on public.course_libraries;
 create policy "Users can update their own course library"
 on public.course_libraries for update
 to authenticated
@@ -32,7 +35,10 @@ create table if not exists public.feedback (
 
 alter table public.feedback enable row level security;
 
+drop policy if exists "Anyone can submit beta feedback" on public.feedback;
 create policy "Anyone can submit beta feedback"
 on public.feedback for insert
 to anon, authenticated
 with check (char_length(message) between 10 and 4000);
+
+create index if not exists feedback_created_at_idx on public.feedback (created_at desc);

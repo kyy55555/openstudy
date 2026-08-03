@@ -16,8 +16,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   title: "OpenStudy",
   description: "Verified open university courses and learning paths.",
+  openGraph: {
+    title: "OpenStudy",
+    description: "Verified open university courses and curriculum references for self-study.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
