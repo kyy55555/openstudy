@@ -48,6 +48,17 @@ const officialHosts = new Set([
   "faculty.cc.gatech.edu",
   "cs3110.github.io",
   "cs61.seas.harvard.edu",
+  "www.scs.stanford.edu",
+  "undergraduate.catalog.berkeley.edu",
+  "math.berkeley.edu",
+  "exams.math.princeton.edu",
+  "web.math.princeton.edu",
+  "www.math.princeton.edu",
+  "mat201dev.math.princeton.edu",
+  "mat202.math.princeton.edu",
+  "phy.princeton.edu",
+  "www.princeton.edu",
+  "hpa.princeton.edu",
 ]);
 
 const knownInvalidCourseUrls = new Set([
@@ -146,6 +157,13 @@ test("every course has a stable display code", () => {
 test("verified Tsinghua and Peking University courses are present", () => {
   const ids = new Set(courses.map(({ id }) => id));
   for (const id of ["tsinghua-20740112", "tsinghua-computer-graphics", "tsinghua-20740164", "tsinghua-database-technology", "pku-computing-intro", "pku-data-structures", "pku-operating-systems"]) assert.ok(ids.has(id), `${id} is missing`);
+});
+
+test("Princeton BSE foundations use verified Princeton courses", () => {
+  const ids = new Set(courses.map(({ id }) => id));
+  for (const id of ["princeton-mat103", "princeton-mat104", "princeton-mat201", "princeton-mat202", "princeton-phy103", "princeton-phy104", "princeton-chm201"]) {
+    assert.ok(ids.has(id), `${id} is missing`);
+  }
 });
 
 test("course detail routes and prerequisite links resolve", () => {

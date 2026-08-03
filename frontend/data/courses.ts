@@ -89,7 +89,7 @@ export function courseCode(course: Course): string {
     return harvardCodes[rawCode] ?? rawCode.toUpperCase();
   }
   if (university === "princeton") {
-    return rawCode.replace(/^cos/, "COS ").toUpperCase();
+    return rawCode.replace(/^([a-z]+)(\d)/, "$1 $2").toUpperCase();
   }
   if (university === "cornell" || university === "berkeley") {
     return rawCode.replace(/^([a-z]+)(\d)/, "$1 $2").toUpperCase();
@@ -2052,5 +2052,75 @@ export const courses: Course[] = [
     searchKeywords: ["CS 61", "systems programming", "C++", "assembly", "Harvard"], level: "Undergraduate", prerequisites: ["Harvard CS50, CS32, CS51, or permission"], year: 2025, hasVideos: null, hasAssignments: true, hasSolutions: true,
     courseUrl: "https://cs61.seas.harvard.edu/site/2025/", sourceName: "Harvard School of Engineering and Applied Sciences", verifiedOn: "2026-08-03",
     resources: [{ type: "schedule", title: "Official schedule, notes, exercises, and problem sets", url: "https://cs61.seas.harvard.edu/site/2025/Schedule/" }, { type: "syllabus", title: "Course description and policies", url: "https://cs61.seas.harvard.edu/site/2025/CourseDescription/" }],
+  }),
+  course({
+    id: "stanford-cs244b", title: "Distributed Systems", titleZh: "分布式系统", university: "Stanford University", subject: "Distributed Systems", subjectZh: "分布式系统",
+    description: "Distributed systems and applications with protocols, shared state, consistency, transactions, consensus, storage, robustness, failure handling, and security.", descriptionZh: "学习分布式系统与应用，涵盖协议、共享状态、一致性、事务、共识、存储、鲁棒性、故障处理与安全。",
+    searchKeywords: ["CS 244B", "distributed systems", "consensus", "Stanford"], level: "Graduate", prerequisites: ["Stanford CS 144"], year: 2024, hasVideos: null, hasAssignments: true, hasSolutions: null,
+    courseUrl: "https://www.scs.stanford.edu/24sp-cs244b/", sourceName: "Stanford Computer Science", verifiedOn: "2026-08-03",
+    resources: [{ type: "schedule", title: "Official schedule and readings", url: "https://www.scs.stanford.edu/24sp-cs244b/sched/" }, { type: "lectures", title: "Official introduction notes", url: "https://www.scs.stanford.edu/24sp-cs244b/notes/intro.pdf" }],
+  }),
+  course({
+    id: "berkeley-math1a", title: "Calculus", titleZh: "微积分 I", university: "UC Berkeley", subject: "Calculus", subjectZh: "微积分",
+    description: "Differential and integral calculus of one variable for STEM majors, including functions, limits, derivatives, integration, and applications.", descriptionZh: "面向 STEM 专业的单变量微分与积分课程，涵盖函数、极限、导数、积分及应用。",
+    searchKeywords: ["MATH 1A", "calculus", "Berkeley"], level: "Introductory", prerequisites: ["High school trigonometry and analytic geometry"], year: null, hasVideos: null, hasAssignments: true, hasSolutions: null,
+    courseUrl: "https://undergraduate.catalog.berkeley.edu/courses/1144961", sourceName: "UC Berkeley Mathematics", verifiedOn: "2026-08-03",
+    resources: [{ type: "schedule", title: "Official departmental syllabus and homework schedule", url: "https://math.berkeley.edu/~hutching/teach/1a/syllabus.html" }],
+  }),
+  course({
+    id: "berkeley-math1b", title: "Calculus II", titleZh: "微积分 II", university: "UC Berkeley", subject: "Calculus", subjectZh: "微积分",
+    description: "Techniques and applications of integration, differential equations, sequences, power series, and Taylor series.", descriptionZh: "学习积分技巧与应用、微分方程、数列、幂级数和泰勒级数。",
+    searchKeywords: ["MATH 1B", "calculus", "series", "Berkeley"], level: "Introductory", prerequisites: ["Berkeley MATH 1A or equivalent"], year: 2025, hasVideos: null, hasAssignments: true, hasSolutions: null,
+    courseUrl: "https://math.berkeley.edu/~ltomczak/1B_Summer25/", sourceName: "UC Berkeley Mathematics", verifiedOn: "2026-08-03",
+    resources: [{ type: "syllabus", title: "Official syllabus and topic schedule", url: "https://math.berkeley.edu/~ltomczak/1B_Summer25/Syllabus.pdf" }],
+  }),
+  course({
+    id: "princeton-mat103", title: "Calculus I", titleZh: "微积分 I", university: "Princeton University", subject: "Calculus", subjectZh: "微积分",
+    description: "The first semester of Princeton's calculus sequence, covering limits, continuity, derivatives, applications, integrals, and the fundamental theorem of calculus.", descriptionZh: "普林斯顿微积分序列第一学期，涵盖极限、连续性、导数及应用、积分和微积分基本定理。",
+    searchKeywords: ["MAT 103", "calculus", "Princeton"], level: "Introductory", prerequisites: ["Precalculus"], year: null, hasVideos: null, hasAssignments: true, hasSolutions: true,
+    courseUrl: "https://exams.math.princeton.edu/mat103", sourceName: "Princeton University Department of Mathematics", verifiedOn: "2026-08-03",
+    resources: [{ type: "materials", title: "Official syllabus and exam archive", url: "https://web.math.princeton.edu/~nelson/103/" }],
+  }),
+  course({
+    id: "princeton-mat104", title: "Calculus II", titleZh: "微积分 II", university: "Princeton University", subject: "Calculus", subjectZh: "微积分",
+    description: "The continuation of MAT 103, covering integration techniques, improper integrals, sequences and series, Taylor series, differential equations, and geometric applications.", descriptionZh: "MAT 103 的后续课程，涵盖积分技巧、反常积分、数列与级数、泰勒级数、微分方程及几何应用。",
+    searchKeywords: ["MAT 104", "calculus", "series", "Princeton"], level: "Introductory", prerequisites: ["Princeton MAT 103 or equivalent"], year: 2010, hasVideos: true, hasAssignments: true, hasSolutions: true,
+    courseUrl: "https://web.math.princeton.edu/~nelson/104/", sourceName: "Princeton University Department of Mathematics", verifiedOn: "2026-08-03",
+    resources: [{ type: "syllabus", title: "Official course outline", url: "https://web.math.princeton.edu/~nelson/104/outline.pdf" }],
+  }),
+  course({
+    id: "princeton-mat201", title: "Multivariable Calculus", titleZh: "多元微积分", university: "Princeton University", subject: "Calculus", subjectZh: "微积分",
+    description: "A fast-paced introduction to multivariable and vector calculus, including geometry in three dimensions, partial derivatives, optimization, multiple integrals, vector fields, and the integral theorems.", descriptionZh: "快速学习多元与向量微积分，涵盖三维几何、偏导数、优化、多重积分、向量场及各类积分定理。",
+    searchKeywords: ["MAT 201", "multivariable calculus", "vector calculus", "Princeton"], level: "Intermediate", prerequisites: ["Princeton MAT 104 or equivalent"], year: 2025, hasVideos: null, hasAssignments: true, hasSolutions: null,
+    courseUrl: "https://www.math.princeton.edu/undergraduate/placement/MAT201", sourceName: "Princeton University Department of Mathematics", verifiedOn: "2026-08-03",
+    resources: [{ type: "syllabus", title: "Official MAT 201 syllabus", url: "https://mat201dev.math.princeton.edu/mat201-syllabus" }],
+  }),
+  course({
+    id: "princeton-mat202", title: "Linear Algebra with Applications", titleZh: "应用线性代数", university: "Princeton University", subject: "Linear Algebra", subjectZh: "线性代数",
+    description: "Linear systems, vectors, matrices, linear transformations, independence, bases, determinants, orthogonal projection, least squares, eigenvalues, and applications.", descriptionZh: "学习线性方程组、向量、矩阵、线性变换、线性无关、基、行列式、正交投影、最小二乘、特征值及应用。",
+    searchKeywords: ["MAT 202", "linear algebra", "Princeton"], level: "Intermediate", prerequisites: ["Single-variable calculus"], year: null, hasVideos: null, hasAssignments: null, hasSolutions: null,
+    courseUrl: "https://mat202.math.princeton.edu/", sourceName: "Princeton University Department of Mathematics", verifiedOn: "2026-08-03",
+    resources: [{ type: "materials", title: "Official course description and topics", url: "https://www.math.princeton.edu/undergraduate/placement/lower-division" }],
+  }),
+  course({
+    id: "princeton-phy103", title: "General Physics I", titleZh: "普通物理 I", university: "Princeton University", subject: "Physics", subjectZh: "物理",
+    description: "Princeton's calculus-based first-year mechanics and thermodynamics course for science and engineering students.", descriptionZh: "普林斯顿面向理工科学生、以微积分为基础的大一力学与热力学课程。",
+    searchKeywords: ["PHY 103", "mechanics", "thermodynamics", "Princeton"], level: "Introductory", prerequisites: ["Working knowledge of calculus"], year: null, hasVideos: null, hasAssignments: null, hasSolutions: null,
+    courseUrl: "https://phy.princeton.edu/undergraduate-program/program-study", sourceName: "Princeton University Department of Physics", verifiedOn: "2026-08-03",
+    resources: [{ type: "schedule", title: "Official first- and second-year course sequence", url: "https://phy.princeton.edu/undergraduate-program/program-study/typical-courses" }],
+  }),
+  course({
+    id: "princeton-phy104", title: "General Physics II", titleZh: "普通物理 II", university: "Princeton University", subject: "Physics", subjectZh: "物理",
+    description: "Princeton's calculus-based first-year electricity and magnetism course for science and engineering students.", descriptionZh: "普林斯顿面向理工科学生、以微积分为基础的大一电磁学课程。",
+    searchKeywords: ["PHY 104", "electricity", "magnetism", "Princeton"], level: "Introductory", prerequisites: ["Princeton PHY 103", "Working knowledge of calculus"], year: null, hasVideos: null, hasAssignments: null, hasSolutions: null,
+    courseUrl: "https://phy.princeton.edu/undergraduate-program/program-study", sourceName: "Princeton University Department of Physics", verifiedOn: "2026-08-03",
+    resources: [{ type: "schedule", title: "Official first- and second-year course sequence", url: "https://phy.princeton.edu/undergraduate-program/program-study/typical-courses" }],
+  }),
+  course({
+    id: "princeton-chm201", title: "General Chemistry I", titleZh: "普通化学 I", university: "Princeton University", subject: "Chemistry", subjectZh: "化学",
+    description: "An introductory study of chemical principles, atomic and molecular structure and reactions, with laboratory preparation and analysis.", descriptionZh: "化学原理入门课程，学习原子与分子的结构和反应，并包含实验制备与分析。",
+    searchKeywords: ["CHM 201", "general chemistry", "Princeton"], level: "Introductory", prerequisites: [], year: null, hasVideos: null, hasAssignments: null, hasSolutions: null,
+    courseUrl: "https://www.princeton.edu/academics/area-of-study/chemistry", sourceName: "Princeton University Department of Chemistry", verifiedOn: "2026-08-03",
+    resources: [{ type: "materials", title: "Official course description", url: "https://hpa.princeton.edu/document/1776" }],
   }),
 ];
