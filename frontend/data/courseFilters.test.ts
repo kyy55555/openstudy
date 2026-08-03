@@ -22,6 +22,7 @@ test("course options are unique and sorted", () => {
   assert.deepEqual(uniqueCourseValues(courses, "university"), [
     "Carnegie Mellon University",
     "Cornell University",
+    "Georgia Institute of Technology",
     "Harvard University",
     "MIT",
     "Peking University",
@@ -29,6 +30,7 @@ test("course options are unique and sorted", () => {
     "Stanford University",
     "Tsinghua University",
     "UC Berkeley",
+    "University of Illinois Urbana-Champaign",
     "University of Washington",
   ]);
 

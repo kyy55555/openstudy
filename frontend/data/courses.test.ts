@@ -38,6 +38,14 @@ const officialHosts = new Set([
   "dbgroup.cs.tsinghua.edu.cn",
   "www.cs.cmu.edu",
   "www.csd.cs.cmu.edu",
+  "www.cs124.org",
+  "www.cs128.org",
+  "courses.illinois.edu",
+  "courses.grainger.illinois.edu",
+  "syllabus.gatech.edu",
+  "catalog.gatech.edu",
+  "cs2110.gatech.edu",
+  "faculty.cc.gatech.edu",
 ]);
 
 const knownInvalidCourseUrls = new Set([
