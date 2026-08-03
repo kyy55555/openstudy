@@ -2149,14 +2149,14 @@ export const courses: Course[] = [
     description: "A first calculus course covering functions, limits, derivatives, approximation, optimization, definite and indefinite integrals, and integration techniques.", descriptionZh: "第一门微积分课程，涵盖函数、极限、导数、近似、优化、定积分与不定积分以及积分技巧。",
     searchKeywords: ["21-120", "calculus", "CMU"], level: "Introductory", prerequisites: ["Algebra and trigonometry"], year: 2022, hasVideos: null, hasAssignments: true, hasSolutions: true,
     courseUrl: "https://www.cmu.edu/math/undergrad/exams/precalculus-calculus-placement-exams.html", sourceName: "Carnegie Mellon University Department of Mathematical Sciences", verifiedOn: "2026-08-03",
-    resources: [{ type: "syllabus", title: "Official Fall 2022 syllabus", url: "https://www.cmu.edu/math/undergrad/exams/pdfs/21120-1.pdf" }, { type: "exams", title: "Official topic list and practice materials", url: "https://www.cmu.edu/math/undergrad/exams/pdfs/21120topics.pdf" }],
+    resources: [{ type: "syllabus", title: "Official course syllabus", url: "https://www.math.cmu.edu/~wgunther/120m10/syllabus.pdf" }, { type: "exams", title: "Official topic list and practice materials", url: "https://www.cmu.edu/math/undergrad/exams/pdfs/21120topics.pdf" }],
   }),
   course({
     id: "cmu-21-122", title: "Integration and Approximation", titleZh: "积分与近似", university: "Carnegie Mellon University", subject: "Calculus", subjectZh: "微积分",
     description: "Advanced integration, differential equations, numerical approximation, sequences, series, power series, parametric curves, and polar coordinates.", descriptionZh: "学习高阶积分、微分方程、数值近似、数列、级数、幂级数、参数曲线和极坐标。",
     searchKeywords: ["21-122", "integration", "approximation", "CMU"], level: "Introductory", prerequisites: ["CMU 21-120 or equivalent"], year: 2024, hasVideos: null, hasAssignments: true, hasSolutions: true,
     courseUrl: "https://www.math.cmu.edu/~handron/21_122/", sourceName: "Carnegie Mellon University Department of Mathematical Sciences", verifiedOn: "2026-08-03",
-    resources: [{ type: "schedule", title: "Official schedule and homework", url: "https://www.math.cmu.edu/~handron/21_122/schedule.html" }, { type: "syllabus", title: "Official Spring 2024 syllabus", url: "https://www.cmu.edu/math/undergrad/exams/pdfs/21122-1.pdf" }],
+    resources: [{ type: "schedule", title: "Official schedule and homework", url: "https://www.math.cmu.edu/~handron/21_122/schedule.html" }, { type: "syllabus", title: "Official course syllabus", url: "https://www.math.cmu.edu/users/fho/21-122/syllabus.pdf" }],
   }),
   course({
     id: "cmu-15-151", title: "Mathematical Foundations for Computer Science", titleZh: "计算机科学数学基础", university: "Carnegie Mellon University", subject: "Discrete Mathematics", subjectZh: "离散数学",

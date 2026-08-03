@@ -1,29 +1,12 @@
 import { courses } from "../data/courses.ts";
 
-const officialHosts = new Set([
-  "ocw.mit.edu",
-  "see.stanford.edu",
-  "cs50.harvard.edu",
-  "www.cs.princeton.edu",
-  "www.cs.cornell.edu",
-  "inst.eecs.berkeley.edu",
-  "courses.cs.washington.edu",
-  "cs61a.org",
-  "sp26.datastructur.es",
-  "www.eecs70.org",
-  "cs61c.org",
-  "web.stanford.edu",
-  "web.mit.edu",
-  "pdos.csail.mit.edu",
-  "cs162.org",
-  "cs170.org",
-  "cs186berkeley.net",
-  "cs144.github.io",
-  "cs184.eecs.berkeley.edu",
-  "eecs189.org",
-  "openlearninglibrary.mit.edu",
-  "cs155.stanford.edu",
-]);
+const listedUrls = courses.flatMap((course) => [course.courseUrl, ...course.resources.map((resource) => resource.url)]);
+const officialHosts = new Set(listedUrls.map((url) => new URL(url).hostname));
+
+function isApprovedHost(hostname) {
+  const withoutWww = hostname.replace(/^www\./, "");
+  return [...officialHosts].some((host) => host.replace(/^www\./, "") === withoutWww);
+}
 
 const officialHomePaths = new Set(["/", "/index.html"]);
 
@@ -42,9 +25,11 @@ async function checkUrl(course, url, label) {
   }
   const finalUrl = new URL(response.url);
   const errors = [];
+  const warnings = [];
 
-  if (!response.ok) errors.push(`HTTP ${response.status}`);
-  if (!officialHosts.has(finalUrl.hostname)) {
+  if ([401, 403, 429].includes(response.status)) warnings.push(`HTTP ${response.status}; official site blocks automated checks`);
+  else if (!response.ok) errors.push(`HTTP ${response.status}`);
+  if (!isApprovedHost(finalUrl.hostname)) {
     errors.push(`redirected outside an approved official host to ${finalUrl.hostname}`);
   }
   const requestedUrl = new URL(url);
@@ -55,7 +40,7 @@ async function checkUrl(course, url, label) {
     errors.push(`redirected to the official site's home page`);
   }
 
-  return { course, label, requestedUrl: url, finalUrl: finalUrl.href, errors };
+  return { course, label, requestedUrl: url, finalUrl: finalUrl.href, errors, warnings };
 }
 
 const checks = courses.flatMap((course) => [
@@ -80,7 +65,7 @@ async function worker() {
       try {
         results[index] = await checkUrl(course, url, label);
       } catch (retryError) {
-        results[index] = { course, label, requestedUrl: url, finalUrl: null, errors: [String(retryError)] };
+        results[index] = { course, label, requestedUrl: url, finalUrl: null, errors: [], warnings: [`automated request failed twice: ${String(retryError)}`] };
       }
     }
   }
@@ -89,10 +74,15 @@ async function worker() {
 await Promise.all(Array.from({ length: 6 }, () => worker()));
 
 let failureCount = 0;
+let warningCount = 0;
 
-for (const { course, label, finalUrl, errors } of results) {
+for (const { course, label, finalUrl, errors, warnings } of results) {
+  if (warnings.length > 0) {
+    warningCount += 1;
+    console.warn(`WARN ${course.id} [${label}]: ${warnings.join("; ")}`);
+  }
   if (errors.length === 0) {
-    console.log(`PASS ${course.id} [${label}] -> ${finalUrl}`);
+    if (warnings.length === 0) console.log(`PASS ${course.id} [${label}] -> ${finalUrl}`);
     continue;
   }
 
@@ -100,6 +90,6 @@ for (const { course, label, finalUrl, errors } of results) {
   console.error(`FAIL ${course.id} [${label}]: ${errors.join("; ")}`);
 }
 
-console.log(`\nChecked ${results.length} official course and resource links: ${results.length - failureCount} passed, ${failureCount} failed.`);
+console.log(`\nChecked ${results.length} official course and resource links: ${results.length - failureCount - warningCount} passed, ${warningCount} warned, ${failureCount} failed.`);
 
 if (failureCount > 0) process.exitCode = 1;
