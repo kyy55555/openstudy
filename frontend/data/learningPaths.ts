@@ -160,10 +160,10 @@ export const learningPaths: LearningPath[] = [
     calendar: "semester",
     phases: [
       term("Year 1 · Fall", "大一上", "Begin programming, calculus, and laboratory science.", "开始编程、微积分与实验科学。", ["cmu-15-112", "mit-18-01sc", "mit-8-01sc"]),
-      term("Year 1 · Spring", "大一下", "Continue programming, calculus, and science.", "继续编程、微积分与科学基础。", ["berkeley-cs61a", "mit-18-02sc", "mit-8-02"]),
+      term("Year 1 · Spring", "大一下", "Follow the official sample with functional programming and computer systems while continuing calculus and science.", "按照官方样例学习函数式编程和计算机系统，同时继续微积分与科学基础。", ["cmu-15-150", "cmu-15-213", "mit-18-02sc", "mit-8-02"]),
       term("Year 2 · Fall", "大二上", "Build data-structure, discrete-mathematics, and linear-algebra foundations.", "建立数据结构、离散数学和线性代数基础。", ["cmu-15-122", "mit-6-042j", "mit-18-06"]),
-      term("Year 2 · Spring", "大二下", "Add systems, algorithms, and probability before advanced work.", "在高阶课程前完成系统、算法与概率基础。", ["cmu-15-213", "mit-6-006", "mit-18-05"]),
-      term("Year 3 · Fall", "大三上", "Select core work in systems, logic/languages, or theory.", "在系统、逻辑与语言或理论中完成核心课程。", ["mit-6-s081", "princeton-cos240", "cmu-15-451"], [], [], 2),
+      term("Year 2 · Spring", "大二下", "Complete the official parallel algorithms core and probability foundation.", "完成官方并行算法核心课和概率基础。", ["cmu-15-210", "mit-18-05"]),
+      term("Year 3 · Fall", "大三上", "Complete the official theoretical-CS and algorithm-design core while beginning advanced electives.", "完成官方理论计算机科学和算法设计核心课，并开始高阶选修。", ["cmu-15-251", "cmu-15-451", "mit-6-s081"], [], [], 2),
       term("Year 3 · Spring", "大三下", "Continue approved CS core electives and begin the concentration or minor.", "继续获批计算机核心选修，并开始专修方向或辅修。", ["mit-6-033", "berkeley-cs170", "stanford-cs143", "berkeley-cs186"], ["Concentration or minor course"], ["专修方向或辅修课程"], 2),
       term("Year 4 · Fall", "大四上", "Complete advanced electives and concentration or minor work.", "完成高阶选修与专修方向或辅修课程。", ["mit-6-824", "stanford-cs221", "berkeley-cs189", "mit-6-858"], ["Concentration or minor course"], ["专修方向或辅修课程"], 2),
       term("Year 4 · Spring", "大四下", "Finish remaining CS electives and the concentration or minor.", "完成剩余计算机选修及专修方向或辅修。", ["mit-6-837", "stanford-cs155", "mit-6-830"], ["Remaining concentration or minor requirements"], ["剩余专修方向或辅修要求"], 1),

@@ -2123,4 +2123,25 @@ export const courses: Course[] = [
     courseUrl: "https://www.princeton.edu/academics/area-of-study/chemistry", sourceName: "Princeton University Department of Chemistry", verifiedOn: "2026-08-03",
     resources: [{ type: "materials", title: "Official course description", url: "https://hpa.princeton.edu/document/1776" }],
   }),
+  course({
+    id: "cmu-15-150", title: "Principles of Functional Programming", titleZh: "函数式编程原理", university: "Carnegie Mellon University", subject: "Programming Languages", subjectZh: "编程语言",
+    description: "Functional programming in Standard ML, with types, abstraction, correctness proofs, work and span analysis, modules, and parallelism.", descriptionZh: "使用 Standard ML 学习函数式编程，涵盖类型、抽象、正确性证明、工作量与跨度分析、模块和并行性。",
+    searchKeywords: ["15-150", "functional programming", "Standard ML", "CMU"], level: "Intermediate", prerequisites: ["CMU 15-112 or 15-122", "CMU 15-151 or equivalent discrete mathematics"], year: 2026, hasVideos: null, hasAssignments: true, hasSolutions: null,
+    courseUrl: "https://www.cs.cmu.edu/~15150/", sourceName: "Carnegie Mellon University School of Computer Science", verifiedOn: "2026-08-03",
+    resources: [{ type: "assignments", title: "Official labs, homework, and exam schedule", url: "https://www.cs.cmu.edu/~15150/assign.html" }, { type: "lectures", title: "Official lecture resources", url: "https://www.cs.cmu.edu/~15150/resources/" }],
+  }),
+  course({
+    id: "cmu-15-210", title: "Parallel and Sequential Data Structures and Algorithms", titleZh: "并行与顺序数据结构和算法", university: "Carnegie Mellon University", subject: "Algorithms", subjectZh: "算法",
+    description: "Design, analysis, and implementation of sequential and parallel algorithms and data structures, emphasizing work, span, and transferable algorithmic methods.", descriptionZh: "设计、分析并实现顺序与并行算法及数据结构，重点学习工作量、跨度和可迁移的算法方法。",
+    searchKeywords: ["15-210", "parallel algorithms", "data structures", "CMU"], level: "Undergraduate", prerequisites: ["CMU 15-122", "CMU 15-150"], year: 2025, hasVideos: null, hasAssignments: true, hasSolutions: null,
+    courseUrl: "https://www.cs.cmu.edu/~15210/index.html", sourceName: "Carnegie Mellon University School of Computer Science", verifiedOn: "2026-08-03",
+    resources: [{ type: "schedule", title: "Official schedule, readings, quizzes, and course book", url: "https://www.cs.cmu.edu/~15210/schedule.html" }, { type: "lectures", title: "Official compiled lecture notes", url: "https://www.cs.cmu.edu/afs/cs/academic/class/15210-f11/www/lectures/all.pdf" }],
+  }),
+  course({
+    id: "cmu-15-251", title: "Great Ideas in Theoretical Computer Science", titleZh: "理论计算机科学中的伟大思想", university: "Carnegie Mellon University", subject: "Theory of Computation", subjectZh: "计算理论",
+    description: "A rigorous introduction to computation, computability, complexity, combinatorics, graph theory, probability, number theory, and mathematical proof.", descriptionZh: "严格学习计算、可计算性、复杂性、组合数学、图论、概率、数论和数学证明。",
+    searchKeywords: ["15-251", "theoretical computer science", "complexity", "CMU"], level: "Undergraduate", prerequisites: ["CMU 15-122 or 15-150", "CMU 15-151 or equivalent discrete mathematics"], year: 2018, hasVideos: null, hasAssignments: true, hasSolutions: true,
+    courseUrl: "https://www.cs.cmu.edu/~15251/", sourceName: "Carnegie Mellon University School of Computer Science", verifiedOn: "2026-08-03",
+    resources: [{ type: "syllabus", title: "Official course information and learning objectives", url: "https://www.cs.cmu.edu/~15251/course-info.html" }, { type: "materials", title: "Official lecture and homework archive", url: "https://www.cs.cmu.edu/afs/cs/academic/class/15251/Site/current/index.html" }],
+  }),
 ];

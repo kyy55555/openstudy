@@ -166,6 +166,13 @@ test("Princeton BSE foundations use verified Princeton courses", () => {
   }
 });
 
+test("CMU's six official CS core courses are present", () => {
+  const ids = new Set(courses.map(({ id }) => id));
+  for (const id of ["cmu-15-122", "cmu-15-150", "cmu-15-210", "cmu-15-213", "cmu-15-251", "cmu-15-451"]) {
+    assert.ok(ids.has(id), `${id} is missing`);
+  }
+});
+
 test("course detail routes and prerequisite links resolve", () => {
   const ids = new Set(courses.map(({ id }) => id));
   for (const id of Object.values(prerequisiteCourseIds)) assert.ok(ids.has(id), `${id} prerequisite target is missing`);
