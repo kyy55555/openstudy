@@ -137,5 +137,9 @@ export function useCourseLibrary() {
     update({ ...libraryRef.current, lastOpenedResource: null });
   }
 
-  return { library, loaded, syncIssue, setProgress, toggleFavorite, toggleResource, createStudyPlan, toggleStudyTask, removeStudyPlan, recordResourceOpen, clearLastOpenedResource };
+  function replaceLibrary(next: CourseLibraryState) {
+    update(next);
+  }
+
+  return { library, loaded, syncIssue, setProgress, toggleFavorite, toggleResource, createStudyPlan, toggleStudyTask, removeStudyPlan, recordResourceOpen, clearLastOpenedResource, replaceLibrary };
 }

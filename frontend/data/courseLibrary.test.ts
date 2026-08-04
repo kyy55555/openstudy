@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { courseResourceKey, learningPathCoverage, parseCourseLibrary, pathCompletion, phaseCoverage, selectSessionLibrary } from "./courseLibrary.ts";
+import { courseResourceKey, createCourseLibraryBackup, learningPathCoverage, parseCourseLibrary, parseCourseLibraryBackup, pathCompletion, phaseCoverage, selectSessionLibrary } from "./courseLibrary.ts";
 
 test("course library safely parses local data", () => {
   assert.deepEqual(parseCourseLibrary(null), { progress: {}, favorites: [], completedResources: [], studyPlans: {}, lastOpenedResource: null });
@@ -31,6 +31,15 @@ test("invalid synced fields are discarded without losing valid records", () => {
   assert.deepEqual(parsed.completedResources, ["good::url"]);
   assert.deepEqual(parsed.studyPlans, { good: { days: 30, completedTaskIds: ["one"] } });
   assert.equal(parsed.lastOpenedResource, null);
+});
+
+test("learning-record backups round-trip and reject unrelated or malformed files", () => {
+  const library = parseCourseLibrary('{"progress":{"mit-6-006":"completed"},"favorites":["mit-6-006"]}');
+  const serialized = createCourseLibraryBackup(library, "2026-08-04T12:00:00.000Z");
+  assert.deepEqual(parseCourseLibraryBackup(serialized), { format: "openstudy-learning-record", version: 1, exportedAt: "2026-08-04T12:00:00.000Z", library });
+  assert.equal(parseCourseLibraryBackup("broken"), null);
+  assert.equal(parseCourseLibraryBackup('{"format":"another-app","version":1,"exportedAt":"2026-08-04T12:00:00.000Z","library":{}}'), null);
+  assert.equal(parseCourseLibraryBackup('{"format":"openstudy-learning-record","version":2,"exportedAt":"2026-08-04T12:00:00.000Z","library":{}}'), null);
 });
 
 test("resource progress keys include both course and official URL", () => {

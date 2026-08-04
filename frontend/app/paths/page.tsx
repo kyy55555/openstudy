@@ -30,6 +30,15 @@ function PathsContent() {
         <button onClick={() => setLanguage(language === "zh" ? "en" : "zh")} className="rounded-full border px-4 py-2 text-sm font-medium">{language === "zh" ? "English" : "中文"}</button>
       </header>
 
+      <aside className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-950">
+        <p className="font-semibold">{language === "zh" ? "阅读培养方案前请注意" : "Before using a curriculum reference"}</p>
+        <ul className="mt-2 space-y-1">
+          <li>• {language === "zh" ? "这是个人自学参考，不代表大学官方建议的逐学期安排。" : "This is a personal self-study reference, not the university's official term-by-term recommendation."}</li>
+          <li>• {language === "zh" ? "外校公开课只是资料替代，不代表课程等价、学分或大学认可。" : "An external open course is only a resource substitute, not equivalence, credit, or university approval."}</li>
+          <li>• {language === "zh" ? "学校未公布年级位置时，建议阶段依据官方先修关系推断，并明确标注。" : "When a school does not publish year placement, suggested stages are inferred from official prerequisites and labeled as such."}</li>
+        </ul>
+      </aside>
+
       <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {learningPaths.map((item) => (
           <button key={item.id} onClick={() => setSelectedId(item.id)} className={`rounded-xl border p-4 text-left ${item.id === path.id ? "border-black bg-black text-white" : "border-gray-200 hover:border-gray-400"}`}>

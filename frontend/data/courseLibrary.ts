@@ -12,6 +12,13 @@ export type CourseLibraryState = {
 
 export const emptyCourseLibrary: CourseLibraryState = { progress: {}, favorites: [], completedResources: [], studyPlans: {}, lastOpenedResource: null };
 
+export type CourseLibraryBackup = {
+  format: "openstudy-learning-record";
+  version: 1;
+  exportedAt: string;
+  library: CourseLibraryState;
+};
+
 export function courseResourceKey(courseId: string, resourceUrl: string) {
   return `${courseId}::${resourceUrl}`;
 }
@@ -44,6 +51,20 @@ export function parseCourseLibrary(value: string | null): CourseLibraryState {
     };
   } catch {
     return emptyCourseLibrary;
+  }
+}
+
+export function createCourseLibraryBackup(library: CourseLibraryState, exportedAt = new Date().toISOString()) {
+  return JSON.stringify({ format: "openstudy-learning-record", version: 1, exportedAt, library } satisfies CourseLibraryBackup, null, 2);
+}
+
+export function parseCourseLibraryBackup(value: string): CourseLibraryBackup | null {
+  try {
+    const parsed = JSON.parse(value) as Partial<CourseLibraryBackup>;
+    if (parsed.format !== "openstudy-learning-record" || parsed.version !== 1 || typeof parsed.exportedAt !== "string" || Number.isNaN(Date.parse(parsed.exportedAt)) || !parsed.library || typeof parsed.library !== "object") return null;
+    return { format: parsed.format, version: parsed.version, exportedAt: parsed.exportedAt, library: parseCourseLibrary(JSON.stringify(parsed.library)) };
+  } catch {
+    return null;
   }
 }
 
