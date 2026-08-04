@@ -56,6 +56,8 @@ Anonymous and authenticated visitors can submit Beta feedback, but cannot read f
 
 ## Checks
 
+GitHub Actions runs the test, lint, and production-build checks on pull requests and pushes to `main`. The external-link audit remains an explicit launch check because university sites may rate-limit automated CI traffic.
+
 ```bash
 npm run check:beta
 ```
