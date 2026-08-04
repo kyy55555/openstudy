@@ -30,6 +30,14 @@ npm run check:launch-env
 
 This command intentionally fails when any cloud variable is missing or when the public site URL is not HTTPS.
 
+After the deployment is live, verify its public pages in one command:
+
+```bash
+OPENSTUDY_SMOKE_URL=https://your-beta-domain.example npm run check:smoke
+```
+
+For local development, `npm run check:smoke` checks `http://localhost:3000` by default.
+
 Only authenticated users write to Supabase. Guest and account records remain separate and are never merged automatically. The cloud record contains course progress, completed resource links, saved course IDs, the account ID, and an update timestamp; course content remains on official university websites.
 
 Anonymous and authenticated visitors can submit Beta feedback, but cannot read feedback rows. The SQL script is safe to run again when policies change.
@@ -59,4 +67,5 @@ npm test
 npm run lint
 npm run build
 npm run check:links
+npm run check:smoke
 ```
