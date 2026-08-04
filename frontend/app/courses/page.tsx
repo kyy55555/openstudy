@@ -22,7 +22,7 @@ type Language = "en" | "zh";
 
 const translations = {
   en: {
-    subtitle: "Explore open courses from the world's leading universities.",
+    subtitle: "Explore verified computer science courses and related mathematics and natural-science foundations. More fields are coming after Beta.",
     switchLanguage: "中文",
     searchPlaceholder: "Search algorithms, machine learning, 算法...",
     search: "Search",
@@ -76,7 +76,7 @@ const translations = {
     showMore: (remaining: number) => `Show more courses (${remaining} remaining)`,
   },
   zh: {
-    subtitle: "探索世界一流大学公开的计算机科学课程。",
+    subtitle: "探索已核实的计算机科学课程，以及相关数学与自然科学基础课程；Beta 后将持续扩展更多专业。",
     switchLanguage: "English",
     searchPlaceholder: "搜索算法、机器学习、Python……",
     search: "搜索",

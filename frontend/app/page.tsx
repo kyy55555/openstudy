@@ -7,8 +7,9 @@ import { courses } from "../data/courses";
 
 const homeCopy = {
   en: {
-    eyebrow: "Verified university courses",
-    subtitle: "Search open computer science courses from leading universities.",
+    eyebrow: "OpenStudy Beta · Verified university courses",
+    subtitle: "Search verified computer science courses and their mathematics and natural-science foundations.",
+    scope: "Current Beta focus: computer science, mathematics, physics, and chemistry foundations. More fields will be added without interrupting the site.",
     searchLabel: "Search courses",
     placeholder: "Algorithms, machine learning, Python, 算法...",
     search: "Search",
@@ -19,8 +20,9 @@ const homeCopy = {
     switchLabel: "切换到中文",
   },
   zh: {
-    eyebrow: "已核实的大学公开课",
-    subtitle: "搜索世界一流大学公开的计算机科学课程。",
+    eyebrow: "OpenStudy Beta · 已核实的大学公开课",
+    subtitle: "搜索已核实的计算机科学课程，以及相关数学与自然科学基础课程。",
+    scope: "当前 Beta 重点：计算机科学、数学、物理与化学基础。更多专业将持续加入，网站无需停机。",
     searchLabel: "搜索课程",
     placeholder: "算法、机器学习、Python……",
     search: "搜索",
@@ -59,6 +61,9 @@ function HomeContent() {
 
         <p className="mx-auto mt-5 max-w-xl text-lg text-gray-600">
           {copy.subtitle}
+        </p>
+        <p className="mx-auto mt-4 max-w-xl rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm leading-6 text-blue-950">
+          {copy.scope}
         </p>
 
         <form action="/courses" method="get" className="mt-10 flex gap-2">
