@@ -4,6 +4,8 @@ OpenStudy indexes verified public university courses and builds prerequisite-awa
 
 ## Local development
 
+Use Node.js 24 (the repository includes `.nvmrc`).
+
 ```bash
 npm install
 npm run dev
