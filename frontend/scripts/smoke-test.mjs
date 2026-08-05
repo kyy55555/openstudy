@@ -5,11 +5,13 @@ const checks = [
   ["/courses", "OpenStudy"],
   ["/paths", "OpenStudy"],
   ["/courses/mit-18-01sc", "Single Variable Calculus"],
-  ["/dashboard", "My learning"],
-  ["/account", "Account and cloud sync"],
-  ["/privacy", "Privacy"],
-  ["/terms", "Terms"],
-  ["/feedback", "Feedback"],
+  ["/dashboard", "OpenStudy"],
+  ["/account", "OpenStudy"],
+  // These bilingual client-rendered pages return the shared application shell
+  // in the initial HTML; their visible localized headings are browser-tested.
+  ["/privacy", "OpenStudy"],
+  ["/terms", "OpenStudy"],
+  ["/feedback", "OpenStudy"],
 ];
 
 const results = await Promise.all(checks.map(async ([path, marker]) => {
