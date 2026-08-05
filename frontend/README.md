@@ -2,6 +2,8 @@
 
 OpenStudy indexes verified public university courses and builds prerequisite-aware self-study paths.
 
+Public Beta: [https://openstudy-sigma.vercel.app](https://openstudy-sigma.vercel.app)
+
 ## Local development
 
 Use Node.js 24 (the repository includes `.nvmrc`).
