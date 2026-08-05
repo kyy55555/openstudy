@@ -61,7 +61,7 @@ export default function CourseDetailPage() {
           <p><b>{language === "zh" ? "学科" : "Subject"}：</b>{language === "zh" ? course.subjectZh : course.subject}</p>
           <p><b>{language === "zh" ? "课程难度" : "Level"}：</b>{course.level ? (language === "zh" ? levelZh[course.level] ?? course.level : course.level) : (language === "zh" ? "尚未核实" : "Not verified")}</p>
           <p><b>{language === "zh" ? "建议阶段" : "Suggested stage"}：</b>{stage ? (language === "zh" ? stageZh[stage] ?? stage : stage) : (language === "zh" ? "尚未核实" : "Not verified")} {stage && (language === "zh" ? "（推断）" : "(inferred)")}</p>
-          <p><b>{language === "zh" ? "课程年份" : "Course year"}：</b>{course.year ?? (language === "zh" ? "尚未核实" : "Not verified")}</p>
+          <p><b>{language === "zh" ? "公开资料版本" : "Public-material edition"}：</b>{course.year ?? (language === "zh" ? "尚未核实" : "Not verified")}</p>
           <p><b>{language === "zh" ? "视频" : "Videos"}：</b>{value(course.hasVideos)}</p>
           <p><b>{language === "zh" ? "作业 / 答案" : "Assignments / solutions"}：</b>{value(course.hasAssignments)} / {value(course.hasSolutions)}</p>
         </div>
@@ -79,7 +79,7 @@ export default function CourseDetailPage() {
           </div>}
         </section>}
 
-        <section className="mt-8 border-t pt-6"><h2 className="font-semibold">{language === "zh" ? "来源与核实" : "Source and verification"}</h2><p className="mt-2 text-sm text-gray-600">{language === "zh" ? "所有链接均指向大学或课程团队的官方页面。未知信息保留为“尚未核实”，不会推测。" : "Every link points to an official university or course-team page. Unknown facts remain unverified rather than guessed."}</p><p className="mt-2 text-sm text-gray-500">{course.sourceName} · {language === "zh" ? "核实日期" : "verified"} {course.verifiedOn}</p><a href={course.courseUrl} target="_blank" rel="noreferrer" className="mt-5 inline-flex rounded-lg bg-black px-5 py-3 font-medium text-white">{language === "zh" ? "进入官方课程网站 ↗" : "Open official course ↗"}</a></section>
+        <section className="mt-8 border-t pt-6"><h2 className="font-semibold">{language === "zh" ? "来源与核实" : "Source and verification"}</h2><p className="mt-2 text-sm text-gray-600">{language === "zh" ? "所有链接均指向大学或课程团队的官方页面。年份表示本站链接的公开资料版本，不代表该课程最近一次校内开课年份；学校可能有更新但不公开的教学内容。未知信息保留为“尚未核实”，不会推测。" : "Every link points to an official university or course-team page. The year identifies the linked public-material edition, not necessarily the latest on-campus offering; a school may have newer materials that are not public. Unknown facts remain unverified rather than guessed."}</p><p className="mt-2 text-sm text-gray-500">{course.sourceName} · {language === "zh" ? "核实日期" : "verified"} {course.verifiedOn}</p><a href={course.courseUrl} target="_blank" rel="noreferrer" className="mt-5 inline-flex rounded-lg bg-black px-5 py-3 font-medium text-white">{language === "zh" ? "进入官方课程网站 ↗" : "Open official course ↗"}</a></section>
       </section>
     </main>
   );

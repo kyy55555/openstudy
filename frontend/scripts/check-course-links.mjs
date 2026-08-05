@@ -1,6 +1,8 @@
 import { courses } from "../data/courses.ts";
+import { learningPaths } from "../data/learningPaths.ts";
 
-const listedUrls = courses.flatMap((course) => [course.courseUrl, ...course.resources.map((resource) => resource.url)]);
+const pathUrls = learningPaths.flatMap((path) => [path.officialUrl, ...(path.additionalOfficialSources ?? []).map((source) => source.url)]);
+const listedUrls = [...courses.flatMap((course) => [course.courseUrl, ...course.resources.map((resource) => resource.url)]), ...pathUrls];
 const officialHosts = new Set(listedUrls.map((url) => new URL(url).hostname));
 
 function isApprovedHost(hostname) {
@@ -43,14 +45,17 @@ async function checkUrl(course, url, label) {
   return { course, label, requestedUrl: url, finalUrl: finalUrl.href, errors, warnings };
 }
 
-const checks = courses.flatMap((course) => [
+const checks = [...courses.flatMap((course) => [
     { course, url: course.courseUrl, label: "course" },
     ...course.resources.map((resource) => ({
       course,
       url: resource.url,
       label: resource.type,
     })),
-  ]);
+  ]), ...learningPaths.flatMap((path) => [
+    { course: path, url: path.officialUrl, label: "curriculum" },
+    ...(path.additionalOfficialSources ?? []).map((source) => ({ course: path, url: source.url, label: "curriculum-source" })),
+  ])];
 
 const results = new Array(checks.length);
 let nextCheck = 0;
@@ -90,6 +95,6 @@ for (const { course, label, finalUrl, errors, warnings } of results) {
   console.error(`FAIL ${course.id} [${label}]: ${errors.join("; ")}`);
 }
 
-console.log(`\nChecked ${results.length} official course and resource links: ${results.length - failureCount - warningCount} passed, ${warningCount} warned, ${failureCount} failed.`);
+console.log(`\nChecked ${results.length} official course, resource, and curriculum links: ${results.length - failureCount - warningCount} passed, ${warningCount} warned, ${failureCount} failed.`);
 
 if (failureCount > 0) process.exitCode = 1;

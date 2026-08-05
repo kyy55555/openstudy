@@ -18,6 +18,8 @@ export type CourseResource = {
 
 export type Course = {
   id: string;
+  /** Current official catalog code when it differs from the stable internal id. */
+  code?: string;
   title: string;
   titleZh: string | null;
   university: string;
@@ -65,6 +67,7 @@ export function suggestedStudyStage(course: Course): SuggestedStudyStage | null 
 }
 
 export function courseCode(course: Course): string {
+  if (course.code) return course.code;
   const parts = course.id.split("-");
   const university = parts[0];
   const rawCode = parts.slice(1).join("-");
@@ -810,11 +813,15 @@ export const courses: Course[] = [
     searchKeywords: ["machine learning", "learning algorithms", "statistical learning"],
     level: "Undergraduate",
     prerequisites: ["Probability", "Linear algebra", "Single Variable Calculus", "Programming"],
-    year: 2025,
-    courseUrl: "https://www.cs.cornell.edu/courses/cs3780/2025fa/",
+    year: 2026,
+    hasVideos: true,
+    hasAssignments: true,
+    courseUrl: "https://www.cs.cornell.edu/courses/cs3780/2026sp/",
     sourceName: cornellSource,
+    verifiedOn: "2026-08-04",
     resources: [
-      { type: "materials", title: "Public reference materials", url: "https://www.cs.cornell.edu/courses/cs3780/2025fa/#reference-material" },
+      { type: "schedule", title: "Schedule, lecture notes, and recordings", url: "https://www.cs.cornell.edu/courses/cs3780/2026sp/#Schedule" },
+      { type: "assignments", title: "Assignments", url: "https://www.cs.cornell.edu/courses/cs3780/2026sp/#Assignments" },
     ],
   }),
   course({
@@ -937,16 +944,17 @@ export const courses: Course[] = [
     searchKeywords: ["security", "cryptography", "web security", "network security"],
     level: "Advanced Undergraduate",
     prerequisites: ["Data structures", "Computer architecture", "Discrete mathematics"],
-    year: 2025,
+    year: 2026,
     hasVideos: true,
     hasAssignments: true,
     hasSolutions: true,
-    courseUrl: "https://inst.eecs.berkeley.edu/~cs161/archive/sp25/",
+    courseUrl: "https://sp26.cs161.org/",
     sourceName: berkeleySource,
+    verifiedOn: "2026-08-04",
     resources: [
-      { type: "lectures", title: "Calendar, slides, and recordings", url: "https://inst.eecs.berkeley.edu/~cs161/archive/sp25/calendar/" },
-      { type: "projects", title: "Course projects", url: "https://inst.eecs.berkeley.edu/~cs161/archive/sp25/proj1/" },
-      { type: "exams", title: "Exam materials", url: "https://inst.eecs.berkeley.edu/~cs161/archive/sp25/exam/" },
+      { type: "materials", title: "Official course resources", url: "https://sp26.cs161.org/resources/" },
+      { type: "projects", title: "Course projects", url: "https://sp26.cs161.org/proj1/" },
+      { type: "exams", title: "Exam materials", url: "https://sp26.cs161.org/exam/" },
     ],
   }),
   course({
@@ -1138,14 +1146,15 @@ export const courses: Course[] = [
     searchKeywords: ["CS 3410", "computer architecture", "RISC-V", "systems"],
     level: "Undergraduate",
     prerequisites: ["Programming"],
-    year: 2025,
+    year: 2026,
     hasAssignments: true,
-    courseUrl: "https://www.cs.cornell.edu/courses/cs3410/2025sp/",
+    courseUrl: "https://www.cs.cornell.edu/courses/cs3410/2026sp/",
     sourceName: cornellSource,
+    verifiedOn: "2026-08-04",
     resources: [
-      { type: "syllabus", title: "Syllabus", url: "https://www.cs.cornell.edu/courses/cs3410/2025sp/course/syllabus.html" },
-      { type: "schedule", title: "Schedule, lecture notes, and assignments", url: "https://www.cs.cornell.edu/courses/cs3410/2025sp/course/schedule.html" },
-      { type: "exams", title: "Exam materials", url: "https://www.cs.cornell.edu/courses/cs3410/2025sp/exams/prelim2.html" },
+      { type: "syllabus", title: "Syllabus", url: "https://www.cs.cornell.edu/courses/cs3410/2026sp/course/syllabus.html" },
+      { type: "schedule", title: "Schedule, lecture notes, and assignments", url: "https://www.cs.cornell.edu/courses/cs3410/2026sp/schedule.html" },
+      { type: "assignments", title: "Programming assignments", url: "https://www.cs.cornell.edu/courses/cs3410/2026sp/assignments/printf/instructions.html" },
     ],
   }),
   course({
@@ -1457,15 +1466,18 @@ export const courses: Course[] = [
     searchKeywords: ["6.004", "6.1910", "computation structures", "digital systems"],
     level: "Intermediate",
     prerequisites: ["Programming fundamentals", "Electrical fundamentals"],
-    year: 2009,
+    year: 2017,
+    hasVideos: true,
     hasAssignments: true,
-    hasSolutions: true,
-    courseUrl: "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2009/",
+    hasSolutions: null,
+    courseUrl: "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/",
     sourceName: mitSource,
+    verifiedOn: "2026-08-04",
     resources: [
-      { type: "syllabus", title: "Syllabus and prerequisites", url: "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2009/pages/syllabus/" },
-      { type: "assignments", title: "Tutorial problems and solutions", url: "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2009/pages/tutorial-problems" },
-      { type: "projects", title: "Laboratory projects", url: "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2009/pages/labs/" },
+      { type: "syllabus", title: "Syllabus and prerequisites", url: "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/pages/syllabus/" },
+      { type: "schedule", title: "Course calendar", url: "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/pages/calendar/" },
+      { type: "lectures", title: "Lecture videos and programming assignments", url: "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/pages/c1/" },
+      { type: "downloads", title: "Download course", url: "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/download" },
     ],
   }),
   course({
@@ -1753,17 +1765,17 @@ export const courses: Course[] = [
     searchKeywords: ["CS 184", "computer graphics", "rendering", "ray tracing", "animation"],
     level: "Advanced Undergraduate",
     prerequisites: ["CS 61B", "Linear algebra", "Single Variable Calculus"],
-    year: 2025,
+    year: 2026,
     hasVideos: true,
     hasAssignments: true,
-    hasSolutions: true,
-    courseUrl: "https://cs184.eecs.berkeley.edu/sp25/",
+    hasSolutions: null,
+    courseUrl: "https://cs184.eecs.berkeley.edu/sp26/",
     sourceName: berkeleySource,
+    verifiedOn: "2026-08-04",
     resources: [
-      { type: "syllabus", title: "Policies and prerequisites", url: "https://cs184.eecs.berkeley.edu/sp25/policies/" },
-      { type: "schedule", title: "Lecture schedule, slides, and recordings", url: "https://cs184.eecs.berkeley.edu/sp25/calendar/" },
-      { type: "assignments", title: "Programming assignments", url: "https://cs184.eecs.berkeley.edu/sp25/hw/" },
-      { type: "projects", title: "Final project", url: "https://cs184.eecs.berkeley.edu/sp25/project/" },
+      { type: "syllabus", title: "Policies and prerequisites", url: "https://cs184.eecs.berkeley.edu/sp26/policies/" },
+      { type: "assignments", title: "Programming assignments", url: "https://cs184.eecs.berkeley.edu/sp26/hw/" },
+      { type: "projects", title: "Final project", url: "https://cs184.eecs.berkeley.edu/sp26/project/" },
     ],
   }),
   course({
@@ -1802,15 +1814,17 @@ export const courses: Course[] = [
     searchKeywords: ["CS 221", "artificial intelligence", "search", "graphical models", "decision theory"],
     level: "Advanced Undergraduate",
     prerequisites: ["Data structures", "Probability", "Linear algebra", "Programming"],
-    year: 2012,
-    hasVideos: null,
+    year: 2026,
+    hasVideos: false,
     hasAssignments: true,
-    hasSolutions: true,
-    courseUrl: "https://web.stanford.edu/~cpiech/cs221/fall12/",
+    hasSolutions: false,
+    courseUrl: "https://stanford-cs221.github.io/spring2026/",
     sourceName: "Stanford Computer Science",
+    verifiedOn: "2026-08-04",
     resources: [
-      { type: "projects", title: "Open-ended final project", url: "https://web.stanford.edu/~cpiech/cs221/fall12/projects/final.html" },
-      { type: "exams", title: "Practice midterm", url: "https://web.stanford.edu/~cpiech/cs221/fall12/exams/midterm_practice.pdf" },
+      { type: "schedule", title: "Schedule, lecture materials, and policies", url: "https://stanford-cs221.github.io/spring2026/#schedule" },
+      { type: "assignments", title: "Homework and programming assignments", url: "https://stanford-cs221.github.io/spring2026/homework.html" },
+      { type: "projects", title: "Final project information", url: "https://stanford-cs221.github.io/spring2026/#projects" },
     ],
   }),
   course({
@@ -2001,8 +2015,8 @@ export const courses: Course[] = [
     id: "uiuc-cs225", title: "Data Structures", titleZh: "数据结构", university: "University of Illinois Urbana-Champaign", subject: "Data Structures", subjectZh: "数据结构",
     description: "UIUC's core data-structures course with programming assignments, laboratories, lecture handouts, and exams.", descriptionZh: "UIUC 数据结构核心课程，公开编程作业、实验、讲义和考试资料。",
     searchKeywords: ["CS 225", "data structures", "C++", "UIUC"], level: "Undergraduate", prerequisites: ["UIUC CS 128"], year: 2026, hasVideos: null, hasAssignments: true, hasSolutions: null,
-    courseUrl: "https://courses.grainger.illinois.edu/cs225/fa2025/", sourceName: "University of Illinois Grainger Engineering CS 225", verifiedOn: "2026-08-03",
-    resources: [{ type: "syllabus", title: "Official syllabus", url: "https://courses.grainger.illinois.edu/cs225/fa2025/policy/syllabus/" }, { type: "assignments", title: "Public programming and lab assignments", url: "https://courses.grainger.illinois.edu/cs225/sp2020/assignments/" }],
+    courseUrl: "https://courses.grainger.illinois.edu/cs225/sp2026/", sourceName: "University of Illinois Grainger Engineering CS 225", verifiedOn: "2026-08-04",
+    resources: [{ type: "syllabus", title: "Official syllabus", url: "https://courses.grainger.illinois.edu/cs225/sp2026/policy/syllabus/" }, { type: "lectures", title: "Lecture materials", url: "https://courses.grainger.illinois.edu/cs225/sp2026/pages/lectures.html" }, { type: "assignments", title: "Programming and lab assignments", url: "https://courses.grainger.illinois.edu/cs225/sp2026/assignments/" }, { type: "exams", title: "Exam materials", url: "https://courses.grainger.illinois.edu/cs225/sp2026/exams/" }],
   }),
   course({
     id: "gatech-cs1301", title: "Introduction to Computer Science", titleZh: "计算机科学导论", university: "Georgia Institute of Technology", subject: "Programming", subjectZh: "编程",
@@ -2035,9 +2049,9 @@ export const courses: Course[] = [
   course({
     id: "cornell-cs2110", title: "Object-Oriented Programming and Data Structures", titleZh: "面向对象程序设计与数据结构", university: "Cornell University", subject: "Data Structures", subjectZh: "数据结构",
     description: "Intermediate Java programming, software design, correctness, complexity, recursion, data structures, graph algorithms, concurrency, and event-driven programming.", descriptionZh: "使用 Java 学习中级程序设计、软件设计、正确性、复杂度、递归、数据结构、图算法、并发与事件驱动编程。",
-    searchKeywords: ["CS 2110", "Java", "data structures", "Cornell"], level: "Intermediate", prerequisites: ["Cornell CS 1110 or equivalent"], year: 2025, hasVideos: null, hasAssignments: true, hasSolutions: true,
-    courseUrl: "https://www.cs.cornell.edu/courses/cs2110/2025fa/", sourceName: "Cornell University Department of Computer Science", verifiedOn: "2026-08-03",
-    resources: [{ type: "lectures", title: "Public lecture notes and schedule", url: "https://www.cs.cornell.edu/courses/cs2110/2025fa/lectures/lec01/" }],
+    searchKeywords: ["CS 2110", "Java", "data structures", "Cornell"], level: "Intermediate", prerequisites: ["Cornell CS 1110 or equivalent"], year: 2026, hasVideos: null, hasAssignments: true, hasSolutions: null,
+    courseUrl: "https://www.cs.cornell.edu/courses/cs2110/2026sp/", sourceName: "Cornell University Department of Computer Science", verifiedOn: "2026-08-04",
+    resources: [{ type: "syllabus", title: "Official syllabus", url: "https://www.cs.cornell.edu/courses/cs2110/2026sp/about/syllabus" }, { type: "lectures", title: "Public lecture notes and schedule", url: "https://www.cs.cornell.edu/courses/cs2110/2026sp/lectures/lec01" }],
   }),
   course({
     id: "cornell-cs3110", title: "Functional Programming and Data Structures", titleZh: "函数式编程与数据结构", university: "Cornell University", subject: "Programming Languages", subjectZh: "编程语言",
@@ -2061,18 +2075,18 @@ export const courses: Course[] = [
     resources: [{ type: "schedule", title: "Official schedule and readings", url: "https://www.scs.stanford.edu/24sp-cs244b/sched/" }, { type: "lectures", title: "Official introduction notes", url: "https://www.scs.stanford.edu/24sp-cs244b/notes/intro.pdf" }],
   }),
   course({
-    id: "berkeley-math1a", title: "Calculus", titleZh: "微积分 I", university: "UC Berkeley", subject: "Calculus", subjectZh: "微积分",
+    id: "berkeley-math1a", code: "MATH 51", title: "Calculus I", titleZh: "微积分 I", university: "UC Berkeley", subject: "Calculus", subjectZh: "微积分",
     description: "Differential and integral calculus of one variable for STEM majors, including functions, limits, derivatives, integration, and applications.", descriptionZh: "面向 STEM 专业的单变量微分与积分课程，涵盖函数、极限、导数、积分及应用。",
-    searchKeywords: ["MATH 1A", "calculus", "Berkeley"], level: "Introductory", prerequisites: ["High school trigonometry and analytic geometry"], year: null, hasVideos: null, hasAssignments: true, hasSolutions: null,
-    courseUrl: "https://undergraduate.catalog.berkeley.edu/courses/1144961", sourceName: "UC Berkeley Mathematics", verifiedOn: "2026-08-03",
-    resources: [{ type: "schedule", title: "Official departmental syllabus and homework schedule", url: "https://math.berkeley.edu/~hutching/teach/1a/syllabus.html" }],
+    searchKeywords: ["MATH 51", "MATH 1A", "calculus", "Berkeley"], level: "Introductory", prerequisites: ["High school trigonometry and analytic geometry"], year: null, hasVideos: null, hasAssignments: null, hasSolutions: null,
+    courseUrl: "https://undergraduate.catalog.berkeley.edu/courses/1144962", sourceName: "UC Berkeley Undergraduate Catalog", verifiedOn: "2026-08-04",
+    resources: [{ type: "materials", title: "Official CS major lower-division requirement", url: "https://eecs.berkeley.edu/resources/undergrads/cs/degree-reqs-lowerdiv/" }],
   }),
   course({
-    id: "berkeley-math1b", title: "Calculus II", titleZh: "微积分 II", university: "UC Berkeley", subject: "Calculus", subjectZh: "微积分",
+    id: "berkeley-math1b", code: "MATH 52", title: "Calculus II", titleZh: "微积分 II", university: "UC Berkeley", subject: "Calculus", subjectZh: "微积分",
     description: "Techniques and applications of integration, differential equations, sequences, power series, and Taylor series.", descriptionZh: "学习积分技巧与应用、微分方程、数列、幂级数和泰勒级数。",
-    searchKeywords: ["MATH 1B", "calculus", "series", "Berkeley"], level: "Introductory", prerequisites: ["Berkeley MATH 1A or equivalent"], year: 2025, hasVideos: null, hasAssignments: true, hasSolutions: null,
-    courseUrl: "https://math.berkeley.edu/~ltomczak/1B_Summer25/", sourceName: "UC Berkeley Mathematics", verifiedOn: "2026-08-03",
-    resources: [{ type: "syllabus", title: "Official syllabus and topic schedule", url: "https://math.berkeley.edu/~ltomczak/1B_Summer25/Syllabus.pdf" }],
+    searchKeywords: ["MATH 52", "MATH 1B", "calculus", "series", "Berkeley"], level: "Introductory", prerequisites: ["Berkeley MATH 51 or equivalent"], year: null, hasVideos: null, hasAssignments: null, hasSolutions: null,
+    courseUrl: "https://undergraduate.catalog.berkeley.edu/courses/1145002", sourceName: "UC Berkeley Undergraduate Catalog", verifiedOn: "2026-08-04",
+    resources: [{ type: "materials", title: "Official CS major lower-division requirement", url: "https://eecs.berkeley.edu/resources/undergrads/cs/degree-reqs-lowerdiv/" }],
   }),
   course({
     id: "princeton-mat103", title: "Calculus I", titleZh: "微积分 I", university: "Princeton University", subject: "Calculus", subjectZh: "微积分",

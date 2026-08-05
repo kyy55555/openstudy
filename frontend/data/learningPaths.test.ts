@@ -9,6 +9,14 @@ test("learning paths use official sources and known courses", () => {
   assert.equal(learningPaths.length, 11);
   for (const path of learningPaths) {
     assert.equal(new URL(path.officialUrl).protocol, "https:");
+    assert.match(path.verifiedOn, /^\d{4}-\d{2}-\d{2}$/);
+    assert.ok(path.sourceEdition.trim());
+    assert.ok(path.sourceEditionZh.trim());
+    for (const source of path.additionalOfficialSources ?? []) {
+      assert.equal(new URL(source.url).protocol, "https:");
+      assert.ok(source.title.trim());
+      assert.ok(source.titleZh.trim());
+    }
     assert.equal(path.scheduleStatus, "prerequisite-inferred");
     assert.equal(path.phases.length, path.calendar === "quarter" ? 12 : 8);
     assert.ok(path.officialRequirementNotes.length >= 2);

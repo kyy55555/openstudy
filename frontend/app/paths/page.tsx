@@ -59,6 +59,8 @@ function PathsContent() {
               <ul className="mt-2 space-y-1 text-sm text-blue-900">{(language === "zh" ? path.officialRequirementNotesZh : path.officialRequirementNotes).map((note) => <li key={note}>• {note}</li>)}</ul>
             </div>
             <p className="mt-3 inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-800">{language === "zh" ? `官方要求 · ${path.calendar === "quarter" ? "按学季" : "按学期"} · 时间位置为先修关系推导` : `Official requirements · ${path.calendar === "quarter" ? "Quarter system" : "Semester system"} · Placement inferred from prerequisites`}</p>
+            <p className="mt-2 text-xs text-gray-500">{language === "zh" ? `来源版本：${path.sourceEditionZh} · 核验日期：${path.verifiedOn}` : `Source edition: ${path.sourceEdition} · Verified: ${path.verifiedOn}`}</p>
+            {path.additionalOfficialSources?.map((source) => <a key={source.url} href={source.url} target="_blank" rel="noreferrer" className="mr-4 mt-2 inline-block text-xs font-medium text-gray-600 underline underline-offset-4">{language === "zh" ? source.titleZh : source.title} ↗</a>)}
           </div>
           <a href={path.officialUrl} target="_blank" rel="noreferrer" className="shrink-0 text-sm font-medium underline underline-offset-4">{language === "zh" ? "查看官方培养方案 ↗" : "Official curriculum ↗"}</a>
         </div>

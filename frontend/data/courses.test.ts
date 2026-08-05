@@ -11,12 +11,15 @@ const officialHosts = new Set([
   "www.cs.princeton.edu",
   "www.cs.cornell.edu",
   "inst.eecs.berkeley.edu",
+  "eecs.berkeley.edu",
+  "sp26.cs161.org",
   "courses.cs.washington.edu",
   "cs61a.org",
   "sp26.datastructur.es",
   "www.eecs70.org",
   "cs61c.org",
   "web.stanford.edu",
+  "stanford-cs221.github.io",
   "web.mit.edu",
   "pdos.csail.mit.edu",
   "cs162.org",
@@ -190,6 +193,25 @@ test("CMU advanced elective categories have native public courses", () => {
   const ids = new Set(courses.map(({ id }) => id));
   for (const id of ["cmu-15-312", "cmu-15-440", "cmu-15-445", "cmu-15-362", "cmu-15-281", "cmu-15-330"]) {
     assert.ok(ids.has(id), `${id} is missing`);
+  }
+});
+
+test("audited courses use the latest confirmed public editions", () => {
+  const byId = new Map(courses.map((course) => [course.id, course]));
+  for (const [id, expectedYear, expectedUrl] of [
+    ["mit-6-004", 2017, "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/"],
+    ["stanford-cs221", 2026, "https://stanford-cs221.github.io/spring2026/"],
+    ["berkeley-cs161", 2026, "https://sp26.cs161.org/"],
+    ["berkeley-cs184", 2026, "https://cs184.eecs.berkeley.edu/sp26/"],
+    ["cornell-cs2110", 2026, "https://www.cs.cornell.edu/courses/cs2110/2026sp/"],
+    ["cornell-cs3410", 2026, "https://www.cs.cornell.edu/courses/cs3410/2026sp/"],
+    ["cornell-cs3780", 2026, "https://www.cs.cornell.edu/courses/cs3780/2026sp/"],
+    ["uiuc-cs225", 2026, "https://courses.grainger.illinois.edu/cs225/sp2026/"],
+    ["berkeley-math1a", null, "https://undergraduate.catalog.berkeley.edu/courses/1144962"],
+    ["berkeley-math1b", null, "https://undergraduate.catalog.berkeley.edu/courses/1145002"],
+  ] as const) {
+    assert.equal(byId.get(id)?.year, expectedYear, `${id} public edition regressed`);
+    assert.equal(byId.get(id)?.courseUrl, expectedUrl, `${id} official URL regressed`);
   }
 });
 
