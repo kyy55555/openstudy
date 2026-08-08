@@ -78,7 +78,10 @@ function AccountContent() {
 
   const back = language === "zh" ? "/?lang=zh" : "/";
   return <main className="mx-auto min-h-screen max-w-xl px-6 py-12">
-    <Link href={back} className="text-sm text-gray-500 hover:text-black">← OpenStudy</Link>
+    <div className="flex items-center justify-between gap-4">
+      <Link href={back} className="text-sm text-gray-500 hover:text-black">← OpenStudy</Link>
+      <Link href={language === "zh" ? "/account" : "/account?lang=zh"} className="rounded-full border border-gray-300 px-4 py-2 text-sm font-medium hover:border-black">{language === "zh" ? "English" : "中文"}</Link>
+    </div>
     <h1 className="mt-5 text-3xl font-bold">{language === "zh" ? "账号与云端同步" : "Account and cloud sync"}</h1>
     <p className="mt-3 text-gray-600">{language === "zh" ? "登录后，课程进度和收藏会同步到你的账号，并可在不同设备上继续学习。" : "Sign in to sync course progress and saved courses across devices."}</p>
 
