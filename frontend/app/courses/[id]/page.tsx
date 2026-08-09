@@ -10,6 +10,7 @@ import { useCourseLibrary } from "../../useCourseLibrary";
 import { courseResourceKey } from "../../../data/courseLibrary";
 import type { CourseProgress } from "../../../data/courseLibrary";
 import { buildGentlePlan, structuredCoursePlans } from "../../../data/coursePlans";
+import { displayCourseSubjects } from "../../../data/courseFilters";
 
 const resourceZh = {
   syllabus: "课程大纲", schedule: "课程安排", lectures: "讲义与视频", assignments: "作业",
@@ -33,6 +34,7 @@ export default function CourseDetailPage() {
   }
 
   const stage = suggestedStudyStage(course);
+  const displayedSubjects = displayCourseSubjects(course, language);
   const completedResourceCount = course.resources.filter((resource) => library.completedResources.includes(courseResourceKey(course.id, resource.url))).length;
   const planDefinition = structuredCoursePlans[course.id];
   const savedPlan = library.studyPlans[course.id];
@@ -58,7 +60,7 @@ export default function CourseDetailPage() {
         {loaded && <div className="mt-6 flex flex-col gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-sm font-semibold text-emerald-950">{language === "zh" ? "我的学习状态" : "My learning status"}</p><div className="mt-2 flex flex-wrap gap-2">{(["not-started", "in-progress", "completed"] as CourseProgress[]).map((status) => <button key={status} onClick={() => setProgress(course.id, status)} className={`rounded-full border px-3 py-1.5 text-sm ${library.progress[course.id] === status || (!library.progress[course.id] && status === "not-started") ? "border-emerald-800 bg-emerald-800 text-white" : "border-emerald-300 bg-white"}`}>{language === "zh" ? ({ "not-started": "未开始", "in-progress": "学习中", completed: "已完成" }[status]) : ({ "not-started": "Not started", "in-progress": "In progress", completed: "Completed" }[status])}</button>)}</div></div><button onClick={() => toggleFavorite(course.id)} className="rounded-lg border border-emerald-700 px-4 py-2 text-sm font-medium text-emerald-900">{library.favorites.includes(course.id) ? (language === "zh" ? "★ 已收藏" : "★ Saved") : (language === "zh" ? "☆ 收藏课程" : "☆ Save course")}</button></div>}
 
         <div className="mt-7 grid gap-3 rounded-xl bg-gray-50 p-5 text-sm sm:grid-cols-2 lg:grid-cols-3">
-          <p><b>{language === "zh" ? "学科" : "Subject"}：</b>{language === "zh" ? course.subjectZh : course.subject}</p>
+          {displayedSubjects.length > 0 && <p><b>{language === "zh" ? "学科" : "Subject"}：</b>{displayedSubjects.join(" / ")}</p>}
           <p><b>{language === "zh" ? "课程难度" : "Level"}：</b>{course.level ? (language === "zh" ? levelZh[course.level] ?? course.level : course.level) : (language === "zh" ? "尚未核实" : "Not verified")}</p>
           <p><b>{language === "zh" ? "建议阶段" : "Suggested stage"}：</b>{stage ? (language === "zh" ? stageZh[stage] ?? stage : stage) : (language === "zh" ? "尚未核实" : "Not verified")} {stage && (language === "zh" ? "（推断）" : "(inferred)")}</p>
           <p><b>{language === "zh" ? "公开资料版本" : "Public-material edition"}：</b>{course.year ?? (language === "zh" ? "尚未核实" : "Not verified")}</p>

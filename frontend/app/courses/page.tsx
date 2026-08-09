@@ -10,6 +10,7 @@ import type { Course } from "../../data/courses";
 import { courseDetailPath, prerequisiteCourseIds } from "../../data/courseNavigation";
 import {
   filterCourses,
+  displayCourseSubjects,
   programmingLanguageSubjectPrefix,
   sortCourses,
   uniqueCourseValues,
@@ -436,6 +437,7 @@ type CourseCardProps = {
 
 function CourseCard({ course, language, copy, favorite, onToggleFavorite }: CourseCardProps) {
   const studyStage = suggestedStudyStage(course);
+  const displayedSubjects = displayCourseSubjects(course, language);
 
   function prerequisiteLink(prerequisite: string) {
     const targetId = prerequisiteCourseIds[prerequisite];
@@ -471,10 +473,10 @@ function CourseCard({ course, language, copy, favorite, onToggleFavorite }: Cour
       </p>
 
       <div className="mt-5 grid gap-2 text-sm sm:grid-cols-2">
-        <p>
+        {displayedSubjects.length > 0 && <p>
           <span className="font-medium">{copy.subject}:</span>{" "}
-          {language === "zh" ? course.subjectZh : course.subject}
-        </p>
+          {displayedSubjects.join(" / ")}
+        </p>}
 
         <p>
           <span className="font-medium">{copy.level}:</span>{" "}

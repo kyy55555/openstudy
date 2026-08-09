@@ -5,6 +5,7 @@ import {
   filterCourses,
   sortCourses,
   courseDifficultyRank,
+  displayCourseSubjects,
   courseProgrammingLanguages,
   programmingLanguageSubjectPrefix,
   uniqueCourseValues,
@@ -72,6 +73,23 @@ test("programming-language filters use explicit course content", () => {
   assert.ok(javaCourses.length > 0);
   assert.ok(pythonCourses.every((course) => courseProgrammingLanguages(course).includes("Python")));
   assert.ok(javaCourses.every((course) => courseProgrammingLanguages(course).includes("Java")));
+});
+
+test("learner-facing subjects never show broad taxonomy labels", () => {
+  const forbiddenEnglish = new Set(["Computer Science", "Programming", "Programming Languages", "Systems", "Probability"]);
+  const forbiddenChinese = new Set(["计算机科学", "编程", "编程语言", "系统", "概率"]);
+
+  for (const course of courses) {
+    assert.ok(displayCourseSubjects(course, "en").every((subject) => !forbiddenEnglish.has(subject)));
+    assert.ok(displayCourseSubjects(course, "zh").every((subject) => !forbiddenChinese.has(subject)));
+  }
+
+  const systemsCourse = courses.find(({ subject }) => subject === "Systems");
+  const probabilityCourse = courses.find(({ subject }) => subject === "Probability");
+  assert.ok(systemsCourse);
+  assert.ok(probabilityCourse);
+  assert.deepEqual(displayCourseSubjects(systemsCourse, "zh"), ["计算机系统"]);
+  assert.deepEqual(displayCourseSubjects(probabilityCourse, "zh"), ["概率与统计"]);
 });
 
 test("search supports English, Chinese, and keywords", () => {

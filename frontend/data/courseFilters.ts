@@ -57,6 +57,15 @@ export function canonicalCourseSubject(course: Course): string | null {
   return course.subject;
 }
 
+export function displayCourseSubjects(course: Course, language: "en" | "zh") {
+  const canonicalSubject = canonicalCourseSubject(course);
+  if (!canonicalSubject) return courseProgrammingLanguages(course);
+  if (language === "en") return [canonicalSubject];
+  if (course.subject === "Systems") return ["计算机系统"];
+  if (course.subject === "Probability") return ["概率与统计"];
+  return [course.subjectZh];
+}
+
 export function uniqueCourseSubjects(courses: Course[]) {
   return Array.from(
     new Set(courses.map(canonicalCourseSubject).filter((subject): subject is string => Boolean(subject))),
