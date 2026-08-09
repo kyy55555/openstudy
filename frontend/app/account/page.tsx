@@ -17,6 +17,7 @@ function AccountContent() {
   const [busy, setBusy] = useState(false);
   const [accepted, setAccepted] = useState(false);
   const [recoveryMode, setRecoveryMode] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const client = getSupabaseBrowserClient();
 
   useEffect(() => {
@@ -92,7 +93,7 @@ function AccountContent() {
       <h2 className="font-semibold text-blue-950">{language === "zh" ? "设置新密码" : "Set a new password"}</h2>
       <p className="mt-2 text-sm text-blue-900">{language === "zh" ? "请输入至少 8 位的新密码。" : "Enter a new password with at least 8 characters."}</p>
       <form onSubmit={updatePassword} className="mt-5 space-y-4">
-        <label className="block text-sm font-medium">{language === "zh" ? "新密码" : "New password"}<input required minLength={8} type="password" autoComplete="new-password" value={password} onChange={(event) => setPassword(event.target.value)} className="mt-1 block w-full rounded-lg border border-blue-300 bg-white px-3 py-2 outline-none focus:border-blue-900" /></label>
+        <label className="block text-sm font-medium">{language === "zh" ? "新密码" : "New password"}<span className="relative mt-1 block"><input required minLength={8} type={showPassword ? "text" : "password"} autoComplete="new-password" value={password} onChange={(event) => setPassword(event.target.value)} className="block w-full rounded-lg border border-blue-300 bg-white py-2 pl-3 pr-16 outline-none focus:border-blue-900" /><button type="button" onClick={() => setShowPassword((visible) => !visible)} aria-label={showPassword ? (language === "zh" ? "隐藏密码" : "Hide password") : (language === "zh" ? "显示密码" : "Show password")} className="absolute inset-y-0 right-0 px-3 text-xs font-medium text-blue-800 hover:text-blue-950">{showPassword ? (language === "zh" ? "隐藏" : "Hide") : (language === "zh" ? "显示" : "Show")}</button></span></label>
         <button disabled={busy} className="w-full rounded-lg bg-blue-950 px-4 py-3 font-medium text-white disabled:opacity-50">{busy ? (language === "zh" ? "更新中…" : "Updating…") : (language === "zh" ? "更新密码" : "Update password")}</button>
       </form>
       {message && <p className="mt-4 text-sm text-blue-900" role="status">{message}</p>}
@@ -107,7 +108,7 @@ function AccountContent() {
       </div>
       <form onSubmit={submit} className="mt-5 space-y-4">
         <label className="block text-sm font-medium">{language === "zh" ? "邮箱" : "Email"}<input required type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-black" /></label>
-        <label className="block text-sm font-medium">{language === "zh" ? "密码（至少 8 位）" : "Password (at least 8 characters)"}<input required minLength={8} type="password" autoComplete={mode === "signin" ? "current-password" : "new-password"} value={password} onChange={(event) => setPassword(event.target.value)} className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-black" /></label>
+        <label className="block text-sm font-medium">{language === "zh" ? "密码（至少 8 位）" : "Password (at least 8 characters)"}<span className="relative mt-1 block"><input required minLength={8} type={showPassword ? "text" : "password"} autoComplete={mode === "signin" ? "current-password" : "new-password"} value={password} onChange={(event) => setPassword(event.target.value)} className="block w-full rounded-lg border border-gray-300 py-2 pl-3 pr-16 outline-none focus:border-black" /><button type="button" onClick={() => setShowPassword((visible) => !visible)} aria-label={showPassword ? (language === "zh" ? "隐藏密码" : "Hide password") : (language === "zh" ? "显示密码" : "Show password")} className="absolute inset-y-0 right-0 px-3 text-xs font-medium text-gray-600 hover:text-black">{showPassword ? (language === "zh" ? "隐藏" : "Hide") : (language === "zh" ? "显示" : "Show")}</button></span></label>
         {mode === "signup" && <label className="flex items-start gap-2 text-sm text-gray-600"><input required type="checkbox" checked={accepted} onChange={(event) => setAccepted(event.target.checked)} className="mt-1" /><span>{language === "zh" ? "我已阅读并同意" : "I have read and agree to the"} <Link href={language === "zh" ? "/terms?lang=zh" : "/terms"} className="underline">{language === "zh" ? "使用说明" : "terms"}</Link> {language === "zh" ? "和" : "and"} <Link href={language === "zh" ? "/privacy?lang=zh" : "/privacy"} className="underline">{language === "zh" ? "隐私说明" : "privacy notice"}</Link>。</span></label>}
         <button disabled={busy || (mode === "signup" && !accepted)} className="w-full rounded-lg bg-black px-4 py-3 font-medium text-white disabled:opacity-50">{busy ? (language === "zh" ? "处理中…" : "Working…") : mode === "signin" ? (language === "zh" ? "登录并同步" : "Sign in and sync") : (language === "zh" ? "创建账号" : "Create account")}</button>
       </form>
