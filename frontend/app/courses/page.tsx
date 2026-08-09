@@ -12,6 +12,7 @@ import {
   filterCourses,
   sortCourses,
   uniqueCourseValues,
+  uniqueProgrammingLanguages,
 } from "../../data/courseFilters";
 import type { CourseSort } from "../../data/courseFilters";
 import { useCourseLibrary } from "../useCourseLibrary";
@@ -30,6 +31,8 @@ const translations = {
     allUniversities: "All universities",
     subject: "Subject",
     allSubjects: "All subjects",
+    programmingLanguage: "Programming language",
+    allProgrammingLanguages: "All languages",
     hasVideos: "Has videos",
     hasAssignments: "Has assignments",
     hasSolutions: "Has solutions",
@@ -67,8 +70,6 @@ const translations = {
     sort: "Sort",
     easiest: "Easiest to hardest",
     newest: "Newest first",
-    title: "Course title",
-    universitySort: "University",
     verifiedCourses: (filtered: number, total: number) =>
       `${filtered} of ${total} verified courses`,
     noCourses: "No courses found.",
@@ -84,6 +85,8 @@ const translations = {
     allUniversities: "全部大学",
     subject: "学科",
     allSubjects: "全部学科",
+    programmingLanguage: "编程语言",
+    allProgrammingLanguages: "全部语言",
     hasVideos: "有视频",
     hasAssignments: "有作业",
     hasSolutions: "有答案",
@@ -121,8 +124,6 @@ const translations = {
     sort: "排序",
     easiest: "由易到难",
     newest: "最新优先",
-    title: "课程名称",
-    universitySort: "大学",
     verifiedCourses: (filtered: number, total: number) =>
       `${total} 门已核实课程，当前 ${filtered} 门`,
     noCourses: "没有找到课程。",
@@ -281,12 +282,16 @@ function SearchBox({
 type FilterBarProps = {
   universities: string[];
   subjects: string[];
+  programmingLanguages: string[];
 
   universityFilter: string;
   setUniversityFilter: (value: string) => void;
 
   subjectFilter: string;
   setSubjectFilter: (value: string) => void;
+
+  programmingLanguageFilter: string;
+  setProgrammingLanguageFilter: (value: string) => void;
 
   onlyVideos: boolean;
   setOnlyVideos: (value: boolean) => void;
@@ -304,10 +309,13 @@ type FilterBarProps = {
 function FilterBar({
   universities,
   subjects,
+  programmingLanguages,
   universityFilter,
   setUniversityFilter,
   subjectFilter,
   setSubjectFilter,
+  programmingLanguageFilter,
+  setProgrammingLanguageFilter,
   onlyVideos,
   setOnlyVideos,
   onlyAssignments,
@@ -335,6 +343,24 @@ function FilterBar({
             {universities.map((university) => (
               <option key={university} value={university}>
                 {university}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="flex items-center gap-2 text-sm">
+          <span className="font-medium">{copy.programmingLanguage}</span>
+
+          <select
+            value={programmingLanguageFilter}
+            onChange={(event) => setProgrammingLanguageFilter(event.target.value)}
+            className="rounded-lg border border-gray-300 px-3 py-2 outline-none"
+          >
+            <option value="All">{copy.allProgrammingLanguages}</option>
+
+            {programmingLanguages.map((programmingLanguage) => (
+              <option key={programmingLanguage} value={programmingLanguage}>
+                {programmingLanguage}
               </option>
             ))}
           </select>
@@ -594,6 +620,8 @@ function CourseExplorer() {
 
   const [subjectFilter, setSubjectFilter] = useState("All");
 
+  const [programmingLanguageFilter, setProgrammingLanguageFilter] = useState("All");
+
   const [onlyVideos, setOnlyVideos] = useState(false);
 
   const [onlyAssignments, setOnlyAssignments] =
@@ -609,6 +637,7 @@ function CourseExplorer() {
 
   const universities = uniqueCourseValues(courses, "university");
   const subjects = uniqueCourseValues(courses, "subject");
+  const programmingLanguages = uniqueProgrammingLanguages(courses);
 
   function handleSearch() {
     const nextSearch = searchInput.trim();
@@ -622,6 +651,7 @@ function CourseExplorer() {
     setSearchTerm("");
     setUniversityFilter("All");
     setSubjectFilter("All");
+    setProgrammingLanguageFilter("All");
     setOnlyVideos(false);
     setOnlyAssignments(false);
     setOnlySolutions(false);
@@ -635,6 +665,7 @@ function CourseExplorer() {
       searchTerm,
       university: universityFilter,
       subject: subjectFilter,
+      programmingLanguage: programmingLanguageFilter,
       onlyVideos,
       onlyAssignments,
       onlySolutions,
@@ -668,6 +699,7 @@ function CourseExplorer() {
       <FilterBar
         universities={universities}
         subjects={subjects}
+        programmingLanguages={programmingLanguages}
         universityFilter={universityFilter}
         setUniversityFilter={(value) => {
           setUniversityFilter(value);
@@ -676,6 +708,11 @@ function CourseExplorer() {
         subjectFilter={subjectFilter}
         setSubjectFilter={(value) => {
           setSubjectFilter(value);
+          setVisibleCount(coursesPerPage);
+        }}
+        programmingLanguageFilter={programmingLanguageFilter}
+        setProgrammingLanguageFilter={(value) => {
+          setProgrammingLanguageFilter(value);
           setVisibleCount(coursesPerPage);
         }}
         onlyVideos={onlyVideos}
@@ -716,8 +753,6 @@ function CourseExplorer() {
               >
                 <option value="easiest">{copy.easiest}</option>
                 <option value="newest">{copy.newest}</option>
-                <option value="title">{copy.title}</option>
-                <option value="university">{copy.universitySort}</option>
               </select>
             </label>
 

@@ -5,7 +5,9 @@ import {
   filterCourses,
   sortCourses,
   courseDifficultyRank,
+  courseProgrammingLanguages,
   uniqueCourseValues,
+  uniqueProgrammingLanguages,
 } from "./courseFilters.ts";
 import { courses } from "./courses.ts";
 
@@ -13,6 +15,7 @@ const defaults = {
   searchTerm: "",
   university: "All",
   subject: "All",
+  programmingLanguage: "All",
   onlyVideos: false,
   onlyAssignments: false,
   onlySolutions: false,
@@ -37,6 +40,28 @@ test("course options are unique and sorted", () => {
   const subjects = uniqueCourseValues(courses, "subject");
   assert.equal(subjects.length, new Set(subjects).size);
   assert.deepEqual(subjects, [...subjects].sort());
+
+  const programmingLanguages = uniqueProgrammingLanguages(courses);
+  assert.ok(programmingLanguages.includes("Python"));
+  assert.ok(programmingLanguages.includes("Java"));
+  assert.ok(programmingLanguages.includes("C++"));
+  assert.ok(programmingLanguages.includes("JavaScript"));
+});
+
+test("programming-language filters use explicit course content", () => {
+  const pythonCourses = filterCourses(courses, {
+    ...defaults,
+    programmingLanguage: "Python",
+  });
+  const javaCourses = filterCourses(courses, {
+    ...defaults,
+    programmingLanguage: "Java",
+  });
+
+  assert.ok(pythonCourses.length > 0);
+  assert.ok(javaCourses.length > 0);
+  assert.ok(pythonCourses.every((course) => courseProgrammingLanguages(course).includes("Python")));
+  assert.ok(javaCourses.every((course) => courseProgrammingLanguages(course).includes("Java")));
 });
 
 test("search supports English, Chinese, and keywords", () => {
@@ -64,22 +89,10 @@ test("subject, university, and material filters compose", () => {
 
 test("courses can be sorted without mutating the catalog", () => {
   const originalIds = courses.map(({ id }) => id);
-  const byTitle = sortCourses(courses, "title");
-  const byUniversity = sortCourses(courses, "university");
   const byNewest = sortCourses(courses, "newest");
   const byDifficulty = sortCourses(courses, "easiest");
 
   assert.deepEqual(courses.map(({ id }) => id), originalIds);
-  assert.deepEqual(
-    byTitle.map(({ title }) => title),
-    byTitle.map(({ title }) => title).toSorted((a, b) => a.localeCompare(b)),
-  );
-  assert.deepEqual(
-    byUniversity.map(({ university }) => university),
-    byUniversity
-      .map(({ university }) => university)
-      .toSorted((a, b) => a.localeCompare(b)),
-  );
   assert.equal(byNewest[0].year, Math.max(...courses.flatMap(({ year }) => year ?? [])));
   assert.deepEqual(
     byDifficulty.map(courseDifficultyRank),
