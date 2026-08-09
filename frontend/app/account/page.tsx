@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 import { getSupabaseBrowserClient, isSupabaseConfigured } from "../../lib/supabase/client";
 
 function AccountContent() {
+  const router = useRouter();
   const params = useSearchParams();
   const language = params.get("lang") === "zh" ? "zh" : "en";
   const [user, setUser] = useState<User | null>(null);
@@ -41,6 +42,7 @@ function AccountContent() {
     setBusy(false);
     if (result.error) setMessage(result.error.message);
     else if (mode === "signup" && !result.data.session) setMessage(language === "zh" ? "注册成功，请检查邮箱并确认账号。" : "Account created. Check your email to confirm it.");
+    else if (mode === "signin") router.replace(language === "zh" ? "/courses?lang=zh" : "/courses");
     else setMessage(language === "zh" ? "登录成功，正在同步学习记录。" : "Signed in. Your learning record is syncing.");
   }
 
