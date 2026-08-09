@@ -207,7 +207,7 @@ function Title({
   savedCount,
 }: TitleProps) {
   return (
-    <header className="flex items-start justify-between gap-4">
+    <header className="flex flex-col items-start gap-4 sm:flex-row sm:justify-between">
       <div>
         <h1 className="text-3xl font-bold">
           <Link href="/" className="hover:opacity-70">{text}</Link>
@@ -216,7 +216,7 @@ function Title({
         <p className="mt-2 text-gray-600">{subtitle}</p>
       </div>
 
-      <div className="flex shrink-0 items-center gap-2">
+      <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:shrink-0 sm:flex-nowrap">
         <Link href={language === "zh" ? "/compare?lang=zh" : "/compare"} className="rounded-full border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50">
           {language === "zh" ? `收藏比较${savedCount ? ` (${savedCount})` : ""}` : `Compare${savedCount ? ` (${savedCount})` : ""}`}
         </Link>
@@ -263,7 +263,7 @@ function SearchBox({
         placeholder={copy.searchPlaceholder}
         value={searchInput}
         onChange={(event) => setSearchInput(event.target.value)}
-        className="flex-1 rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-gray-700"
+        className="min-w-0 flex-1 rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-gray-700"
       />
 
       <button
@@ -644,7 +644,7 @@ function CourseExplorer() {
   const visibleCourses = filteredCourses.slice(0, visibleCount);
 
   return (
-    <main className="mx-auto min-h-screen max-w-4xl px-6 py-12">
+    <main className="mx-auto min-h-screen w-full max-w-4xl px-6 py-12">
       <Title
         text="OpenStudy"
         subtitle={copy.subtitle}
@@ -768,7 +768,7 @@ function CourseExplorer() {
 
 export default function CoursesPage() {
   return (
-    <Suspense fallback={<main className="mx-auto min-h-screen max-w-4xl px-6 py-12" />}>
+    <Suspense fallback={<main className="mx-auto min-h-screen w-full max-w-4xl px-6 py-12" />}>
       <CourseExplorer />
     </Suspense>
   );
