@@ -20,6 +20,9 @@ function AccountContent() {
   const [recoveryMode, setRecoveryMode] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const client = getSupabaseBrowserClient();
+  const displayedMessage = message === "已退出登录。" || message === "Signed out."
+    ? (language === "zh" ? "已退出登录。" : "Signed out.")
+    : message;
 
   useEffect(() => {
     if (!client) return;
@@ -98,7 +101,7 @@ function AccountContent() {
         <label className="block text-sm font-medium">{language === "zh" ? "新密码" : "New password"}<span className="relative mt-1 block"><input required minLength={8} type={showPassword ? "text" : "password"} autoComplete="new-password" value={password} onChange={(event) => setPassword(event.target.value)} className="block w-full rounded-lg border border-blue-300 bg-white py-2 pl-3 pr-16 outline-none focus:border-blue-900" /><button type="button" onClick={() => setShowPassword((visible) => !visible)} aria-label={showPassword ? (language === "zh" ? "隐藏密码" : "Hide password") : (language === "zh" ? "显示密码" : "Show password")} className="absolute inset-y-0 right-0 px-3 text-xs font-medium text-blue-800 hover:text-blue-950">{showPassword ? (language === "zh" ? "隐藏" : "Hide") : (language === "zh" ? "显示" : "Show")}</button></span></label>
         <button disabled={busy} className="w-full rounded-lg bg-blue-950 px-4 py-3 font-medium text-white disabled:opacity-50">{busy ? (language === "zh" ? "更新中…" : "Updating…") : (language === "zh" ? "更新密码" : "Update password")}</button>
       </form>
-      {message && <p className="mt-4 text-sm text-blue-900" role="status">{message}</p>}
+      {displayedMessage && <p className="mt-4 text-sm text-blue-900" role="status">{displayedMessage}</p>}
     </section> : user ? <section className="mt-8 rounded-2xl border border-emerald-200 bg-emerald-50 p-6">
       <p className="text-sm text-emerald-800">{language === "zh" ? "当前账号" : "Signed in as"}</p>
       <p className="mt-1 font-semibold text-emerald-950">{user.email}</p>
@@ -115,7 +118,7 @@ function AccountContent() {
         <button disabled={busy || (mode === "signup" && !accepted)} className="w-full rounded-lg bg-black px-4 py-3 font-medium text-white disabled:opacity-50">{busy ? (language === "zh" ? "处理中…" : "Working…") : mode === "signin" ? (language === "zh" ? "登录并同步" : "Sign in and sync") : (language === "zh" ? "创建账号" : "Create account")}</button>
       </form>
       {mode === "signin" && <button type="button" disabled={busy} onClick={requestPasswordReset} className="mt-3 text-sm text-gray-600 hover:text-black hover:underline disabled:opacity-50">{language === "zh" ? "忘记密码？发送重设邮件" : "Forgot password? Send a reset email"}</button>}
-      {message && <p className="mt-4 text-sm text-gray-700" role="status">{message}</p>}
+      {displayedMessage && <p className="mt-4 text-sm text-gray-700" role="status">{displayedMessage}</p>}
       <p className="mt-4 text-xs text-gray-500">{language === "zh" ? "登录不会自动合并当前游客记录；账号与游客数据保持分开。" : "Signing in does not automatically merge the current guest record; account and guest data stay separate."}</p>
     </section>}
   </main>;
