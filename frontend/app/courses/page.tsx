@@ -10,8 +10,10 @@ import type { Course } from "../../data/courses";
 import { courseDetailPath, prerequisiteCourseIds } from "../../data/courseNavigation";
 import {
   filterCourses,
+  programmingLanguageSubjectPrefix,
   sortCourses,
   uniqueCourseValues,
+  uniqueCourseSubjects,
   uniqueProgrammingLanguages,
 } from "../../data/courseFilters";
 import type { CourseSort } from "../../data/courseFilters";
@@ -31,8 +33,8 @@ const translations = {
     allUniversities: "All universities",
     subject: "Subject",
     allSubjects: "All subjects",
-    programmingLanguage: "Programming language",
-    allProgrammingLanguages: "All languages",
+    subjectAreas: "Fields",
+    programmingLanguages: "Programming languages",
     hasVideos: "Has videos",
     hasAssignments: "Has assignments",
     hasSolutions: "Has solutions",
@@ -85,8 +87,8 @@ const translations = {
     allUniversities: "全部大学",
     subject: "学科",
     allSubjects: "全部学科",
-    programmingLanguage: "编程语言",
-    allProgrammingLanguages: "全部语言",
+    subjectAreas: "专业领域",
+    programmingLanguages: "编程语言",
     hasVideos: "有视频",
     hasAssignments: "有作业",
     hasSolutions: "有答案",
@@ -290,9 +292,6 @@ type FilterBarProps = {
   subjectFilter: string;
   setSubjectFilter: (value: string) => void;
 
-  programmingLanguageFilter: string;
-  setProgrammingLanguageFilter: (value: string) => void;
-
   onlyVideos: boolean;
   setOnlyVideos: (value: boolean) => void;
 
@@ -314,8 +313,6 @@ function FilterBar({
   setUniversityFilter,
   subjectFilter,
   setSubjectFilter,
-  programmingLanguageFilter,
-  setProgrammingLanguageFilter,
   onlyVideos,
   setOnlyVideos,
   onlyAssignments,
@@ -349,24 +346,6 @@ function FilterBar({
         </label>
 
         <label className="flex items-center gap-2 text-sm">
-          <span className="font-medium">{copy.programmingLanguage}</span>
-
-          <select
-            value={programmingLanguageFilter}
-            onChange={(event) => setProgrammingLanguageFilter(event.target.value)}
-            className="rounded-lg border border-gray-300 px-3 py-2 outline-none"
-          >
-            <option value="All">{copy.allProgrammingLanguages}</option>
-
-            {programmingLanguages.map((programmingLanguage) => (
-              <option key={programmingLanguage} value={programmingLanguage}>
-                {programmingLanguage}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label className="flex items-center gap-2 text-sm">
           <span className="font-medium">{copy.subject}</span>
 
           <select
@@ -376,11 +355,24 @@ function FilterBar({
           >
             <option value="All">{copy.allSubjects}</option>
 
-            {subjects.map((subject) => (
-              <option key={subject} value={subject}>
-                {subject}
-              </option>
-            ))}
+            <optgroup label={copy.subjectAreas}>
+              {subjects.map((subject) => (
+                <option key={subject} value={subject}>
+                  {subject}
+                </option>
+              ))}
+            </optgroup>
+
+            <optgroup label={copy.programmingLanguages}>
+              {programmingLanguages.map((programmingLanguage) => (
+                <option
+                  key={programmingLanguage}
+                  value={`${programmingLanguageSubjectPrefix}${programmingLanguage}`}
+                >
+                  {programmingLanguage}
+                </option>
+              ))}
+            </optgroup>
           </select>
         </label>
 
@@ -620,8 +612,6 @@ function CourseExplorer() {
 
   const [subjectFilter, setSubjectFilter] = useState("All");
 
-  const [programmingLanguageFilter, setProgrammingLanguageFilter] = useState("All");
-
   const [onlyVideos, setOnlyVideos] = useState(false);
 
   const [onlyAssignments, setOnlyAssignments] =
@@ -636,7 +626,7 @@ function CourseExplorer() {
   const copy = translations[language];
 
   const universities = uniqueCourseValues(courses, "university");
-  const subjects = uniqueCourseValues(courses, "subject");
+  const subjects = uniqueCourseSubjects(courses);
   const programmingLanguages = uniqueProgrammingLanguages(courses);
 
   function handleSearch() {
@@ -651,7 +641,6 @@ function CourseExplorer() {
     setSearchTerm("");
     setUniversityFilter("All");
     setSubjectFilter("All");
-    setProgrammingLanguageFilter("All");
     setOnlyVideos(false);
     setOnlyAssignments(false);
     setOnlySolutions(false);
@@ -665,7 +654,6 @@ function CourseExplorer() {
       searchTerm,
       university: universityFilter,
       subject: subjectFilter,
-      programmingLanguage: programmingLanguageFilter,
       onlyVideos,
       onlyAssignments,
       onlySolutions,
@@ -708,11 +696,6 @@ function CourseExplorer() {
         subjectFilter={subjectFilter}
         setSubjectFilter={(value) => {
           setSubjectFilter(value);
-          setVisibleCount(coursesPerPage);
-        }}
-        programmingLanguageFilter={programmingLanguageFilter}
-        setProgrammingLanguageFilter={(value) => {
-          setProgrammingLanguageFilter(value);
           setVisibleCount(coursesPerPage);
         }}
         onlyVideos={onlyVideos}

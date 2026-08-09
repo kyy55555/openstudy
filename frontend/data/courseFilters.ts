@@ -4,7 +4,6 @@ export type CourseFilters = {
   searchTerm: string;
   university: string;
   subject: string;
-  programmingLanguage: string;
   onlyVideos: boolean;
   onlyAssignments: boolean;
   onlySolutions: boolean;
@@ -41,6 +40,27 @@ export function uniqueProgrammingLanguages(courses: Course[]) {
   return programmingLanguages
     .map(({ name }) => name)
     .filter((name) => available.has(name));
+}
+
+export const programmingLanguageSubjectPrefix = "Programming language:";
+
+const broadSubjects = new Set([
+  "Computer Science",
+  "Programming",
+  "Programming Languages",
+]);
+
+export function canonicalCourseSubject(course: Course): string | null {
+  if (broadSubjects.has(course.subject)) return null;
+  if (course.subject === "Systems") return "Computer Systems";
+  if (course.subject === "Probability") return "Probability and Statistics";
+  return course.subject;
+}
+
+export function uniqueCourseSubjects(courses: Course[]) {
+  return Array.from(
+    new Set(courses.map(canonicalCourseSubject).filter((subject): subject is string => Boolean(subject))),
+  ).sort();
 }
 
 export function courseDifficultyRank(course: Course) {
@@ -82,9 +102,12 @@ export function filterCourses(courses: Course[], filters: CourseFilters) {
     return (
       (normalizedSearch === "" || searchableText.includes(normalizedSearch)) &&
       (filters.university === "All" || course.university === filters.university) &&
-      (filters.subject === "All" || course.subject === filters.subject) &&
-      (filters.programmingLanguage === "All" ||
-        courseProgrammingLanguages(course).includes(filters.programmingLanguage)) &&
+      (filters.subject === "All" ||
+        (filters.subject.startsWith(programmingLanguageSubjectPrefix)
+          ? courseProgrammingLanguages(course).includes(
+              filters.subject.slice(programmingLanguageSubjectPrefix.length),
+            )
+          : canonicalCourseSubject(course) === filters.subject)) &&
       (!filters.onlyVideos || course.hasVideos === true) &&
       (!filters.onlyAssignments || course.hasAssignments === true) &&
       (!filters.onlySolutions || course.hasSolutions === true)

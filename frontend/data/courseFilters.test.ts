@@ -6,7 +6,9 @@ import {
   sortCourses,
   courseDifficultyRank,
   courseProgrammingLanguages,
+  programmingLanguageSubjectPrefix,
   uniqueCourseValues,
+  uniqueCourseSubjects,
   uniqueProgrammingLanguages,
 } from "./courseFilters.ts";
 import { courses } from "./courses.ts";
@@ -15,7 +17,6 @@ const defaults = {
   searchTerm: "",
   university: "All",
   subject: "All",
-  programmingLanguage: "All",
   onlyVideos: false,
   onlyAssignments: false,
   onlySolutions: false,
@@ -41,6 +42,15 @@ test("course options are unique and sorted", () => {
   assert.equal(subjects.length, new Set(subjects).size);
   assert.deepEqual(subjects, [...subjects].sort());
 
+  const clearSubjects = uniqueCourseSubjects(courses);
+  assert.ok(!clearSubjects.includes("Computer Science"));
+  assert.ok(!clearSubjects.includes("Programming"));
+  assert.ok(!clearSubjects.includes("Programming Languages"));
+  assert.ok(!clearSubjects.includes("Systems"));
+  assert.ok(!clearSubjects.includes("Probability"));
+  assert.ok(clearSubjects.includes("Computer Systems"));
+  assert.ok(clearSubjects.includes("Probability and Statistics"));
+
   const programmingLanguages = uniqueProgrammingLanguages(courses);
   assert.ok(programmingLanguages.includes("Python"));
   assert.ok(programmingLanguages.includes("Java"));
@@ -51,11 +61,11 @@ test("course options are unique and sorted", () => {
 test("programming-language filters use explicit course content", () => {
   const pythonCourses = filterCourses(courses, {
     ...defaults,
-    programmingLanguage: "Python",
+    subject: `${programmingLanguageSubjectPrefix}Python`,
   });
   const javaCourses = filterCourses(courses, {
     ...defaults,
-    programmingLanguage: "Java",
+    subject: `${programmingLanguageSubjectPrefix}Java`,
   });
 
   assert.ok(pythonCourses.length > 0);
