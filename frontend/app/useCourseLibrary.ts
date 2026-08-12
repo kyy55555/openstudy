@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { courseLibraryStorageKey, emptyCourseLibrary, parseCourseLibrary, selectSessionLibrary } from "../data/courseLibrary";
+import { courseLibraryStorageKey, emptyCourseLibrary, normalizeStudyPlanDays, parseCourseLibrary, selectSessionLibrary } from "../data/courseLibrary";
 import type { CourseLibraryState, CourseProgress } from "../data/courseLibrary";
 import { courseResourceKey } from "../data/courseLibrary";
 import { getSupabaseBrowserClient } from "../lib/supabase/client";
@@ -108,8 +108,10 @@ export function useCourseLibrary() {
   }
 
   function createStudyPlan(courseId: string, days: number) {
+    const normalizedDays = normalizeStudyPlanDays(days);
+    if (normalizedDays === null) return;
     const current = libraryRef.current;
-    update({ ...current, studyPlans: { ...current.studyPlans, [courseId]: { days, completedTaskIds: [] } } });
+    update({ ...current, studyPlans: { ...current.studyPlans, [courseId]: { days: normalizedDays, completedTaskIds: [] } } });
   }
 
   function toggleStudyTask(courseId: string, taskId: string) {

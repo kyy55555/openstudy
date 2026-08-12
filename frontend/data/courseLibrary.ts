@@ -23,6 +23,17 @@ export function courseResourceKey(courseId: string, resourceUrl: string) {
   return `${courseId}::${resourceUrl}`;
 }
 
+function uniqueStrings(value: unknown) {
+  return Array.isArray(value)
+    ? [...new Set(value.filter((item): item is string => typeof item === "string" && item.length > 0))]
+    : [];
+}
+
+export function normalizeStudyPlanDays(days: number) {
+  if (!Number.isFinite(days)) return null;
+  return Math.min(3650, Math.max(1, Math.ceil(days)));
+}
+
 export function parseCourseLibrary(value: string | null): CourseLibraryState {
   if (!value) return emptyCourseLibrary;
   try {
@@ -35,7 +46,7 @@ export function parseCourseLibrary(value: string | null): CourseLibraryState {
         if (!plan || typeof plan !== "object") return [];
         const candidate = plan as { days?: unknown; completedTaskIds?: unknown };
         if (!Number.isInteger(candidate.days) || (candidate.days as number) < 1 || (candidate.days as number) > 3650 || !Array.isArray(candidate.completedTaskIds)) return [];
-        return [[courseId, { days: candidate.days as number, completedTaskIds: candidate.completedTaskIds.filter((id): id is string => typeof id === "string") }]];
+        return [[courseId, { days: candidate.days as number, completedTaskIds: uniqueStrings(candidate.completedTaskIds) }]];
       }))
       : {};
     const recent = parsed.lastOpenedResource;
@@ -44,8 +55,8 @@ export function parseCourseLibrary(value: string | null): CourseLibraryState {
       : null;
     return {
       progress,
-      favorites: Array.isArray(parsed.favorites) ? parsed.favorites.filter((id): id is string => typeof id === "string") : [],
-      completedResources: Array.isArray(parsed.completedResources) ? parsed.completedResources.filter((key): key is string => typeof key === "string") : [],
+      favorites: uniqueStrings(parsed.favorites),
+      completedResources: uniqueStrings(parsed.completedResources),
       studyPlans,
       lastOpenedResource,
     };

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { courseResourceKey, createCourseLibraryBackup, learningPathCoverage, parseCourseLibrary, parseCourseLibraryBackup, pathCompletion, phaseCoverage, selectSessionLibrary } from "./courseLibrary.ts";
+import { courseResourceKey, createCourseLibraryBackup, learningPathCoverage, normalizeStudyPlanDays, parseCourseLibrary, parseCourseLibraryBackup, pathCompletion, phaseCoverage, selectSessionLibrary } from "./courseLibrary.ts";
 
 test("course library safely parses local data", () => {
   assert.deepEqual(parseCourseLibrary(null), { progress: {}, favorites: [], completedResources: [], studyPlans: {}, lastOpenedResource: null });
@@ -31,6 +31,20 @@ test("invalid synced fields are discarded without losing valid records", () => {
   assert.deepEqual(parsed.completedResources, ["good::url"]);
   assert.deepEqual(parsed.studyPlans, { good: { days: 30, completedTaskIds: ["one"] } });
   assert.equal(parsed.lastOpenedResource, null);
+});
+
+test("duplicate synced values are removed and study-plan days are normalized", () => {
+  const parsed = parseCourseLibrary(JSON.stringify({
+    favorites: ["a", "a", ""],
+    completedResources: ["a::url", "a::url"],
+    studyPlans: { a: { days: 30, completedTaskIds: ["one", "one", ""] } },
+  }));
+  assert.deepEqual(parsed.favorites, ["a"]);
+  assert.deepEqual(parsed.completedResources, ["a::url"]);
+  assert.deepEqual(parsed.studyPlans.a.completedTaskIds, ["one"]);
+  assert.equal(normalizeStudyPlanDays(30.2), 31);
+  assert.equal(normalizeStudyPlanDays(9999), 3650);
+  assert.equal(normalizeStudyPlanDays(Number.NaN), null);
 });
 
 test("learning-record backups round-trip and reject unrelated or malformed files", () => {
