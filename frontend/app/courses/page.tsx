@@ -760,6 +760,13 @@ function CourseExplorer() {
             <p className="mt-2 text-sm text-gray-500">
               {copy.noCoursesHint}
             </p>
+            <button
+              type="button"
+              onClick={handleResetFilters}
+              className="mt-4 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50"
+            >
+              {copy.reset}
+            </button>
           </div>
         ) : (
           <div className="mt-6 space-y-5">
