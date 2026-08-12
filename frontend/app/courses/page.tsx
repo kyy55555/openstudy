@@ -329,7 +329,7 @@ function FilterBar({
   return (
     <div className="mt-5 rounded-xl border border-gray-200 p-4">
       <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
-        <label className="flex items-center gap-2 text-sm">
+        <label className="flex flex-col items-start gap-2 text-sm sm:flex-row sm:items-center">
           <span className="font-medium">{copy.university}</span>
 
           <select
@@ -337,7 +337,7 @@ function FilterBar({
             onChange={(event) =>
               setUniversityFilter(event.target.value)
             }
-            className="rounded-lg border border-gray-300 px-3 py-2 outline-none"
+            className="w-full max-w-full rounded-lg border border-gray-300 px-3 py-2 outline-none sm:w-auto"
           >
             <option value="All">{copy.allUniversities}</option>
 
@@ -349,13 +349,13 @@ function FilterBar({
           </select>
         </label>
 
-        <label className="flex items-center gap-2 text-sm">
+        <label className="flex flex-col items-start gap-2 text-sm sm:flex-row sm:items-center">
           <span className="font-medium">{copy.subject}</span>
 
           <select
             value={subjectFilter}
             onChange={(event) => setSubjectFilter(event.target.value)}
-            className="rounded-lg border border-gray-300 px-3 py-2 outline-none"
+            className="w-full max-w-full rounded-lg border border-gray-300 px-3 py-2 outline-none sm:w-auto"
           >
             <option value="All">{copy.allSubjects}</option>
 
