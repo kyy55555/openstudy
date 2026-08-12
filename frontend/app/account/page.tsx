@@ -5,6 +5,7 @@ import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 import { getSupabaseBrowserClient, isSupabaseConfigured } from "../../lib/supabase/client";
+import { authErrorMessage } from "../../data/authMessages";
 
 function AccountContent() {
   const router = useRouter();
@@ -41,16 +42,36 @@ function AccountContent() {
     setMessage("");
     const result = mode === "signin"
       ? await client.auth.signInWithPassword({ email, password })
-      : await client.auth.signUp({ email, password });
+      : await client.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/account${language === "zh" ? "?lang=zh" : ""}`,
+          },
+        });
     setBusy(false);
-    if (result.error) setMessage(result.error.message);
-    else if (mode === "signup" && !result.data.session) setMessage(language === "zh" ? "注册成功，请检查邮箱并确认账号。" : "Account created. Check your email to confirm it.");
+    if (result.error) setMessage(authErrorMessage(result.error.message, language));
+    else if (mode === "signup" && !result.data.session) {
+      setPassword("");
+      setShowPassword(false);
+      setMessage(language === "zh" ? "注册成功，请检查邮箱并确认账号。" : "Account created. Check your email to confirm it.");
+    }
     else if (mode === "signin") router.replace(language === "zh" ? "/courses?lang=zh" : "/courses");
     else setMessage(language === "zh" ? "登录成功，正在同步学习记录。" : "Signed in. Your learning record is syncing.");
   }
 
   async function signOut() {
-    await client?.auth.signOut();
+    if (!client) return;
+    setBusy(true);
+    const { error } = await client.auth.signOut();
+    setBusy(false);
+    if (error) {
+      setMessage(authErrorMessage(error.message, language));
+      return;
+    }
+    setPassword("");
+    setShowPassword(false);
+    setAccepted(false);
     setMessage(language === "zh" ? "已退出登录。" : "Signed out.");
   }
 
@@ -64,7 +85,7 @@ function AccountContent() {
     const redirectTo = `${window.location.origin}/account${language === "zh" ? "?lang=zh" : ""}`;
     const { error } = await client.auth.resetPasswordForEmail(email, { redirectTo });
     setBusy(false);
-    setMessage(error ? error.message : (language === "zh" ? "如果该邮箱已注册，密码重设邮件已经发送。" : "If this email is registered, a password reset message has been sent."));
+    setMessage(error ? authErrorMessage(error.message, language) : (language === "zh" ? "如果该邮箱已注册，密码重设邮件已经发送。" : "If this email is registered, a password reset message has been sent."));
   }
 
   async function updatePassword(event: React.FormEvent) {
@@ -74,7 +95,7 @@ function AccountContent() {
     setMessage("");
     const { error } = await client.auth.updateUser({ password });
     setBusy(false);
-    if (error) setMessage(error.message);
+    if (error) setMessage(authErrorMessage(error.message, language));
     else {
       setRecoveryMode(false);
       setPassword("");
@@ -106,10 +127,10 @@ function AccountContent() {
       <p className="text-sm text-emerald-800">{language === "zh" ? "当前账号" : "Signed in as"}</p>
       <p className="mt-1 font-semibold text-emerald-950">{user.email}</p>
       <p className="mt-4 text-sm text-emerald-900">{language === "zh" ? "✓ 课程进度与收藏已启用云端同步" : "✓ Cloud sync is active for progress and saved courses"}</p>
-      <button onClick={signOut} className="mt-5 rounded-lg border border-emerald-700 px-4 py-2 text-sm font-medium text-emerald-950 hover:bg-emerald-100">{language === "zh" ? "退出登录" : "Sign out"}</button>
+      <button disabled={busy} onClick={signOut} className="mt-5 rounded-lg border border-emerald-700 px-4 py-2 text-sm font-medium text-emerald-950 hover:bg-emerald-100 disabled:opacity-50">{busy ? (language === "zh" ? "正在退出…" : "Signing out…") : (language === "zh" ? "退出登录" : "Sign out")}</button>
     </section> : <section className="mt-8 rounded-2xl border border-gray-200 p-6">
       <div className="flex rounded-lg bg-gray-100 p-1">
-        {(["signin", "signup"] as const).map((item) => <button key={item} onClick={() => { setMode(item); setMessage(""); }} className={`flex-1 rounded-md px-3 py-2 text-sm font-medium ${mode === item ? "bg-white shadow-sm" : "text-gray-500"}`}>{item === "signin" ? (language === "zh" ? "登录" : "Sign in") : (language === "zh" ? "注册" : "Create account")}</button>)}
+        {(["signin", "signup"] as const).map((item) => <button key={item} onClick={() => { setMode(item); setPassword(""); setShowPassword(false); setMessage(""); }} className={`flex-1 rounded-md px-3 py-2 text-sm font-medium ${mode === item ? "bg-white shadow-sm" : "text-gray-500"}`}>{item === "signin" ? (language === "zh" ? "登录" : "Sign in") : (language === "zh" ? "注册" : "Create account")}</button>)}
       </div>
       <form onSubmit={submit} className="mt-5 space-y-4">
         <label className="block text-sm font-medium">{language === "zh" ? "邮箱" : "Email"}<input required type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-black" /></label>
