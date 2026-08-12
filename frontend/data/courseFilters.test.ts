@@ -7,6 +7,7 @@ import {
   courseDifficultyRank,
   displayCourseSubjects,
   courseProgrammingLanguages,
+  courseSubjectLabel,
   programmingLanguageSubjectPrefix,
   uniqueCourseValues,
   uniqueCourseSubjects,
@@ -51,6 +52,10 @@ test("course options are unique and sorted", () => {
   assert.ok(!clearSubjects.includes("Probability"));
   assert.ok(clearSubjects.includes("Computer Systems"));
   assert.ok(clearSubjects.includes("Probability and Statistics"));
+  assert.equal(courseSubjectLabel(courses, "Algorithms", "zh"), "算法");
+  assert.equal(courseSubjectLabel(courses, "Computer Systems", "zh"), "计算机系统");
+  assert.equal(courseSubjectLabel(courses, "Probability and Statistics", "zh"), "概率与统计");
+  assert.equal(courseSubjectLabel(courses, "Algorithms", "en"), "Algorithms");
 
   const programmingLanguages = uniqueProgrammingLanguages(courses);
   assert.ok(programmingLanguages.includes("Python"));

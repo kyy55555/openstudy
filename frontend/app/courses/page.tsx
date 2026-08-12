@@ -11,6 +11,7 @@ import { courseDetailPath, prerequisiteCourseIds } from "../../data/courseNaviga
 import {
   filterCourses,
   displayCourseSubjects,
+  courseSubjectLabel,
   programmingLanguageSubjectPrefix,
   sortCourses,
   uniqueCourseValues,
@@ -283,6 +284,7 @@ function SearchBox({
 /* -------------------- Filter Bar -------------------- */
 
 type FilterBarProps = {
+  language: Language;
   universities: string[];
   subjects: string[];
   programmingLanguages: string[];
@@ -307,6 +309,7 @@ type FilterBarProps = {
 };
 
 function FilterBar({
+  language,
   universities,
   subjects,
   programmingLanguages,
@@ -359,7 +362,7 @@ function FilterBar({
             <optgroup label={copy.subjectAreas}>
               {subjects.map((subject) => (
                 <option key={subject} value={subject}>
-                  {subject}
+                  {courseSubjectLabel(courses, subject, language)}
                 </option>
               ))}
             </optgroup>
@@ -687,6 +690,7 @@ function CourseExplorer() {
       />
 
       <FilterBar
+        language={language}
         universities={universities}
         subjects={subjects}
         programmingLanguages={programmingLanguages}

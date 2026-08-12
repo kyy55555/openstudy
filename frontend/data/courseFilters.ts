@@ -72,6 +72,18 @@ export function uniqueCourseSubjects(courses: Course[]) {
   ).sort();
 }
 
+export function courseSubjectLabel(
+  courses: Course[],
+  subject: string,
+  language: "en" | "zh",
+) {
+  if (language === "en") return subject;
+  const matchingCourse = courses.find(
+    (course) => canonicalCourseSubject(course) === subject,
+  );
+  return matchingCourse ? displayCourseSubjects(matchingCourse, "zh")[0] : subject;
+}
+
 export function courseDifficultyRank(course: Course) {
   if (course.level === "Introductory") {
     return course.prerequisites?.length ? 1 : 0;
