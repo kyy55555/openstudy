@@ -109,6 +109,14 @@ export function courseCode(course: Course): string {
   return rawCode.toUpperCase();
 }
 
+/** A null year means the official ongoing page does not state an edition year. */
+export function courseEditionLabel(course: Course, language: "en" | "zh"): string {
+  if (course.year !== null) return String(course.year);
+  return language === "zh"
+    ? "官方课程页（未标年份）"
+    : "Official course page (year not stated)";
+}
+
 const verifiedOn = "2026-07-31";
 
 type CourseSeed = Omit<

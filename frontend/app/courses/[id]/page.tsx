@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
-import { courseCode, courses, suggestedStudyStage } from "../../../data/courses";
+import { courseCode, courseEditionLabel, courses, suggestedStudyStage } from "../../../data/courses";
 import { courseDetailPath, prerequisiteCourseIds } from "../../../data/courseNavigation";
 import { useCourseLibrary } from "../../useCourseLibrary";
 import { courseResourceKey } from "../../../data/courseLibrary";
@@ -57,14 +57,14 @@ export default function CourseDetailPage() {
         <p className="mt-2 text-gray-500">{language === "zh" ? course.title : course.titleZh}</p>
         <p className="mt-6 text-lg leading-8 text-gray-700">{language === "zh" ? course.descriptionZh : course.description}</p>
 
-        {loaded && <div className="mt-6 flex flex-col gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-sm font-semibold text-emerald-950">{language === "zh" ? "我的学习状态" : "My learning status"}</p><div className="mt-2 flex flex-wrap gap-2">{(["not-started", "in-progress", "completed"] as CourseProgress[]).map((status) => <button key={status} onClick={() => setProgress(course.id, status)} className={`rounded-full border px-3 py-1.5 text-sm ${library.progress[course.id] === status || (!library.progress[course.id] && status === "not-started") ? "border-emerald-800 bg-emerald-800 text-white" : "border-emerald-300 bg-white"}`}>{language === "zh" ? ({ "not-started": "未开始", "in-progress": "学习中", completed: "已完成" }[status]) : ({ "not-started": "Not started", "in-progress": "In progress", completed: "Completed" }[status])}</button>)}</div></div><button onClick={() => toggleFavorite(course.id)} className="rounded-lg border border-emerald-700 px-4 py-2 text-sm font-medium text-emerald-900">{library.favorites.includes(course.id) ? (language === "zh" ? "★ 已收藏" : "★ Saved") : (language === "zh" ? "☆ 收藏课程" : "☆ Save course")}</button></div>}
+        {loaded && <div className="mt-6 flex flex-col gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-sm font-semibold text-emerald-950">{language === "zh" ? "课程学习状态" : "Course progress"}</p><div className="mt-2 flex flex-wrap gap-2">{(["not-started", "in-progress", "completed"] as CourseProgress[]).map((status) => <button key={status} onClick={() => setProgress(course.id, status)} className={`rounded-full border px-3 py-1.5 text-sm ${library.progress[course.id] === status || (!library.progress[course.id] && status === "not-started") ? "border-emerald-800 bg-emerald-800 text-white" : "border-emerald-300 bg-white"}`}>{language === "zh" ? ({ "not-started": "未开始", "in-progress": "学习中", completed: "已完成" }[status]) : ({ "not-started": "Not started", "in-progress": "In progress", completed: "Completed" }[status])}</button>)}</div></div><button onClick={() => toggleFavorite(course.id)} className="rounded-lg border border-emerald-700 px-4 py-2 text-sm font-medium text-emerald-900">{library.favorites.includes(course.id) ? (language === "zh" ? "★ 已收藏" : "★ Saved") : (language === "zh" ? "☆ 收藏课程" : "☆ Save course")}</button></div>}
         {syncIssue && <p role="status" className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">{language === "zh" ? "云端同步暂时失败，当前更改已安全保存在此设备。恢复连接后再修改一次即可重试同步。" : "Cloud sync is temporarily unavailable. This change is safely stored on this device; make another change after reconnecting to retry."}</p>}
 
         <div className="mt-7 grid gap-3 rounded-xl bg-gray-50 p-5 text-sm sm:grid-cols-2 lg:grid-cols-3">
           {displayedSubjects.length > 0 && <p><b>{language === "zh" ? "学科" : "Subject"}：</b>{displayedSubjects.join(" / ")}</p>}
           <p><b>{language === "zh" ? "课程难度" : "Level"}：</b>{course.level ? (language === "zh" ? levelZh[course.level] ?? course.level : course.level) : (language === "zh" ? "尚未核实" : "Not verified")}</p>
           <p><b>{language === "zh" ? "建议阶段" : "Suggested stage"}：</b>{stage ? (language === "zh" ? stageZh[stage] ?? stage : stage) : (language === "zh" ? "尚未核实" : "Not verified")} {stage && (language === "zh" ? "（推断）" : "(inferred)")}</p>
-          <p><b>{language === "zh" ? "公开资料版本" : "Public-material edition"}：</b>{course.year ?? (language === "zh" ? "尚未核实" : "Not verified")}</p>
+          <p><b>{language === "zh" ? "公开资料版本" : "Public-material edition"}：</b>{courseEditionLabel(course, language)}</p>
           <p><b>{language === "zh" ? "视频" : "Videos"}：</b>{value(course.hasVideos)}</p>
           <p><b>{language === "zh" ? "作业 / 答案" : "Assignments / solutions"}：</b>{value(course.hasAssignments)} / {value(course.hasSolutions)}</p>
         </div>

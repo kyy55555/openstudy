@@ -25,5 +25,5 @@ export default function AccountMenu() {
       ? (language === "zh" ? "我的账号" : "My account")
       : (language === "zh" ? "登录同步" : "Sign in to sync");
 
-  return <div className="fixed bottom-5 right-5 z-50 flex items-center gap-2"><Link href={language === "zh" ? "/dashboard?lang=zh" : "/dashboard"} className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium shadow-lg hover:border-gray-400">{language === "zh" ? "我的学习" : "My learning"}</Link><Link href={href} className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium shadow-lg hover:border-gray-400">{label}</Link></div>;
+  return <div className="fixed bottom-5 right-5 z-50 flex items-center gap-2"><Link href={language === "zh" ? "/dashboard?lang=zh" : "/dashboard"} className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium shadow-lg hover:border-gray-400">{language === "zh" ? "用户中心" : "User center"}</Link><Link href={href} className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium shadow-lg hover:border-gray-400">{label}</Link></div>;
 }

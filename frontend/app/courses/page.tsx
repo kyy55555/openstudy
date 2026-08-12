@@ -5,7 +5,7 @@ import type { FormEvent } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { courseCode, courses, suggestedStudyStage } from "../../data/courses";
+import { courseCode, courseEditionLabel, courses, suggestedStudyStage } from "../../data/courses";
 import type { Course } from "../../data/courses";
 import { courseDetailPath, prerequisiteCourseIds } from "../../data/courseNavigation";
 import {
@@ -511,7 +511,7 @@ function CourseCard({ course, language, copy, favorite, onToggleFavorite }: Cour
 
         <p>
           <span className="font-medium">{copy.year}:</span>{" "}
-          {course.year === null ? copy.notVerified : course.year}
+          {courseEditionLabel(course, language)}
         </p>
 
       </div>

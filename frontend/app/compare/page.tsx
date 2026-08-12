@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 
-import { courseCode, courses, suggestedStudyStage } from "../../data/courses";
+import { courseCode, courseEditionLabel, courses, suggestedStudyStage } from "../../data/courses";
 import { courseDetailPath } from "../../data/courseNavigation";
 import { useCourseLibrary } from "../useCourseLibrary";
 
@@ -19,9 +19,9 @@ function CompareContent() {
   const selected = library.favorites.map((id) => courses.find((course) => course.id === id)).filter((course) => course !== undefined);
 
   const labels = language === "zh" ? {
-    back: "← 全部课程", title: "收藏与课程比较", subtitle: "根据可核实信息并排比较，不生成没有依据的推荐排名。", empty: "还没有收藏课程。请先从课程列表或详情页收藏想比较的课程。", browse: "浏览课程", university: "大学", level: "难度", stage: "建议阶段", year: "课程年份", prerequisites: "先修要求", resources: "官方资料入口", materials: "资料状态", remove: "移出比较", unknown: "尚未核实", none: "无需先修课", videos: "视频", assignments: "作业", solutions: "答案",
+    back: "← 全部课程", title: "收藏与课程比较", subtitle: "根据可核实信息并排比较，不生成没有依据的推荐排名。", empty: "还没有收藏课程。请先从课程列表或详情页收藏想比较的课程。", browse: "浏览课程", university: "大学", level: "难度", stage: "建议阶段", year: "公开资料版本", prerequisites: "先修要求", resources: "官方资料入口", materials: "资料状态", remove: "移出比较", unknown: "尚未核实", none: "无需先修课", videos: "视频", assignments: "作业", solutions: "答案",
   } : {
-    back: "← All courses", title: "Saved course comparison", subtitle: "Compare verified facts side by side without an unsupported recommendation ranking.", empty: "No saved courses yet. Save courses from the catalog or a course detail page first.", browse: "Browse courses", university: "University", level: "Level", stage: "Suggested stage", year: "Course year", prerequisites: "Prerequisites", resources: "Official resource links", materials: "Material status", remove: "Remove", unknown: "Not verified", none: "No prerequisites", videos: "Videos", assignments: "Assignments", solutions: "Solutions",
+    back: "← All courses", title: "Saved course comparison", subtitle: "Compare verified facts side by side without an unsupported recommendation ranking.", empty: "No saved courses yet. Save courses from the catalog or a course detail page first.", browse: "Browse courses", university: "University", level: "Level", stage: "Suggested stage", year: "Public-material edition", prerequisites: "Prerequisites", resources: "Official resource links", materials: "Material status", remove: "Remove", unknown: "Not verified", none: "No prerequisites", videos: "Videos", assignments: "Assignments", solutions: "Solutions",
   };
   const status = (value: boolean | null) => value === null ? labels.unknown : value ? "✓" : "—";
 
@@ -33,7 +33,7 @@ function CompareContent() {
         [labels.university, (course: typeof selected[number]) => course.university],
         [labels.level, (course: typeof selected[number]) => course.level ? (language === "zh" ? levelZh[course.level] ?? course.level : course.level) : labels.unknown],
         [labels.stage, (course: typeof selected[number]) => { const stage = suggestedStudyStage(course); return stage ? (language === "zh" ? stageZh[stage] ?? stage : stage) : labels.unknown; }],
-        [labels.year, (course: typeof selected[number]) => course.year ?? labels.unknown],
+        [labels.year, (course: typeof selected[number]) => courseEditionLabel(course, language)],
         [labels.prerequisites, (course: typeof selected[number]) => course.prerequisites === null ? labels.unknown : course.prerequisites.length ? course.prerequisites.join(" · ") : labels.none],
         [labels.resources, (course: typeof selected[number]) => String(course.resources.length)],
         [labels.materials, (course: typeof selected[number]) => `${labels.videos} ${status(course.hasVideos)} · ${labels.assignments} ${status(course.hasAssignments)} · ${labels.solutions} ${status(course.hasSolutions)}`],

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { courseCode, courses, suggestedStudyStage } from "./courses.ts";
+import { courseCode, courseEditionLabel, courses, suggestedStudyStage } from "./courses.ts";
 import { courseDetailPath, prerequisiteCourseIds } from "./courseNavigation.ts";
 
 const officialHosts = new Set([
@@ -246,4 +246,18 @@ test("dataset spans universities and subjects without recommendation data", () =
       assert.ok(course[field] === true || course[field] === false || course[field] === null);
     }
   }
+});
+
+test("dated public materials show their verified edition year", () => {
+  const dated = courses.find((course) => course.id === "mit-6-006");
+  assert.ok(dated);
+  assert.equal(courseEditionLabel(dated, "zh"), "2020");
+  assert.equal(courseEditionLabel(dated, "en"), "2020");
+});
+
+test("official pages without an edition year are described without guessing", () => {
+  const ongoing = courses.find((course) => course.id === "tsinghua-computer-graphics");
+  assert.ok(ongoing);
+  assert.equal(courseEditionLabel(ongoing, "zh"), "官方课程页（未标年份）");
+  assert.equal(courseEditionLabel(ongoing, "en"), "Official course page (year not stated)");
 });
