@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Suspense, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { courseCode, courses } from "../../data/courses";
 import { courseDetailPath } from "../../data/courseNavigation";
 import { learningPaths } from "../../data/learningPaths";
@@ -12,12 +12,19 @@ import { useCourseLibrary } from "../useCourseLibrary";
 
 function PathsContent() {
   const params = useSearchParams();
+  const router = useRouter();
   const [language, setLanguage] = useState<"en" | "zh">(params.get("lang") === "zh" ? "zh" : "en");
   const requestedPath = params.get("path");
   const [selectedId, setSelectedId] = useState(learningPaths.some(({ id }) => id === requestedPath) ? requestedPath! : learningPaths[0].id);
   const path = learningPaths.find(({ id }) => id === selectedId) ?? learningPaths[0];
   const { library, loaded, setProgress } = useCourseLibrary();
   const completion = learningPathCoverage(path.phases, library.progress);
+
+  function pathsUrl(nextPathId: string, nextLanguage: "en" | "zh") {
+    const nextParams = new URLSearchParams({ path: nextPathId });
+    if (nextLanguage === "zh") nextParams.set("lang", "zh");
+    return `/paths?${nextParams.toString()}`;
+  }
 
   return (
     <main className="mx-auto max-w-5xl px-6 py-10">
@@ -27,7 +34,7 @@ function PathsContent() {
           <h1 className="mt-3 text-3xl font-bold">{language === "zh" ? "顶尖大学培养方案参考" : "University curriculum references"}</h1>
           <p className="mt-2 max-w-3xl text-gray-600">{language === "zh" ? "培养方案仅供参考，无需选择或加入。完成课程后会自然点亮所有相关方案；外校课程只作为自学替代，不代表课程等价、大学认可或学分。" : "Curricula are references only—there is nothing to select or join. Completed courses naturally light up every relevant curriculum. External courses are self-study substitutes, not claims of equivalence, university approval, or credit."}</p>
         </div>
-        <button onClick={() => setLanguage(language === "zh" ? "en" : "zh")} className="rounded-full border px-4 py-2 text-sm font-medium">{language === "zh" ? "English" : "中文"}</button>
+        <button onClick={() => { const nextLanguage = language === "zh" ? "en" : "zh"; setLanguage(nextLanguage); router.replace(pathsUrl(selectedId, nextLanguage)); }} className="rounded-full border px-4 py-2 text-sm font-medium">{language === "zh" ? "English" : "中文"}</button>
       </header>
 
       <aside className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-950">
@@ -41,7 +48,7 @@ function PathsContent() {
 
       <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {learningPaths.map((item) => (
-          <button key={item.id} onClick={() => setSelectedId(item.id)} className={`rounded-xl border p-4 text-left ${item.id === path.id ? "border-black bg-black text-white" : "border-gray-200 hover:border-gray-400"}`}>
+          <button key={item.id} onClick={() => { setSelectedId(item.id); router.replace(pathsUrl(item.id, language)); }} className={`rounded-xl border p-4 text-left ${item.id === path.id ? "border-black bg-black text-white" : "border-gray-200 hover:border-gray-400"}`}>
             <span className="font-semibold">{item.university}</span>
             <span className={`mt-1 block text-sm ${item.id === path.id ? "text-gray-300" : "text-gray-500"}`}>{language === "zh" ? item.programZh : item.program}</span>
           </button>

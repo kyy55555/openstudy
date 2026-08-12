@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Suspense, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { courses } from "../data/courses";
 
 const homeCopy = {
@@ -36,6 +36,7 @@ const homeCopy = {
 
 function HomeContent() {
   const params = useSearchParams();
+  const router = useRouter();
   const [language, setLanguage] = useState<keyof typeof homeCopy>(params.get("lang") === "zh" ? "zh" : "en");
   const copy = homeCopy[language];
 
@@ -43,7 +44,11 @@ function HomeContent() {
     <main className="relative flex min-h-screen items-center justify-center px-6 py-16">
       <button
         type="button"
-        onClick={() => setLanguage((current) => (current === "en" ? "zh" : "en"))}
+        onClick={() => {
+          const nextLanguage = language === "en" ? "zh" : "en";
+          setLanguage(nextLanguage);
+          router.replace(nextLanguage === "zh" ? "/?lang=zh" : "/");
+        }}
         aria-label={copy.switchLabel}
         className="absolute right-6 top-6 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50"
       >
