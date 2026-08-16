@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import type { FormEvent } from "react";
+import type { FormEvent, KeyboardEvent, MouseEvent } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -439,8 +439,21 @@ type CourseCardProps = {
 };
 
 function CourseCard({ course, language, copy, favorite, onToggleFavorite }: CourseCardProps) {
+  const router = useRouter();
   const studyStage = suggestedStudyStage(course);
   const displayedSubjects = displayCourseSubjects(course, language);
+  const detailPath = courseDetailPath(course, language);
+
+  function openCourse(event: MouseEvent<HTMLElement>) {
+    const target = event.target;
+    if (target instanceof Element && target.closest("a, button, input, select, textarea")) return;
+    router.push(detailPath);
+  }
+
+  function openCourseWithKeyboard(event: KeyboardEvent<HTMLElement>) {
+    if (event.target !== event.currentTarget || event.key !== "Enter") return;
+    router.push(detailPath);
+  }
 
   function prerequisiteLink(prerequisite: string) {
     const targetId = prerequisiteCourseIds[prerequisite];
@@ -455,13 +468,21 @@ function CourseCard({ course, language, copy, favorite, onToggleFavorite }: Cour
   }
 
   return (
-    <article id={course.id} className="scroll-mt-6 rounded-xl border border-gray-200 p-6 shadow-sm">
+    <article
+      id={course.id}
+      role="link"
+      tabIndex={0}
+      aria-label={`${courseCode(course)} · ${language === "zh" ? course.titleZh : course.title}`}
+      onClick={openCourse}
+      onKeyDown={openCourseWithKeyboard}
+      className="scroll-mt-6 cursor-pointer rounded-xl border border-gray-200 p-6 shadow-sm transition hover:border-gray-400 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+    >
       <div>
         <div className="flex items-start justify-between gap-3"><p className="text-sm font-medium text-gray-500">{course.university}</p><button type="button" onClick={onToggleFavorite} aria-label={favorite ? "Remove favorite" : "Save favorite"} className="text-xl leading-none" title={favorite ? (language === "zh" ? "取消收藏" : "Remove favorite") : (language === "zh" ? "收藏" : "Save")}>{favorite ? "★" : "☆"}</button></div>
       </div>
 
       <h2 className="mt-2 text-xl font-semibold">
-        <Link href={courseDetailPath(course, language)} className="hover:underline">
+        <Link href={detailPath} className="hover:underline">
         <span className="mr-2 text-gray-500">{courseCode(course)}</span>
         {language === "zh" ? course.titleZh : course.title}
         </Link>
@@ -594,7 +615,7 @@ function CourseCard({ course, language, copy, favorite, onToggleFavorite }: Cour
       </p>
 
       <div className="mt-6 flex flex-wrap gap-4">
-        <Link href={courseDetailPath(course, language)} className="font-medium text-blue-600 hover:underline">{copy.viewCourse}</Link>
+        <Link href={detailPath} className="font-medium text-blue-600 hover:underline">{copy.viewCourse}</Link>
         <a href={course.courseUrl} target="_blank" rel="noreferrer" className="font-medium text-gray-600 hover:underline">{copy.officialCourse}</a>
       </div>
     </article>
