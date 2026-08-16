@@ -19,6 +19,33 @@ const searchSynonymGroups = [
   ["algorithm", "algorithms", "算法"],
 ] as const;
 
+const commonSearchSuggestions = [
+  "Python", "Java", "C", "C++", "JavaScript", "SQL",
+  "网站开发", "Web Development", "算法", "Algorithms",
+  "人工智能", "Artificial Intelligence", "机器学习", "Machine Learning",
+  "数据结构", "Data Structures", "数据库", "Databases",
+  "操作系统", "Operating Systems", "计算机网络", "Computer Networks",
+] as const;
+
+export function courseSearchSuggestions(courses: Course[], input: string, limit = 8) {
+  const query = input.trim().toLowerCase();
+  if (!query) return [];
+
+  const candidates = Array.from(new Set([
+    ...commonSearchSuggestions,
+    ...courses.flatMap((course) => [course.title, course.titleZh, course.subject, course.subjectZh]),
+  ].filter((candidate): candidate is string => typeof candidate === "string" && candidate.length > 0)));
+
+  return candidates
+    .filter((candidate) => candidate.toLowerCase().includes(query))
+    .sort((a, b) => {
+      const aStarts = a.toLowerCase().startsWith(query) ? 0 : 1;
+      const bStarts = b.toLowerCase().startsWith(query) ? 0 : 1;
+      return aStarts - bStarts || a.length - b.length || a.localeCompare(b);
+    })
+    .slice(0, limit);
+}
+
 function searchAlternatives(term: string): readonly string[] {
   return searchSynonymGroups.find((group) => group.some((alias) => alias === term)) ?? [term];
 }

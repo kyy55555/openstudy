@@ -6,6 +6,7 @@ import {
   sortCourses,
   courseDifficultyRank,
   displayCourseSubjects,
+  courseSearchSuggestions,
   courseProgrammingLanguages,
   courseSubjectLabel,
   programmingLanguageSubjectPrefix,
@@ -118,6 +119,14 @@ test("search understands common bilingual synonyms instead of requiring exact wo
       ({ id }) => id === "harvard-cs50-web",
     ),
   );
+});
+
+test("search suggestions react to partial English and Chinese input", () => {
+  assert.ok(courseSearchSuggestions(courses, "ja").includes("Java"));
+  assert.ok(courseSearchSuggestions(courses, "网").includes("网站开发"));
+  assert.ok(courseSearchSuggestions(courses, "mach").includes("Machine Learning"));
+  assert.deepEqual(courseSearchSuggestions(courses, ""), []);
+  assert.ok(courseSearchSuggestions(courses, "a", 3).length <= 3);
 });
 
 test("subject, university, and material filters compose", () => {

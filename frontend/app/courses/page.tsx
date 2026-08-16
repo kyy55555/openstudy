@@ -10,6 +10,7 @@ import type { Course } from "../../data/courses";
 import { courseDetailPath, prerequisiteCourseIds } from "../../data/courseNavigation";
 import {
   filterCourses,
+  courseSearchSuggestions,
   displayCourseSubjects,
   courseSubjectLabel,
   programmingLanguageSubjectPrefix,
@@ -248,8 +249,9 @@ function Title({
 type SearchBoxProps = {
   searchInput: string;
   setSearchInput: (value: string) => void;
-  onSearch: () => void;
+  onSearch: (value?: string) => void;
   isSearching: boolean;
+  suggestions: string[];
   copy: Copy;
 };
 
@@ -258,6 +260,7 @@ function SearchBox({
   setSearchInput,
   onSearch,
   isSearching,
+  suggestions,
   copy,
 }: SearchBoxProps) {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -266,14 +269,45 @@ function SearchBox({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mt-6 flex gap-2">
-      <input
-        type="text"
-        placeholder={copy.searchPlaceholder}
-        value={searchInput}
-        onChange={(event) => setSearchInput(event.target.value)}
-        className="min-w-0 flex-1 rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-gray-700"
-      />
+    <form onSubmit={handleSubmit} className="relative mt-6 flex gap-2">
+      <div className="relative min-w-0 flex-1">
+        <input
+          type="search"
+          role="combobox"
+          aria-autocomplete="list"
+          aria-expanded={suggestions.length > 0}
+          aria-controls="course-search-suggestions"
+          placeholder={copy.searchPlaceholder}
+          value={searchInput}
+          onChange={(event) => setSearchInput(event.target.value)}
+          className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-gray-700"
+        />
+
+        {suggestions.length > 0 && (
+          <div
+            id="course-search-suggestions"
+            role="listbox"
+            className="absolute z-20 mt-2 max-h-72 w-full overflow-auto rounded-xl border border-gray-200 bg-white p-2 shadow-lg"
+          >
+            {suggestions.map((suggestion) => (
+              <button
+                key={suggestion}
+                type="button"
+                role="option"
+                aria-selected={false}
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={() => {
+                  setSearchInput(suggestion);
+                  onSearch(suggestion);
+                }}
+                className="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+              >
+                {suggestion}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
 
       <button
         type="submit"
@@ -667,8 +701,8 @@ function CourseExplorer() {
   const subjects = uniqueCourseSubjects(courses);
   const programmingLanguages = uniqueProgrammingLanguages(courses);
 
-  async function handleSearch() {
-    const nextSearch = searchInput.trim();
+  async function handleSearch(suggestedValue?: string) {
+    const nextSearch = (suggestedValue ?? searchInput).trim();
     if (nextSearch === searchTerm) return;
     setIsSearching(true);
     // Keep the feedback visible long enough to be perceived without making
@@ -705,6 +739,9 @@ function CourseExplorer() {
     sort,
   );
   const visibleCourses = filteredCourses.slice(0, visibleCount);
+  const suggestions = searchInput.trim() === searchTerm
+    ? []
+    : courseSearchSuggestions(courses, searchInput);
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-4xl px-6 py-12">
@@ -726,6 +763,7 @@ function CourseExplorer() {
         setSearchInput={setSearchInput}
         onSearch={handleSearch}
         isSearching={isSearching}
+        suggestions={suggestions}
         copy={copy}
       />
 
