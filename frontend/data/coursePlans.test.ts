@@ -96,6 +96,16 @@ test("MIT Python and computational thinking plans follow their official sequence
   assert.equal(dataScience.tasks.filter(({ kind }) => kind === "assignment").length, 5);
 });
 
+test("MIT 18.05 follows the official classes, studios, problem sets, and exams", () => {
+  const definition = structuredCoursePlans["mit-18-05"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("class-")).length, 27);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("studio-")).length, 10);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("problem-set-")).length, 11);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 4);
+  assert.equal(definition.tasks.at(-1)?.id, "final-exam");
+});
+
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {
   const definition = structuredCoursePlans["harvard-cs50x"];
   assert.equal(definition.detail, "full");

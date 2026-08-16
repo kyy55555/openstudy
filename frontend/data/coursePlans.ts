@@ -279,6 +279,39 @@ function mit60002Tasks(): PlanTask[] {
   });
 }
 
+function mit1805Tasks(): PlanTask[] {
+  const base = "https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022";
+  const classes = [
+    ["Counting", "计数"], ["Probability basics", "概率基础"], ["Conditional probability, independence, and Bayes' theorem", "条件概率、独立性与贝叶斯定理"],
+    ["Discrete random variables and expected value", "离散随机变量与期望"], ["Variance and continuous random variables", "方差与连续随机变量"],
+    ["Continuous random variables, LLN, and CLT", "连续随机变量、大数定律与中心极限定理"], ["Joint distributions, covariance, and correlation", "联合分布、协方差与相关性"],
+    ["Exam 1 review", "第一次考试复习"], ["Exam 1", "第一次考试"], ["Statistics, likelihood, and MLE", "统计、似然与最大似然估计"],
+    ["Bayesian updating with discrete priors", "离散先验的贝叶斯更新"], ["Predictive probabilities and odds", "预测概率与赔率"],
+    ["Continuous priors and discrete data", "连续先验与离散数据"], ["Continuous data with continuous priors", "连续数据与连续先验"],
+    ["Beta distributions and conjugate priors", "Beta 分布与共轭先验"], ["Choosing priors and probability intervals", "先验选择与概率区间"],
+    ["NHST: rejection regions and z-test", "假设检验：拒绝域与 z 检验"], ["NHST: t-tests", "假设检验：t 检验"],
+    ["Chi-square and ANOVA", "卡方检验与方差分析"], ["Comparing Bayes and NHST", "比较贝叶斯方法与假设检验"],
+    ["Exam 2 review", "第二次考试复习"], ["Confidence intervals", "置信区间"], ["Confidence intervals continued", "继续学习置信区间"],
+    ["Bootstrap confidence intervals", "Bootstrap 置信区间"], ["R quiz", "R 测验"], ["Linear and multiple regression", "线性与多元回归"], ["Final exam review", "期末考试复习"],
+  ] as const;
+  const problemSetAfter = new Map([[2, 1], [4, 2], [5, 3], [6, 4], [8, 5], [10, 6], [16, 7], [18, 8], [20, 9], [24, 10], [26, 11]]);
+  const studioAfter = new Map([[2, 1], [4, 2], [5, 3], [8, 4], [12, 5], [15, 6], [17, 7], [19, 8], [22, 9], [24, 10]]);
+  const classUrl = `${base}/pages/classes-reading-and-in-class-materials/`;
+  const tasks = classes.flatMap(([title, titleZh], index) => {
+    const classNumber = index + 1;
+    const isExam = classNumber === 9 || classNumber === 25;
+    const result: PlanTask[] = [{ id: `class-${classNumber}`, title: `Class ${classNumber}: ${title}`, titleZh: `第 ${classNumber} 课：${titleZh}`, url: isExam ? `${base}/pages/exams/` : classUrl, kind: isExam ? "exam" : "session" }];
+    const studio = studioAfter.get(classNumber);
+    if (studio) result.push({ id: `studio-${studio}`, title: `R Studio ${studio}`, titleZh: `R 实践 ${studio}`, url: `${base}/pages/r-studio-resources/`, kind: "assignment" });
+    const pset = problemSetAfter.get(classNumber);
+    if (pset) result.push({ id: `problem-set-${pset}`, title: `Problem Set ${pset}`, titleZh: `习题集 ${pset}`, url: `${base}/pages/problem-sets/`, kind: "assignment" });
+    if (classNumber === 21) result.push({ id: "exam-2", title: "Exam 2", titleZh: "第二次考试", url: `${base}/pages/exams/`, kind: "exam" });
+    return result;
+  });
+  tasks.push({ id: "final-exam", title: "Final exam", titleZh: "期末考试", url: `${base}/pages/exams/`, kind: "exam" });
+  return tasks;
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -328,6 +361,7 @@ structuredCoursePlans["mit-18-06"] = { sourceUrl: "https://ocw.mit.edu/courses/1
 structuredCoursePlans["mit-6-046j"] = { sourceUrl: "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/", detail: "full", tasks: mit6046Tasks() };
 structuredCoursePlans["mit-6-100l"] = { sourceUrl: "https://ocw.mit.edu/courses/6-100l-introduction-to-cs-and-programming-using-python-fall-2022/", detail: "full", tasks: mitPythonTasks() };
 structuredCoursePlans["mit-6-0002"] = { sourceUrl: "https://ocw.mit.edu/courses/6-0002-introduction-to-computational-thinking-and-data-science-fall-2016/", detail: "full", tasks: mit60002Tasks() };
+structuredCoursePlans["mit-18-05"] = { sourceUrl: "https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/", detail: "full", tasks: mit1805Tasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];
