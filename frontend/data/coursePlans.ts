@@ -7,6 +7,7 @@ export type PlanTask = {
   url: string;
   kind: "session" | "assignment" | "exam" | "project" | "buffer";
   sourceTaskId?: string;
+  resourceType?: "syllabus" | "schedule" | "lectures" | "assignments" | "exams" | "projects" | "materials" | "downloads";
 };
 
 export type PlanDay = { id: string; tasks: PlanTask[] };
@@ -132,7 +133,11 @@ function resourcePlan(courseId: string): CoursePlanDefinition {
   const course = courses.find(({ id }) => id === courseId);
   if (!course) throw new Error(`Unknown course: ${courseId}`);
   const kindByType = { assignments: "assignment", exams: "exam", projects: "project" } as const;
-  const resources = course.resources.length ? course.resources : [{ type: "materials" as const, title: "Official course page", url: course.courseUrl }];
+  const listedResources = course.resources.length ? course.resources : [{ type: "materials" as const, title: "Official course page", url: course.courseUrl }];
+  const hasSubstantiveResource = listedResources.some(({ type }) => !["syllabus", "schedule"].includes(type));
+  const resources = hasSubstantiveResource
+    ? listedResources
+    : [...listedResources, { type: "materials" as const, title: "Work through official course materials", url: course.courseUrl }];
   return {
     sourceUrl: course.sourceUrl,
     detail: "resources",
@@ -142,6 +147,7 @@ function resourcePlan(courseId: string): CoursePlanDefinition {
       titleZh: ({ syllabus: "阅读课程大纲", schedule: "查看课程安排", lectures: "学习讲义与视频", assignments: "完成官方作业", exams: "完成官方考试与测试题", projects: "完成官方课程项目", materials: "学习官方课程资料", downloads: "下载并学习完整资料包" } as const)[resource.type],
       url: resource.url,
       kind: kindByType[resource.type as keyof typeof kindByType] ?? "session",
+      resourceType: resource.type,
     })),
   };
 }
@@ -173,13 +179,22 @@ export function buildGentlePlan(courseId: string, requestedDays: number): { requ
       tasksByDay[dayIndex].push(...course.tasks.slice(start, end));
     }
   } else {
-    const sourceIndexes = Array.from({ length: plannedDays }, (_, dayIndex) =>
-      Math.floor(dayIndex * course.tasks.length / plannedDays),
-    );
-    const sourceTotals = sourceIndexes.reduce((totals, sourceIndex) => {
-      totals[sourceIndex] = (totals[sourceIndex] ?? 0) + 1;
-      return totals;
-    }, {} as Record<number, number>);
+    const weights = course.tasks.map((task) => ({ syllabus: 0, schedule: 1, lectures: 5, assignments: 4, exams: 2, projects: 5, materials: 4, downloads: 5 }[task.resourceType ?? "materials"]));
+    const sourceTotals = course.tasks.map(() => 1);
+    let remainingDays = plannedDays - course.tasks.length;
+    const weightTotal = weights.reduce((sum, weight) => sum + weight, 0);
+    if (remainingDays > 0 && weightTotal > 0) {
+      const exactShares = weights.map((weight) => remainingDays * weight / weightTotal);
+      exactShares.forEach((share, index) => { sourceTotals[index] += Math.floor(share); });
+      remainingDays -= exactShares.reduce((sum, share) => sum + Math.floor(share), 0);
+      const remainderOrder = exactShares
+        .map((share, index) => ({ index, fraction: share - Math.floor(share), weight: weights[index] }))
+        .sort((a, b) => b.fraction - a.fraction || b.weight - a.weight || a.index - b.index);
+      for (let index = 0; index < remainingDays; index += 1) sourceTotals[remainderOrder[index].index] += 1;
+    } else if (remainingDays > 0) {
+      sourceTotals[sourceTotals.length - 1] += remainingDays;
+    }
+    const sourceIndexes = sourceTotals.flatMap((total, sourceIndex) => Array.from({ length: total }, () => sourceIndex));
     const sourceParts: Record<number, number> = {};
     sourceIndexes.forEach((sourceIndex, dayIndex) => {
       const task = course.tasks[sourceIndex];

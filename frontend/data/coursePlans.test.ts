@@ -34,6 +34,9 @@ test("every catalog course has a plan made only from its official resources", as
         assert.ok(nextIndex >= cursor, `${course.id} omitted or reordered ${task.id}`);
         cursor = nextIndex;
       }
+      for (const syllabus of plan.tasks.filter(({ resourceType }) => resourceType === "syllabus")) {
+        assert.equal(scheduledSourceIds.filter((id) => id === syllabus.id).length, 1, `${course.id} stretches its syllabus across multiple days`);
+      }
     }
   }
 });
