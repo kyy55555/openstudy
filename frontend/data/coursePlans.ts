@@ -6,6 +6,7 @@ export type PlanTask = {
   titleZh: string;
   url: string;
   kind: "session" | "assignment" | "exam" | "project" | "buffer";
+  sourceTaskId?: string;
 };
 
 export type PlanDay = { id: string; tasks: PlanTask[] };
@@ -72,13 +73,53 @@ function cs50xTasks(): PlanTask[] {
   ];
 }
 
-function cs50WeeklyTasks(slug: string, topics: readonly (readonly [string, string])[], assignmentPath: "psets" | "projects" | "assignments", finalProject = true): PlanTask[] {
-  const tasks = topics.flatMap(([title, titleZh], week) => [
+function cs50WeeklyTasks(slug: string, topics: readonly (readonly [string, string])[], assignmentPath: "psets" | "projects" | "assignments", finalProject = true, weekStart = 0): PlanTask[] {
+  const tasks = topics.flatMap(([title, titleZh], index) => {
+    const week = index + weekStart;
+    return [
     { id: `week-${week}`, title: `Week ${week}: ${title}`, titleZh: `第 ${week} 周：${titleZh}`, url: `https://cs50.harvard.edu/${slug}/weeks/${week}/`, kind: "session" as const },
     { id: `${assignmentPath}-${week}`, title: `${assignmentPath === "projects" ? "Project" : assignmentPath === "assignments" ? "Assignment" : "Problem Set"} ${week}`, titleZh: `${assignmentPath === "projects" ? "项目" : assignmentPath === "assignments" ? "作业" : "习题集"} ${week}`, url: `https://cs50.harvard.edu/${slug}/${assignmentPath}/${week}/`, kind: assignmentPath === "projects" ? "project" as const : "assignment" as const },
-  ]);
+    ];
+  });
   if (finalProject) tasks.push({ id: "final-project", title: "Final Project", titleZh: "期末项目", url: `https://cs50.harvard.edu/${slug}/project/`, kind: "project" });
   return tasks;
+}
+
+function stanfordCs106aTasks(): PlanTask[] {
+  const courseUrl = "https://see.stanford.edu/Course/CS106A";
+  const materialBase = "https://see.stanford.edu/materials/icspmcs106a";
+  const lectures = [
+    ["Welcome to CS106A", "课程介绍"], ["Karel programming", "Karel 编程"], ["Karel and Java", "Karel 与 Java"],
+    ["Java and object-oriented programming", "Java 与面向对象编程"], ["Variables, objects, and expressions", "变量、对象与表达式"],
+    ["Control statements", "控制语句"], ["Methods", "方法"], ["Parameters and information hiding", "参数与信息隐藏"],
+    ["Strings and classes", "字符串与类"], ["Graphics and interfaces", "图形与接口"], ["Events and graphics", "事件与图形"],
+    ["Characters and strings", "字符与字符串"], ["String processing", "字符串处理"], ["Memory", "内存"],
+    ["Files and exceptions", "文件与异常"], ["Arrays and ArrayList", "数组与 ArrayList"], ["Multidimensional arrays", "多维数组"],
+    ["Debugging and collections", "调试与集合"], ["Interfaces, maps, and iterators", "接口、映射与迭代器"],
+    ["Graphical user interfaces", "图形用户界面"], ["Interactors and listeners", "交互器与监听器"],
+    ["Components and containers", "组件与容器"], ["Searching, sorting, and efficiency", "搜索、排序与效率"],
+    ["Software design and collections", "软件设计与集合"], ["Social networks and concurrency", "社交网络与并发"],
+    ["Standard Java libraries", "Java 标准库"], ["Life after CS106A", "CS106A 后续学习"], ["Final review", "期末复习"],
+  ] as const;
+  const assignments = new Map<number, readonly [string, string, string]>([
+    [2, ["Assignment 1: Karel", "作业 1：Karel", "07-assignment-1-karel.pdf"]],
+    [6, ["Assignment 2: Simple Java", "作业 2：Simple Java", "13-assignment-2-simple-java.pdf"]],
+    [10, ["Assignment 3: Breakout", "作业 3：Breakout", "19-assignment-3-breakout.pdf"]],
+    [14, ["Assignment 4: Hangman", "作业 4：Hangman", "27-assignment-4-hangman.pdf"]],
+    [18, ["Assignment 5: Yahtzee", "作业 5：Yahtzee", "35-assignment-5-yahtzee.pdf"]],
+    [22, ["Assignment 6: NameSurfer", "作业 6：NameSurfer", "39-assignment-6-name-surfer.pdf"]],
+    [25, ["Assignment 7: FacePamphlet", "作业 7：FacePamphlet", "42-assignment-7-facepamphlet.pdf"]],
+  ]);
+
+  return lectures.flatMap(([title, titleZh], index) => {
+    const lecture = index + 1;
+    const tasks: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${titleZh}`, url: courseUrl, kind: "session" }];
+    const assignment = assignments.get(lecture);
+    if (assignment) tasks.push({ id: `assignment-${assignments.size - [...assignments.keys()].filter((key) => key > lecture).length}`, title: assignment[0], titleZh: assignment[1], url: `${materialBase}/${assignment[2]}`, kind: "assignment" });
+    if (lecture === 14) tasks.push({ id: "practice-midterm", title: "Practice midterm", titleZh: "期中模拟考试", url: `${materialBase}/28-practice-midterm.pdf`, kind: "exam" });
+    if (lecture === 28) tasks.push({ id: "practice-final", title: "Practice final", titleZh: "期末模拟考试", url: `${materialBase}/46-practice-final-exam.pdf`, kind: "exam" });
+    return tasks;
+  });
 }
 
 export type CoursePlanDefinition = {
@@ -115,16 +156,47 @@ structuredCoursePlans["harvard-cs50-python"] = { sourceUrl: "https://cs50.harvar
 structuredCoursePlans["harvard-cs50-ai"] = { sourceUrl: "https://cs50.harvard.edu/ai/weeks/", detail: "full", tasks: cs50WeeklyTasks("ai", [["Search", "搜索"], ["Knowledge", "知识"], ["Uncertainty", "不确定性"], ["Optimization", "优化"], ["Learning", "学习"], ["Neural Networks", "神经网络"], ["Language", "语言"]], "projects", false) };
 structuredCoursePlans["harvard-cs50-web"] = { sourceUrl: "https://cs50.harvard.edu/web/weeks/", detail: "full", tasks: cs50WeeklyTasks("web", [["HTML, CSS", "HTML 与 CSS"], ["Git", "Git"], ["Python", "Python"], ["Django", "Django"], ["SQL, Models, and Migrations", "SQL、模型与迁移"], ["JavaScript", "JavaScript"], ["User Interfaces", "用户界面"], ["Testing, CI/CD", "测试与持续集成部署"], ["Scalability and Security", "可扩展性与安全"]], "projects") };
 structuredCoursePlans["harvard-cs50-cybersecurity"] = { sourceUrl: "https://cs50.harvard.edu/cybersecurity/", detail: "full", tasks: cs50WeeklyTasks("cybersecurity", [["Securing Accounts", "保护账户"], ["Securing Data", "保护数据"], ["Securing Systems", "保护系统"], ["Securing Software", "保护软件"], ["Preserving Privacy", "保护隐私"]], "assignments") };
+structuredCoursePlans["harvard-cs50-sql"] = { sourceUrl: "https://cs50.harvard.edu/sql/weeks/", detail: "full", tasks: cs50WeeklyTasks("sql", [["Querying", "查询"], ["Relating", "关系"], ["Designing", "设计"], ["Writing", "写入"], ["Viewing", "视图"], ["Optimizing", "优化"], ["Scaling", "扩展"]], "psets") };
+structuredCoursePlans["harvard-cs50-r"] = { sourceUrl: "https://cs50.harvard.edu/r/weeks/", detail: "full", tasks: cs50WeeklyTasks("r", [["Representing Data", "表示数据"], ["Transforming Data", "转换数据"], ["Applying Functions", "应用函数"], ["Tidying Data", "整理数据"], ["Visualizing Data", "可视化数据"], ["Testing Programs", "测试程序"], ["Packaging Programs", "打包程序"]], "psets", true, 1) };
+structuredCoursePlans["harvard-cs50-scratch"] = { sourceUrl: "https://cs50.harvard.edu/scratch/weeks/", detail: "full", tasks: cs50WeeklyTasks("scratch", [["Sprites", "角色"], ["Functions", "函数"], ["Events", "事件"], ["Values", "值"], ["Conditions", "条件"], ["Loops", "循环"], ["Variables", "变量"], ["Abstraction", "抽象"], ["Building from Scratch", "从零构建项目"]], "projects", true, 1) };
+structuredCoursePlans["stanford-cs106a"] = { sourceUrl: "https://see.stanford.edu/Course/CS106A", detail: "full", tasks: stanfordCs106aTasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];
   if (!course || !Number.isInteger(requestedDays) || requestedDays < 1) return null;
   const plannedDays = Math.ceil(requestedDays * 1.15);
-  const result: PlanDay[] = Array.from({ length: plannedDays }, (_, dayIndex) => {
-    const start = Math.floor(dayIndex * course.tasks.length / plannedDays);
-    const end = Math.floor((dayIndex + 1) * course.tasks.length / plannedDays);
-    const tasks = course.tasks.slice(start, end);
-    return { id: `day-${dayIndex + 1}`, tasks: tasks.length ? tasks : [{ id: `buffer-${dayIndex + 1}`, title: "Buffer or review day", titleZh: "缓冲或复习日", url: course.sourceUrl, kind: "buffer" }] };
+  const tasksByDay: PlanTask[][] = Array.from({ length: plannedDays }, () => []);
+  if (course.tasks.length >= plannedDays) {
+    for (let dayIndex = 0; dayIndex < plannedDays; dayIndex += 1) {
+      const start = Math.floor(dayIndex * course.tasks.length / plannedDays);
+      const end = Math.floor((dayIndex + 1) * course.tasks.length / plannedDays);
+      tasksByDay[dayIndex].push(...course.tasks.slice(start, end));
+    }
+  } else {
+    const sourceIndexes = Array.from({ length: plannedDays }, (_, dayIndex) =>
+      Math.floor(dayIndex * course.tasks.length / plannedDays),
+    );
+    const sourceTotals = sourceIndexes.reduce((totals, sourceIndex) => {
+      totals[sourceIndex] = (totals[sourceIndex] ?? 0) + 1;
+      return totals;
+    }, {} as Record<number, number>);
+    const sourceParts: Record<number, number> = {};
+    sourceIndexes.forEach((sourceIndex, dayIndex) => {
+      const task = course.tasks[sourceIndex];
+      const total = sourceTotals[sourceIndex];
+      const part = (sourceParts[sourceIndex] ?? 0) + 1;
+      sourceParts[sourceIndex] = part;
+      tasksByDay[dayIndex].push({
+        ...task,
+        id: `${task.id}--part-${part}-of-${total}`,
+        sourceTaskId: task.id,
+        title: `${task.title} · Part ${part}/${total}`,
+        titleZh: `${task.titleZh} · 第 ${part}/${total} 部分`,
+      });
+    });
+  }
+  const result: PlanDay[] = tasksByDay.map((tasks, dayIndex) => {
+    return { id: `day-${dayIndex + 1}`, tasks };
   });
-  return { requestedDays, plannedDays, totalTasks: course.tasks.length, days: result };
+  return { requestedDays, plannedDays, totalTasks: result.flatMap(({ tasks }) => tasks).length, days: result };
 }
