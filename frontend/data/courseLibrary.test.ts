@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { courseResourceKey, createCourseLibraryBackup, learningPathCoverage, normalizeStudyPlanDays, parseCourseLibrary, parseCourseLibraryBackup, pathCompletion, phaseCoverage, selectSessionLibrary } from "./courseLibrary.ts";
+import { courseResourceKey, createCourseLibraryBackup, learningPathCoverage, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, parseCourseLibraryBackup, pathCompletion, phaseCoverage, selectSessionLibrary, studyPlanProgress } from "./courseLibrary.ts";
 
 test("course library safely parses local data", () => {
   assert.deepEqual(parseCourseLibrary(null), { progress: {}, favorites: [], completedResources: [], studyPlans: {}, lastOpenedResource: null });
@@ -45,6 +45,19 @@ test("duplicate synced values are removed and study-plan days are normalized", (
   assert.equal(normalizeStudyPlanDays(30.2), 31);
   assert.equal(normalizeStudyPlanDays(9999), 3650);
   assert.equal(normalizeStudyPlanDays(Number.NaN), null);
+});
+
+test("daily completion dates and plan percentages are normalized", () => {
+  const parsed = parseCourseLibrary(JSON.stringify({
+    studyPlans: {
+      valid: { days: 30, completedTaskIds: ["a", "a", "unknown"], lastDailyCompletionDate: "2026-08-16" },
+      invalidDate: { days: 10, completedTaskIds: [], lastDailyCompletionDate: "today" },
+    },
+  }));
+  assert.equal(parsed.studyPlans.valid.lastDailyCompletionDate, "2026-08-16");
+  assert.equal(parsed.studyPlans.invalidDate.lastDailyCompletionDate, undefined);
+  assert.deepEqual(studyPlanProgress(["a", "b", "b"], parsed.studyPlans.valid.completedTaskIds), { completed: 1, total: 2, percent: 50 });
+  assert.equal(localDateKey(new Date(2026, 7, 6)), "2026-08-06");
 });
 
 test("learning-record backups round-trip and reject unrelated or malformed files", () => {

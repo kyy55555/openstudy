@@ -6,7 +6,7 @@ export type CourseLibraryState = {
   progress: Record<string, CourseProgress>;
   favorites: string[];
   completedResources: string[];
-  studyPlans: Record<string, { days: number; completedTaskIds: string[] }>;
+  studyPlans: Record<string, { days: number; completedTaskIds: string[]; lastDailyCompletionDate?: string }>;
   lastOpenedResource: { courseId: string; url: string; title: string; titleZh: string; openedAt: string } | null;
 };
 
@@ -34,6 +34,20 @@ export function normalizeStudyPlanDays(days: number) {
   return Math.min(3650, Math.max(1, Math.ceil(days)));
 }
 
+export function localDateKey(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+export function studyPlanProgress(totalTaskIds: string[], completedTaskIds: string[]) {
+  const tasks = [...new Set(totalTaskIds)];
+  const completedSet = new Set(completedTaskIds);
+  const completed = tasks.filter((id) => completedSet.has(id)).length;
+  return { completed, total: tasks.length, percent: tasks.length ? Math.round(completed / tasks.length * 100) : 0 };
+}
+
 export function parseCourseLibrary(value: string | null): CourseLibraryState {
   if (!value) return emptyCourseLibrary;
   try {
@@ -44,9 +58,13 @@ export function parseCourseLibrary(value: string | null): CourseLibraryState {
     const studyPlans = parsed.studyPlans && typeof parsed.studyPlans === "object"
       ? Object.fromEntries(Object.entries(parsed.studyPlans).flatMap(([courseId, plan]) => {
         if (!plan || typeof plan !== "object") return [];
-        const candidate = plan as { days?: unknown; completedTaskIds?: unknown };
+        const candidate = plan as { days?: unknown; completedTaskIds?: unknown; lastDailyCompletionDate?: unknown };
         if (!Number.isInteger(candidate.days) || (candidate.days as number) < 1 || (candidate.days as number) > 3650 || !Array.isArray(candidate.completedTaskIds)) return [];
-        return [[courseId, { days: candidate.days as number, completedTaskIds: uniqueStrings(candidate.completedTaskIds) }]];
+        const normalized = { days: candidate.days as number, completedTaskIds: uniqueStrings(candidate.completedTaskIds) } as CourseLibraryState["studyPlans"][string];
+        if (typeof candidate.lastDailyCompletionDate === "string" && /^\d{4}-\d{2}-\d{2}$/.test(candidate.lastDailyCompletionDate)) {
+          normalized.lastDailyCompletionDate = candidate.lastDailyCompletionDate;
+        }
+        return [[courseId, normalized]];
       }))
       : {};
     const recent = parsed.lastOpenedResource;

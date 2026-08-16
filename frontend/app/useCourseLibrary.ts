@@ -122,6 +122,23 @@ export function useCourseLibrary() {
     update({ ...current, studyPlans: { ...current.studyPlans, [courseId]: { ...plan, completedTaskIds } } });
   }
 
+  function completeDailyTask(courseId: string, taskId: string, dateKey: string) {
+    const current = libraryRef.current;
+    const plan = current.studyPlans[courseId];
+    if (!plan || plan.completedTaskIds.includes(taskId)) return;
+    update({
+      ...current,
+      studyPlans: {
+        ...current.studyPlans,
+        [courseId]: {
+          ...plan,
+          completedTaskIds: [...plan.completedTaskIds, taskId],
+          lastDailyCompletionDate: dateKey,
+        },
+      },
+    });
+  }
+
   function removeStudyPlan(courseId: string) {
     const current = libraryRef.current;
     const studyPlans = { ...current.studyPlans };
@@ -143,5 +160,5 @@ export function useCourseLibrary() {
     update(next);
   }
 
-  return { library, loaded, syncIssue, setProgress, toggleFavorite, toggleResource, createStudyPlan, toggleStudyTask, removeStudyPlan, recordResourceOpen, clearLastOpenedResource, replaceLibrary };
+  return { library, loaded, syncIssue, setProgress, toggleFavorite, toggleResource, createStudyPlan, toggleStudyTask, completeDailyTask, removeStudyPlan, recordResourceOpen, clearLastOpenedResource, replaceLibrary };
 }
