@@ -243,6 +243,42 @@ function mit6046Tasks(): PlanTask[] {
   });
 }
 
+function mitPythonTasks(): PlanTask[] {
+  const base = "https://ocw.mit.edu/courses/6-100l-introduction-to-cs-and-programming-using-python-fall-2022";
+  const topics = ["Introduction", "Strings, input/output, and branching", "Iteration", "Loops over strings, guess-and-check, and binary", "Floats and approximation methods", "Bisection search", "Decomposition, abstraction, and functions", "Functions as objects", "Lambda functions, tuples, and lists", "Lists and mutability", "Aliasing and cloning", "List comprehension, testing, and debugging", "Exceptions and assertions", "Dictionaries", "Recursion", "Recursion on non-numerics", "Python classes", "More Python class methods", "Inheritance", "Fitness tracker OOP example", "Timing programs and counting operations", "Big Oh and Theta", "Complexity class examples", "Sorting algorithms", "Plotting", "List access, hashing, simulations, and wrap-up"];
+  const topicsZh = ["导论", "字符串、输入输出与分支", "迭代", "字符串循环、猜测检验与二进制", "浮点数与近似方法", "二分搜索", "分解、抽象与函数", "函数作为对象", "Lambda、元组与列表", "列表与可变性", "别名与克隆", "列表推导、测试与调试", "异常与断言", "字典", "递归", "非数值对象递归", "Python 类", "更多 Python 类方法", "继承", "健身追踪器面向对象示例", "程序计时与操作计数", "大 O 与 Theta", "复杂度类别示例", "排序算法", "绘图", "列表访问、哈希、模拟与总结"];
+  const psetAfter = new Map([[1, 0], [5, 1], [9, 2], [14, 3], [19, 4], [24, 5]]);
+  return topics.flatMap((topic, index) => {
+    const lecture = index + 1;
+    const tasks: PlanTask[] = [
+      { id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${topic}`, titleZh: `第 ${lecture} 讲：${topicsZh[index]}`, url: `${base}/pages/material-by-lecture/`, kind: "session" },
+      { id: `finger-exercise-${lecture}`, title: `Lecture ${lecture} finger exercise`, titleZh: `第 ${lecture} 讲随堂练习`, url: `${base}/pages/material-by-lecture/`, kind: "assignment" },
+    ];
+    const pset = psetAfter.get(lecture);
+    if (pset !== undefined) tasks.push({ id: `problem-set-${pset}`, title: `Problem Set ${pset}`, titleZh: `习题集 ${pset}`, url: `${base}/lists/problem-sets/`, kind: "assignment" });
+    return tasks;
+  });
+}
+
+function mit60002Tasks(): PlanTask[] {
+  const base = "https://ocw.mit.edu/courses/6-0002-introduction-to-computational-thinking-and-data-science-fall-2016";
+  const topics = [
+    ["Introduction and optimization problems", "导论与优化问题"], ["Optimization problems", "优化问题"], ["Graph-theoretic models", "图论模型"],
+    ["Stochastic thinking", "随机思维"], ["Random walks", "随机游走"], ["Monte Carlo simulation", "蒙特卡洛模拟"],
+    ["Confidence intervals", "置信区间"], ["Sampling and standard error", "抽样与标准误差"], ["Understanding experimental data", "理解实验数据"],
+    ["Understanding experimental data continued", "继续理解实验数据"], ["Introduction to machine learning", "机器学习导论"], ["Clustering", "聚类"],
+    ["Classification", "分类"], ["Classification and statistical sins", "分类与统计误区"], ["Statistical sins and wrap-up", "统计误区与总结"],
+  ] as const;
+  const psetAfter = new Map([[3, 1], [5, 2], [8, 3], [11, 4], [14, 5]]);
+  return topics.flatMap(([title, titleZh], index) => {
+    const lecture = index + 1;
+    const tasks: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${titleZh}`, url: `${base}/resources/lecture-videos/`, kind: "session" }];
+    const pset = psetAfter.get(lecture);
+    if (pset) tasks.push({ id: `problem-set-${pset}`, title: `Problem Set ${pset}`, titleZh: `习题集 ${pset}`, url: `${base}/pages/assignments`, kind: "assignment" });
+    return tasks;
+  });
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -290,6 +326,8 @@ structuredCoursePlans["mit-6-006"] = { sourceUrl: "https://ocw.mit.edu/courses/6
 structuredCoursePlans["mit-6-034"] = { sourceUrl: "https://ocw.mit.edu/courses/6-034-artificial-intelligence-fall-2010/", detail: "full", tasks: mit6034Tasks() };
 structuredCoursePlans["mit-18-06"] = { sourceUrl: "https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/pages/resource-index/", detail: "full", tasks: mit1806Tasks() };
 structuredCoursePlans["mit-6-046j"] = { sourceUrl: "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/", detail: "full", tasks: mit6046Tasks() };
+structuredCoursePlans["mit-6-100l"] = { sourceUrl: "https://ocw.mit.edu/courses/6-100l-introduction-to-cs-and-programming-using-python-fall-2022/", detail: "full", tasks: mitPythonTasks() };
+structuredCoursePlans["mit-6-0002"] = { sourceUrl: "https://ocw.mit.edu/courses/6-0002-introduction-to-computational-thinking-and-data-science-fall-2016/", detail: "full", tasks: mit60002Tasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];

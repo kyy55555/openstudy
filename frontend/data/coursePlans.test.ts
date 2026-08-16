@@ -83,6 +83,19 @@ test("MIT 6.046J follows all official lectures, problem sets, and exams", () => 
   assert.equal(definition.tasks.at(-1)?.id, "final-exam");
 });
 
+test("MIT Python and computational thinking plans follow their official sequences", () => {
+  const python = structuredCoursePlans["mit-6-100l"];
+  assert.equal(python.detail, "full");
+  assert.equal(python.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 26);
+  assert.equal(python.tasks.filter(({ id }) => id.startsWith("finger-exercise-")).length, 26);
+  assert.equal(python.tasks.filter(({ id }) => id.startsWith("problem-set-")).length, 6);
+
+  const dataScience = structuredCoursePlans["mit-6-0002"];
+  assert.equal(dataScience.detail, "full");
+  assert.equal(dataScience.tasks.filter(({ kind }) => kind === "session").length, 15);
+  assert.equal(dataScience.tasks.filter(({ kind }) => kind === "assignment").length, 5);
+});
+
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {
   const definition = structuredCoursePlans["harvard-cs50x"];
   assert.equal(definition.detail, "full");
