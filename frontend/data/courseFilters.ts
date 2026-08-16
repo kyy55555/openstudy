@@ -11,6 +11,35 @@ export type CourseFilters = {
 
 export type CourseSort = "easiest" | "newest";
 
+const searchSynonymGroups = [
+  ["web", "website", "websites", "webpage", "webpages", "网站", "网页", "网站开发", "网页开发", "web开发"],
+  ["ai", "artificial intelligence", "人工智能"],
+  ["machine learning", "ml", "机器学习"],
+  ["database", "databases", "数据库"],
+  ["algorithm", "algorithms", "算法"],
+] as const;
+
+function searchAlternatives(term: string): readonly string[] {
+  return searchSynonymGroups.find((group) => group.some((alias) => alias === term)) ?? [term];
+}
+
+function searchMatches(searchableText: string, searchTerm: string) {
+  const normalizedSearch = searchTerm.trim().toLowerCase();
+  if (!normalizedSearch) return true;
+
+  // Match known phrases first so Chinese queries and multi-word concepts remain
+  // intact. For other multi-word searches, require every word while allowing
+  // each word to use its known synonyms.
+  const phraseAlternatives = searchAlternatives(normalizedSearch);
+  if (phraseAlternatives.length > 1) {
+    return phraseAlternatives.some((alternative) => searchableText.includes(alternative));
+  }
+
+  return normalizedSearch
+    .split(/\s+/)
+    .every((word) => searchAlternatives(word).some((alternative) => searchableText.includes(alternative)));
+}
+
 const programmingLanguages = [
   { name: "Python", pattern: /\bPython\b/i },
   { name: "Java", pattern: /\bJava\b/i },
@@ -103,8 +132,6 @@ export function uniqueCourseValues(
 }
 
 export function filterCourses(courses: Course[], filters: CourseFilters) {
-  const normalizedSearch = filters.searchTerm.trim().toLowerCase();
-
   return courses.filter((course) => {
     const searchableText = [
       course.title,
@@ -121,7 +148,7 @@ export function filterCourses(courses: Course[], filters: CourseFilters) {
       .toLowerCase();
 
     return (
-      (normalizedSearch === "" || searchableText.includes(normalizedSearch)) &&
+      searchMatches(searchableText, filters.searchTerm) &&
       (filters.university === "All" || course.university === filters.university) &&
       (filters.subject === "All" ||
         (filters.subject.startsWith(programmingLanguageSubjectPrefix)

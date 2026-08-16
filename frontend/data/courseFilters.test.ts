@@ -103,6 +103,23 @@ test("search supports English, Chinese, and keywords", () => {
   assert.ok(filterCourses(courses, { ...defaults, searchTerm: "Django" }).length > 0);
 });
 
+test("search understands common bilingual synonyms instead of requiring exact wording", () => {
+  for (const searchTerm of ["web", "website", "websites", "网站", "网页", "网站开发"]) {
+    assert.ok(
+      filterCourses(courses, { ...defaults, searchTerm }).some(
+        ({ id }) => id === "harvard-cs50-web",
+      ),
+      `${searchTerm} should find the web-development course`,
+    );
+  }
+
+  assert.ok(
+    filterCourses(courses, { ...defaults, searchTerm: "website Python" }).some(
+      ({ id }) => id === "harvard-cs50-web",
+    ),
+  );
+});
+
 test("subject, university, and material filters compose", () => {
   const results = filterCourses(courses, {
     ...defaults,
