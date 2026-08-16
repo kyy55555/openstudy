@@ -52,6 +52,37 @@ test("Stanford CS106A follows all 28 official lectures, assignments, and practic
   assert.equal(plan?.days.flatMap(({ tasks }) => tasks).filter(({ kind }) => kind === "buffer").length, 0);
 });
 
+test("MIT 6.006 and 6.034 use their complete official lecture and assessment sequences", () => {
+  const algorithms = structuredCoursePlans["mit-6-006"];
+  assert.equal(algorithms.detail, "full");
+  assert.equal(algorithms.tasks.filter(({ kind }) => kind === "session").length, 21);
+  assert.equal(algorithms.tasks.filter(({ kind }) => kind === "assignment").length, 9);
+  assert.equal(algorithms.tasks.filter(({ kind }) => kind === "exam").length, 4);
+
+  const ai = structuredCoursePlans["mit-6-034"];
+  assert.equal(ai.detail, "full");
+  assert.equal(ai.tasks.filter(({ kind }) => kind === "session").length, 23);
+  assert.equal(ai.tasks.filter(({ kind }) => kind === "assignment").length, 6);
+  assert.equal(ai.tasks.filter(({ kind }) => kind === "exam").length, 5);
+});
+
+test("MIT 18.06 follows its official resource index through the final exam", () => {
+  const definition = structuredCoursePlans["mit-18-06"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "assignment").length, 31);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 4);
+  assert.equal(definition.tasks.at(-1)?.id, "final-exam");
+});
+
+test("MIT 6.046J follows all official lectures, problem sets, and exams", () => {
+  const definition = structuredCoursePlans["mit-6-046j"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "session").length, 24);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "assignment").length, 10);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 3);
+  assert.equal(definition.tasks.at(-1)?.id, "final-exam");
+});
+
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {
   const definition = structuredCoursePlans["harvard-cs50x"];
   assert.equal(definition.detail, "full");

@@ -123,6 +123,126 @@ function stanfordCs106aTasks(): PlanTask[] {
   });
 }
 
+function mit6006Tasks(): PlanTask[] {
+  const base = "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020";
+  const lectures = [
+    ["Algorithms and computation", "算法与计算"], ["Data structures and dynamic arrays", "数据结构与动态数组"],
+    ["Sets and sorting", "集合与排序"], ["Hashing", "哈希"], ["Linear sorting", "线性时间排序"],
+    ["Binary trees, part 1", "二叉树（一）"], ["Binary trees, part 2: AVL", "二叉树（二）：AVL"],
+    ["Binary heaps", "二叉堆"], ["Breadth-first search", "广度优先搜索"], ["Depth-first search", "深度优先搜索"],
+    ["Weighted shortest paths", "加权最短路径"], ["Bellman-Ford", "Bellman-Ford"], ["Dijkstra", "Dijkstra"],
+    ["All-pairs shortest paths and Johnson", "全源最短路径与 Johnson 算法"],
+    ["Dynamic programming 1", "动态规划（一）"], ["Dynamic programming 2", "动态规划（二）"],
+    ["Dynamic programming 3", "动态规划（三）"], ["Dynamic programming 4", "动态规划（四）"],
+    ["Complexity", "复杂度"], ["Course review", "课程复习"], ["Algorithms: next steps", "算法后续学习"],
+  ] as const;
+  const problemSetAfter = new Map([[2, 0], [4, 1], [6, 2], [8, 3], [10, 4], [12, 5], [14, 6], [16, 7], [18, 8]]);
+  const quizAfter = new Map([[8, "Quiz 1"], [14, "Quiz 2"], [19, "Quiz 3"], [21, "Final exam"]]);
+  return lectures.flatMap(([title, titleZh], index) => {
+    const lecture = index + 1;
+    const tasks: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${titleZh}`, url: `${base}/video_galleries/lecture-videos/`, kind: "session" }];
+    const problemSet = problemSetAfter.get(lecture);
+    if (problemSet !== undefined) tasks.push({ id: `problem-set-${problemSet}`, title: `Problem Set ${problemSet}`, titleZh: `习题集 ${problemSet}`, url: `${base}/pages/assignments/`, kind: "assignment" });
+    const quiz = quizAfter.get(lecture);
+    if (quiz) tasks.push({ id: quiz.toLowerCase().replaceAll(" ", "-"), title: quiz, titleZh: quiz === "Final exam" ? "期末考试" : `测验 ${quiz.at(-1)}`, url: `${base}/pages/quizzes/`, kind: "exam" });
+    return tasks;
+  });
+}
+
+function mit6034Tasks(): PlanTask[] {
+  const base = "https://ocw.mit.edu/courses/6-034-artificial-intelligence-fall-2010";
+  const lectures = [
+    ["Introduction and scope", "导论与范围"], ["Goal trees and problem solving", "目标树与问题求解"],
+    ["Rule-based expert systems", "基于规则的专家系统"], ["Depth-first, hill climbing, and beam search", "深度优先、爬山与束搜索"],
+    ["Optimal search, branch and bound, and A*", "最优搜索、分支定界与 A*"], ["Games, minimax, and alpha-beta", "博弈、极小化极大与 Alpha-Beta"],
+    ["Line-drawing constraints", "线条图约束"], ["Constraint search and domain reduction", "约束搜索与域缩减"],
+    ["Visual object recognition", "视觉对象识别"], ["Learning and nearest neighbors", "学习与最近邻"],
+    ["Identification trees", "识别树"], ["Neural networks", "神经网络"], ["Deep neural networks", "深度神经网络"],
+    ["Genetic algorithms", "遗传算法"], ["Sparse spaces and phonology", "稀疏空间与音系"],
+    ["Near misses and felicity conditions", "近失例与适切条件"], ["Support vector machines", "支持向量机"],
+    ["Boosting", "提升方法"], ["Classes, trajectories, and transitions", "类别、轨迹与转移"],
+    ["AI architectures", "人工智能架构"], ["Probabilistic inference I", "概率推断（一）"],
+    ["Probabilistic inference II", "概率推断（二）"], ["Model merging and course summary", "模型合并与课程总结"],
+  ] as const;
+  const labAfter = new Map([[1, 0], [3, 1], [5, 2], [6, 3], [11, 4], [17, 5]]);
+  const examAfter = new Map([[6, "Quiz 1"], [11, "Quiz 2"], [17, "Quiz 3"], [23, "Quiz 4"]]);
+  const tasks = lectures.flatMap(([title, titleZh], index) => {
+    const lecture = index + 1;
+    const result: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${titleZh}`, url: `${base}/video_galleries/lecture-videos/`, kind: "session" }];
+    const lab = labAfter.get(lecture);
+    if (lab !== undefined) result.push({ id: `problem-set-${lab}`, title: `Problem Set ${lab}`, titleZh: `习题集 ${lab}`, url: `${base}/pages/assignments/`, kind: "assignment" });
+    const exam = examAfter.get(lecture);
+    if (exam) result.push({ id: `quiz-${exam.at(-1)}`, title: exam, titleZh: `测验 ${exam.at(-1)}`, url: `${base}/pages/exams/`, kind: "exam" });
+    return result;
+  });
+  tasks.push({ id: "final-exam", title: "Final exam", titleZh: "期末考试", url: `${base}/pages/exams/`, kind: "exam" });
+  return tasks;
+}
+
+function mit1806Tasks(): PlanTask[] {
+  const resourceIndex = "https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/pages/resource-index/";
+  const topics = [
+    ["The geometry of linear equations", "线性方程的几何意义"], ["Elimination with matrices", "矩阵消元"],
+    ["Multiplication and inverse matrices", "矩阵乘法与逆矩阵"], ["Factorization into A = LU", "LU 分解"],
+    ["Transposes, permutations, and vector spaces", "转置、置换与向量空间"], ["Column space and nullspace", "列空间与零空间"],
+    ["Solving Ax = 0", "求解 Ax = 0"], ["Solving Ax = b", "求解 Ax = b"], ["Independence, basis, and dimension", "线性无关、基与维数"],
+    ["The four fundamental subspaces", "四个基本子空间"], ["Matrix spaces and rank one", "矩阵空间与秩一矩阵"],
+    ["Graphs, networks, and incidence matrices", "图、网络与关联矩阵"], ["Orthogonal vectors and subspaces", "正交向量与子空间"],
+    ["Projections onto subspaces", "子空间投影"], ["Projection matrices and least squares", "投影矩阵与最小二乘"],
+    ["Orthogonal matrices and Gram-Schmidt", "正交矩阵与 Gram-Schmidt"], ["Properties of determinants", "行列式的性质"],
+    ["Determinant formulas and cofactors", "行列式公式与代数余子式"], ["Cramer's rule, inverse matrix, and volume", "克拉默法则、逆矩阵与体积"],
+    ["Eigenvalues and eigenvectors", "特征值与特征向量"], ["Diagonalization and powers of A", "对角化与矩阵幂"],
+    ["Differential equations and exp(At)", "微分方程与 exp(At)"], ["Markov matrices and Fourier series", "马尔可夫矩阵与傅里叶级数"],
+    ["Symmetric matrices and positive definiteness", "对称矩阵与正定性"], ["Complex matrices and FFT", "复矩阵与快速傅里叶变换"],
+    ["Positive definite matrices and minima", "正定矩阵与极小值"], ["Similar matrices and Jordan form", "相似矩阵与 Jordan 标准形"],
+    ["Singular value decomposition", "奇异值分解"], ["Linear transformations and their matrices", "线性变换及其矩阵"],
+    ["Change of basis and image compression", "基变换与图像压缩"], ["Left and right inverses; pseudoinverse", "左逆、右逆与伪逆"],
+  ] as const;
+  const examAfter = new Map([[12, 1], [23, 2], [31, 3]]);
+  const tasks = topics.flatMap(([title, titleZh], index) => {
+    const session = index + 1;
+    const result: PlanTask[] = [
+      { id: `session-${session}`, title, titleZh, url: resourceIndex, kind: "session" },
+      { id: `problem-set-${session}`, title: `Problems: ${title}`, titleZh: `习题：${titleZh}`, url: resourceIndex, kind: "assignment" },
+    ];
+    const exam = examAfter.get(session);
+    if (exam) result.push({ id: `exam-${exam}`, title: `Exam ${exam}`, titleZh: `考试 ${exam}`, url: "https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/resources/exams/", kind: "exam" });
+    return result;
+  });
+  tasks.push({ id: "final-review", title: "Final course review", titleZh: "期末课程复习", url: resourceIndex, kind: "session" });
+  tasks.push({ id: "final-exam", title: "Final exam", titleZh: "期末考试", url: "https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/resources/exams/", kind: "exam" });
+  return tasks;
+}
+
+function mit6046Tasks(): PlanTask[] {
+  const base = "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015";
+  const lectures = [
+    ["Overview and interval scheduling", "概述与区间调度"], ["Divide and conquer: convex hull and median finding", "分治：凸包与中位数查找"],
+    ["Divide and conquer: FFT", "分治：快速傅里叶变换"], ["Divide and conquer: van Emde Boas trees", "分治：van Emde Boas 树"],
+    ["Amortized analysis", "摊还分析"], ["Randomization: matrix multiplication and quicksort", "随机化：矩阵乘法与快速排序"],
+    ["Randomization: skip lists", "随机化：跳表"], ["Randomization: universal and perfect hashing", "随机化：通用与完美哈希"],
+    ["Augmentation: range trees", "数据结构增强：范围树"], ["Dynamic programming: advanced DP", "动态规划：进阶方法"],
+    ["Dynamic programming: all-pairs shortest paths", "动态规划：全源最短路径"], ["Greedy algorithms: minimum spanning tree", "贪心算法：最小生成树"],
+    ["Incremental improvement: max flow and min cut", "增量改进：最大流与最小割"], ["Incremental improvement: matching", "增量改进：匹配"],
+    ["Linear programming: reductions and simplex", "线性规划：归约与单纯形法"], ["Complexity: P, NP, NP-completeness, and reductions", "复杂度：P、NP、NP 完全与归约"],
+    ["Complexity: approximation algorithms", "复杂度：近似算法"], ["Complexity: fixed-parameter algorithms", "复杂度：固定参数算法"],
+    ["Synchronous distributed algorithms", "同步分布式算法"], ["Asynchronous distributed algorithms", "异步分布式算法"],
+    ["Cryptography: hash functions", "密码学：哈希函数"], ["Cryptography: encryption", "密码学：加密"],
+    ["Cache-oblivious algorithms: medians and matrices", "缓存无关算法：中位数与矩阵"], ["Cache-oblivious algorithms: searching and sorting", "缓存无关算法：搜索与排序"],
+  ] as const;
+  const problemSetAfter = new Map([[2, 1], [4, 2], [6, 3], [8, 4], [10, 5], [12, 6], [14, 7], [16, 8], [19, 9], [22, 10]]);
+  const examAfter = new Map([[9, "Quiz 1"], [18, "Quiz 2"], [24, "Final exam"]]);
+  return lectures.flatMap(([title, titleZh], index) => {
+    const lecture = index + 1;
+    const result: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${titleZh}`, url: `${base}/video_galleries/lecture-videos/`, kind: "session" }];
+    const problemSet = problemSetAfter.get(lecture);
+    if (problemSet) result.push({ id: `problem-set-${problemSet}`, title: `Problem Set ${problemSet}`, titleZh: `习题集 ${problemSet}`, url: `${base}/pages/assignments/`, kind: "assignment" });
+    const exam = examAfter.get(lecture);
+    if (exam) result.push({ id: exam.toLowerCase().replaceAll(" ", "-"), title: exam, titleZh: exam === "Final exam" ? "期末考试" : `测验 ${exam.at(-1)}`, url: `${base}/pages/exams/`, kind: "exam" });
+    return result;
+  });
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -166,6 +286,10 @@ structuredCoursePlans["harvard-cs50-sql"] = { sourceUrl: "https://cs50.harvard.e
 structuredCoursePlans["harvard-cs50-r"] = { sourceUrl: "https://cs50.harvard.edu/r/weeks/", detail: "full", tasks: cs50WeeklyTasks("r", [["Representing Data", "表示数据"], ["Transforming Data", "转换数据"], ["Applying Functions", "应用函数"], ["Tidying Data", "整理数据"], ["Visualizing Data", "可视化数据"], ["Testing Programs", "测试程序"], ["Packaging Programs", "打包程序"]], "psets", true, 1) };
 structuredCoursePlans["harvard-cs50-scratch"] = { sourceUrl: "https://cs50.harvard.edu/scratch/weeks/", detail: "full", tasks: cs50WeeklyTasks("scratch", [["Sprites", "角色"], ["Functions", "函数"], ["Events", "事件"], ["Values", "值"], ["Conditions", "条件"], ["Loops", "循环"], ["Variables", "变量"], ["Abstraction", "抽象"], ["Building from Scratch", "从零构建项目"]], "projects", true, 1) };
 structuredCoursePlans["stanford-cs106a"] = { sourceUrl: "https://see.stanford.edu/Course/CS106A", detail: "full", tasks: stanfordCs106aTasks() };
+structuredCoursePlans["mit-6-006"] = { sourceUrl: "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/", detail: "full", tasks: mit6006Tasks() };
+structuredCoursePlans["mit-6-034"] = { sourceUrl: "https://ocw.mit.edu/courses/6-034-artificial-intelligence-fall-2010/", detail: "full", tasks: mit6034Tasks() };
+structuredCoursePlans["mit-18-06"] = { sourceUrl: "https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/pages/resource-index/", detail: "full", tasks: mit1806Tasks() };
+structuredCoursePlans["mit-6-046j"] = { sourceUrl: "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/", detail: "full", tasks: mit6046Tasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];
