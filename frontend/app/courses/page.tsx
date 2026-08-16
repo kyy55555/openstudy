@@ -31,6 +31,7 @@ const translations = {
     switchLanguage: "中文",
     searchPlaceholder: "Search algorithms, machine learning, 算法...",
     search: "Search",
+    searching: "Searching...",
     university: "University",
     allUniversities: "All universities",
     subject: "Subject",
@@ -85,6 +86,7 @@ const translations = {
     switchLanguage: "English",
     searchPlaceholder: "搜索算法、机器学习、Python……",
     search: "搜索",
+    searching: "正在搜索……",
     university: "大学",
     allUniversities: "全部大学",
     subject: "学科",
@@ -247,6 +249,7 @@ type SearchBoxProps = {
   searchInput: string;
   setSearchInput: (value: string) => void;
   onSearch: () => void;
+  isSearching: boolean;
   copy: Copy;
 };
 
@@ -254,11 +257,12 @@ function SearchBox({
   searchInput,
   setSearchInput,
   onSearch,
+  isSearching,
   copy,
 }: SearchBoxProps) {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    onSearch();
+    void onSearch();
   }
 
   return (
@@ -273,9 +277,16 @@ function SearchBox({
 
       <button
         type="submit"
-        className="rounded-lg bg-black px-5 py-3 text-white hover:bg-gray-800"
+        disabled={isSearching}
+        aria-busy={isSearching}
+        className="min-w-24 rounded-lg bg-black px-5 py-3 text-white hover:bg-gray-800 disabled:cursor-wait disabled:bg-gray-600"
       >
-        {copy.search}
+        {isSearching ? (
+          <span className="flex items-center justify-center gap-2">
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+            {copy.searching}
+          </span>
+        ) : copy.search}
       </button>
     </form>
   );
@@ -632,6 +643,7 @@ function CourseExplorer() {
   const [language, setLanguage] = useState<Language>(initialLanguage);
   const [searchInput, setSearchInput] = useState(initialSearch);
   const [searchTerm, setSearchTerm] = useState(initialSearch);
+  const [isSearching, setIsSearching] = useState(false);
 
   const [universityFilter, setUniversityFilter] =
     useState("All");
@@ -655,11 +667,17 @@ function CourseExplorer() {
   const subjects = uniqueCourseSubjects(courses);
   const programmingLanguages = uniqueProgrammingLanguages(courses);
 
-  function handleSearch() {
+  async function handleSearch() {
     const nextSearch = searchInput.trim();
+    if (nextSearch === searchTerm) return;
+    setIsSearching(true);
+    // Keep the feedback visible long enough to be perceived without making
+    // this local catalog search feel slow.
+    await new Promise((resolve) => setTimeout(resolve, 250));
     setSearchTerm(nextSearch);
     router.replace(coursesPath(nextSearch, language));
     setVisibleCount(coursesPerPage);
+    setIsSearching(false);
   }
 
   function handleResetFilters() {
@@ -707,6 +725,7 @@ function CourseExplorer() {
         searchInput={searchInput}
         setSearchInput={setSearchInput}
         onSearch={handleSearch}
+        isSearching={isSearching}
         copy={copy}
       />
 
@@ -772,7 +791,18 @@ function CourseExplorer() {
           </div>
         </div>
 
-        {filteredCourses.length === 0 ? (
+        {isSearching ? (
+          <div className="mt-6 space-y-5" aria-live="polite" aria-label={copy.searching}>
+            {[0, 1, 2].map((item) => (
+              <div key={item} className="animate-pulse rounded-xl border border-gray-200 p-6">
+                <div className="h-4 w-36 rounded bg-gray-200" />
+                <div className="mt-4 h-7 w-3/5 rounded bg-gray-200" />
+                <div className="mt-4 h-4 w-full rounded bg-gray-100" />
+                <div className="mt-2 h-4 w-4/5 rounded bg-gray-100" />
+              </div>
+            ))}
+          </div>
+        ) : filteredCourses.length === 0 ? (
           <div className="mt-6 rounded-xl border border-gray-200 p-8 text-center">
             <p className="font-medium">
               {copy.noCourses}
