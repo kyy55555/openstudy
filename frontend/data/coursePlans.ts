@@ -312,6 +312,24 @@ function mit1805Tasks(): PlanTask[] {
   return tasks;
 }
 
+function mit6042Tasks(): PlanTask[] {
+  const base = "https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-fall-2010";
+  const topics = ["Introduction and proofs", "Induction", "Strong induction", "Number theory I", "Number theory II", "Graph theory and coloring", "Matching problems", "Minimum spanning trees", "Communication networks", "Graph theory III", "Relations, partial orders, and scheduling", "Sums", "Sums and asymptotics", "Divide-and-conquer recurrences", "Linear recurrences", "Counting rules I", "Counting rules II", "Introduction to probability", "Conditional probability", "Independence", "Random variables", "Expectation I", "Expectation II", "Large deviations", "Random walks"];
+  const topicsZh = ["导论与证明", "归纳法", "强归纳法", "数论（一）", "数论（二）", "图论与着色", "匹配问题", "最小生成树", "通信网络", "图论（三）", "关系、偏序与调度", "求和", "求和与渐近分析", "分治递推", "线性递推", "计数规则（一）", "计数规则（二）", "概率导论", "条件概率", "独立性", "随机变量", "期望（一）", "期望（二）", "大偏差", "随机游走"];
+  const psetAfter = new Map([[2, 1], [4, 2], [6, 3], [8, 4], [10, 5], [12, 6], [14, 7], [16, 8], [18, 9], [20, 10], [22, 11], [24, 12]]);
+  const tasks = topics.flatMap((title, index) => {
+    const lecture = index + 1;
+    const result: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${topicsZh[index]}`, url: `${base}/video_galleries/video-lectures/`, kind: "session" }];
+    if (lecture <= 23) result.push({ id: `recitation-${lecture}`, title: `Recitation ${lecture}`, titleZh: `习题课 ${lecture}`, url: `${base}/resources/recitations/`, kind: "assignment" });
+    const pset = psetAfter.get(lecture);
+    if (pset) result.push({ id: `problem-set-${pset}`, title: `Problem Set ${pset}`, titleZh: `习题集 ${pset}`, url: `${base}/pages/assignments/`, kind: "assignment" });
+    if (lecture === 12) result.push({ id: "midterm", title: "Midterm exam", titleZh: "期中考试", url: `${base}/pages/exams/`, kind: "exam" });
+    return result;
+  });
+  tasks.push({ id: "final-exam", title: "Final exam", titleZh: "期末考试", url: `${base}/pages/exams/`, kind: "exam" });
+  return tasks;
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -362,6 +380,7 @@ structuredCoursePlans["mit-6-046j"] = { sourceUrl: "https://ocw.mit.edu/courses/
 structuredCoursePlans["mit-6-100l"] = { sourceUrl: "https://ocw.mit.edu/courses/6-100l-introduction-to-cs-and-programming-using-python-fall-2022/", detail: "full", tasks: mitPythonTasks() };
 structuredCoursePlans["mit-6-0002"] = { sourceUrl: "https://ocw.mit.edu/courses/6-0002-introduction-to-computational-thinking-and-data-science-fall-2016/", detail: "full", tasks: mit60002Tasks() };
 structuredCoursePlans["mit-18-05"] = { sourceUrl: "https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/", detail: "full", tasks: mit1805Tasks() };
+structuredCoursePlans["mit-6-042j"] = { sourceUrl: "https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-fall-2010/", detail: "full", tasks: mit6042Tasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];

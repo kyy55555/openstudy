@@ -106,6 +106,15 @@ test("MIT 18.05 follows the official classes, studios, problem sets, and exams",
   assert.equal(definition.tasks.at(-1)?.id, "final-exam");
 });
 
+test("MIT 6.042J follows all official lectures, recitations, problem sets, and exams", () => {
+  const definition = structuredCoursePlans["mit-6-042j"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 25);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("recitation-")).length, 23);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("problem-set-")).length, 12);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 2);
+});
+
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {
   const definition = structuredCoursePlans["harvard-cs50x"];
   assert.equal(definition.detail, "full");
