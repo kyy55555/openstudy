@@ -330,6 +330,37 @@ function mit6042Tasks(): PlanTask[] {
   return tasks;
 }
 
+function mit1802Tasks(): PlanTask[] {
+  const base = "https://ocw.mit.edu/courses/18-02sc-multivariable-calculus-fall-2010";
+  const sections = [
+    [1, 8, "Vectors, determinants, and planes", "向量、行列式与平面", "1.-vectors-and-matrices/part-a-vectors-determinants-and-planes"],
+    [9, 14, "Matrices and systems of equations", "矩阵与方程组", "1.-vectors-and-matrices/part-b-matrices-and-systems-of-equations"],
+    [15, 23, "Parametric equations for curves", "曲线的参数方程", "1.-vectors-and-matrices/part-c-parametric-equations-for-curves"],
+    [24, 31, "Functions, tangent approximation, and optimization", "多元函数、切线近似与优化", "2.-partial-derivatives/part-a-functions-of-two-variables-tangent-approximation-and-optimization"],
+    [32, 38, "Chain rule, gradient, and directional derivatives", "链式法则、梯度与方向导数", "2.-partial-derivatives/part-b-chain-rule-gradient-and-directional-derivatives"],
+    [39, 46, "Lagrange multipliers and constrained differentials", "拉格朗日乘数与约束微分", "2.-partial-derivatives/part-c-lagrange-multipliers-and-constrained-differentials"],
+    [47, 55, "Double integrals", "二重积分", "3.-double-integrals-and-line-integrals-in-the-plane/part-a-double-integrals"],
+    [56, 64, "Vector fields and line integrals", "向量场与线积分", "3.-double-integrals-and-line-integrals-in-the-plane/part-b-vector-fields-and-line-integrals"],
+    [65, 73, "Green's theorem", "格林定理", "3.-double-integrals-and-line-integrals-in-the-plane/part-c-greens-theorem"],
+    [74, 78, "Triple integrals", "三重积分", "4.-triple-integrals-and-surface-integrals-in-3-space/part-a-triple-integrals"],
+    [79, 87, "Flux and the divergence theorem", "通量与散度定理", "4.-triple-integrals-and-surface-integrals-in-3-space/part-b-flux-and-the-divergence-theorem"],
+    [88, 98, "Line integrals and Stokes' theorem", "线积分与斯托克斯定理", "4.-triple-integrals-and-surface-integrals-in-3-space/part-c-line-integrals-and-stokes-theorem"],
+  ] as const;
+  const tasks: PlanTask[] = [];
+  sections.forEach(([start, end, title, titleZh, path], sectionIndex) => {
+    for (let session = start; session <= end; session += 1) tasks.push({ id: `session-${session}`, title: `Session ${session}: ${title}`, titleZh: `第 ${session} 讲：${titleZh}`, url: `${base}/pages/${path}/`, kind: "session" });
+    const pset = sectionIndex + 1;
+    tasks.push({ id: `problem-set-${pset}`, title: `Problem Set ${pset}`, titleZh: `习题集 ${pset}`, url: `${base}/resources/problem-sets/`, kind: "assignment" });
+    if (pset % 3 === 0) {
+      const exam = pset / 3;
+      tasks.push({ id: `exam-${exam}`, title: `Exam ${exam}`, titleZh: `考试 ${exam}`, url: `${base}/pages/exams/`, kind: "exam" });
+    }
+  });
+  tasks.push({ id: "final-review", title: "Final exam review", titleZh: "期末考试复习", url: `${base}/resources/lecture-videos/`, kind: "session" });
+  tasks.push({ id: "final-exam", title: "Final exam", titleZh: "期末考试", url: `${base}/pages/exams/`, kind: "exam" });
+  return tasks;
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -381,6 +412,7 @@ structuredCoursePlans["mit-6-100l"] = { sourceUrl: "https://ocw.mit.edu/courses/
 structuredCoursePlans["mit-6-0002"] = { sourceUrl: "https://ocw.mit.edu/courses/6-0002-introduction-to-computational-thinking-and-data-science-fall-2016/", detail: "full", tasks: mit60002Tasks() };
 structuredCoursePlans["mit-18-05"] = { sourceUrl: "https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/", detail: "full", tasks: mit1805Tasks() };
 structuredCoursePlans["mit-6-042j"] = { sourceUrl: "https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-fall-2010/", detail: "full", tasks: mit6042Tasks() };
+structuredCoursePlans["mit-18-02sc"] = { sourceUrl: "https://ocw.mit.edu/courses/18-02sc-multivariable-calculus-fall-2010/", detail: "full", tasks: mit1802Tasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];
