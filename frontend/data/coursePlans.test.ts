@@ -177,6 +177,15 @@ test("Stanford CS223A follows its complete public SEE lecture and assignment seq
   assert.ok(definition.tasks.every(({ url }) => url === "https://see.stanford.edu/Course/CS223A"));
 });
 
+test("Stanford CS229 follows its complete SEE lecture, problem-set, and project sequence", () => {
+  const definition = structuredCoursePlans["stanford-cs229"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 20);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("problem-set-")).length, 4);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "project").length, 4);
+  assert.ok(definition.tasks.every(({ url }) => url === "https://see.stanford.edu/Course/CS229"));
+});
+
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {
   const definition = structuredCoursePlans["harvard-cs50x"];
   assert.equal(definition.detail, "full");

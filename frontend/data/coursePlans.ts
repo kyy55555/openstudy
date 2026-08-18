@@ -481,6 +481,37 @@ function stanfordCs223aTasks(): PlanTask[] {
   });
 }
 
+function stanfordCs229Tasks(): PlanTask[] {
+  const courseUrl = "https://see.stanford.edu/Course/CS229";
+  const topics = [
+    ["Machine learning overview", "机器学习概述"], ["Linear regression and gradient descent", "线性回归与梯度下降"],
+    ["Locally weighted regression and logistic regression", "局部加权回归与逻辑回归"], ["Generalized linear models", "广义线性模型"],
+    ["Generative learning algorithms", "生成式学习算法"], ["Neural networks and SVM margins", "神经网络与支持向量机间隔"],
+    ["SVM duality and kernels", "支持向量机对偶与核方法"], ["Soft-margin SVM and SMO", "软间隔支持向量机与 SMO"],
+    ["Bias, variance, and uniform convergence", "偏差、方差与一致收敛"], ["VC dimension and model selection", "VC 维与模型选择"],
+    ["Regularization and practical diagnostics", "正则化与实践诊断"], ["K-means and expectation maximization", "K 均值与期望最大化"],
+    ["Gaussian mixtures and factor analysis", "高斯混合与因子分析"], ["PCA and dimensionality reduction", "主成分分析与降维"],
+    ["SVD and independent component analysis", "奇异值分解与独立成分分析"], ["MDPs and dynamic programming", "马尔可夫决策过程与动态规划"],
+    ["Continuous-state reinforcement learning", "连续状态强化学习"], ["LQR and dynamical systems", "线性二次调节与动力系统"],
+    ["Kalman filtering and LQG", "卡尔曼滤波与线性二次高斯控制"], ["POMDPs and policy search", "部分可观测 MDP 与策略搜索"],
+  ] as const;
+  const problemSetAfter = new Map([[5, 1], [10, 2], [15, 3], [20, 4]]);
+  const tasks = topics.flatMap(([title, titleZh], index) => {
+    const lecture = index + 1;
+    const result: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${titleZh}`, url: courseUrl, kind: "session" }];
+    const problemSet = problemSetAfter.get(lecture);
+    if (problemSet) result.push({ id: `problem-set-${problemSet}`, title: `Problem Set ${problemSet}`, titleZh: `习题集 ${problemSet}`, url: courseUrl, kind: "assignment" });
+    if (lecture === 5) result.push({ id: "project-proposal", title: "Term project proposal", titleZh: "课程项目提案", url: courseUrl, kind: "project" });
+    if (lecture === 14) result.push({ id: "project-milestone", title: "Term project milestone", titleZh: "课程项目阶段成果", url: courseUrl, kind: "project" });
+    return result;
+  });
+  tasks.push(
+    { id: "project-presentation", title: "Term project poster presentation", titleZh: "课程项目海报展示", url: courseUrl, kind: "project" },
+    { id: "project-final-report", title: "Term project final report", titleZh: "课程项目最终报告", url: courseUrl, kind: "project" },
+  );
+  return tasks;
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -539,6 +570,7 @@ structuredCoursePlans["mit-7-012"] = { sourceUrl: "https://ocw.mit.edu/courses/7
 structuredCoursePlans["stanford-cs106b"] = { sourceUrl: "https://see.stanford.edu/Course/CS106B", detail: "full", tasks: stanfordCs106bTasks() };
 structuredCoursePlans["stanford-cs107"] = { sourceUrl: "https://see.stanford.edu/Course/CS107", detail: "full", tasks: stanfordCs107Tasks() };
 structuredCoursePlans["stanford-cs223a"] = { sourceUrl: "https://see.stanford.edu/Course/CS223A", detail: "full", tasks: stanfordCs223aTasks() };
+structuredCoursePlans["stanford-cs229"] = { sourceUrl: "https://see.stanford.edu/Course/CS229", detail: "full", tasks: stanfordCs229Tasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];
