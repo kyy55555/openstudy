@@ -361,6 +361,20 @@ function mit1802Tasks(): PlanTask[] {
   return tasks;
 }
 
+function mit801Tasks(): PlanTask[] {
+  const base = "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016";
+  const lessons = ["Vectors", "1D kinematics: position and velocity", "1D kinematics: acceleration", "2D kinematics", "Newton's laws of motion", "Gravity", "Contact forces", "Tension and springs", "Circular motion: position and velocity", "Uniform circular motion", "Circular motion: acceleration", "Newton's second law and circular motion", "Pulleys and constraints", "Massive rope", "Resistive forces", "Momentum and impulse", "Conservation of momentum", "Center of mass and motion", "Relative velocity and recoil", "Continuous mass transfer", "Kinetic energy and work in 1D", "Kinetic energy and work in 2D and 3D", "Conservative and non-conservative forces", "Potential energy", "Conservation of energy", "Potential energy diagrams", "Types of collision", "Elastic collisions", "Motion of a rigid body", "Moment of inertia", "Torque", "Rotational dynamics", "Angular momentum of a point particle", "Angular momentum of a rigid body", "Torque and angular impulse", "Rolling kinematics", "Rolling dynamics", "Rolling kinetic energy and angular momentum"];
+  const lessonsZh = ["向量", "一维运动学：位置与速度", "一维运动学：加速度", "二维运动学", "牛顿运动定律", "重力", "接触力", "张力与弹簧", "圆周运动：位置与速度", "匀速圆周运动", "圆周运动：加速度", "牛顿第二定律与圆周运动", "滑轮与约束", "有质量的绳索", "阻力", "动量与冲量", "动量守恒", "质心与运动", "相对速度与反冲", "连续质量传递", "一维动能与功", "二维和三维动能与功", "保守力与非保守力", "势能", "能量守恒", "势能图", "碰撞类型", "弹性碰撞", "刚体运动", "转动惯量", "力矩", "转动动力学", "质点角动量", "刚体角动量", "力矩与角冲量", "滚动运动学", "滚动动力学", "滚动动能与角动量"];
+  const weekEnds = new Map([[3, 1], [7, 2], [11, 3], [14, 4], [17, 5], [19, 6], [22, 7], [25, 8], [27, 9], [31, 10], [34, 11], [37, 12]]);
+  return lessons.flatMap((title, index) => {
+    const lesson = index;
+    const tasks: PlanTask[] = [{ id: `lesson-${lesson}`, title: `Lesson ${lesson}: ${title}`, titleZh: `第 ${lesson} 课：${lessonsZh[index]}`, url: `${base}/resources/lecture-videos/`, kind: "session" }];
+    const week = weekEnds.get(lesson);
+    if (week) tasks.push({ id: `problem-set-${week}`, title: `Problem Set ${week}`, titleZh: `习题集 ${week}`, url: `${base}/pages/assignments/`, kind: "assignment" });
+    return tasks;
+  });
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -413,6 +427,7 @@ structuredCoursePlans["mit-6-0002"] = { sourceUrl: "https://ocw.mit.edu/courses/
 structuredCoursePlans["mit-18-05"] = { sourceUrl: "https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/", detail: "full", tasks: mit1805Tasks() };
 structuredCoursePlans["mit-6-042j"] = { sourceUrl: "https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-fall-2010/", detail: "full", tasks: mit6042Tasks() };
 structuredCoursePlans["mit-18-02sc"] = { sourceUrl: "https://ocw.mit.edu/courses/18-02sc-multivariable-calculus-fall-2010/", detail: "full", tasks: mit1802Tasks() };
+structuredCoursePlans["mit-8-01sc"] = { sourceUrl: "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/", detail: "full", tasks: mit801Tasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];
