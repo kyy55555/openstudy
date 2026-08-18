@@ -397,6 +397,25 @@ function mit5111Tasks(): PlanTask[] {
   return tasks;
 }
 
+function mit7012Tasks(): PlanTask[] {
+  const base = "https://ocw.mit.edu/courses/7-012-introduction-to-biology-fall-2004";
+  const topics = ["Introduction", "Biochemistry 1", "Biochemistry 2", "Biochemistry 3", "Biochemistry 4", "Genetics 1", "Genetics 2", "Genetics 3", "Human genetics", "Molecular biology 1", "Molecular biology 2", "Molecular biology 3", "Gene regulation", "Protein localization", "Recombinant DNA 1", "Recombinant DNA 2", "Recombinant DNA 3", "Recombinant DNA 4", "Cell cycle and signaling", "Cancer", "Virology and tumor viruses", "Immunology 1", "Immunology 2", "AIDS", "Genomics", "Nervous system 1", "Nervous system 2", "Nervous system 3", "Stem cells and cloning 1", "Stem cells and cloning 2", "Molecular medicine 1", "Molecular evolution", "Molecular medicine 2", "Human polymorphisms and cancer classification", "Future of biology"];
+  const topicsZh = ["导论", "生物化学（一）", "生物化学（二）", "生物化学（三）", "生物化学（四）", "遗传学（一）", "遗传学（二）", "遗传学（三）", "人类遗传学", "分子生物学（一）", "分子生物学（二）", "分子生物学（三）", "基因调控", "蛋白质定位", "重组 DNA（一）", "重组 DNA（二）", "重组 DNA（三）", "重组 DNA（四）", "细胞周期与信号传导", "癌症", "病毒学与肿瘤病毒", "免疫学（一）", "免疫学（二）", "艾滋病", "基因组学", "神经系统（一）", "神经系统（二）", "神经系统（三）", "干细胞与克隆（一）", "干细胞与克隆（二）", "分子医学（一）", "分子进化", "分子医学（二）", "人类多态性与癌症分类", "生物学的未来"];
+  const psetAfter = new Map([[5, 1], [10, 2], [15, 3], [20, 4], [25, 5], [30, 6], [35, 7]]);
+  const quizAfter = new Map([[10, 1], [17, 2], [24, 3]]);
+  const tasks = topics.flatMap((title, index) => {
+    const lecture = index + 1;
+    const result: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${topicsZh[index]}`, url: `${base}/pages/readings/`, kind: "session" }];
+    const pset = psetAfter.get(lecture);
+    if (pset) result.push({ id: `problem-set-${pset}`, title: `Problem Set ${pset}`, titleZh: `习题集 ${pset}`, url: `${base}/pages/assignments`, kind: "assignment" });
+    const quiz = quizAfter.get(lecture);
+    if (quiz) result.push({ id: `quiz-${quiz}`, title: `Quiz ${quiz}`, titleZh: `测验 ${quiz}`, url: `${base}/pages/exams/`, kind: "exam" });
+    return result;
+  });
+  tasks.push({ id: "final-exam", title: "Practice cumulative final exam", titleZh: "综合期末模拟考试", url: `${base}/pages/exams/`, kind: "exam" });
+  return tasks;
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -451,6 +470,7 @@ structuredCoursePlans["mit-6-042j"] = { sourceUrl: "https://ocw.mit.edu/courses/
 structuredCoursePlans["mit-18-02sc"] = { sourceUrl: "https://ocw.mit.edu/courses/18-02sc-multivariable-calculus-fall-2010/", detail: "full", tasks: mit1802Tasks() };
 structuredCoursePlans["mit-8-01sc"] = { sourceUrl: "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/", detail: "full", tasks: mit801Tasks() };
 structuredCoursePlans["mit-5-111sc"] = { sourceUrl: "https://ocw.mit.edu/courses/5-111sc-principles-of-chemical-science-fall-2014/", detail: "full", tasks: mit5111Tasks() };
+structuredCoursePlans["mit-7-012"] = { sourceUrl: "https://ocw.mit.edu/courses/7-012-introduction-to-biology-fall-2004/", detail: "full", tasks: mit7012Tasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];
