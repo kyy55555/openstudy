@@ -433,6 +433,23 @@ function stanfordCs106bTasks(): PlanTask[] {
   return tasks;
 }
 
+function stanfordCs107Tasks(): PlanTask[] {
+  const courseUrl = "https://see.stanford.edu/Course/CS107";
+  const sectionAfter = new Map([[6, 1], [8, 2], [11, 3], [12, 4], [16, 5], [18, 6], [21, 7], [26, 8]]);
+  const projectsAfter = new Map([[2, "RSG"], [4, "Six Degrees"], [7, "Vector and Hashset"], [10, "RSS"], [12, "Raw Memory"], [17, "RSS Revisited"], [21, "Where Am I"], [24, "Python"]]);
+  const tasks = Array.from({ length: 27 }, (_, index) => index + 1).flatMap((lecture) => {
+    const result: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}`, titleZh: `第 ${lecture} 讲`, url: courseUrl, kind: "session" }];
+    const section = sectionAfter.get(lecture);
+    if (section) result.push({ id: `section-assignment-${section}`, title: `Section Assignment ${section}`, titleZh: `习题课作业 ${section}`, url: courseUrl, kind: "assignment" });
+    const project = projectsAfter.get(lecture);
+    if (project) result.push({ id: `programming-assignment-${project.toLowerCase().replaceAll(" ", "-")}`, title: `Programming Assignment: ${project}`, titleZh: `编程作业：${project}`, url: courseUrl, kind: "project" });
+    if (lecture === 14) result.push({ id: "practice-midterm", title: "Practice midterm", titleZh: "期中模拟考试", url: courseUrl, kind: "exam" }, { id: "midterm", title: "Midterm", titleZh: "期中考试", url: courseUrl, kind: "exam" });
+    return result;
+  });
+  tasks.push({ id: "practice-final", title: "Practice final", titleZh: "期末模拟考试", url: courseUrl, kind: "exam" });
+  return tasks;
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -489,6 +506,7 @@ structuredCoursePlans["mit-8-01sc"] = { sourceUrl: "https://ocw.mit.edu/courses/
 structuredCoursePlans["mit-5-111sc"] = { sourceUrl: "https://ocw.mit.edu/courses/5-111sc-principles-of-chemical-science-fall-2014/", detail: "full", tasks: mit5111Tasks() };
 structuredCoursePlans["mit-7-012"] = { sourceUrl: "https://ocw.mit.edu/courses/7-012-introduction-to-biology-fall-2004/", detail: "full", tasks: mit7012Tasks() };
 structuredCoursePlans["stanford-cs106b"] = { sourceUrl: "https://see.stanford.edu/Course/CS106B", detail: "full", tasks: stanfordCs106bTasks() };
+structuredCoursePlans["stanford-cs107"] = { sourceUrl: "https://see.stanford.edu/Course/CS107", detail: "full", tasks: stanfordCs107Tasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];
