@@ -375,6 +375,28 @@ function mit801Tasks(): PlanTask[] {
   });
 }
 
+function mit5111Tasks(): PlanTask[] {
+  const base = "https://ocw.mit.edu/courses/5-111sc-principles-of-chemical-science-fall-2014";
+  const units = [
+    [1, 7, "The atom", "原子"], [8, 17, "Chemical bonding and structure", "化学键与结构"],
+    [18, 24, "Thermodynamics and chemical equilibrium", "热力学与化学平衡"],
+    [25, 29, "Transition metals and oxidation-reduction reactions", "过渡金属与氧化还原反应"],
+    [30, 35, "Chemical kinetics", "化学动力学"],
+  ] as const;
+  const examAfter = new Map([[7, 1], [17, 2], [24, 3], [31, 4]]);
+  const tasks: PlanTask[] = [];
+  for (const [start, end, title, titleZh] of units) {
+    for (let lecture = start; lecture <= end; lecture += 1) {
+      tasks.push({ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${titleZh}`, url: `${base}/pages/resource-index/`, kind: "session" });
+      tasks.push({ id: `lecture-problems-${lecture}`, title: `Lecture ${lecture} problems`, titleZh: `第 ${lecture} 讲习题`, url: `${base}/resources/problem-sets/`, kind: "assignment" });
+      const exam = examAfter.get(lecture);
+      if (exam) tasks.push({ id: `exam-${exam}`, title: `Exam ${exam}`, titleZh: `考试 ${exam}`, url: `${base}/pages/exams/`, kind: "exam" });
+    }
+  }
+  tasks.push({ id: "final-exam", title: "Final exam", titleZh: "期末考试", url: `${base}/pages/exams/`, kind: "exam" });
+  return tasks;
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -428,6 +450,7 @@ structuredCoursePlans["mit-18-05"] = { sourceUrl: "https://ocw.mit.edu/courses/1
 structuredCoursePlans["mit-6-042j"] = { sourceUrl: "https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-fall-2010/", detail: "full", tasks: mit6042Tasks() };
 structuredCoursePlans["mit-18-02sc"] = { sourceUrl: "https://ocw.mit.edu/courses/18-02sc-multivariable-calculus-fall-2010/", detail: "full", tasks: mit1802Tasks() };
 structuredCoursePlans["mit-8-01sc"] = { sourceUrl: "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/", detail: "full", tasks: mit801Tasks() };
+structuredCoursePlans["mit-5-111sc"] = { sourceUrl: "https://ocw.mit.edu/courses/5-111sc-principles-of-chemical-science-fall-2014/", detail: "full", tasks: mit5111Tasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];

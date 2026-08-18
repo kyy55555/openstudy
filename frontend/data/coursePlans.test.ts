@@ -132,6 +132,15 @@ test("MIT 8.01SC follows all public lessons and problem sets", () => {
   assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 0);
 });
 
+test("MIT 5.111SC follows all lectures, lecture problems, and exams", () => {
+  const definition = structuredCoursePlans["mit-5-111sc"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-") && !id.startsWith("lecture-problems-")).length, 35);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-problems-")).length, 35);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 5);
+  assert.equal(definition.tasks.at(-1)?.id, "final-exam");
+});
+
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {
   const definition = structuredCoursePlans["harvard-cs50x"];
   assert.equal(definition.detail, "full");
