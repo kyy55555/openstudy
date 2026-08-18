@@ -416,6 +416,23 @@ function mit7012Tasks(): PlanTask[] {
   return tasks;
 }
 
+function stanfordCs106bTasks(): PlanTask[] {
+  const courseUrl = "https://see.stanford.edu/Course/CS106B";
+  const sectionAfter = new Map([[3, 1], [5, 2], [8, 3], [11, 4], [16, 5], [17, 6], [19, 7], [22, 8], [25, 9]]);
+  const programmingAfter = new Map([[3, "Simple C++"], [6, "ADTs"], [9, "Recursion"], [12, "Boggle"], [16, "Sorting"], [19, "Priority Queue"], [23, "Pathfinder"]]);
+  const tasks = Array.from({ length: 27 }, (_, index) => index + 1).flatMap((lecture) => {
+    const result: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}`, titleZh: `第 ${lecture} 讲`, url: courseUrl, kind: "session" }];
+    const section = sectionAfter.get(lecture);
+    if (section) result.push({ id: `section-assignment-${section}`, title: `Section Assignment ${section}`, titleZh: `习题课作业 ${section}`, url: courseUrl, kind: "assignment" });
+    const programming = programmingAfter.get(lecture);
+    if (programming) result.push({ id: `programming-assignment-${programming.toLowerCase().replaceAll(" ", "-")}`, title: `Programming Assignment: ${programming}`, titleZh: `编程作业：${programming}`, url: courseUrl, kind: "project" });
+    if (lecture === 14) result.push({ id: "practice-midterm", title: "Practice midterm", titleZh: "期中模拟考试", url: courseUrl, kind: "exam" });
+    return result;
+  });
+  tasks.push({ id: "practice-final", title: "Practice final", titleZh: "期末模拟考试", url: courseUrl, kind: "exam" });
+  return tasks;
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -471,6 +488,7 @@ structuredCoursePlans["mit-18-02sc"] = { sourceUrl: "https://ocw.mit.edu/courses
 structuredCoursePlans["mit-8-01sc"] = { sourceUrl: "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/", detail: "full", tasks: mit801Tasks() };
 structuredCoursePlans["mit-5-111sc"] = { sourceUrl: "https://ocw.mit.edu/courses/5-111sc-principles-of-chemical-science-fall-2014/", detail: "full", tasks: mit5111Tasks() };
 structuredCoursePlans["mit-7-012"] = { sourceUrl: "https://ocw.mit.edu/courses/7-012-introduction-to-biology-fall-2004/", detail: "full", tasks: mit7012Tasks() };
+structuredCoursePlans["stanford-cs106b"] = { sourceUrl: "https://see.stanford.edu/Course/CS106B", detail: "full", tasks: stanfordCs106bTasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];

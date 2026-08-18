@@ -150,6 +150,15 @@ test("MIT 7.012 follows the official lecture, problem-set, and exam sequence", (
   assert.equal(definition.tasks.at(-1)?.id, "final-exam");
 });
 
+test("Stanford CS106B follows its complete SEE lecture and assignment sequence", () => {
+  const definition = structuredCoursePlans["stanford-cs106b"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 27);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("section-assignment-")).length, 9);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("programming-assignment-")).length, 7);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 2);
+});
+
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {
   const definition = structuredCoursePlans["harvard-cs50x"];
   assert.equal(definition.detail, "full");
