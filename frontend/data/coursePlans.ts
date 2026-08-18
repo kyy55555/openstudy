@@ -450,6 +450,37 @@ function stanfordCs107Tasks(): PlanTask[] {
   return tasks;
 }
 
+function stanfordCs223aTasks(): PlanTask[] {
+  const courseUrl = "https://see.stanford.edu/Course/CS223A";
+  const topics = [
+    ["Course overview", "课程概述"],
+    ["Spatial descriptions", "空间描述"],
+    ["Homogeneous transforms", "齐次变换"],
+    ["Manipulator kinematics I", "机械臂运动学（一）"],
+    ["Manipulator kinematics II", "机械臂运动学（二）"],
+    ["Jacobians I", "雅可比矩阵（一）"],
+    ["Jacobians II", "雅可比矩阵（二）"],
+    ["Jacobians and Scheinman arm demonstration", "雅可比矩阵与 Scheinman 机械臂演示"],
+    ["Robots and vision", "机器人与视觉"],
+    ["Trajectory planning", "轨迹规划"],
+    ["Robot dynamics I", "机器人动力学（一）"],
+    ["Robot dynamics and Lagrange equations", "机器人动力学与拉格朗日方程"],
+    ["Control overview", "控制概述"],
+    ["Robot control I", "机器人控制（一）"],
+    ["Robot control II", "机器人控制（二）"],
+    ["Compliance and force control", "顺应性与力控制"],
+  ] as const;
+  const assignmentAfter = new Map([[3, 1], [5, 2], [8, 3], [10, 4], [13, 5], [15, 6]]);
+
+  return topics.flatMap(([title, titleZh], index) => {
+    const lecture = index + 1;
+    const tasks: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${titleZh}`, url: courseUrl, kind: "session" }];
+    const assignment = assignmentAfter.get(lecture);
+    if (assignment) tasks.push({ id: `assignment-${assignment}`, title: `Assignment ${assignment}`, titleZh: `作业 ${assignment}`, url: courseUrl, kind: "assignment" });
+    return tasks;
+  });
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -507,6 +538,7 @@ structuredCoursePlans["mit-5-111sc"] = { sourceUrl: "https://ocw.mit.edu/courses
 structuredCoursePlans["mit-7-012"] = { sourceUrl: "https://ocw.mit.edu/courses/7-012-introduction-to-biology-fall-2004/", detail: "full", tasks: mit7012Tasks() };
 structuredCoursePlans["stanford-cs106b"] = { sourceUrl: "https://see.stanford.edu/Course/CS106B", detail: "full", tasks: stanfordCs106bTasks() };
 structuredCoursePlans["stanford-cs107"] = { sourceUrl: "https://see.stanford.edu/Course/CS107", detail: "full", tasks: stanfordCs107Tasks() };
+structuredCoursePlans["stanford-cs223a"] = { sourceUrl: "https://see.stanford.edu/Course/CS223A", detail: "full", tasks: stanfordCs223aTasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];

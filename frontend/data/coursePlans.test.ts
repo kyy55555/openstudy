@@ -168,6 +168,15 @@ test("Stanford CS107 follows its complete SEE lecture and assignment sequence", 
   assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 3);
 });
 
+test("Stanford CS223A follows its complete public SEE lecture and assignment sequence", () => {
+  const definition = structuredCoursePlans["stanford-cs223a"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 16);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("assignment-")).length, 6);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 0);
+  assert.ok(definition.tasks.every(({ url }) => url === "https://see.stanford.edu/Course/CS223A"));
+});
+
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {
   const definition = structuredCoursePlans["harvard-cs50x"];
   assert.equal(definition.detail, "full");
