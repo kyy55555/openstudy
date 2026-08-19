@@ -386,7 +386,7 @@ function mit5111Tasks(): PlanTask[] {
   const examAfter = new Map([[7, 1], [17, 2], [24, 3], [31, 4]]);
   const tasks: PlanTask[] = [];
   for (const [start, end, title, titleZh] of units) {
-    for (let lecture = start; lecture <= end; lecture += 1) {
+    for (let lecture: number = start; lecture <= end; lecture += 1) {
       tasks.push({ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${titleZh}`, url: `${base}/pages/resource-index/`, kind: "session" });
       tasks.push({ id: `lecture-problems-${lecture}`, title: `Lecture ${lecture} problems`, titleZh: `第 ${lecture} 讲习题`, url: `${base}/resources/problem-sets/`, kind: "assignment" });
       const exam = examAfter.get(lecture);
@@ -512,6 +512,58 @@ function stanfordCs229Tasks(): PlanTask[] {
   return tasks;
 }
 
+function stanfordEe261Tasks(): PlanTask[] {
+  const courseUrl = "https://see.stanford.edu/Course/EE261";
+  const units = [
+    [1, 5, "Fourier series", "傅里叶级数"], [6, 11, "Fourier transform and convolution", "傅里叶变换与卷积"],
+    [12, 14, "Distributions and generalized transforms", "分布与广义变换"], [15, 18, "Diffraction, crystallography, and sampling", "衍射、晶体学与采样"],
+    [19, 22, "DFT and FFT", "离散傅里叶变换与快速傅里叶变换"], [23, 25, "Linear time-invariant systems", "线性时不变系统"],
+    [26, 30, "Multidimensional transforms and imaging", "多维变换与成像"],
+  ] as const;
+  const problemSetAfter = new Map([[5, 1], [8, 2], [11, 3], [14, 4], [17, 5], [20, 6], [23, 7], [26, 8], [29, 9]]);
+  const tasks: PlanTask[] = [];
+  for (const [start, end, title, titleZh] of units) {
+    for (let lecture: number = start; lecture <= end; lecture += 1) {
+      tasks.push({ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${titleZh}`, url: courseUrl, kind: "session" });
+      const problemSet = problemSetAfter.get(lecture);
+      if (problemSet) tasks.push({ id: `problem-set-${problemSet}`, title: `Problem Set ${problemSet}`, titleZh: `习题集 ${problemSet}`, url: courseUrl, kind: "assignment" });
+      if (lecture === 14) tasks.push(
+        { id: "practice-midterm", title: "Practice midterm", titleZh: "期中模拟考试", url: courseUrl, kind: "exam" },
+        { id: "midterm", title: "Midterm", titleZh: "期中考试", url: courseUrl, kind: "exam" },
+      );
+    }
+  }
+  tasks.push({ id: "final-exam", title: "Final exam", titleZh: "期末考试", url: courseUrl, kind: "exam" });
+  return tasks;
+}
+
+function stanfordEe263Tasks(): PlanTask[] {
+  const courseUrl = "https://see.stanford.edu/Course/EE263";
+  const units = [
+    [1, 4, "Linear functions and linear algebra review", "线性函数与线性代数复习"], [5, 8, "Least squares and least norm", "最小二乘与最小范数"],
+    [9, 14, "Linear dynamical systems and eigenvectors", "线性动力系统与特征向量"], [15, 18, "SVD and dynamical systems with inputs", "奇异值分解与带输入动力系统"],
+    [19, 20, "Controllability, observability, and state estimation", "可控性、可观性与状态估计"],
+  ] as const;
+  const homeworkAfter = new Map([[4, 1], [6, 2], [8, 3], [10, 4], [13, 5], [14, 6], [16, 7], [18, 8], [20, 9]]);
+  const tasks: PlanTask[] = [];
+  for (const [start, end, title, titleZh] of units) {
+    for (let lecture: number = start; lecture <= end; lecture += 1) {
+      tasks.push({ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${titleZh}`, url: courseUrl, kind: "session" });
+      const homework = homeworkAfter.get(lecture);
+      if (homework) tasks.push({ id: `homework-${homework}`, title: `Homework ${homework}`, titleZh: `作业 ${homework}`, url: courseUrl, kind: "assignment" });
+      if (lecture === 10) tasks.push(
+        { id: "practice-midterm", title: "Practice midterm", titleZh: "期中模拟考试", url: courseUrl, kind: "exam" },
+        { id: "midterm", title: "Midterm", titleZh: "期中考试", url: courseUrl, kind: "exam" },
+      );
+    }
+  }
+  tasks.push(
+    { id: "practice-final", title: "Practice final", titleZh: "期末模拟考试", url: courseUrl, kind: "exam" },
+    { id: "final-exam", title: "Final exam", titleZh: "期末考试", url: courseUrl, kind: "exam" },
+  );
+  return tasks;
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -571,6 +623,8 @@ structuredCoursePlans["stanford-cs106b"] = { sourceUrl: "https://see.stanford.ed
 structuredCoursePlans["stanford-cs107"] = { sourceUrl: "https://see.stanford.edu/Course/CS107", detail: "full", tasks: stanfordCs107Tasks() };
 structuredCoursePlans["stanford-cs223a"] = { sourceUrl: "https://see.stanford.edu/Course/CS223A", detail: "full", tasks: stanfordCs223aTasks() };
 structuredCoursePlans["stanford-cs229"] = { sourceUrl: "https://see.stanford.edu/Course/CS229", detail: "full", tasks: stanfordCs229Tasks() };
+structuredCoursePlans["stanford-ee261"] = { sourceUrl: "https://see.stanford.edu/Course/EE261", detail: "full", tasks: stanfordEe261Tasks() };
+structuredCoursePlans["stanford-ee263"] = { sourceUrl: "https://see.stanford.edu/Course/EE263", detail: "full", tasks: stanfordEe263Tasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];

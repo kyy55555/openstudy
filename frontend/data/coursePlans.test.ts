@@ -186,6 +186,24 @@ test("Stanford CS229 follows its complete SEE lecture, problem-set, and project 
   assert.ok(definition.tasks.every(({ url }) => url === "https://see.stanford.edu/Course/CS229"));
 });
 
+test("Stanford EE261 follows all public SEE lectures, problem sets, and exams", () => {
+  const definition = structuredCoursePlans["stanford-ee261"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 30);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("problem-set-")).length, 9);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 3);
+  assert.ok(definition.tasks.every(({ url }) => url === "https://see.stanford.edu/Course/EE261"));
+});
+
+test("Stanford EE263 follows all public SEE lectures, homework, and exams", () => {
+  const definition = structuredCoursePlans["stanford-ee263"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 20);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("homework-")).length, 9);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 4);
+  assert.ok(definition.tasks.every(({ url }) => url === "https://see.stanford.edu/Course/EE263"));
+});
+
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {
   const definition = structuredCoursePlans["harvard-cs50x"];
   assert.equal(definition.detail, "full");
