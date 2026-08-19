@@ -1006,6 +1006,36 @@ function princetonCos418Tasks(): PlanTask[] {
   return sequencedCourseTasks("https://www.cs.princeton.edu/courses/archive/spring24/cos418/schedule.html", topics, topicsZh, new Map([[6, 1], [12, 2], [20, 3], [29, 4], [33, 5]]), "https://www.cs.princeton.edu/courses/archive/spring24/cos418/assignments.html", new Map([[17, "Midterm exam"], [33, "Final exam"]]));
 }
 
+function princetonCos423Tasks(): PlanTask[] {
+  const topics = ["Counting in Binary and Efficiency", "Competitiveness and Self-adjusting Lists", "Binary Search Trees", "Balanced Binary Search Trees", "Self-Adjusting Search Trees", "Implicit and Pairing Heaps", "Rank-Pairing Heaps", "Shortest Paths I", "Shortest Paths II", "Minimum Spanning Trees", "Faster Minimum Spanning Trees", "Disjoint Sets and Compressed Trees", "Analysis of Path Compression", "Graph Search", "Strong Components and Blocks", "Dominators in Directed Graphs", "P, NP, and NP-Completeness", "Coping with NP-Completeness", "Graph Matching", "Nonbipartite Matching", "Maximum Flow", "Minimum-Cost Matchings and Flows", "Odds and Ends I", "Odds and Ends II"];
+  const topicsZh = ["二进制计数与效率", "竞争性与自调整链表", "二叉搜索树", "平衡二叉搜索树", "自调整搜索树", "隐式堆与配对堆", "秩配对堆", "最短路径（一）", "最短路径（二）", "最小生成树", "更快的最小生成树", "不相交集合与压缩树", "路径压缩分析", "图搜索", "强连通分量与块", "有向图支配点", "P、NP 与 NP 完全性", "应对 NP 完全性", "图匹配", "非二分图匹配", "最大流", "最小费用匹配与流", "其他专题（一）", "其他专题（二）"];
+  return sequencedCourseTasks("https://www.cs.princeton.edu/courses/archive/spring11/cos423/lectures.php", topics, topicsZh, new Map([[4, 1], [8, 2], [13, 3], [15, 4], [18, 5], [23, 6]]), "https://www.cs.princeton.edu/courses/archive/spr11/cos423/assignments.php", new Map());
+}
+
+function princetonCos432Tasks(): PlanTask[] {
+  const topics = ["Message Integrity and Pseudorandom Functions", "Randomness, Pseudorandomness, and Stream Ciphers", "Block Ciphers", "Key Exchange and Key Management", "Public-Key Cryptography", "Authenticated Encryption", "Side Channels", "Guest Lecture I", "Guest Lecture II", "Authenticating People", "Information Flow Control", "Voting Security", "Web Security", "Operating-System Security", "Malware", "Cryptocurrencies I", "Cryptocurrencies II", "Privacy", "Big Data and Privacy", "Quantum Computing and Security", "Security, Economics, and Policy"];
+  const topicsZh = ["消息完整性与伪随机函数", "随机性、伪随机性与流密码", "分组密码", "密钥交换与密钥管理", "公钥密码学", "认证加密", "侧信道", "客座讲座（一）", "客座讲座（二）", "人员认证", "信息流控制", "投票安全", "Web 安全", "操作系统安全", "恶意软件", "加密货币（一）", "加密货币（二）", "隐私", "大数据与隐私", "量子计算与安全", "安全、经济与政策"];
+  return sequencedCourseTasks("https://www.cs.princeton.edu/courses/archive/fall19/cos432/schedule/", topics, topicsZh, new Map([[4, 1], [6, 2], [11, 3], [15, 4], [17, 5], [21, 6]]), "https://www.cs.princeton.edu/courses/archive/fall19/cos432/assignments/", new Map([[11, "Midterm exam"]]));
+}
+
+function princetonCos461Tasks(): PlanTask[] {
+  const topics = ["Introduction", "Fundamental Network Concepts", "Routing Foundations", "Network Foundations Practice", "Ethernet and Switching", "Link-Layer Practice", "Routing Project and Internet Protocol", "IP and Forwarding", "Internet Routing I", "Internet Routing II", "Routing Project Workshop", "Routing Policies", "Routing Hackathon I", "Routing Hackathon II", "BGP Challenges and Solutions", "Reliable Transport Foundations", "Internet Congestion Control I", "Internet Congestion Control II", "Applications: DNS", "Applications: HTTP and Video", "Wireless Networks", "Network Security", "Datacenter Networks", "Machine Learning for Networks", "Course Recap"];
+  const topicsZh = ["导论", "网络基本概念", "路由基础", "网络基础练习", "以太网与交换", "链路层练习", "路由项目与互联网协议", "IP 与转发", "互联网路由（一）", "互联网路由（二）", "路由项目工作坊", "路由策略", "路由黑客松（一）", "路由黑客松（二）", "BGP 挑战与解决方案", "可靠传输基础", "互联网拥塞控制（一）", "互联网拥塞控制（二）", "应用：DNS", "应用：HTTP 与视频", "无线网络", "网络安全", "数据中心网络", "网络机器学习", "课程回顾"];
+  const tasks = sequencedCourseTasks("https://www.cs.princeton.edu/courses/archive/fall25/cos461/schedule.html", topics, topicsZh, new Map(), "https://www.cs.princeton.edu/courses/archive/fall25/cos461/schedule.html", new Map([[25, "Final exam"]]));
+  tasks.splice(7, 0, { id: "project-1", title: "Project 1: Internet Routing", titleZh: "项目 1：互联网路由", url: "https://www.cs.princeton.edu/courses/archive/fall25/cos461/schedule.html", kind: "project" });
+  tasks.splice(19, 0, { id: "project-2", title: "Project 2: Reliable Communication", titleZh: "项目 2：可靠通信", url: "https://www.cs.princeton.edu/courses/archive/fall25/cos461/schedule.html", kind: "project" });
+  return tasks;
+}
+
+function princetonMat104Tasks(): PlanTask[] {
+  const courseUrl = "https://web.math.princeton.edu/~nelson/104/";
+  const topics = ["Substitution and Integration by Parts", "Partial Fractions", "Trigonometric Substitution", "Improper Integrals", "Tests for Convergence of Series", "Alternating Series and Absolute Convergence", "Power Series", "Taylor Series", "Complex Numbers", "First-Order Differential Equations", "Second-Order Differential Equations", "Volume, Length, and Surface Area"];
+  const topicsZh = ["换元法与分部积分", "部分分式", "三角代换", "反常积分", "级数收敛判别", "交错级数与绝对收敛", "幂级数", "泰勒级数", "复数", "一阶微分方程", "二阶微分方程", "体积、长度与曲面面积"];
+  const tasks: PlanTask[] = topics.flatMap((title, index) => [{ id: `week-${index + 1}`, title: `Week ${index + 1}: ${title}`, titleZh: `第 ${index + 1} 周：${topicsZh[index]}`, url: courseUrl, kind: "session" as const }, { id: `practice-${index + 1}`, title: `Week ${index + 1} official practice and corrections`, titleZh: `第 ${index + 1} 周官方练习与订正`, url: courseUrl, kind: "assignment" as const }]);
+  tasks.push({ id: "midterm", title: "Official practice midterm", titleZh: "官方期中模拟题", url: courseUrl, kind: "exam" }, { id: "final", title: "Official practice final", titleZh: "官方期末模拟题", url: courseUrl, kind: "exam" });
+  return tasks;
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -1090,6 +1120,10 @@ structuredCoursePlans["princeton-cos240"] = { sourceUrl: "https://www.cs.princet
 structuredCoursePlans["princeton-cos316"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/spring26/cos316/lectures.html", detail: "full", tasks: princetonCos316Tasks() };
 structuredCoursePlans["princeton-cos324"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/fall18/cos324/", detail: "full", tasks: princetonCos324Tasks() };
 structuredCoursePlans["princeton-cos418"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/spring24/cos418/schedule.html", detail: "full", tasks: princetonCos418Tasks() };
+structuredCoursePlans["princeton-cos423"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/spring11/cos423/lectures.php", detail: "full", tasks: princetonCos423Tasks() };
+structuredCoursePlans["princeton-cos432"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/fall19/cos432/schedule/", detail: "full", tasks: princetonCos432Tasks() };
+structuredCoursePlans["princeton-cos461"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/fall25/cos461/schedule.html", detail: "full", tasks: princetonCos461Tasks() };
+structuredCoursePlans["princeton-mat104"] = { sourceUrl: "https://web.math.princeton.edu/~nelson/104/", detail: "full", tasks: princetonMat104Tasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];

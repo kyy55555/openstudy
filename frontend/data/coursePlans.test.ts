@@ -403,6 +403,26 @@ test("Princeton COS 418 follows all official lectures, precepts, assignments, an
   assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 2);
 });
 
+test("additional Princeton courses follow their complete official public sequences", () => {
+  const expected = { "princeton-cos423": [24, 6, 0], "princeton-cos432": [21, 6, 1], "princeton-cos461": [25, 0, 1] } as const;
+  for (const [courseId, [lectures, assignments, exams]] of Object.entries(expected)) {
+    const definition = structuredCoursePlans[courseId];
+    assert.equal(definition.detail, "full");
+    assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, lectures);
+    assert.equal(definition.tasks.filter(({ id }) => id.startsWith("assignment-")).length, assignments);
+    assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, exams);
+  }
+  assert.equal(structuredCoursePlans["princeton-cos461"].tasks.filter(({ kind }) => kind === "project").length, 2);
+});
+
+test("Princeton MAT 104 follows all twelve official weekly topics and practice sets", () => {
+  const definition = structuredCoursePlans["princeton-mat104"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("week-")).length, 12);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("practice-")).length, 12);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 2);
+});
+
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {
   const definition = structuredCoursePlans["harvard-cs50x"];
   assert.equal(definition.detail, "full");
