@@ -503,6 +503,13 @@ test("Berkeley calculus courses turn every official topic unit into study and pr
   }
 });
 
+test("Berkeley CS 61A and CS 70 follow their current official calendars", () => {
+  assert.equal(structuredCoursePlans["berkeley-cs61a"].tasks.filter(({ id }) => id.startsWith("lecture-")).length, 40);
+  assert.equal(structuredCoursePlans["berkeley-cs70"].tasks.filter(({ id }) => id.startsWith("lecture-")).length, 29);
+  assert.equal(structuredCoursePlans["berkeley-cs70"].tasks.filter(({ id }) => id.startsWith("homework-")).length, 7);
+  assert.equal(structuredCoursePlans["berkeley-cs70"].tasks.filter(({ kind }) => kind === "exam").length, 2);
+});
+
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {
   const definition = structuredCoursePlans["harvard-cs50x"];
   assert.equal(definition.detail, "full");

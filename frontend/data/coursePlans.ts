@@ -1170,6 +1170,23 @@ function berkeleyCalculusTasks(courseId: "math1a" | "math1b"): PlanTask[] {
   return officialTopicPlan(definitions[courseId].url, definitions[courseId].topics);
 }
 
+function berkeleyCs61aTasks(): PlanTask[] {
+  const courseUrl = "https://cs61a.org/fa26/";
+  const topics = ["Welcome", "Functions", "Control", "Higher-Order Functions", "Environments", "Abstraction", "Function Examples", "Midterm 1 Review", "Recursion", "Tree Recursion", "Sequences", "Containers", "Types and Objects", "Linked Lists and Strings", "Trees", "Problem Solving", "Midterm 2 Review", "Debugging", "Mutation", "Attributes", "Inheritance", "Iterators", "Generators", "Efficiency", "Modularity", "Object Examples", "Midterm 3 Review", "Tables", "SQL", "Aggregation", "Functional Programming", "Algebraic Data Types", "Immutable Data", "Interpreters", "Browsers", "Applications", "Software Testing", "Software Tracing", "Ethics", "Conclusion"];
+  const topicsZh = ["课程介绍", "函数", "控制流", "高阶函数", "环境模型", "抽象", "函数示例", "第一次期中复习", "递归", "树递归", "序列", "容器", "类型与对象", "链表与字符串", "树", "问题求解", "第二次期中复习", "调试", "可变性", "属性", "继承", "迭代器", "生成器", "效率", "模块化", "对象示例", "第三次期中复习", "表", "SQL", "聚合", "函数式编程", "代数数据类型", "不可变数据", "解释器", "浏览器", "应用", "软件测试", "软件追踪", "伦理", "课程总结"];
+  return topics.map((title, index) => ({ id: `lecture-${index + 1}`, title: `Lecture ${index + 1}: ${title}`, titleZh: `第 ${index + 1} 讲：${topicsZh[index]}`, url: courseUrl, kind: "session" }));
+}
+
+function berkeleyCs70Tasks(): PlanTask[] {
+  const courseUrl = "https://www.eecs70.org/";
+  const topics = ["Introduction and Propositional Logic", "Proofs", "Induction", "Stable Matching", "Graphs I", "Graphs II", "Modular Arithmetic and Euclid's Algorithm", "Extended GCD, CRT, and Fermat's Little Theorem", "RSA", "Polynomials and Secret Sharing", "Error-Correcting Codes", "Counting I", "Counting II", "Countability", "Computability", "Introduction to Discrete Probability", "Conditional Probability and Independence", "Combinations of Events", "Applications of Probability", "Random Variables: Distribution and Expectation", "Random Variables: Variance and Covariance", "Geometric and Poisson Distributions", "Concentration Inequalities and the Law of Large Numbers", "Continuous Probability I", "Continuous Probability II", "Markov Chains I", "Markov Chains II", "Information Theory", "Review and Recap"];
+  const topicsZh = ["导论与命题逻辑", "证明", "归纳法", "稳定匹配", "图论（一）", "图论（二）", "模运算与欧几里得算法", "扩展欧几里得、中国剩余定理与费马小定理", "RSA", "多项式与秘密共享", "纠错码", "计数（一）", "计数（二）", "可数性", "可计算性", "离散概率导论", "条件概率与独立性", "事件组合", "概率应用", "随机变量：分布与期望", "随机变量：方差与协方差", "几何分布与泊松分布", "集中不等式与大数定律", "连续概率（一）", "连续概率（二）", "马尔可夫链（一）", "马尔可夫链（二）", "信息论", "复习与总结"];
+  const tasks: PlanTask[] = topics.map((title, index) => ({ id: `lecture-${index + 1}`, title: `Lecture ${index + 1}: ${title}`, titleZh: `第 ${index + 1} 讲：${topicsZh[index]}`, url: courseUrl, kind: "session" }));
+  for (let homework = 0; homework <= 6; homework += 1) tasks.push({ id: `homework-${homework}`, title: `Homework ${homework}`, titleZh: `作业 ${homework}`, url: courseUrl, kind: "assignment" });
+  tasks.push({ id: "midterm", title: "Midterm Exam", titleZh: "期中考试", url: courseUrl, kind: "exam" }, { id: "final", title: "Final Exam", titleZh: "期末考试", url: courseUrl, kind: "exam" });
+  return tasks;
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -1275,6 +1292,8 @@ structuredCoursePlans["princeton-phy104"] = { sourceUrl: "https://www.princeton.
 structuredCoursePlans["princeton-chm201"] = { sourceUrl: "https://www.princeton.edu/academics/area-of-study/chemistry", detail: "full", tasks: princetonFoundationTasks("chm201") };
 structuredCoursePlans["berkeley-math1a"] = { sourceUrl: "https://undergraduate.catalog.berkeley.edu/courses/1144962", detail: "full", tasks: berkeleyCalculusTasks("math1a") };
 structuredCoursePlans["berkeley-math1b"] = { sourceUrl: "https://undergraduate.catalog.berkeley.edu/courses/1145002", detail: "full", tasks: berkeleyCalculusTasks("math1b") };
+structuredCoursePlans["berkeley-cs61a"] = { sourceUrl: "https://cs61a.org/fa26/", detail: "full", tasks: berkeleyCs61aTasks() };
+structuredCoursePlans["berkeley-cs70"] = { sourceUrl: "https://www.eecs70.org/", detail: "full", tasks: berkeleyCs70Tasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];
