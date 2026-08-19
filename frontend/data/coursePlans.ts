@@ -784,6 +784,30 @@ function mit6172Tasks(): PlanTask[] {
   });
 }
 
+function mit6830Tasks(): PlanTask[] {
+  const courseUrl = "https://ocw.mit.edu/courses/6-830-database-systems-fall-2010/";
+  const topics = ["Introduction", "The Relational Model", "Schema Design", "Introduction to Database Internals", "Database Operators and Query Processing", "Indexing and Access Methods", "Buffer Pool Design and Memory Management", "Join Algorithms", "Query Optimization", "Transactions and Locking", "Optimistic Concurrency Control", "Recovery I", "Recovery II", "Degrees of Consistency", "C-Store", "Distributed Transactions", "Parallel Databases", "Scientific Databases", "NoSQL", "ORM and DryadLINQ", "Streaming Databases", "Database as a Service", "Final Project Presentations"];
+  const topicsZh = ["导论", "关系模型", "模式设计", "数据库内部原理", "数据库算子与查询处理", "索引与访问方法", "缓冲池设计与内存管理", "连接算法", "查询优化", "事务与锁", "乐观并发控制", "恢复（一）", "恢复（二）", "一致性等级", "C-Store", "分布式事务", "并行数据库", "科学数据库", "NoSQL", "ORM 与 DryadLINQ", "流式数据库", "数据库即服务", "期末项目展示"];
+  const problemSetAfter = new Map([[4, 1], [10, 2], [21, 3]]);
+  const labAfter = new Map([[7, 1], [11, 2], [15, 3]]);
+  return topics.flatMap((title, index) => {
+    const lecture = index + 1;
+    const result: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title} and assigned reading`, titleZh: `第 ${lecture} 讲：${topicsZh[index]}与指定阅读`, url: `${courseUrl}pages/readings/`, kind: "session" }];
+    const problemSet = problemSetAfter.get(lecture);
+    if (problemSet) result.push({ id: `problem-set-${problemSet}`, title: `Problem Set ${problemSet}`, titleZh: `习题集 ${problemSet}`, url: `${courseUrl}pages/assignments/`, kind: "assignment" });
+    const lab = labAfter.get(lecture);
+    if (lab) result.push({ id: `lab-${lab}`, title: `Lab ${lab}`, titleZh: `实验 ${lab}`, url: `${courseUrl}pages/assignments/`, kind: "project" });
+    if (lecture === 6) result.push({ id: "project-team", title: "Form final project team", titleZh: "组建期末项目团队", url: `${courseUrl}pages/assignments/final-project/`, kind: "project" });
+    if (lecture === 11) result.push(
+      { id: "project-proposal", title: "Final project proposal", titleZh: "期末项目提案", url: `${courseUrl}pages/assignments/final-project/`, kind: "project" },
+      { id: "exam-1", title: "Exam 1", titleZh: "考试 1", url: `${courseUrl}pages/exams/`, kind: "exam" },
+    );
+    if (lecture === 21) result.push({ id: "exam-2", title: "Exam 2", titleZh: "考试 2", url: `${courseUrl}pages/exams/`, kind: "exam" });
+    if (lecture === 23) result.push({ id: "final-project", title: "Complete and present final project", titleZh: "完成并展示期末项目", url: `${courseUrl}pages/assignments/final-project/`, kind: "project" });
+    return result;
+  });
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -855,6 +879,7 @@ structuredCoursePlans["mit-6-824"] = { sourceUrl: "https://ocw.mit.edu/courses/6
 structuredCoursePlans["mit-6-858"] = { sourceUrl: "https://ocw.mit.edu/courses/6-858-computer-systems-security-fall-2014/", detail: "full", tasks: mit6858Tasks() };
 structuredCoursePlans["mit-6-s081"] = { sourceUrl: "https://pdos.csail.mit.edu/6.S081/2021/schedule.html", detail: "full", tasks: mit6s081Tasks() };
 structuredCoursePlans["mit-6-172"] = { sourceUrl: "https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/", detail: "full", tasks: mit6172Tasks() };
+structuredCoursePlans["mit-6-830"] = { sourceUrl: "https://ocw.mit.edu/courses/6-830-database-systems-fall-2010/", detail: "full", tasks: mit6830Tasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];
