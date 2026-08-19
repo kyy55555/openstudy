@@ -320,6 +320,32 @@ test("MIT 8.02 follows all three official MITx modules and their published durat
   assert.ok(definition.tasks.every(({ url }) => url.startsWith("https://openlearninglibrary.mit.edu/courses/")));
 });
 
+test("MIT 6.031 follows all official readings, problem sets, quizzes, and project milestones", () => {
+  const definition = structuredCoursePlans["mit-6-031"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("reading-")).length, 29);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("problem-set-")).length, 5);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 2);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "project").length, 2);
+});
+
+test("MIT 6.036 follows every official MITx week and its published work", () => {
+  const definition = structuredCoursePlans["mit-6-036"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("week-")).length, 13);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("exercises-")).length, 13);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lab-")).length, 12);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("homework-")).length, 12);
+});
+
+test("MIT 6.253 follows all official lecture notes, homework sets, and the published exam", () => {
+  const definition = structuredCoursePlans["mit-6-253"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 25);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("homework-")).length, 5);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 1);
+});
+
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {
   const definition = structuredCoursePlans["harvard-cs50x"];
   assert.equal(definition.detail, "full");

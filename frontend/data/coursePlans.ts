@@ -858,6 +858,54 @@ function mit802Tasks(): PlanTask[] {
   return tasks;
 }
 
+function mit6031Tasks(): PlanTask[] {
+  const courseUrl = "https://web.mit.edu/6.031/www/fa21/";
+  const topics = ["Static Checking", "Basic TypeScript", "Testing", "Code Review", "Version Control", "Specifications", "Designing Specifications", "Mutability & Immutability", "Avoiding Debugging", "Abstract Data Types", "Abstraction Functions & Rep Invariants", "Interfaces, Generics, & Enums", "Debugging", "Recursion", "Equality", "Map, Filter, Reduce", "Recursive Data Types", "Regular Expressions & Grammars", "Parsers", "Callbacks & Graphical User Interfaces", "Concurrency", "Promises", "Mutual Exclusion", "Message Passing", "Networking", "Little Languages I", "Little Languages II", "Ethical Software Engineering", "Team Version Control"];
+  const topicsZh = ["静态检查", "TypeScript 基础", "测试", "代码审查", "版本控制", "规格说明", "设计规格说明", "可变性与不可变性", "避免调试", "抽象数据类型", "抽象函数与表示不变量", "接口、泛型与枚举", "调试", "递归", "相等性", "Map、Filter 与 Reduce", "递归数据类型", "正则表达式与文法", "解析器", "回调与图形用户界面", "并发", "Promise", "互斥", "消息传递", "网络", "小语言（一）", "小语言（二）", "软件工程伦理", "团队版本控制"];
+  const problemSetAfter = new Map([[2, 0], [7, 1], [13, 2], [19, 3], [25, 4]]);
+  return topics.flatMap((title, index) => {
+    const reading = index + 1;
+    const result: PlanTask[] = [{ id: `reading-${reading}`, title: `Reading ${reading}: ${title}`, titleZh: `阅读 ${reading}：${topicsZh[index]}`, url: `${courseUrl}general/toc.html`, kind: "session" }];
+    const problemSet = problemSetAfter.get(reading);
+    if (problemSet !== undefined) result.push({ id: `problem-set-${problemSet}`, title: `Problem Set ${problemSet}`, titleZh: `习题集 ${problemSet}`, url: courseUrl, kind: "assignment" });
+    if (reading === 15) result.push({ id: "quiz-1", title: "Quiz 1", titleZh: "测验 1", url: courseUrl, kind: "exam" });
+    if (reading === 21) result.push({ id: "project-start", title: "Star Battle project: design and implementation", titleZh: "Star Battle 项目：设计与实现", url: courseUrl, kind: "project" });
+    if (reading === 29) result.push({ id: "project-finish", title: "Complete Star Battle project and reflection", titleZh: "完成 Star Battle 项目与反思", url: courseUrl, kind: "project" }, { id: "quiz-2", title: "Quiz 2", titleZh: "测验 2", url: courseUrl, kind: "exam" });
+    return result;
+  });
+}
+
+function mit6036Tasks(): PlanTask[] {
+  const courseUrl = "https://openlearninglibrary.mit.edu/courses/course-v1%3AMITx%2B6.036%2B1T2019/course/";
+  const topics = ["Basics and linear classifiers", "Perceptrons", "Feature representation", "Margin maximization", "Regression", "Neural networks I", "Neural networks II", "Convolutional neural networks", "State machines and Markov decision processes", "Reinforcement learning", "Recurrent neural networks", "Recommender systems", "Decision trees and nearest neighbors"];
+  const topicsZh = ["基础与线性分类器", "感知机", "特征表示", "间隔最大化", "回归", "神经网络（一）", "神经网络（二）", "卷积神经网络", "状态机与马尔可夫决策过程", "强化学习", "循环神经网络", "推荐系统", "决策树与最近邻"];
+  return topics.flatMap((title, index) => {
+    const week = index + 1;
+    const result: PlanTask[] = [
+      { id: `week-${week}`, title: `Week ${week}: ${title}`, titleZh: `第 ${week} 周：${topicsZh[index]}`, url: courseUrl, kind: "session" },
+      { id: `exercises-${week}`, title: `Week ${week} exercises`, titleZh: `第 ${week} 周练习`, url: courseUrl, kind: "assignment" },
+    ];
+    if (week >= 2) result.push({ id: `lab-${week}`, title: `Week ${week} lab`, titleZh: `第 ${week} 周实验`, url: courseUrl, kind: "project" });
+    if (week <= 12) result.push({ id: `homework-${week}`, title: `Week ${week} homework`, titleZh: `第 ${week} 周作业`, url: courseUrl, kind: "assignment" });
+    return result;
+  });
+}
+
+function mit6253Tasks(): PlanTask[] {
+  const courseUrl = "https://ocw.mit.edu/courses/6-253-convex-analysis-and-optimization-spring-2012/";
+  const topics = ["Role of convexity, duality, and algorithms", "Convex sets, functions, and epigraphs", "Differentiable convex functions and convex hulls", "Relative interiors, closures, and continuity", "Recession cones and existence of solutions", "Closed-set intersections and hyperplanes", "Separation and conjugate functions", "Min common/max crossing duality", "Minimax and zero-sum games", "Farkas lemma and programming duality", "Fenchel and conic duality", "Subgradients and optimality conditions", "Problem structure and conic programming", "Semidefinite programming and descent", "Subgradient methods", "Approximate subgradient and cutting-plane methods", "Simplicial decomposition", "Generalized polyhedral approximation", "Proximal minimization", "Bundle and augmented-Lagrangian methods", "Interior-point methods", "Incremental methods", "Gradient projection and complexity", "Mirror and entropic descent", "Convex analysis and optimization synthesis"];
+  const topicsZh = ["凸性、对偶与算法的作用", "凸集、凸函数与上图", "可微凸函数与凸包", "相对内部、闭包与连续性", "衰退锥与解的存在性", "闭集交与超平面", "分离与共轭函数", "最小公共值/最大交叉值对偶", "极小极大与零和博弈", "Farkas 引理与规划对偶", "Fenchel 对偶与锥对偶", "次梯度与最优性条件", "问题结构与锥规划", "半定规划与下降法", "次梯度方法", "近似次梯度与切平面法", "单纯形分解", "广义多面体近似", "近端最小化", "束方法与增广拉格朗日法", "内点法", "增量方法", "梯度投影与复杂度", "镜像下降与熵下降", "凸分析与优化综合"];
+  const homeworkAfter = new Map([[5, 1], [10, 2], [15, 3], [20, 4], [24, 5]]);
+  return topics.flatMap((title, index) => {
+    const lecture = index + 1;
+    const result: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${topicsZh[index]}`, url: `${courseUrl}pages/lecture-notes/`, kind: "session" }];
+    const homework = homeworkAfter.get(lecture);
+    if (homework) result.push({ id: `homework-${homework}`, title: `Homework ${homework}`, titleZh: `作业 ${homework}`, url: `${courseUrl}resources/assignments/`, kind: "assignment" });
+    if (lecture === 13) result.push({ id: "midterm", title: "Midterm exam", titleZh: "期中考试", url: `${courseUrl}resources/exams/`, kind: "exam" });
+    return result;
+  });
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -932,6 +980,9 @@ structuredCoursePlans["mit-6-172"] = { sourceUrl: "https://ocw.mit.edu/courses/6
 structuredCoursePlans["mit-6-830"] = { sourceUrl: "https://ocw.mit.edu/courses/6-830-database-systems-fall-2010/", detail: "full", tasks: mit6830Tasks() };
 structuredCoursePlans["mit-6-033"] = { sourceUrl: "https://ocw.mit.edu/courses/6-033-computer-system-engineering-spring-2018/", detail: "full", tasks: mit6033Tasks() };
 structuredCoursePlans["mit-8-02"] = { sourceUrl: "https://ocw.mit.edu/courses/8-02-physics-ii-electricity-and-magnetism-spring-2019/", detail: "full", tasks: mit802Tasks() };
+structuredCoursePlans["mit-6-031"] = { sourceUrl: "https://web.mit.edu/6.031/www/fa21/", detail: "full", tasks: mit6031Tasks() };
+structuredCoursePlans["mit-6-036"] = { sourceUrl: "https://openlearninglibrary.mit.edu/courses/course-v1%3AMITx%2B6.036%2B1T2019/course/", detail: "full", tasks: mit6036Tasks() };
+structuredCoursePlans["mit-6-253"] = { sourceUrl: "https://ocw.mit.edu/courses/6-253-convex-analysis-and-optimization-spring-2012/", detail: "full", tasks: mit6253Tasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];
