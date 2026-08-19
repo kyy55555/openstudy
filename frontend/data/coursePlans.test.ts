@@ -346,6 +346,23 @@ test("MIT 6.253 follows all official lecture notes, homework sets, and the publi
   assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 1);
 });
 
+test("Princeton COS 126 follows the current official lecture, assignment, project, and exam sequence", () => {
+  const definition = structuredCoursePlans["princeton-cos126"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 21);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("assignment-")).length, 10);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 3);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "project").length, 1);
+});
+
+test("Princeton COS 226 follows the current official lecture, programming assignment, and exam sequence", () => {
+  const definition = structuredCoursePlans["princeton-cos226"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 22);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("assignment-")).length, 7);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 2);
+});
+
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {
   const definition = structuredCoursePlans["harvard-cs50x"];
   assert.equal(definition.detail, "full");

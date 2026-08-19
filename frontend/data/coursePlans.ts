@@ -906,6 +906,40 @@ function mit6253Tasks(): PlanTask[] {
   });
 }
 
+function princetonCos126Tasks(): PlanTask[] {
+  const scheduleUrl = "https://www.cs.princeton.edu/courses/archive/spr26/cos126/schedule/";
+  const assignmentUrl = "https://www.cs.princeton.edu/courses/archive/spr26/cos126/assignments/";
+  const topics = ["Introduction and Hello, World", "Data Types", "Conditionals", "Loops", "Arrays", "Input and Output", "Functions", "Libraries and Clients", "Recursion", "Performance", "Using Data Types", "Creating Data Types", "Designing Data Types", "Algorithms", "Data Structures", "Theory of Computing", "Introduction to Machine Learning", "Introduction to Deep Learning", "TOY I", "TOY II", "Circuits"];
+  const topicsZh = ["课程介绍与 Hello, World", "数据类型", "条件语句", "循环", "数组", "输入与输出", "函数", "库与客户端", "递归", "性能", "使用数据类型", "创建数据类型", "设计数据类型", "算法", "数据结构", "计算理论", "机器学习导论", "深度学习导论", "TOY（一）", "TOY（二）", "电路"];
+  const assignments = new Map<number, readonly [number, string, string]>([[1, [0, "Hello, World", "Hello, World"]], [3, [1, "Conditionals and Loops", "条件与循环"]], [6, [2, "Arrays and Input/Output", "数组与输入输出"]], [8, [3, "Conjunction Function", "合取函数"]], [10, [4, "Recursion", "递归"]], [12, [5, "Object Oriented Programming", "面向对象编程"]], [14, [6, "Guitar Hero", "吉他英雄"]], [16, [7, "Chat126", "Chat126"]], [18, [8, "Image Classifier", "图像分类器"]], [20, [9, "Hamming Codes in TOY", "TOY 汉明码"]]]);
+  return topics.flatMap((title, index) => {
+    const lecture = index + 1;
+    const result: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${topicsZh[index]}`, url: scheduleUrl, kind: "session" }];
+    const assignment = assignments.get(lecture);
+    if (assignment) result.push({ id: `assignment-${assignment[0]}`, title: `Assignment ${assignment[0]}: ${assignment[1]}`, titleZh: `作业 ${assignment[0]}：${assignment[2]}`, url: assignmentUrl, kind: "assignment" });
+    if (lecture === 10) result.push({ id: "midterm", title: "Midterm exam", titleZh: "期中考试", url: "https://www.cs.princeton.edu/courses/archive/spr26/cos126/exams/", kind: "exam" });
+    if (lecture === 21) result.push({ id: "programming-exam", title: "Programming exam", titleZh: "编程考试", url: "https://www.cs.princeton.edu/courses/archive/spr26/cos126/exams/", kind: "exam" }, { id: "atomic-project", title: "Atomic project", titleZh: "Atomic 课程项目", url: "https://www.cs.princeton.edu/courses/archive/spr26/cos126/project/", kind: "project" }, { id: "final-exam", title: "Final exam", titleZh: "期末考试", url: "https://www.cs.princeton.edu/courses/archive/spr26/cos126/exams/", kind: "exam" });
+    return result;
+  });
+}
+
+function princetonCos226Tasks(): PlanTask[] {
+  const lectureUrl = "https://www.cs.princeton.edu/courses/archive/spring26/cos226/lectures.php";
+  const assignmentUrl = "https://www.cs.princeton.edu/courses/archive/spring26/cos226/assignments.php";
+  const topics = ["Introduction and Union–Find", "Analysis of Algorithms", "Stacks and Queues I: Resizable Arrays", "Stacks and Queues II: Linked Lists", "Elementary Sorts", "Mergesort", "Quicksort", "Priority Queues", "Elementary Symbol Tables and BSTs", "Balanced Search Trees", "Geometric Applications of BSTs", "Hash Tables", "Graphs and Digraphs I", "Graphs and Digraphs II", "Minimum Spanning Trees", "Shortest Paths", "Dynamic Programming", "Maxflows and Mincuts", "Multiplicative Weights", "Randomness", "Intractability", "Algorithm Design"];
+  const topicsZh = ["导论与并查集", "算法分析", "栈与队列（一）：可变数组", "栈与队列（二）：链表", "初级排序", "归并排序", "快速排序", "优先队列", "初级符号表与二叉搜索树", "平衡搜索树", "二叉搜索树的几何应用", "哈希表", "图与有向图（一）", "图与有向图（二）", "最小生成树", "最短路径", "动态规划", "最大流与最小割", "乘法权重法", "随机性", "计算困难性", "算法设计"];
+  const assignments = new Map<number, readonly [number, string, string]>([[1, [1, "Percolation", "渗流"]], [3, [2, "Queues", "队列"]], [7, [3, "Autocomplete", "自动补全"]], [11, [4, "K-d Trees", "K-d 树"]], [12, [5, "WordNet", "WordNet"]], [16, [6, "Seam Carving", "接缝裁剪"]], [21, [7, "Fraud Detection", "欺诈检测"]]]);
+  return topics.flatMap((title, index) => {
+    const lecture = index + 1;
+    const result: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${topicsZh[index]}`, url: lectureUrl, kind: "session" }];
+    const assignment = assignments.get(lecture);
+    if (assignment) result.push({ id: `assignment-${assignment[0]}`, title: `Assignment ${assignment[0]}: ${assignment[1]}`, titleZh: `作业 ${assignment[0]}：${assignment[2]}`, url: assignmentUrl, kind: "project" });
+    if (lecture === 10) result.push({ id: "midterm", title: "Midterm exam", titleZh: "期中考试", url: "https://www.cs.princeton.edu/courses/archive/spring26/cos226/exams.php", kind: "exam" });
+    if (lecture === 22) result.push({ id: "final-exam", title: "Final exam", titleZh: "期末考试", url: "https://www.cs.princeton.edu/courses/archive/spring26/cos226/exams.php", kind: "exam" });
+    return result;
+  });
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -983,6 +1017,8 @@ structuredCoursePlans["mit-8-02"] = { sourceUrl: "https://ocw.mit.edu/courses/8-
 structuredCoursePlans["mit-6-031"] = { sourceUrl: "https://web.mit.edu/6.031/www/fa21/", detail: "full", tasks: mit6031Tasks() };
 structuredCoursePlans["mit-6-036"] = { sourceUrl: "https://openlearninglibrary.mit.edu/courses/course-v1%3AMITx%2B6.036%2B1T2019/course/", detail: "full", tasks: mit6036Tasks() };
 structuredCoursePlans["mit-6-253"] = { sourceUrl: "https://ocw.mit.edu/courses/6-253-convex-analysis-and-optimization-spring-2012/", detail: "full", tasks: mit6253Tasks() };
+structuredCoursePlans["princeton-cos126"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/spr26/cos126/schedule/", detail: "full", tasks: princetonCos126Tasks() };
+structuredCoursePlans["princeton-cos226"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/spring26/cos226/lectures.php", detail: "full", tasks: princetonCos226Tasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];
