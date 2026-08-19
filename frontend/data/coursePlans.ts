@@ -719,6 +719,31 @@ function mit6824Tasks(): PlanTask[] {
   return tasks;
 }
 
+function mit6858Tasks(): PlanTask[] {
+  const courseUrl = "https://ocw.mit.edu/courses/6-858-computer-systems-security-fall-2014/";
+  const topics = ["Introduction and Threat Models", "Control Hijacking Attacks", "Buffer Overflow Exploits and Defenses", "Privilege Separation", "Security Industry Guest Lecture", "Capabilities", "Sandboxing Native Code", "Web Security Model", "Securing Web Applications", "Symbolic Execution", "Ur/Web", "Network Security", "Network Protocols", "SSL and HTTPS", "Medical Software", "Side-Channel Attacks", "User Authentication", "Private Browsing", "Anonymous Communication", "Mobile Phone Security", "Data Tracking", "MIT IS&T Security Guest Lecture", "Security Economics", "Project Presentations"];
+  const topicsZh = ["导论与威胁模型", "控制流劫持攻击", "缓冲区溢出攻击与防御", "权限分离", "安全行业专题", "能力机制", "原生代码沙箱", "Web 安全模型", "Web 应用安全", "符号执行", "Ur/Web", "网络安全", "网络协议", "SSL 与 HTTPS", "医疗软件", "侧信道攻击", "用户认证", "隐私浏览", "匿名通信", "移动设备安全", "数据追踪", "MIT IS&T 安全专题", "安全经济学", "项目展示"];
+  const labAfter = new Map([[5, 1], [10, 2], [13, 3], [14, 4], [17, 5], [19, 6]]);
+  const tasks = topics.flatMap((title, index) => {
+    const lecture = index + 1;
+    const result: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${topicsZh[index]}`, url: `${courseUrl}pages/lecture-videos/`, kind: "session" }];
+    const lab = labAfter.get(lecture);
+    if (lab) result.push({ id: `lab-${lab}`, title: `Lab ${lab}`, titleZh: `实验 ${lab}`, url: `${courseUrl}pages/labs/`, kind: "project" });
+    if (lecture === 14) result.push(
+      { id: "quiz-1", title: "Quiz 1", titleZh: "测验 1", url: `${courseUrl}pages/exams/`, kind: "exam" },
+      { id: "project-proposal", title: "Final project proposal", titleZh: "期末项目提案", url: `${courseUrl}pages/final-project/`, kind: "project" },
+    );
+    if (lecture === 19) result.push({ id: "project-status", title: "Final project status update", titleZh: "期末项目进度更新", url: `${courseUrl}pages/final-project/`, kind: "project" });
+    if (lecture === 21) result.push({ id: "quiz-2", title: "Quiz 2", titleZh: "测验 2", url: `${courseUrl}pages/exams/`, kind: "exam" });
+    if (lecture === 24) result.push(
+      { id: "project-presentation", title: "Final project presentation", titleZh: "期末项目展示", url: `${courseUrl}pages/final-project/`, kind: "project" },
+      { id: "project-writeup", title: "Final project writeup and code", titleZh: "期末项目报告与代码", url: `${courseUrl}pages/final-project/`, kind: "project" },
+    );
+    return result;
+  });
+  return tasks;
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -787,6 +812,7 @@ structuredCoursePlans["stanford-cs111"] = { sourceUrl: "https://web.stanford.edu
 structuredCoursePlans["mit-6-004"] = { sourceUrl: "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/", detail: "full", tasks: mit6004Tasks() };
 structuredCoursePlans["mit-6-837"] = { sourceUrl: "https://ocw.mit.edu/courses/6-837-computer-graphics-fall-2012/", detail: "full", tasks: mit6837Tasks() };
 structuredCoursePlans["mit-6-824"] = { sourceUrl: "https://ocw.mit.edu/courses/6-824-distributed-computer-systems-engineering-spring-2006/", detail: "full", tasks: mit6824Tasks() };
+structuredCoursePlans["mit-6-858"] = { sourceUrl: "https://ocw.mit.edu/courses/6-858-computer-systems-security-fall-2014/", detail: "full", tasks: mit6858Tasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];
