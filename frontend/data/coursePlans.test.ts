@@ -240,6 +240,22 @@ test("Stanford CS111 follows all public lectures, assignments, sections, and exa
   assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 2);
 });
 
+test("MIT 6.004 follows every public OCW unit and worksheet", () => {
+  const definition = structuredCoursePlans["mit-6-004"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("unit-")).length, 21);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("worksheet-")).length, 17);
+  assert.ok(definition.tasks.every(({ url }) => url === "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/"));
+});
+
+test("MIT 6.837 follows the official lecture, programming-assignment, and exam sequence", () => {
+  const definition = structuredCoursePlans["mit-6-837"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 25);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "project").length, 6);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 2);
+});
+
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {
   const definition = structuredCoursePlans["harvard-cs50x"];
   assert.equal(definition.detail, "full");

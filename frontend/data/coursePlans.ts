@@ -664,6 +664,36 @@ function stanfordCs111Tasks(): PlanTask[] {
   return tasks;
 }
 
+function mit6004Tasks(): PlanTask[] {
+  const courseUrl = "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/";
+  const topics = ["Basics of Information", "The Digital Abstraction", "CMOS", "Combinational Logic", "Sequential Logic", "Finite State Machines", "Performance Measures", "Design Tradeoffs", "Designing an Instruction Set", "Assembly Language and Models of Computation", "Compilers", "Procedures and Stacks", "Building the Beta", "Caches and the Memory Hierarchy", "Pipelining the Beta", "Virtual Memory", "Virtualizing the Processor", "Devices and Interrupts", "Concurrency and Synchronization", "System-level Communication", "Parallel Processing"];
+  const topicsZh = ["信息基础", "数字抽象", "CMOS", "组合逻辑", "时序逻辑", "有限状态机", "性能指标", "设计权衡", "指令集设计", "汇编语言与计算模型", "编译器", "过程与栈", "构建 Beta 处理器", "缓存与存储层次", "Beta 流水线", "虚拟内存", "处理器虚拟化", "设备与中断", "并发与同步", "系统级通信", "并行处理"];
+  const worksheetUnits = new Set([1, 2, 3, 4, 5, 6, 7, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19]);
+  return topics.flatMap((title, index) => {
+    const unit = index + 1;
+    const tasks: PlanTask[] = [{ id: `unit-${unit}`, title: `Unit ${unit}: ${title}`, titleZh: `单元 ${unit}：${topicsZh[index]}`, url: courseUrl, kind: "session" }];
+    if (worksheetUnits.has(unit)) tasks.push({ id: `worksheet-${unit}`, title: `Unit ${unit} worksheet`, titleZh: `单元 ${unit} 练习单`, url: courseUrl, kind: "assignment" });
+    return tasks;
+  });
+}
+
+function mit6837Tasks(): PlanTask[] {
+  const courseUrl = "https://ocw.mit.edu/courses/6-837-computer-graphics-fall-2012/";
+  const topics = ["Introduction and Course Overview", "Bezier Curves and Splines", "Curve Properties, Conversion, and Surfaces", "Coordinates and Transformations", "Hierarchical Modeling", "Color", "Computer Animation: Skinning and Enveloping", "Particle Systems and ODEs", "ODE Solvers and Mass-Spring Modeling", "Implicit Integration and Collision Detection", "Collision Detection and Response", "Ray Casting and Rendering", "Ray Casting II", "Ray Tracing", "Acceleration Structures for Ray Casting", "Shading and Material Appearance", "Texture Mapping and Shaders", "Sampling, Aliasing, and Mipmaps", "Global Illumination and Monte Carlo", "Image-Based Rendering and Lighting", "Output Devices", "Graphics Pipeline and Rasterization", "Graphics Pipeline and Rasterization II", "Real-time Shadows", "Graphics Hardware and Computer Games"];
+  const topicsZh = ["课程概述", "贝塞尔曲线与样条", "曲线性质、转换与曲面", "坐标与变换", "层次建模", "颜色", "计算机动画：蒙皮与包络", "粒子系统与常微分方程", "常微分方程求解与质点弹簧建模", "隐式积分与碰撞检测", "碰撞检测与响应", "光线投射与渲染", "光线投射（二）", "光线追踪", "光线投射加速结构", "着色与材质外观", "纹理映射与着色器", "采样、混叠与 Mipmap", "全局光照与蒙特卡洛", "基于图像的渲染与照明", "输出设备", "图形流水线与光栅化", "图形流水线与光栅化（二）", "实时阴影", "图形硬件与电脑游戏"];
+  const assignmentAfter = new Map([[1, 0], [5, 1], [8, 2], [14, 3], [18, 4], [24, 5]]);
+  const tasks = topics.flatMap((title, index) => {
+    const lecture = index;
+    const result: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${topicsZh[index]}`, url: `${courseUrl}pages/lecture-notes/`, kind: "session" }];
+    const assignment = assignmentAfter.get(lecture);
+    if (assignment !== undefined) result.push({ id: `assignment-${assignment}`, title: `Programming Assignment ${assignment}`, titleZh: `编程作业 ${assignment}`, url: `${courseUrl}pages/assignments/`, kind: "project" });
+    if (lecture === 10) result.push({ id: "quiz", title: "Quiz using published prior-year papers", titleZh: "使用公开往年试题完成测验", url: `${courseUrl}pages/old-exams/`, kind: "exam" });
+    return result;
+  });
+  tasks.push({ id: "final-exam", title: "Final exam using published prior-year papers", titleZh: "使用公开往年试题完成期末考试", url: `${courseUrl}pages/old-exams/`, kind: "exam" });
+  return tasks;
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -729,6 +759,8 @@ structuredCoursePlans["stanford-ee364a"] = { sourceUrl: "https://see.stanford.ed
 structuredCoursePlans["stanford-ee364b"] = { sourceUrl: "https://see.stanford.edu/Course/EE364B", detail: "full", tasks: stanfordEe364bTasks() };
 structuredCoursePlans["stanford-cs109"] = { sourceUrl: "https://web.stanford.edu/class/cs109/", detail: "full", tasks: stanfordCs109Tasks() };
 structuredCoursePlans["stanford-cs111"] = { sourceUrl: "https://web.stanford.edu/class/cs111/", detail: "full", tasks: stanfordCs111Tasks() };
+structuredCoursePlans["mit-6-004"] = { sourceUrl: "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/", detail: "full", tasks: mit6004Tasks() };
+structuredCoursePlans["mit-6-837"] = { sourceUrl: "https://ocw.mit.edu/courses/6-837-computer-graphics-fall-2012/", detail: "full", tasks: mit6837Tasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];
