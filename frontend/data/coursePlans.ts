@@ -981,9 +981,9 @@ function sequencedCourseTasks(courseUrl: string, topics: readonly string[], topi
     const lecture = index + 1;
     const result: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${topicsZh[index]}`, url: courseUrl, kind: "session" }];
     const assignment = assignments.get(lecture);
-    if (assignment) result.push({ id: `assignment-${assignment}`, title: `Assignment ${assignment}`, titleZh: `作业 ${assignment}`, url: assignmentUrl, kind: "project" });
+    if (assignment) result.push({ id: `assignment-${assignment}`, title: `Assignment ${assignment}`, titleZh: `作业 ${assignment}`, url: assignmentUrl, kind: "assignment" });
     const exam = examAfter.get(lecture);
-    if (exam) result.push({ id: exam === "Final exam" ? "final-exam" : "midterm", title: exam, titleZh: exam === "Final exam" ? "期末考试" : "期中考试", url: courseUrl, kind: "exam" });
+    if (exam) result.push({ id: exam === "Final exam" ? "final-exam" : `midterm-${lecture}`, title: exam, titleZh: exam === "Final exam" ? "期末考试" : "期中考试", url: courseUrl, kind: "exam" });
     return result;
   });
 }
@@ -1058,6 +1058,30 @@ function princetonCos333Tasks(): PlanTask[] {
     return result;
   });
   tasks.push({ id: "project-presentation", title: "Final project presentation", titleZh: "期末项目展示", url: courseUrl, kind: "project" }, { id: "project-delivery", title: "Deliver source code, application, and evaluation documents", titleZh: "提交源代码、应用与评估文档", url: courseUrl, kind: "project" });
+  return tasks;
+}
+
+function cornellCs3780Tasks(): PlanTask[] {
+  const courseUrl = "https://www.cs.cornell.edu/courses/cs3780/2026sp/#Schedule";
+  const topics = ["Introduction", "Machine-Learning Basics", "K-Nearest Neighbors and Dimensionality", "The Perceptron", "K-Means and Gaussian Mixtures", "Principal Component Analysis", "Maximum-Likelihood and MAP Estimation", "Naive Bayes", "Logistic Regression", "Gradient Descent and Newton's Method", "SGD, Momentum, and Adagrad", "Linear Regression", "Support Vector Machines", "Prelim Review", "Kernel Methods", "Empirical Risk Minimization and Model Selection", "Bias–Variance Tradeoff", "Learning Theory", "Decision Trees", "Bagging and Random Forests", "Boosting and AdaBoost", "Neural Networks I", "Neural Networks II", "Convolutional Neural Networks", "Language Modeling and Transformers", "Datasets and Machine Learning", "AI in Human Society"];
+  const topicsZh = ["导论", "机器学习基础", "K 近邻与维数灾难", "感知机", "K-Means 与高斯混合", "主成分分析", "最大似然与 MAP 估计", "朴素贝叶斯", "逻辑回归", "梯度下降与牛顿法", "SGD、动量与 Adagrad", "线性回归", "支持向量机", "期中复习", "核方法", "经验风险最小化与模型选择", "偏差—方差权衡", "学习理论", "决策树", "装袋法与随机森林", "提升法与 AdaBoost", "神经网络（一）", "神经网络（二）", "卷积神经网络", "语言建模与 Transformer", "数据集与机器学习", "人工智能与人类社会"];
+  const tasks = sequencedCourseTasks(courseUrl, topics, topicsZh, new Map([[4, 1], [9, 2], [11, 3], [16, 5], [19, 6], [22, 7]]), courseUrl, new Map([[14, "Midterm exam"], [27, "Final exam"]]));
+  for (let project = 0; project <= 8; project += 1) tasks.push({ id: `project-${project}`, title: `Programming Project ${project}`, titleZh: `编程项目 ${project}`, url: courseUrl, kind: "project" });
+  tasks.push({ id: "kaggle-project", title: "Kaggle Project", titleZh: "Kaggle 项目", url: courseUrl, kind: "project" });
+  return tasks;
+}
+
+function cornellCs3410Tasks(): PlanTask[] {
+  const courseUrl = "https://www.cs.cornell.edu/courses/cs3410/2026sp/schedule.html";
+  const topics = ["Switches and Numbers", "Overview and C Introduction", "Types and Floating Point", "Bit Packing, Arrays, and Pointers", "Heap and Allocation", "Gates and Logic", "State", "FemtoProc and CPU", "RISC-V and Assembly", "Architecture and RISC-V Memory", "RISC-V Logic and Control Flow", "Calling Conventions I", "Calling Conventions II", "Caches I", "Caches II", "Processes", "System Calls and Signals", "Interrupts", "Virtual Memory", "Threads", "Synchronization", "Atomics", "Parallelism I", "Parallelism II", "Parallel Performance", "Rust I", "Rust II"];
+  const topicsZh = ["开关与数值", "概览与 C 语言导论", "类型与浮点数", "位打包、数组与指针", "堆与内存分配", "逻辑门与逻辑", "状态", "FemtoProc 与 CPU", "RISC-V 与汇编", "体系结构与 RISC-V 内存", "RISC-V 逻辑与控制流", "调用约定（一）", "调用约定（二）", "缓存（一）", "缓存（二）", "进程", "系统调用与信号", "中断", "虚拟内存", "线程", "同步", "原子操作", "并行（一）", "并行（二）", "并行性能", "Rust（一）", "Rust（二）"];
+  const tasks = sequencedCourseTasks(courseUrl, topics, topicsZh, new Map(), courseUrl, new Map([[8, "Midterm exam"], [19, "Midterm exam"], [27, "Final exam"]]));
+  const names = ["Printf", "Minifloat", "Huffman", "CPU Simulator", "Assembly", "Assembly Functions", "Buffer Overflow", "Cache Simulator", "Subprocess", "Concurrent Hash Table", "Raycasting"];
+  names.forEach((name, index) => {
+    const number = index + 1;
+    tasks.push({ id: `lab-${number}`, title: `Lab ${number}: ${name}`, titleZh: `实验 ${number}：${name}`, url: courseUrl, kind: "project" });
+    tasks.push({ id: `assignment-${number}`, title: `Assignment ${number}: ${name}`, titleZh: `作业 ${number}：${name}`, url: courseUrl, kind: "assignment" });
+  });
   return tasks;
 }
 
@@ -1150,6 +1174,8 @@ structuredCoursePlans["princeton-cos432"] = { sourceUrl: "https://www.cs.princet
 structuredCoursePlans["princeton-cos461"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/fall25/cos461/schedule.html", detail: "full", tasks: princetonCos461Tasks() };
 structuredCoursePlans["princeton-mat104"] = { sourceUrl: "https://web.math.princeton.edu/~nelson/104/", detail: "full", tasks: princetonMat104Tasks() };
 structuredCoursePlans["princeton-cos333"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/spring26/cos333/schedule.html", detail: "full", tasks: princetonCos333Tasks() };
+structuredCoursePlans["cornell-cs3780"] = { sourceUrl: "https://www.cs.cornell.edu/courses/cs3780/2026sp/#Schedule", detail: "full", tasks: cornellCs3780Tasks() };
+structuredCoursePlans["cornell-cs3410"] = { sourceUrl: "https://www.cs.cornell.edu/courses/cs3410/2026sp/schedule.html", detail: "full", tasks: cornellCs3410Tasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];
