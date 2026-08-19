@@ -940,6 +940,42 @@ function princetonCos226Tasks(): PlanTask[] {
   });
 }
 
+function princetonCos217Tasks(): PlanTask[] {
+  const classUrl = "https://www.cs.princeton.edu/courses/archive/spring25/cos217/classes.php";
+  const assignmentUrl = "https://www.cs.princeton.edu/courses/archive/spring25/cos217/assignments.php";
+  const topics = ["Course introduction, Linux, and bash", "Git and introduction to C", "Building C programs and DFAs", "C program design and logical operators", "Numeric data types", "Pointers, arrays, and strings", "Building with make", "Structs, arguments, and dynamic memory", "Testing", "Data structures", "Debugging", "Modularity", "Testing and modularity", "Assignment 4 design", "Storage hierarchy", "Assembly language I", "Assembly language II", "Assembly functions", "Assignment 5 design", "Performance", "Assignment 6 design", "Machine language", "Assembler and linker"];
+  const topicsZh = ["课程介绍、Linux 与 bash", "Git 与 C 语言导论", "构建 C 程序与确定有限自动机", "C 程序设计与逻辑运算", "数值数据类型", "指针、数组与字符串", "使用 make 构建", "结构体、参数与动态内存", "测试", "数据结构", "调试", "模块化", "测试与模块化", "作业 4 设计", "存储层次结构", "汇编语言（一）", "汇编语言（二）", "汇编函数", "作业 5 设计", "性能", "作业 6 设计", "机器语言", "汇编器与链接器"];
+  const assignments = new Map<number, readonly [number, string, string]>([[3, [0, "Introductory Survey", "入门练习"]], [5, [1, "A De-Comment Program", "去注释程序"]], [9, [2, "A String Module and Client", "字符串模块与客户端"]], [14, [3, "A Symbol Table Module", "符号表模块"]], [17, [4, "Directory and File Trees", "目录与文件树"]], [20, [5, "Assembly Language Programming and Testing", "汇编语言编程与测试"]], [23, [6, "A Buffer Overrun Attack", "缓冲区溢出攻击"]]]);
+  return topics.flatMap((title, index) => {
+    const lecture = index + 1;
+    const result: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${topicsZh[index]}`, url: classUrl, kind: "session" }];
+    const assignment = assignments.get(lecture);
+    if (assignment) result.push({ id: `assignment-${assignment[0]}`, title: `Assignment ${assignment[0]}: ${assignment[1]}`, titleZh: `作业 ${assignment[0]}：${assignment[2]}`, url: assignmentUrl, kind: "project" });
+    if (lecture === 11) result.push({ id: "midterm", title: "Midterm exam", titleZh: "期中考试", url: "https://www.cs.princeton.edu/courses/archive/spring25/cos217/exams.php", kind: "exam" });
+    if (lecture === 23) result.push({ id: "final-exam", title: "Final exam", titleZh: "期末考试", url: "https://www.cs.princeton.edu/courses/archive/spring25/cos217/exams.php", kind: "exam" });
+    return result;
+  });
+}
+
+function princetonCos240Tasks(): PlanTask[] {
+  const courseUrl = "https://www.cs.princeton.edu/courses/archive/fall25/cos240/";
+  const units = [
+    [2, "Mathematical proofs", "数学证明"], [2, "Combinatorics", "组合数学"], [6, "Probability theory", "概率论"],
+    [4, "Graph theory", "图论"], [2, "Game theory", "博弈论"], [1, "Countable and uncountable sets", "可数集与不可数集"],
+    [7, "Computability, complexity, and cryptography", "可计算性、复杂性与密码学"],
+  ] as const;
+  const tasks: PlanTask[] = [];
+  let lecture = 1;
+  for (const [count, title, titleZh] of units) {
+    for (let part = 1; part <= count; part += 1) {
+      tasks.push({ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}${count > 1 ? `, part ${part}` : ""}`, titleZh: `第 ${lecture} 讲：${titleZh}${count > 1 ? `（${part}）` : ""}`, url: courseUrl, kind: "session" });
+      lecture += 1;
+    }
+    if (title === "Probability theory") tasks.push({ id: "midterm", title: "Midterm exam", titleZh: "期中考试", url: courseUrl, kind: "exam" });
+  }
+  return tasks;
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -1019,6 +1055,8 @@ structuredCoursePlans["mit-6-036"] = { sourceUrl: "https://openlearninglibrary.m
 structuredCoursePlans["mit-6-253"] = { sourceUrl: "https://ocw.mit.edu/courses/6-253-convex-analysis-and-optimization-spring-2012/", detail: "full", tasks: mit6253Tasks() };
 structuredCoursePlans["princeton-cos126"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/spr26/cos126/schedule/", detail: "full", tasks: princetonCos126Tasks() };
 structuredCoursePlans["princeton-cos226"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/spring26/cos226/lectures.php", detail: "full", tasks: princetonCos226Tasks() };
+structuredCoursePlans["princeton-cos217"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/spring25/cos217/classes.php", detail: "full", tasks: princetonCos217Tasks() };
+structuredCoursePlans["princeton-cos240"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/fall25/cos240/", detail: "full", tasks: princetonCos240Tasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];
