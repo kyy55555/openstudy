@@ -619,6 +619,51 @@ function stanfordEe364bTasks(): PlanTask[] {
   return tasks;
 }
 
+function stanfordCs109Tasks(): PlanTask[] {
+  const courseUrl = "https://web.stanford.edu/class/cs109/";
+  const topics = [
+    [1, "Welcome", "课程介绍"], [2, "Conditioning and Bayes", "条件概率与贝叶斯"], [3, "Independence", "独立性"], [4, "Counting", "计数"],
+    [5, "Binomial", "二项分布"], [6, "Moments", "矩"], [7, "Poisson", "泊松分布"], [8, "Continuous random variables", "连续随机变量"],
+    [9, "Gaussian", "高斯分布"], [10, "Probabilistic models", "概率模型"], [11, "Inference", "推断"], [12, "General inference", "一般推断"],
+    [13, "Multinomial", "多项分布"], [14, "Beta", "贝塔分布"], [15, "Central limit theorem", "中心极限定理"], [16, "Sampling and bootstrapping", "采样与自助法"],
+    [17, "Algorithm analysis", "算法分析"], [18, "Information theory", "信息论"], [19, "Maximum likelihood estimation", "最大似然估计"], [20, "Logistic regression", "逻辑回归"],
+    [21, "Comparing classifiers", "分类器比较"], [22, "Deep learning", "深度学习"], [24, "Diffusion", "扩散模型"], [25, "Reinforcement learning", "强化学习"],
+    [26, "Machine learning review", "机器学习复习"], [27, "Future", "未来主题"], [28, "Final review", "期末复习"],
+  ] as const;
+  const problemSetAfter = new Map([[4, 1], [8, 2], [12, 3], [16, 4], [20, 5], [25, 6]]);
+  const tasks = topics.flatMap(([lecture, title, titleZh]) => {
+    const result: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${titleZh}`, url: courseUrl, kind: "session" }];
+    const problemSet = problemSetAfter.get(lecture);
+    if (problemSet) result.push({ id: `problem-set-${problemSet}`, title: `Problem Set ${problemSet}`, titleZh: `习题集 ${problemSet}`, url: courseUrl, kind: "assignment" });
+    if (lecture === 10) result.push({ id: "midterm-1", title: "Midterm 1", titleZh: "期中考试 1", url: courseUrl, kind: "exam" });
+    if (lecture === 20) result.push({ id: "midterm-2", title: "Midterm 2", titleZh: "期中考试 2", url: courseUrl, kind: "exam" });
+    return result;
+  });
+  tasks.push({ id: "challenge", title: "Probability challenge", titleZh: "概率挑战", url: courseUrl, kind: "assignment" });
+  tasks.push({ id: "final-exam", title: "Final exam", titleZh: "期末考试", url: courseUrl, kind: "exam" });
+  return tasks;
+}
+
+function stanfordCs111Tasks(): PlanTask[] {
+  const courseUrl = "https://web.stanford.edu/class/cs111/";
+  const topics = ["Welcome", "Threads, processes, and dispatching", "Threads and processes continued", "Concurrency", "Locks and condition variables", "Implementing locks", "Deadlock", "Scheduling", "Linkers and dynamic linking", "Dynamic storage management", "Dynamic storage management continued", "Trust and operating systems", "Virtual memory", "Virtual memory continued", "Paging", "Demand paging", "Demand paging continued", "Magnetic disks", "File systems", "File systems continued I", "File systems continued II", "Directories and links", "File-system crash recovery", "Crash recovery continued", "Truth, trust, and technology", "Flash memory", "Virtual machines", "Course review"];
+  const topicsZh = ["课程介绍", "线程、进程与调度", "线程与进程（续）", "并发", "锁与条件变量", "锁的实现", "死锁", "调度", "链接器与动态链接", "动态存储管理", "动态存储管理（续）", "信任与操作系统", "虚拟内存", "虚拟内存（续）", "分页", "请求分页", "请求分页（续）", "磁盘", "文件系统", "文件系统（续一）", "文件系统（续二）", "目录与链接", "文件系统崩溃恢复", "崩溃恢复（续）", "真实、信任与技术", "闪存", "虚拟机", "课程复习"];
+  const assignmentAfter = new Map([[1, 0], [3, 1], [6, 2], [8, 3], [11, 4], [16, 5], [18, 6], [21, 7], [24, 8]]);
+  const sectionAfter = new Map([[3, 1], [6, 2], [9, 3], [12, 4], [15, 5], [18, 6], [21, 7], [24, 8]]);
+  const tasks = topics.flatMap((title, index) => {
+    const lecture = index + 1;
+    const result: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${topicsZh[index]}`, url: courseUrl, kind: "session" }];
+    const assignment = assignmentAfter.get(lecture);
+    if (assignment !== undefined) result.push({ id: `assignment-${assignment}`, title: `Assignment ${assignment}`, titleZh: `作业 ${assignment}`, url: courseUrl, kind: "assignment" });
+    const section = sectionAfter.get(lecture);
+    if (section) result.push({ id: `section-${section}`, title: `Section ${section}`, titleZh: `习题课 ${section}`, url: courseUrl, kind: "session" });
+    if (lecture === 14) result.push({ id: "midterm", title: "Midterm exam", titleZh: "期中考试", url: courseUrl, kind: "exam" });
+    return result;
+  });
+  tasks.push({ id: "final-exam", title: "Final exam", titleZh: "期末考试", url: courseUrl, kind: "exam" });
+  return tasks;
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -682,6 +727,8 @@ structuredCoursePlans["stanford-ee261"] = { sourceUrl: "https://see.stanford.edu
 structuredCoursePlans["stanford-ee263"] = { sourceUrl: "https://see.stanford.edu/Course/EE263", detail: "full", tasks: stanfordEe263Tasks() };
 structuredCoursePlans["stanford-ee364a"] = { sourceUrl: "https://see.stanford.edu/Course/EE364A", detail: "full", tasks: stanfordEe364aTasks() };
 structuredCoursePlans["stanford-ee364b"] = { sourceUrl: "https://see.stanford.edu/Course/EE364B", detail: "full", tasks: stanfordEe364bTasks() };
+structuredCoursePlans["stanford-cs109"] = { sourceUrl: "https://web.stanford.edu/class/cs109/", detail: "full", tasks: stanfordCs109Tasks() };
+structuredCoursePlans["stanford-cs111"] = { sourceUrl: "https://web.stanford.edu/class/cs111/", detail: "full", tasks: stanfordCs111Tasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];
