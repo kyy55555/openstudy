@@ -379,6 +379,30 @@ test("Princeton COS 240 follows the official topic allocation and midterm", () =
   assert.ok(definition.tasks.every(({ url }) => url === "https://www.cs.princeton.edu/courses/archive/fall25/cos240/"));
 });
 
+test("Princeton COS 316 follows its current official systems lectures, assignment, and exams", () => {
+  const definition = structuredCoursePlans["princeton-cos316"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 23);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("assignment-")).length, 1);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 2);
+});
+
+test("Princeton COS 324 follows all official lectures, six assignments, and two exams", () => {
+  const definition = structuredCoursePlans["princeton-cos324"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 22);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("assignment-")).length, 6);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 2);
+});
+
+test("Princeton COS 418 follows all official lectures, precepts, assignments, and exams", () => {
+  const definition = structuredCoursePlans["princeton-cos418"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 33);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("assignment-")).length, 5);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 2);
+});
+
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {
   const definition = structuredCoursePlans["harvard-cs50x"];
   assert.equal(definition.detail, "full");

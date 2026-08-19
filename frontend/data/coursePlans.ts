@@ -976,6 +976,36 @@ function princetonCos240Tasks(): PlanTask[] {
   return tasks;
 }
 
+function sequencedCourseTasks(courseUrl: string, topics: readonly string[], topicsZh: readonly string[], assignments: ReadonlyMap<number, number>, assignmentUrl: string, examAfter: ReadonlyMap<number, string>): PlanTask[] {
+  return topics.flatMap((title, index) => {
+    const lecture = index + 1;
+    const result: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${topicsZh[index]}`, url: courseUrl, kind: "session" }];
+    const assignment = assignments.get(lecture);
+    if (assignment) result.push({ id: `assignment-${assignment}`, title: `Assignment ${assignment}`, titleZh: `作业 ${assignment}`, url: assignmentUrl, kind: "project" });
+    const exam = examAfter.get(lecture);
+    if (exam) result.push({ id: exam === "Final exam" ? "final-exam" : "midterm", title: exam, titleZh: exam === "Final exam" ? "期末考试" : "期中考试", url: courseUrl, kind: "exam" });
+    return result;
+  });
+}
+
+function princetonCos316Tasks(): PlanTask[] {
+  const topics = ["What is a System?", "Course Overview", "Introduction to OS and Naming Memory", "Unix File System Naming", "Reasoning about OS Performance", "Layers of the Network", "Congestion Control I", "Congestion Control II: BBR", "Reasoning about Network Performance", "Web Caching", "Web Caching Continued", "Midterm Review I", "Midterm Review II", "Introduction to Concurrency", "Consistency Models", "Replicated State Machines", "Reasoning about Distributed-System Performance", "Access Control", "Network Access Control", "Systems for ML Overview", "Training", "Inference", "Tying It All Together"];
+  const topicsZh = ["什么是系统", "课程概览", "操作系统导论与内存命名", "Unix 文件系统命名", "操作系统性能分析", "网络分层", "拥塞控制（一）", "拥塞控制（二）：BBR", "网络性能分析", "Web 缓存", "Web 缓存续篇", "期中复习（一）", "期中复习（二）", "并发导论", "一致性模型", "复制状态机", "分布式系统性能分析", "访问控制", "网络访问控制", "机器学习系统概览", "训练", "推理", "课程综合"];
+  return sequencedCourseTasks("https://www.cs.princeton.edu/courses/archive/spring26/cos316/lectures.html", topics, topicsZh, new Map([[5, 1]]), "https://www.cs.princeton.edu/courses/archive/spring26/cos316/assignments.html", new Map([[11, "Midterm exam"], [23, "Final exam"]]));
+}
+
+function princetonCos324Tasks(): PlanTask[] {
+  const topics = ["Introduction", "Linear Regression I", "Linear Regression II", "Features and Basis Functions", "Overfitting and Regularization", "Cross Validation", "Linear Classification I", "Linear Classification II", "Support Vector Machines", "Kernel-based Classification", "Neural Networks I", "Neural Networks II", "K-Means Clustering", "Hierarchical Clustering", "Principal Component Analysis", "Latent Factor Models", "Markov Decision Processes", "Value Iteration", "Policy Iteration", "Model-based Reinforcement Learning", "Model-free Reinforcement Learning", "Wrap-up"];
+  const topicsZh = ["导论", "线性回归（一）", "线性回归（二）", "特征与基函数", "过拟合与正则化", "交叉验证", "线性分类（一）", "线性分类（二）", "支持向量机", "基于核的分类", "神经网络（一）", "神经网络（二）", "K-Means 聚类", "层次聚类", "主成分分析", "潜在因子模型", "马尔可夫决策过程", "价值迭代", "策略迭代", "基于模型的强化学习", "无模型强化学习", "课程总结"];
+  return sequencedCourseTasks("https://www.cs.princeton.edu/courses/archive/fall18/cos324/", topics, topicsZh, new Map([[2, 1], [6, 2], [11, 3], [13, 4], [16, 5], [19, 6]]), "https://www.cs.princeton.edu/courses/archive/fall18/cos324/#assignments", new Map([[12, "Midterm exam"], [22, "Final exam"]]));
+}
+
+function princetonCos418Tasks(): PlanTask[] {
+  const topics = ["Distributed Systems Introduction", "Course Overview", "Go Systems Programming", "Network Communication and RPC", "Failures and RPCs", "Concurrency in Go and MapReduce", "Time and Logical Clocks I", "Time and Logical Clocks II", "RPCs in Go", "Distributed Snapshots", "Eventual Consistency and Bayou", "Snapshot Precept", "Peer-to-Peer Systems and DHTs", "Chord under Failures", "Bayou and Chord", "Replicated State Machines via Primary Backup", "View Changes and Consensus", "Consensus with Raft", "More Raft", "Raft Leader Election", "Strong Consistency", "Scalable Causal Consistency", "Raft Precept", "Atomic Commit and Concurrency Control", "Spanner I", "Consistency Precept", "Spanner II", "Concurrency Control Precept", "CAP, PRAM, SNOW, PORT, and FLP", "System Performance", "Spanner and SNOW", "Blockchains", "Tying It All Together"];
+  const topicsZh = ["分布式系统导论", "课程概览", "Go 系统编程", "网络通信与远程过程调用", "故障与远程过程调用", "Go 并发与 MapReduce", "时间与逻辑时钟（一）", "时间与逻辑时钟（二）", "Go 远程过程调用", "分布式快照", "最终一致性与 Bayou", "快照习题课", "对等系统与分布式哈希表", "故障下的 Chord", "Bayou 与 Chord", "主备复制状态机", "视图变更与共识", "Raft 共识", "Raft 进阶", "Raft 领导者选举", "强一致性", "可扩展因果一致性", "Raft 习题课", "原子提交与并发控制", "Spanner（一）", "一致性习题课", "Spanner（二）", "并发控制习题课", "CAP、PRAM、SNOW、PORT 与 FLP", "系统性能", "Spanner 与 SNOW", "区块链", "课程综合"];
+  return sequencedCourseTasks("https://www.cs.princeton.edu/courses/archive/spring24/cos418/schedule.html", topics, topicsZh, new Map([[6, 1], [12, 2], [20, 3], [29, 4], [33, 5]]), "https://www.cs.princeton.edu/courses/archive/spring24/cos418/assignments.html", new Map([[17, "Midterm exam"], [33, "Final exam"]]));
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -1057,6 +1087,9 @@ structuredCoursePlans["princeton-cos126"] = { sourceUrl: "https://www.cs.princet
 structuredCoursePlans["princeton-cos226"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/spring26/cos226/lectures.php", detail: "full", tasks: princetonCos226Tasks() };
 structuredCoursePlans["princeton-cos217"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/spring25/cos217/classes.php", detail: "full", tasks: princetonCos217Tasks() };
 structuredCoursePlans["princeton-cos240"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/fall25/cos240/", detail: "full", tasks: princetonCos240Tasks() };
+structuredCoursePlans["princeton-cos316"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/spring26/cos316/lectures.html", detail: "full", tasks: princetonCos316Tasks() };
+structuredCoursePlans["princeton-cos324"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/fall18/cos324/", detail: "full", tasks: princetonCos324Tasks() };
+structuredCoursePlans["princeton-cos418"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/spring24/cos418/schedule.html", detail: "full", tasks: princetonCos418Tasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];
