@@ -808,6 +808,56 @@ function mit6830Tasks(): PlanTask[] {
   });
 }
 
+function mit6033Tasks(): PlanTask[] {
+  const courseUrl = "https://ocw.mit.edu/courses/6-033-computer-system-engineering-spring-2018/";
+  const units = [
+    [1, 7, "Operating systems", "操作系统"], [8, 13, "Computer networking", "计算机网络"],
+    [14, 18, "Distributed systems", "分布式系统"], [19, 26, "Computer security", "计算机安全"],
+  ] as const;
+  const handsOnAfter = new Map([[3, 1], [6, 2], [9, 3], [10, 4], [13, 5], [18, 6], [20, 7]]);
+  const critiqueAfter = new Map([[5, 1], [11, 2]]);
+  const projectAfter = new Map<number, readonly [string, string]>([
+    [5, ["Design project preliminary report: begin", "开始设计项目初步报告"]],
+    [13, ["Submit design project preliminary report", "提交设计项目初步报告"]],
+    [15, ["Prepare design project presentation", "准备设计项目展示"]],
+    [23, ["Submit design project report", "提交设计项目报告"]],
+    [24, ["Complete peer review", "完成同行评审"]],
+  ]);
+  const tasks: PlanTask[] = [];
+  for (const [start, end, title, titleZh] of units) {
+    for (let lecture: number = start; lecture <= end; lecture += 1) {
+      tasks.push({ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${titleZh}`, url: `${courseUrl}pages/calendar/`, kind: "session" });
+      const handsOn = handsOnAfter.get(lecture);
+      if (handsOn) tasks.push({ id: `hands-on-${handsOn}`, title: `Hands-on Experiment ${handsOn}`, titleZh: `动手实验 ${handsOn}`, url: `${courseUrl}pages/calendar/`, kind: "assignment" });
+      const critique = critiqueAfter.get(lecture);
+      if (critique) tasks.push({ id: `system-critique-${critique}`, title: `System Critique ${critique}`, titleZh: `系统评析 ${critique}`, url: `${courseUrl}pages/calendar/`, kind: "assignment" });
+      const project = projectAfter.get(lecture);
+      if (project) tasks.push({ id: `design-project-${lecture}`, title: project[0], titleZh: project[1], url: `${courseUrl}pages/design-project/`, kind: "project" });
+      if (lecture === 15) tasks.push({ id: "quiz-1", title: "Quiz 1", titleZh: "测验 1", url: `${courseUrl}pages/resource-index/`, kind: "exam" });
+      if (lecture === 26) tasks.push({ id: "quiz-2", title: "Quiz 2", titleZh: "测验 2", url: `${courseUrl}pages/resource-index/`, kind: "exam" });
+    }
+  }
+  return tasks;
+}
+
+function mit802Tasks(): PlanTask[] {
+  const modules = [
+    { slug: "course-v1%3AMITx%2B8.02.1x%2B1T2019/about", weeks: 7, title: "Electrostatics", titleZh: "静电学", topics: ["electric fields", "dipoles", "Gauss's law", "electric potential", "conductors and insulators", "capacitors", "dielectrics"], topicsZh: ["电场", "电偶极子", "高斯定律", "电势", "导体与绝缘体", "电容器", "电介质"] },
+    { slug: "course-v1%3AMITx%2B8.02.2x%2B2T2018/about", weeks: 6, title: "Magnetic Fields and Forces", titleZh: "磁场与磁力", topics: ["DC circuits", "charges in magnetic fields", "sources of magnetic fields", "magnetic field calculation", "magnetic dipoles", "module synthesis"], topicsZh: ["直流电路", "磁场中的带电粒子", "磁场来源", "磁场计算", "磁偶极子", "单元综合"] },
+    { slug: "course-v1%3AMITx%2B8.02.3x%2B1T2019/about", weeks: 10, title: "Maxwell's Equations", titleZh: "麦克斯韦方程组", topics: ["Faraday's law", "inductors", "DC circuits", "AC circuits", "displacement current", "Maxwell's equations", "electromagnetic waves", "radiation properties", "applications", "module synthesis"], topicsZh: ["法拉第定律", "电感器", "直流电路", "交流电路", "位移电流", "麦克斯韦方程组", "电磁波", "辐射性质", "应用", "单元综合"] },
+  ] as const;
+  const tasks: PlanTask[] = [];
+  for (const courseModule of modules) {
+    const url = `https://openlearninglibrary.mit.edu/courses/${courseModule.slug}`;
+    for (let week = 1; week <= courseModule.weeks; week += 1) {
+      const topic = courseModule.topics[week - 1];
+      tasks.push({ id: `${courseModule.title.toLowerCase().replaceAll(" ", "-")}-week-${week}`, title: `${courseModule.title} week ${week}: ${topic}`, titleZh: `${courseModule.titleZh}第 ${week} 周：${courseModule.topicsZh[week - 1]}`, url, kind: "session" });
+      tasks.push({ id: `${courseModule.title.toLowerCase().replaceAll(" ", "-")}-exercise-${week}`, title: `${courseModule.title} week ${week} exercises`, titleZh: `${courseModule.titleZh}第 ${week} 周练习`, url, kind: "assignment" });
+    }
+  }
+  return tasks;
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -880,6 +930,8 @@ structuredCoursePlans["mit-6-858"] = { sourceUrl: "https://ocw.mit.edu/courses/6
 structuredCoursePlans["mit-6-s081"] = { sourceUrl: "https://pdos.csail.mit.edu/6.S081/2021/schedule.html", detail: "full", tasks: mit6s081Tasks() };
 structuredCoursePlans["mit-6-172"] = { sourceUrl: "https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/", detail: "full", tasks: mit6172Tasks() };
 structuredCoursePlans["mit-6-830"] = { sourceUrl: "https://ocw.mit.edu/courses/6-830-database-systems-fall-2010/", detail: "full", tasks: mit6830Tasks() };
+structuredCoursePlans["mit-6-033"] = { sourceUrl: "https://ocw.mit.edu/courses/6-033-computer-system-engineering-spring-2018/", detail: "full", tasks: mit6033Tasks() };
+structuredCoursePlans["mit-8-02"] = { sourceUrl: "https://ocw.mit.edu/courses/8-02-physics-ii-electricity-and-magnetism-spring-2019/", detail: "full", tasks: mit802Tasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];

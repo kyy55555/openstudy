@@ -302,6 +302,24 @@ test("MIT 6.830 follows all official readings, problem sets, labs, exams, and pr
   assert.equal(definition.tasks.filter(({ id }) => id.startsWith("project-") || id === "final-project").length, 3);
 });
 
+test("MIT 6.033 follows all official lectures, experiments, critiques, quizzes, and design milestones", () => {
+  const definition = structuredCoursePlans["mit-6-033"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 26);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("hands-on-")).length, 7);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("system-critique-")).length, 2);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("design-project-")).length, 5);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 2);
+});
+
+test("MIT 8.02 follows all three official MITx modules and their published durations", () => {
+  const definition = structuredCoursePlans["mit-8-02"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "session").length, 23);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "assignment").length, 23);
+  assert.ok(definition.tasks.every(({ url }) => url.startsWith("https://openlearninglibrary.mit.edu/courses/")));
+});
+
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {
   const definition = structuredCoursePlans["harvard-cs50x"];
   assert.equal(definition.detail, "full");
