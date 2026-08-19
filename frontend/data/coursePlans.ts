@@ -1036,6 +1036,31 @@ function princetonMat104Tasks(): PlanTask[] {
   return tasks;
 }
 
+function princetonCos333Tasks(): PlanTask[] {
+  const courseUrl = "https://www.cs.princeton.edu/courses/archive/spring26/cos333/schedule.html";
+  const weeks = ["Course Overview and Python", "Python and Database Programming", "Database, Project, and Network Programming", "Concurrent Programming", "Server-Side Web Programming", "WSGI and Web Deployment", "JavaScript Language", "Client-Side JavaScript", "JavaScript and CSS", "Web Security", "Security and Server-Side Options", "Software Engineering I", "Software Engineering II and Conclusion"];
+  const weeksZh = ["课程概览与 Python", "Python 与数据库编程", "数据库、项目与网络编程", "并发编程", "服务端 Web 编程", "WSGI 与 Web 部署", "JavaScript 语言", "客户端 JavaScript", "JavaScript 与 CSS", "Web 安全", "安全与服务端方案", "软件工程（一）", "软件工程（二）与总结"];
+  const assignments = new Map([[3, 1], [5, 2], [7, 3], [11, 4]]);
+  const projectMilestones = new Map<number, readonly [string, string][]>([
+    [1, [["Learn requirements and form a project team", "了解需求并组建项目团队"]]],
+    [3, [["Project approval proposal", "项目审批提案"]]],
+    [5, [["Project overview, timeline, and team directory", "项目概述、时间线与团队目录"]]],
+    [6, [["Project wireframes", "项目线框图"]]], [8, [["Ethical-impact study", "伦理影响研究"]]],
+    [9, [["Prototype demonstration", "原型演示"]]], [11, [["Alpha demonstration", "Alpha 版本演示"]]],
+    [13, [["Beta demonstration", "Beta 版本演示"]]],
+  ]);
+  const tasks = weeks.flatMap((title, index) => {
+    const week = index + 1;
+    const result: PlanTask[] = [{ id: `week-${week}`, title: `Week ${week}: ${title}`, titleZh: `第 ${week} 周：${weeksZh[index]}`, url: courseUrl, kind: "session" }];
+    const assignment = assignments.get(week);
+    if (assignment) result.push({ id: `assignment-${assignment}`, title: `Registrar Application ${assignment}`, titleZh: `教务系统应用作业 ${assignment}`, url: "https://www.cs.princeton.edu/courses/archive/spr26/cos333/assignments.html", kind: "project" });
+    for (const [milestone, milestoneZh] of projectMilestones.get(week) ?? []) result.push({ id: `project-${week}-${result.length}`, title: milestone, titleZh: milestoneZh, url: "https://www.cs.princeton.edu/courses/archive/spring26/cos333/project.html", kind: "project" });
+    return result;
+  });
+  tasks.push({ id: "project-presentation", title: "Final project presentation", titleZh: "期末项目展示", url: courseUrl, kind: "project" }, { id: "project-delivery", title: "Deliver source code, application, and evaluation documents", titleZh: "提交源代码、应用与评估文档", url: courseUrl, kind: "project" });
+  return tasks;
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -1124,6 +1149,7 @@ structuredCoursePlans["princeton-cos423"] = { sourceUrl: "https://www.cs.princet
 structuredCoursePlans["princeton-cos432"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/fall19/cos432/schedule/", detail: "full", tasks: princetonCos432Tasks() };
 structuredCoursePlans["princeton-cos461"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/fall25/cos461/schedule.html", detail: "full", tasks: princetonCos461Tasks() };
 structuredCoursePlans["princeton-mat104"] = { sourceUrl: "https://web.math.princeton.edu/~nelson/104/", detail: "full", tasks: princetonMat104Tasks() };
+structuredCoursePlans["princeton-cos333"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/spring26/cos333/schedule.html", detail: "full", tasks: princetonCos333Tasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];

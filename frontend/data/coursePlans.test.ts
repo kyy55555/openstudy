@@ -423,6 +423,14 @@ test("Princeton MAT 104 follows all twelve official weekly topics and practice s
   assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 2);
 });
 
+test("Princeton COS 333 follows the current official weekly, assignment, and project sequence", () => {
+  const definition = structuredCoursePlans["princeton-cos333"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("week-")).length, 13);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("assignment-")).length, 4);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("project-")).length, 10);
+});
+
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {
   const definition = structuredCoursePlans["harvard-cs50x"];
   assert.equal(definition.detail, "full");
