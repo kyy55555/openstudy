@@ -694,6 +694,31 @@ function mit6837Tasks(): PlanTask[] {
   return tasks;
 }
 
+function mit6824Tasks(): PlanTask[] {
+  const courseUrl = "https://ocw.mit.edu/courses/6-824-distributed-computer-systems-engineering-spring-2006/";
+  const topics = ["Introduction and OS review", "I/O concurrency and event-driven programming", "Event-driven programming continued", "Network file system", "RPC transparency", "Crash recovery", "Logging", "Cache consistency and locking", "Memory consistency", "First project conference", "Memory consistency continued", "Vector timestamps and version vectors", "Two-phase commit", "Paxos", "Viewstamped replication", "Harp", "Second project conference", "Frangipani", "Scalable lookup", "Wide-area storage", "Project implementation", "Project demonstrations", "Content distribution", "Distributed computing"];
+  const topicsZh = ["导论与操作系统复习", "I/O 并发与事件驱动编程", "事件驱动编程（续）", "网络文件系统", "RPC 透明性", "崩溃恢复", "日志", "缓存一致性与锁", "内存一致性", "第一次项目讨论", "内存一致性（续）", "向量时间戳与版本向量", "两阶段提交", "Paxos", "视图戳复制", "Harp", "第二次项目讨论", "Frangipani", "可扩展查找", "广域存储", "项目实现", "项目演示", "内容分发", "分布式计算"];
+  const labAfter = new Map([[1, 0], [3, 1], [5, 2], [7, 3], [9, 4], [12, 5]]);
+  const projectAfter = new Map<number, readonly [string, string]>([
+    [6, ["Submit project team list", "提交项目组名单"]], [8, ["Submit project proposal", "提交项目提案"]],
+    [10, ["First project conference", "第一次项目讨论"]], [16, ["Submit first draft report", "提交第一版报告"]],
+    [17, ["Second project conference", "第二次项目讨论"]], [19, ["Submit second draft report", "提交第二版报告"]],
+    [22, ["Demonstrate project", "演示项目"]], [24, ["Submit completed project and final report", "提交完整项目与最终报告"]],
+  ]);
+  const tasks = topics.flatMap((title, index) => {
+    const lecture = index + 1;
+    const result: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title} and assigned reading`, titleZh: `第 ${lecture} 讲：${topicsZh[index]}与指定阅读`, url: `${courseUrl}pages/readings/`, kind: "session" }];
+    const lab = labAfter.get(lecture);
+    if (lab !== undefined) result.push({ id: `lab-${lab}`, title: `Lab ${lab}`, titleZh: `实验 ${lab}`, url: `${courseUrl}pages/labs/`, kind: "project" });
+    const project = projectAfter.get(lecture);
+    if (project) result.push({ id: `project-milestone-${lecture}`, title: project[0], titleZh: project[1], url: `${courseUrl}pages/projects/`, kind: "project" });
+    if (lecture === 12) result.push({ id: "quiz-1", title: "Quiz 1 using published prior-year exam", titleZh: "使用公开往年试题完成测验 1", url: `${courseUrl}pages/exams/`, kind: "exam" });
+    if (lecture === 20) result.push({ id: "quiz-2", title: "Quiz 2 using published prior-year exam", titleZh: "使用公开往年试题完成测验 2", url: `${courseUrl}pages/exams/`, kind: "exam" });
+    return result;
+  });
+  return tasks;
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -761,6 +786,7 @@ structuredCoursePlans["stanford-cs109"] = { sourceUrl: "https://web.stanford.edu
 structuredCoursePlans["stanford-cs111"] = { sourceUrl: "https://web.stanford.edu/class/cs111/", detail: "full", tasks: stanfordCs111Tasks() };
 structuredCoursePlans["mit-6-004"] = { sourceUrl: "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/", detail: "full", tasks: mit6004Tasks() };
 structuredCoursePlans["mit-6-837"] = { sourceUrl: "https://ocw.mit.edu/courses/6-837-computer-graphics-fall-2012/", detail: "full", tasks: mit6837Tasks() };
+structuredCoursePlans["mit-6-824"] = { sourceUrl: "https://ocw.mit.edu/courses/6-824-distributed-computer-systems-engineering-spring-2006/", detail: "full", tasks: mit6824Tasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];

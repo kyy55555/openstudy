@@ -256,6 +256,15 @@ test("MIT 6.837 follows the official lecture, programming-assignment, and exam s
   assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 2);
 });
 
+test("MIT 6.824 follows all public readings, labs, project milestones, and exams", () => {
+  const definition = structuredCoursePlans["mit-6-824"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 24);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lab-")).length, 6);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("project-milestone-")).length, 8);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 2);
+});
+
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {
   const definition = structuredCoursePlans["harvard-cs50x"];
   assert.equal(definition.detail, "full");
