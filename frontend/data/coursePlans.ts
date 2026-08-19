@@ -1121,6 +1121,28 @@ function cornellCs3110Tasks(): PlanTask[] {
   return chapters.flatMap((title, index) => [{ id: `chapter-${index + 1}`, title: `Chapter ${index + 1}: ${title}`, titleZh: `第 ${index + 1} 章：${chaptersZh[index]}`, url: courseUrl, kind: "session" as const }, { id: `chapter-exercises-${index + 1}`, title: `Chapter ${index + 1} exercises`, titleZh: `第 ${index + 1} 章练习`, url: courseUrl, kind: "assignment" as const }]);
 }
 
+function cornellCs4820Tasks(): PlanTask[] {
+  const courseUrl = "https://www.cs.cornell.edu/courses/cs4820/2026sp/lectures/";
+  const topics = ["Greedy Algorithms and Minimum Spanning Trees", "Minimum Spanning Trees and Interval Scheduling", "Interval Scheduling", "Weighted Interval Scheduling", "Segmented Least Squares", "Shortest Paths with Dynamic Programming", "Sequence Alignment", "Knapsack", "Prelim I Review", "Stable Matching I", "Stable Matching II", "Bipartite Matching and Network Flows", "Ford-Fulkerson", "Flow Correctness and Minimum Cuts", "Applications of Maximum Flow", "Applications of Minimum Cuts", "Reductions, Independent Set, and Vertex Cover", "P, NP, SAT, and 3-SAT", "Independent Set NP-Completeness", "Traveling Salesman and Hamiltonian Problems", "Hard Problems with Numbers", "Taxonomy of NP-Hard Problems", "Fast Integer Multiplication", "Fast Matrix Multiplication and the Master Theorem", "Prelim II Review", "Linear-Time Median", "Convolution and Polynomial Multiplication", "Fast Fourier Transform", "Load-Balancing Approximation", "Vertex Cover via Linear Programming", "Set Cover Approximation", "Exact Algorithms for Hard Problems", "Cryptography I", "Diffie-Hellman Key Exchange", "Models of Computation and the Halting Problem", "Undecidability via Reduction", "Undecidability of the Halting Problem", "Turing Machines and the Church-Turing Hypothesis", "SAT Is NP-Complete", "Final Review", "Current Trends and Final Review"];
+  const topicsZh = ["贪心算法与最小生成树", "最小生成树与区间调度", "区间调度", "加权区间调度", "分段最小二乘", "动态规划求最短路径", "序列比对", "背包问题", "第一次阶段考试复习", "稳定匹配（一）", "稳定匹配（二）", "二分图匹配与网络流", "Ford-Fulkerson 算法", "网络流正确性与最小割", "最大流应用", "最小割应用", "归约、独立集与顶点覆盖", "P、NP、SAT 与 3-SAT", "独立集的 NP 完全性", "旅行商与哈密顿问题", "含数值的困难问题", "NP 困难问题分类", "快速整数乘法", "快速矩阵乘法与主定理", "第二次阶段考试复习", "线性时间中位数", "卷积与多项式乘法", "快速傅里叶变换", "负载均衡近似算法", "线性规划求顶点覆盖", "集合覆盖近似算法", "困难问题的精确算法", "密码学（一）", "Diffie-Hellman 密钥交换", "计算模型与停机问题", "通过归约证明不可判定性", "停机问题的不可判定性", "图灵机与 Church-Turing 假设", "SAT 是 NP 完全问题", "期末复习", "算法前沿与期末复习"];
+  const tasks: PlanTask[] = topics.map((title, index) => ({ id: `lecture-${index + 1}`, title: `Lecture ${index + 1}: ${title}`, titleZh: `第 ${index + 1} 讲：${topicsZh[index]}`, url: courseUrl, kind: "session" }));
+  [1, 2, 4, 5, 6, 8, 9, 10, 11].forEach((homework) => tasks.push({ id: `homework-quiz-${homework}`, title: `Homework ${homework} section quiz and corrections`, titleZh: `作业 ${homework} 讨论课测验与订正`, url: courseUrl, kind: "assignment" }));
+  tasks.push({ id: "prelim-1", title: "Prelim I", titleZh: "第一次阶段考试", url: courseUrl, kind: "exam" }, { id: "prelim-2", title: "Prelim II", titleZh: "第二次阶段考试", url: courseUrl, kind: "exam" }, { id: "final", title: "Final Exam", titleZh: "期末考试", url: courseUrl, kind: "exam" });
+  return tasks;
+}
+
+function cornellCs1110Tasks(): PlanTask[] {
+  const lecturesUrl = "https://www.cs.cornell.edu/courses/cs1110/2025fa/lectures/";
+  const labsUrl = "https://www.cs.cornell.edu/courses/cs1110/2025fa/assessment/labs/";
+  const topics = ["Getting Started", "Expressions and Variables", "Modules", "Functions", "Strings", "Testing", "Conditionals", "Assignment 1 Workshop", "Objects", "Debugging", "Assertions", "Sequences", "For-Loops", "Assignment 3 Follow-Up", "Recursion I", "Recursion II", "Nested Lists and Dictionaries", "Blackjack", "Object-Oriented Design", "Subclasses", "Abstraction", "While Loops", "GUI Classes", "Advanced Error Handling", "Searching and Sorting", "Generators"];
+  const topicsZh = ["入门准备", "表达式与变量", "模块", "函数", "字符串", "测试", "条件语句", "作业 1 工作坊", "对象", "调试", "断言", "序列", "For 循环", "作业 3 复盘", "递归（一）", "递归（二）", "嵌套列表与字典", "Blackjack", "面向对象设计", "子类", "抽象", "While 循环", "GUI 类", "高级错误处理", "搜索与排序", "生成器"];
+  const tasks: PlanTask[] = topics.flatMap((title, index) => [{ id: `lesson-${index + 1}`, title: `Lesson ${index + 1}: ${title}`, titleZh: `第 ${index + 1} 课：${topicsZh[index]}`, url: lecturesUrl, kind: "session" as const }, { id: `lab-${index + 1}`, title: `Official lab: ${title}`, titleZh: `官方实验：${topicsZh[index]}`, url: labsUrl, kind: "assignment" as const }]);
+  const assignments = [["Currency", "货币换算"], ["Call Frames", "调用栈帧"], ["Color Models", "颜色模型"], ["Turtles", "海龟绘图"], ["Class Folders", "类文件夹"], ["Images", "图像处理"], ["Froggit", "Froggit 游戏"]] as const;
+  assignments.forEach(([title, titleZh], index) => tasks.push({ id: `assignment-${index + 1}`, title: `Assignment ${index + 1}: ${title}`, titleZh: `作业 ${index + 1}：${titleZh}`, url: "https://www.cs.cornell.edu/courses/cs1110/2025fa/assessment/assignments/", kind: "project" }));
+  tasks.push({ id: "prelim-1", title: "Prelim I", titleZh: "第一次阶段考试", url: "https://www.cs.cornell.edu/courses/cs1110/2025fa/assessment/exams/", kind: "exam" }, { id: "prelim-2", title: "Prelim II", titleZh: "第二次阶段考试", url: "https://www.cs.cornell.edu/courses/cs1110/2025fa/assessment/exams/", kind: "exam" }, { id: "final", title: "Final Exam", titleZh: "期末考试", url: "https://www.cs.cornell.edu/courses/cs1110/2025fa/assessment/exams/", kind: "exam" });
+  return tasks;
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -1216,6 +1238,8 @@ structuredCoursePlans["cornell-cs4410"] = { sourceUrl: "https://www.cs.cornell.e
 structuredCoursePlans["cornell-cs6787"] = { sourceUrl: "https://www.cs.cornell.edu/courses/cs6787/2026sp/#course-calendar", detail: "full", tasks: cornellCs6787Tasks() };
 structuredCoursePlans["cornell-cs2110"] = { sourceUrl: "https://www.cs.cornell.edu/courses/cs2110/2026sp/lectures/lec01/", detail: "full", tasks: cornellCs2110Tasks() };
 structuredCoursePlans["cornell-cs3110"] = { sourceUrl: "https://cs3110.github.io/textbook/cover.html", detail: "full", tasks: cornellCs3110Tasks() };
+structuredCoursePlans["cornell-cs4820"] = { sourceUrl: "https://www.cs.cornell.edu/courses/cs4820/2026sp/lectures/", detail: "full", tasks: cornellCs4820Tasks() };
+structuredCoursePlans["cornell-cs1110"] = { sourceUrl: "https://www.cs.cornell.edu/courses/cs1110/2025fa/lectures/", detail: "full", tasks: cornellCs1110Tasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];

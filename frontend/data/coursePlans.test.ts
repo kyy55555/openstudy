@@ -471,6 +471,21 @@ test("Cornell CS 2110 and CS 3110 follow their complete official public texts", 
   assert.equal(structuredCoursePlans["cornell-cs3110"].tasks.filter(({ id }) => id.startsWith("chapter-exercises-")).length, 10);
 });
 
+test("Cornell CS 4820 follows every current lecture, homework quiz, and exam", () => {
+  const definition = structuredCoursePlans["cornell-cs4820"];
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 41);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("homework-quiz-")).length, 9);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 3);
+});
+
+test("Cornell CS 1110 includes the official curriculum, labs, projects, and exams", () => {
+  const definition = structuredCoursePlans["cornell-cs1110"];
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lesson-")).length, 26);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lab-")).length, 26);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("assignment-")).length, 7);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 3);
+});
+
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {
   const definition = structuredCoursePlans["harvard-cs50x"];
   assert.equal(definition.detail, "full");
