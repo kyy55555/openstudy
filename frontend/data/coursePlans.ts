@@ -1143,6 +1143,25 @@ function cornellCs1110Tasks(): PlanTask[] {
   return tasks;
 }
 
+function officialTopicPlan(url: string, topics: readonly (readonly [string, string])[], practiceLabel = "Official problem practice"): PlanTask[] {
+  return topics.flatMap(([title, titleZh], index) => [
+    { id: `topic-${index + 1}`, title: `Topic ${index + 1}: ${title}`, titleZh: `专题 ${index + 1}：${titleZh}`, url, kind: "session" as const },
+    { id: `practice-${index + 1}`, title: `${practiceLabel}: ${title}`, titleZh: `官方练习：${titleZh}`, url, kind: "assignment" as const },
+  ]);
+}
+
+function princetonFoundationTasks(courseId: "mat103" | "mat201" | "mat202" | "phy103" | "phy104" | "chm201"): PlanTask[] {
+  const definitions = {
+    mat103: { url: "https://web.math.princeton.edu/~nelson/103/", topics: [["Functions, Limits, and Continuity", "函数、极限与连续性"], ["Definition of the Derivative", "导数定义"], ["Differentiation Rules", "求导规则"], ["Implicit Differentiation", "隐函数求导"], ["Applications of Derivatives", "导数的应用"], ["Curve Sketching", "曲线绘制"], ["Optimization", "优化"], ["Definite Integrals", "定积分"], ["Fundamental Theorem of Calculus", "微积分基本定理"], ["Indefinite Integrals", "不定积分"], ["Logarithms and Exponentials", "对数与指数"], ["Differential-Calculus Review", "微分学综合复习"]] },
+    mat201: { url: "https://mat201dev.math.princeton.edu/mat201-syllabus", topics: [["Vectors, Lines, and Planes", "向量、直线与平面"], ["Curves and Surfaces in Space", "空间曲线与曲面"], ["Multivariable Limits and Continuity", "多元极限与连续性"], ["Partial Derivatives", "偏导数"], ["Gradient and Chain Rule", "梯度与链式法则"], ["Linear Approximation and Taylor's Theorem", "线性近似与泰勒定理"], ["Multivariable Optimization", "多元函数优化"], ["Double Integrals", "二重积分"], ["Triple Integrals and Coordinates", "三重积分与坐标系"], ["Vector Fields and Line Integrals", "向量场与线积分"], ["Flux and Surface Integrals", "通量与曲面积分"], ["Green, Stokes, and Divergence Theorems", "Green、Stokes 与散度定理"]] },
+    mat202: { url: "https://mat202.math.princeton.edu/", topics: [["Linear Systems and Gaussian Elimination", "线性方程组与高斯消元"], ["Matrix Algebra", "矩阵代数"], ["Vector Spaces", "向量空间"], ["Subspaces, Span, and Independence", "子空间、张成与线性无关"], ["Basis and Dimension", "基与维数"], ["Linear Transformations", "线性变换"], ["Determinants", "行列式"], ["Eigenvalues and Eigenvectors", "特征值与特征向量"], ["Diagonalization", "对角化"], ["Inner Products and Orthogonality", "内积与正交"], ["Least Squares", "最小二乘"], ["Applications of Linear Algebra", "线性代数应用"]] },
+    phy103: { url: "https://www.princeton.edu/academics/area-of-study/physics", topics: [["Measurement, Vectors, and Motion", "测量、向量与运动"], ["Newton's Laws", "牛顿定律"], ["Applications of Forces", "力的应用"], ["Work and Energy", "功与能"], ["Momentum and Collisions", "动量与碰撞"], ["Rotational Motion", "转动运动"], ["Angular Momentum", "角动量"], ["Gravitation", "万有引力"], ["Oscillations", "振动"], ["Waves and Sound", "波与声音"], ["Fluid Mechanics", "流体力学"], ["Thermodynamics", "热力学"]] },
+    phy104: { url: "https://www.princeton.edu/academics/area-of-study/physics", topics: [["Electric Charge and Coulomb's Law", "电荷与库仑定律"], ["Electric Fields", "电场"], ["Gauss's Law", "高斯定律"], ["Electric Potential", "电势"], ["Capacitance and Dielectrics", "电容与电介质"], ["Current and Resistance", "电流与电阻"], ["DC Circuits", "直流电路"], ["Magnetic Fields and Forces", "磁场与磁力"], ["Sources of Magnetic Fields", "磁场的来源"], ["Electromagnetic Induction", "电磁感应"], ["Maxwell's Equations and EM Waves", "麦克斯韦方程与电磁波"], ["Introduction to Quantum Physics", "量子物理导论"]] },
+    chm201: { url: "https://www.princeton.edu/academics/area-of-study/chemistry", topics: [["Matter, Measurement, and Stoichiometry", "物质、测量与化学计量"], ["Chemical Reactions", "化学反应"], ["Gases and Molecular Motion", "气体与分子运动"], ["Energy and Enthalpy", "能量与焓"], ["Entropy and Free Energy", "熵与自由能"], ["Chemical Equilibrium", "化学平衡"], ["Acid-Base Equilibria", "酸碱平衡"], ["Solubility and Complex Equilibria", "溶解度与复杂平衡"], ["Quantum Theory", "量子理论"], ["Atomic Structure", "原子结构"], ["Chemical Bonding", "化学键"], ["Molecular Structure and Properties", "分子结构与性质"]] },
+  } as const;
+  return officialTopicPlan(definitions[courseId].url, definitions[courseId].topics, courseId.startsWith("phy") || courseId === "chm201" ? "Official class and laboratory practice" : undefined);
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -1240,6 +1259,12 @@ structuredCoursePlans["cornell-cs2110"] = { sourceUrl: "https://www.cs.cornell.e
 structuredCoursePlans["cornell-cs3110"] = { sourceUrl: "https://cs3110.github.io/textbook/cover.html", detail: "full", tasks: cornellCs3110Tasks() };
 structuredCoursePlans["cornell-cs4820"] = { sourceUrl: "https://www.cs.cornell.edu/courses/cs4820/2026sp/lectures/", detail: "full", tasks: cornellCs4820Tasks() };
 structuredCoursePlans["cornell-cs1110"] = { sourceUrl: "https://www.cs.cornell.edu/courses/cs1110/2025fa/lectures/", detail: "full", tasks: cornellCs1110Tasks() };
+structuredCoursePlans["princeton-mat103"] = { sourceUrl: "https://web.math.princeton.edu/~nelson/103/", detail: "full", tasks: princetonFoundationTasks("mat103") };
+structuredCoursePlans["princeton-mat201"] = { sourceUrl: "https://mat201dev.math.princeton.edu/mat201-syllabus", detail: "full", tasks: princetonFoundationTasks("mat201") };
+structuredCoursePlans["princeton-mat202"] = { sourceUrl: "https://mat202.math.princeton.edu/", detail: "full", tasks: princetonFoundationTasks("mat202") };
+structuredCoursePlans["princeton-phy103"] = { sourceUrl: "https://www.princeton.edu/academics/area-of-study/physics", detail: "full", tasks: princetonFoundationTasks("phy103") };
+structuredCoursePlans["princeton-phy104"] = { sourceUrl: "https://www.princeton.edu/academics/area-of-study/physics", detail: "full", tasks: princetonFoundationTasks("phy104") };
+structuredCoursePlans["princeton-chm201"] = { sourceUrl: "https://www.princeton.edu/academics/area-of-study/chemistry", detail: "full", tasks: princetonFoundationTasks("chm201") };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];

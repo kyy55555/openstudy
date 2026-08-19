@@ -486,6 +486,15 @@ test("Cornell CS 1110 includes the official curriculum, labs, projects, and exam
   assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 3);
 });
 
+test("Princeton foundation courses expose complete official topic-and-practice plans", () => {
+  for (const courseId of ["princeton-mat103", "princeton-mat201", "princeton-mat202", "princeton-phy103", "princeton-phy104", "princeton-chm201"]) {
+    const definition = structuredCoursePlans[courseId];
+    assert.equal(definition.detail, "full");
+    assert.equal(definition.tasks.filter(({ id }) => id.startsWith("topic-")).length, 12);
+    assert.equal(definition.tasks.filter(({ id }) => id.startsWith("practice-")).length, 12);
+  }
+});
+
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {
   const definition = structuredCoursePlans["harvard-cs50x"];
   assert.equal(definition.detail, "full");
