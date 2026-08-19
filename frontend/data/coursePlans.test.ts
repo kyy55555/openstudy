@@ -274,6 +274,24 @@ test("MIT 6.858 follows all official lectures, labs, quizzes, and project milest
   assert.equal(definition.tasks.filter(({ id }) => id.startsWith("project-")).length, 4);
 });
 
+test("MIT 6.S081 follows every official lecture, homework, and xv6 lab", () => {
+  const definition = structuredCoursePlans["mit-6-s081"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 25);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("homework-")).length, 23);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lab-")).length, 10);
+});
+
+test("MIT 6.172 follows all official lectures, homework, recitations, quizzes, and projects", () => {
+  const definition = structuredCoursePlans["mit-6-172"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 23);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("homework-")).length, 10);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("recitation-")).length, 10);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 2);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "project").length, 12);
+});
+
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {
   const definition = structuredCoursePlans["harvard-cs50x"];
   assert.equal(definition.detail, "full");

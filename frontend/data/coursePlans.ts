@@ -744,6 +744,46 @@ function mit6858Tasks(): PlanTask[] {
   return tasks;
 }
 
+function mit6s081Tasks(): PlanTask[] {
+  const courseUrl = "https://pdos.csail.mit.edu/6.S081/2021/schedule.html";
+  const topics = ["Introduction", "C and gdb", "OS organization and system calls", "Page tables", "Calling conventions and stack frames", "Isolation and system-call entry/exit", "Page faults", "Lab Q&A I", "Interrupts", "Multiprocessors and locking", "Scheduling I", "Scheduling II", "Lab Q&A II", "File systems", "Crash recovery", "File-system performance and fast recovery", "Virtual memory for applications", "OS organization", "Virtual machines", "Kernels and high-level languages", "Networking", "Meltdown", "Multi-core scalability and RCU", "Radiation tolerance research", "Course Q&A"];
+  const topicsZh = ["导论", "C 与 gdb", "操作系统组织与系统调用", "页表", "调用约定与栈帧", "隔离与系统调用进入/退出", "缺页异常", "实验答疑（一）", "中断", "多处理器与锁", "调度（一）", "调度（二）", "实验答疑（二）", "文件系统", "崩溃恢复", "文件系统性能与快速恢复", "面向应用的虚拟内存", "操作系统组织", "虚拟机", "内核与高级语言", "网络", "Meltdown", "多核可扩展性与 RCU", "抗辐射研究", "课程答疑"];
+  const labAfter = new Map([[1, "util"], [3, "syscall"], [5, "pgtbl"], [7, "traps"], [9, "cow"], [12, "thread"], [14, "net"], [18, "lock"], [20, "fs"], [21, "mmap"]]);
+  let homework = 0;
+  return topics.flatMap((title, index) => {
+    const lecture = index + 1;
+    const result: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title} and preparation`, titleZh: `第 ${lecture} 讲：${topicsZh[index]}与课前阅读`, url: courseUrl, kind: "session" }];
+    if (lecture !== 2 && lecture !== 5) {
+      homework += 1;
+      result.push({ id: `homework-${homework}`, title: `Homework ${homework}`, titleZh: `课后题 ${homework}`, url: courseUrl, kind: "assignment" });
+    }
+    const lab = labAfter.get(lecture);
+    if (lab) result.push({ id: `lab-${lab}`, title: `Lab: ${lab}`, titleZh: `实验：${lab}`, url: courseUrl, kind: "project" });
+    return result;
+  });
+}
+
+function mit6172Tasks(): PlanTask[] {
+  const courseUrl = "https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/";
+  const topics = ["Introduction and Matrix Multiplication", "Bentley's Rules", "Bit Hacks", "Architecture and Vectorization", "C to Assembly", "Multicore Programming", "Races and Parallelism", "Analysis of Multithreaded Algorithms", "What Compilers Can and Cannot Do", "Measurement and Timing", "Storage Allocation", "Parallel Storage Allocation", "The Cilk Runtime System", "Caching and Cache-Efficient Algorithms", "Cache-Oblivious Algorithms", "Nondeterministic Programming", "Synchronization without Locks", "DSLs and Autotuning", "Leiserchess Code Walk", "Speculative Parallelism and Project Strategies", "Guest Lecture I", "Graph Optimization", "Guest Lecture II"];
+  const topicsZh = ["导论与矩阵乘法", "Bentley 规则", "位运算技巧", "体系结构与向量化", "从 C 到汇编", "多核编程", "竞争与并行性", "多线程算法分析", "编译器能做与不能做的事", "测量与计时", "存储分配", "并行存储分配", "Cilk 运行时系统", "缓存与缓存高效算法", "缓存无关算法", "非确定性编程", "无锁同步", "领域专用语言与自动调优", "Leiserchess 代码走查", "推测并行与项目并行化策略", "客座讲座（一）", "图优化", "客座讲座（二）"];
+  const homeworkAfter = new Map([[1, 1], [3, 2], [5, 3], [7, 4], [9, 5], [11, 6], [13, 7], [15, 8], [17, 9], [21, 10]]);
+  const recitationAfter = new Map([[1, 1], [3, 2], [7, 3], [9, 4], [10, 5], [11, 6], [13, 7], [15, 8], [17, 9], [21, 10]]);
+  const projectAfter = new Map<number, readonly string[]>([[3, ["Project 1 beta writeup"]], [9, ["Project 1 final", "Project 2 beta"]], [13, ["Project 2 final", "Project 3 beta"]], [19, ["Project 3 final", "Project 4 beta 1"]], [21, ["Project 4 beta 1", "Project 4 beta 2"]], [23, ["Project 4 beta 2", "Project 4 final", "Student presentation"]]]);
+  return topics.flatMap((title, index) => {
+    const lecture = index + 1;
+    const result: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${topicsZh[index]}`, url: `${courseUrl}pages/lecture-videos/`, kind: "session" }];
+    const homework = homeworkAfter.get(lecture);
+    if (homework) result.push({ id: `homework-${homework}`, title: `Homework ${homework}`, titleZh: `作业 ${homework}`, url: `${courseUrl}pages/assignments/`, kind: "assignment" });
+    const recitation = recitationAfter.get(lecture);
+    if (recitation) result.push({ id: `recitation-${recitation}`, title: `Recitation ${recitation}`, titleZh: `习题课 ${recitation}`, url: `${courseUrl}pages/recitation-problems/`, kind: "session" });
+    for (const project of projectAfter.get(lecture) ?? []) result.push({ id: `project-${lecture}-${project.toLowerCase().replaceAll(" ", "-")}`, title: project, titleZh: project.replace("Project", "项目").replace("Student presentation", "学生展示"), url: `${courseUrl}pages/projects/`, kind: "project" });
+    if (lecture === 11) result.push({ id: "quiz-1", title: "Quiz 1", titleZh: "测验 1", url: `${courseUrl}pages/quizzes/`, kind: "exam" });
+    if (lecture === 19) result.push({ id: "quiz-2", title: "Quiz 2", titleZh: "测验 2", url: `${courseUrl}pages/quizzes/`, kind: "exam" });
+    return result;
+  });
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -813,6 +853,8 @@ structuredCoursePlans["mit-6-004"] = { sourceUrl: "https://ocw.mit.edu/courses/6
 structuredCoursePlans["mit-6-837"] = { sourceUrl: "https://ocw.mit.edu/courses/6-837-computer-graphics-fall-2012/", detail: "full", tasks: mit6837Tasks() };
 structuredCoursePlans["mit-6-824"] = { sourceUrl: "https://ocw.mit.edu/courses/6-824-distributed-computer-systems-engineering-spring-2006/", detail: "full", tasks: mit6824Tasks() };
 structuredCoursePlans["mit-6-858"] = { sourceUrl: "https://ocw.mit.edu/courses/6-858-computer-systems-security-fall-2014/", detail: "full", tasks: mit6858Tasks() };
+structuredCoursePlans["mit-6-s081"] = { sourceUrl: "https://pdos.csail.mit.edu/6.S081/2021/schedule.html", detail: "full", tasks: mit6s081Tasks() };
+structuredCoursePlans["mit-6-172"] = { sourceUrl: "https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/", detail: "full", tasks: mit6172Tasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];
