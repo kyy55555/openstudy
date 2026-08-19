@@ -204,6 +204,25 @@ test("Stanford EE263 follows all public SEE lectures, homework, and exams", () =
   assert.ok(definition.tasks.every(({ url }) => url === "https://see.stanford.edu/Course/EE263"));
 });
 
+test("Stanford EE364A follows all public lectures, readings, homework, reviews, and exams", () => {
+  const definition = structuredCoursePlans["stanford-ee364a"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 19);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("reading-")).length, 8);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("homework-")).length, 8);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("review-session-")).length, 9);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 2);
+});
+
+test("Stanford EE364B follows all public lectures, assignments, and project milestones", () => {
+  const definition = structuredCoursePlans["stanford-ee364b"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 18);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("assignment-")).length, 7);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "project").length, 4);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 0);
+});
+
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {
   const definition = structuredCoursePlans["harvard-cs50x"];
   assert.equal(definition.detail, "full");

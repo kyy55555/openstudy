@@ -564,6 +564,61 @@ function stanfordEe263Tasks(): PlanTask[] {
   return tasks;
 }
 
+function stanfordEe364aTasks(): PlanTask[] {
+  const courseUrl = "https://see.stanford.edu/Course/EE364A";
+  const units = [
+    [1, 2, "Introduction and convex sets", "导论与凸集"], [3, 4, "Convex functions", "凸函数"],
+    [5, 7, "Convex optimization problems", "凸优化问题"], [8, 9, "Duality", "对偶"],
+    [10, 13, "Applications: fitting, estimation, and geometry", "应用：拟合、估计与几何"], [14, 14, "Numerical linear algebra", "数值线性代数"],
+    [15, 17, "Unconstrained and equality-constrained minimization", "无约束与等式约束最小化"], [18, 19, "Interior-point methods", "内点法"],
+  ] as const;
+  const workAfter = new Map([[4, 1], [6, 2], [8, 3], [10, 4], [12, 5], [14, 6], [16, 7], [19, 8]]);
+  const reviewAfter = new Map([[2, 1], [4, 2], [6, 3], [8, 4], [10, 5], [13, 6], [14, 7], [16, 8], [19, 9]]);
+  const tasks: PlanTask[] = [];
+  for (const [start, end, title, titleZh] of units) {
+    for (let lecture: number = start; lecture <= end; lecture += 1) {
+      tasks.push({ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${titleZh}`, url: courseUrl, kind: "session" });
+      const work = workAfter.get(lecture);
+      if (work) tasks.push(
+        { id: `reading-${work}`, title: `Reading assignment ${work}`, titleZh: `阅读任务 ${work}`, url: courseUrl, kind: "session" },
+        { id: `homework-${work}`, title: `Homework ${work}`, titleZh: `作业 ${work}`, url: courseUrl, kind: "assignment" },
+      );
+      const review = reviewAfter.get(lecture);
+      if (review) tasks.push({ id: `review-session-${review}`, title: `Review session ${review}`, titleZh: `复习课 ${review}`, url: courseUrl, kind: "session" });
+    }
+  }
+  tasks.push(
+    { id: "practice-final", title: "Practice final", titleZh: "期末模拟考试", url: courseUrl, kind: "exam" },
+    { id: "final-exam", title: "Final exam", titleZh: "期末考试", url: courseUrl, kind: "exam" },
+  );
+  return tasks;
+}
+
+function stanfordEe364bTasks(): PlanTask[] {
+  const courseUrl = "https://see.stanford.edu/Course/EE364B";
+  const units = [
+    [1, 4, "Subgradients and subgradient methods", "次梯度与次梯度方法"], [5, 8, "Cutting-plane and ellipsoid methods", "切平面法与椭球法"],
+    [9, 10, "Primal and dual decomposition", "原始与对偶分解"], [11, 13, "Sequential convex programming and Newton methods", "序列凸规划与牛顿法"],
+    [14, 15, "Convex-cardinality problems", "凸基数问题"], [16, 18, "Model predictive control and branch-and-bound", "模型预测控制与分支定界"],
+  ] as const;
+  const assignmentAfter = new Map([[4, 1], [5, 2], [7, 3], [11, 4], [14, 5], [17, 6], [18, 7]]);
+  const projectAfter = new Map<number, readonly [string, string]>([
+    [7, ["Initial project proposal", "项目初步提案"]], [12, ["Revised project proposal", "项目修订提案"]],
+    [14, ["Midterm project progress report", "项目期中进度报告"]], [18, ["Final project report", "项目最终报告"]],
+  ]);
+  const tasks: PlanTask[] = [];
+  for (const [start, end, title, titleZh] of units) {
+    for (let lecture: number = start; lecture <= end; lecture += 1) {
+      tasks.push({ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${titleZh}`, url: courseUrl, kind: "session" });
+      const assignment = assignmentAfter.get(lecture);
+      if (assignment) tasks.push({ id: `assignment-${assignment}`, title: `Assignment ${assignment}`, titleZh: `作业 ${assignment}`, url: courseUrl, kind: "assignment" });
+      const project = projectAfter.get(lecture);
+      if (project) tasks.push({ id: `project-${lecture}`, title: project[0], titleZh: project[1], url: courseUrl, kind: "project" });
+    }
+  }
+  return tasks;
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -625,6 +680,8 @@ structuredCoursePlans["stanford-cs223a"] = { sourceUrl: "https://see.stanford.ed
 structuredCoursePlans["stanford-cs229"] = { sourceUrl: "https://see.stanford.edu/Course/CS229", detail: "full", tasks: stanfordCs229Tasks() };
 structuredCoursePlans["stanford-ee261"] = { sourceUrl: "https://see.stanford.edu/Course/EE261", detail: "full", tasks: stanfordEe261Tasks() };
 structuredCoursePlans["stanford-ee263"] = { sourceUrl: "https://see.stanford.edu/Course/EE263", detail: "full", tasks: stanfordEe263Tasks() };
+structuredCoursePlans["stanford-ee364a"] = { sourceUrl: "https://see.stanford.edu/Course/EE364A", detail: "full", tasks: stanfordEe364aTasks() };
+structuredCoursePlans["stanford-ee364b"] = { sourceUrl: "https://see.stanford.edu/Course/EE364B", detail: "full", tasks: stanfordEe364bTasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];
