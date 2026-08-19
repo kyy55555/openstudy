@@ -1085,6 +1085,42 @@ function cornellCs3410Tasks(): PlanTask[] {
   return tasks;
 }
 
+function cornellCs4410Tasks(): PlanTask[] {
+  const courseUrl = "https://www.cs.cornell.edu/courses/cs4410/2026su/";
+  const topics = ["Operating-System Structure", "Concurrency", "Scheduling", "Synchronization", "Memory Management", "File Systems", "Security", "Networking"];
+  const topicsZh = ["操作系统结构", "并发", "调度", "同步", "内存管理", "文件系统", "安全", "网络"];
+  const tasks: PlanTask[] = topics.flatMap((title, index) => [{ id: `module-${index + 1}`, title: `Module ${index + 1}: ${title}`, titleZh: `模块 ${index + 1}：${topicsZh[index]}`, url: courseUrl, kind: "session" as const }, { id: `module-practice-${index + 1}`, title: `${title} practice`, titleZh: `${topicsZh[index]}练习`, url: courseUrl, kind: "assignment" as const }]);
+  tasks.push({ id: "homework-1", title: "Public Homework 1", titleZh: "公开作业 1", url: "https://www.cs.cornell.edu/courses/cs4410/2026su/resources/hw1.pdf", kind: "assignment" }, { id: "prelim", title: "Prelim Exam", titleZh: "阶段考试", url: courseUrl, kind: "exam" }, { id: "final", title: "Final Exam", titleZh: "期末考试", url: courseUrl, kind: "exam" });
+  return tasks;
+}
+
+function cornellCs6787Tasks(): PlanTask[] {
+  const courseUrl = "https://www.cs.cornell.edu/courses/cs6787/2026sp/#course-calendar";
+  const lectures = ["Overview and Stochastic Gradient Descent", "Backpropagation and ML Frameworks", "Hyperparameters and Tradeoffs", "Kernels and Dimensionality Reduction", "Adaptive Methods and Non-Convex Optimization", "Hyperparameter Optimization", "Parallelism", "Distributed Learning", "Low-Precision Arithmetic", "Inference and Compression", "ML Frameworks II", "Hardware for Machine Learning", "Modern Generative AI", "Large-Scale ML on the Cloud", "Final Project Discussion"];
+  const lecturesZh = ["概览与随机梯度下降", "反向传播与机器学习框架", "超参数与权衡", "核方法与降维", "自适应方法与非凸优化", "超参数优化", "并行", "分布式学习", "低精度算术", "推理与压缩", "机器学习框架（二）", "机器学习硬件", "现代生成式人工智能", "云端大规模机器学习", "期末项目讨论"];
+  const tasks: PlanTask[] = lectures.map((title, index) => ({ id: `lecture-${index + 1}`, title: `Lecture ${index + 1}: ${title}`, titleZh: `第 ${index + 1} 讲：${lecturesZh[index]}`, url: courseUrl, kind: "session" }));
+  for (let discussion = 1; discussion <= 12; discussion += 1) {
+    tasks.push({ id: `paper-discussion-${discussion}`, title: `Paper Discussion ${discussion}: two official assigned papers`, titleZh: `论文讨论 ${discussion}：两篇官方指定论文`, url: courseUrl, kind: "session" });
+    if (discussion <= 11) tasks.push({ id: `paper-review-${discussion}`, title: `Write Paper Review ${discussion}`, titleZh: `撰写论文评审 ${discussion}`, url: courseUrl, kind: "assignment" });
+  }
+  tasks.push({ id: "project-proposal", title: "Final Project Proposal and Experiment Plan", titleZh: "期末项目提案与实验计划", url: courseUrl, kind: "project" }, { id: "project-abstract", title: "Final Project Abstract Draft", titleZh: "期末项目摘要草稿", url: courseUrl, kind: "project" }, { id: "project-report", title: "Final Project Report and Evaluation", titleZh: "期末项目报告与评估", url: courseUrl, kind: "project" });
+  return tasks;
+}
+
+function cornellCs2110Tasks(): PlanTask[] {
+  const courseUrl = "https://www.cs.cornell.edu/courses/cs2110/2026sp/lectures/lec01/";
+  const topics = ["Introduction to Java", "Reference Types and Semantics", "Method Specifications and Testing", "Loop Invariants", "Analyzing Complexity", "Recursion", "Sorting Algorithms", "Classes and Encapsulation", "Interfaces and Polymorphism", "Inheritance", "Additional Java Features", "Collections and Generics", "Linked Data", "Iterating over Data Structures", "Stacks and Queues", "Trees and Their Iterators", "Binary Search Trees", "Heaps and Priority Queues", "Sets and Maps", "Hashing", "Graphs", "Graph Traversals", "Shortest Paths", "Graphical User Interfaces", "Event-Driven Programming", "Concurrency", "Synchronization"];
+  const topicsZh = ["Java 导论", "引用类型与语义", "方法规格与测试", "循环不变量", "复杂度分析", "递归", "排序算法", "类与封装", "接口与多态", "继承", "Java 进阶特性", "集合与泛型", "链式数据", "数据结构迭代", "栈与队列", "树及其迭代器", "二叉搜索树", "堆与优先队列", "集合与映射", "哈希", "图", "图遍历", "最短路径", "图形用户界面", "事件驱动编程", "并发", "同步"];
+  return topics.flatMap((title, index) => [{ id: `lecture-${index + 1}`, title: `${index + 1}. ${title}`, titleZh: `${index + 1}. ${topicsZh[index]}`, url: courseUrl.replace("lec01", `lec${String(index + 1).padStart(2, "0")}`), kind: "session" as const }, { id: `exercise-${index + 1}`, title: `Complete ${title} exercises`, titleZh: `完成${topicsZh[index]}练习`, url: courseUrl.replace("lec01", `lec${String(index + 1).padStart(2, "0")}`), kind: "assignment" as const }]);
+}
+
+function cornellCs3110Tasks(): PlanTask[] {
+  const courseUrl = "https://cs3110.github.io/textbook/cover.html";
+  const chapters = ["Better Programming Through OCaml", "The Basics of OCaml", "Data and Types", "Higher-Order Programming", "Modular Programming", "Mutability", "Concurrency", "Correctness", "Data Structures", "Interpreters"];
+  const chaptersZh = ["通过 OCaml 改进编程", "OCaml 基础", "数据与类型", "高阶编程", "模块化编程", "可变性", "并发", "正确性", "数据结构", "解释器"];
+  return chapters.flatMap((title, index) => [{ id: `chapter-${index + 1}`, title: `Chapter ${index + 1}: ${title}`, titleZh: `第 ${index + 1} 章：${chaptersZh[index]}`, url: courseUrl, kind: "session" as const }, { id: `chapter-exercises-${index + 1}`, title: `Chapter ${index + 1} exercises`, titleZh: `第 ${index + 1} 章练习`, url: courseUrl, kind: "assignment" as const }]);
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -1176,6 +1212,10 @@ structuredCoursePlans["princeton-mat104"] = { sourceUrl: "https://web.math.princ
 structuredCoursePlans["princeton-cos333"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/spring26/cos333/schedule.html", detail: "full", tasks: princetonCos333Tasks() };
 structuredCoursePlans["cornell-cs3780"] = { sourceUrl: "https://www.cs.cornell.edu/courses/cs3780/2026sp/#Schedule", detail: "full", tasks: cornellCs3780Tasks() };
 structuredCoursePlans["cornell-cs3410"] = { sourceUrl: "https://www.cs.cornell.edu/courses/cs3410/2026sp/schedule.html", detail: "full", tasks: cornellCs3410Tasks() };
+structuredCoursePlans["cornell-cs4410"] = { sourceUrl: "https://www.cs.cornell.edu/courses/cs4410/2026su/", detail: "full", tasks: cornellCs4410Tasks() };
+structuredCoursePlans["cornell-cs6787"] = { sourceUrl: "https://www.cs.cornell.edu/courses/cs6787/2026sp/#course-calendar", detail: "full", tasks: cornellCs6787Tasks() };
+structuredCoursePlans["cornell-cs2110"] = { sourceUrl: "https://www.cs.cornell.edu/courses/cs2110/2026sp/lectures/lec01/", detail: "full", tasks: cornellCs2110Tasks() };
+structuredCoursePlans["cornell-cs3110"] = { sourceUrl: "https://cs3110.github.io/textbook/cover.html", detail: "full", tasks: cornellCs3110Tasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];

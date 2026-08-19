@@ -449,6 +449,28 @@ test("Cornell CS 3410 follows all current lectures, labs, assignments, and exams
   assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 3);
 });
 
+test("Cornell CS 4410 covers every officially listed OS unit and public assessment", () => {
+  const definition = structuredCoursePlans["cornell-cs4410"];
+  assert.equal(definition.detail, "full");
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("module-") && !id.includes("practice")).length, 8);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 2);
+});
+
+test("Cornell CS 6787 follows all official lectures, discussions, reviews, and project milestones", () => {
+  const definition = structuredCoursePlans["cornell-cs6787"];
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 15);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("paper-discussion-")).length, 12);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("paper-review-")).length, 11);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "project").length, 3);
+});
+
+test("Cornell CS 2110 and CS 3110 follow their complete official public texts", () => {
+  assert.equal(structuredCoursePlans["cornell-cs2110"].tasks.filter(({ id }) => id.startsWith("lecture-")).length, 27);
+  assert.equal(structuredCoursePlans["cornell-cs2110"].tasks.filter(({ id }) => id.startsWith("exercise-")).length, 27);
+  assert.equal(structuredCoursePlans["cornell-cs3110"].tasks.filter(({ id }) => id.startsWith("chapter-") && !id.includes("exercises")).length, 10);
+  assert.equal(structuredCoursePlans["cornell-cs3110"].tasks.filter(({ id }) => id.startsWith("chapter-exercises-")).length, 10);
+});
+
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {
   const definition = structuredCoursePlans["harvard-cs50x"];
   assert.equal(definition.detail, "full");
