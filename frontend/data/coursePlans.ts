@@ -1162,6 +1162,14 @@ function princetonFoundationTasks(courseId: "mat103" | "mat201" | "mat202" | "ph
   return officialTopicPlan(definitions[courseId].url, definitions[courseId].topics, courseId.startsWith("phy") || courseId === "chm201" ? "Official class and laboratory practice" : undefined);
 }
 
+function berkeleyCalculusTasks(courseId: "math1a" | "math1b"): PlanTask[] {
+  const definitions = {
+    math1a: { url: "https://undergraduate.catalog.berkeley.edu/courses/1144962", topics: [["Functions and Models", "函数与模型"], ["Limits", "极限"], ["Continuity", "连续性"], ["Derivatives", "导数"], ["Differentiation Rules", "求导规则"], ["Implicit Differentiation", "隐函数求导"], ["Related Rates", "相关变化率"], ["Linear Approximation", "线性近似"], ["Optimization", "优化"], ["Curve Sketching", "曲线绘制"], ["Definite Integrals", "定积分"], ["Fundamental Theorem of Calculus", "微积分基本定理"]] },
+    math1b: { url: "https://undergraduate.catalog.berkeley.edu/courses/1145002", topics: [["Techniques of Integration", "积分技巧"], ["Applications of Integration", "积分应用"], ["Improper Integrals", "反常积分"], ["Differential Equations", "微分方程"], ["Parametric Curves", "参数曲线"], ["Polar Coordinates", "极坐标"], ["Infinite Sequences", "无穷数列"], ["Infinite Series", "无穷级数"], ["Convergence Tests", "收敛判别"], ["Power Series", "幂级数"], ["Taylor Series", "泰勒级数"], ["Calculus II Review", "微积分（二）综合复习"]] },
+  } as const;
+  return officialTopicPlan(definitions[courseId].url, definitions[courseId].topics);
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -1265,6 +1273,8 @@ structuredCoursePlans["princeton-mat202"] = { sourceUrl: "https://mat202.math.pr
 structuredCoursePlans["princeton-phy103"] = { sourceUrl: "https://www.princeton.edu/academics/area-of-study/physics", detail: "full", tasks: princetonFoundationTasks("phy103") };
 structuredCoursePlans["princeton-phy104"] = { sourceUrl: "https://www.princeton.edu/academics/area-of-study/physics", detail: "full", tasks: princetonFoundationTasks("phy104") };
 structuredCoursePlans["princeton-chm201"] = { sourceUrl: "https://www.princeton.edu/academics/area-of-study/chemistry", detail: "full", tasks: princetonFoundationTasks("chm201") };
+structuredCoursePlans["berkeley-math1a"] = { sourceUrl: "https://undergraduate.catalog.berkeley.edu/courses/1144962", detail: "full", tasks: berkeleyCalculusTasks("math1a") };
+structuredCoursePlans["berkeley-math1b"] = { sourceUrl: "https://undergraduate.catalog.berkeley.edu/courses/1145002", detail: "full", tasks: berkeleyCalculusTasks("math1b") };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];

@@ -495,6 +495,14 @@ test("Princeton foundation courses expose complete official topic-and-practice p
   }
 });
 
+test("Berkeley calculus courses turn every official topic unit into study and practice", () => {
+  for (const courseId of ["berkeley-math1a", "berkeley-math1b"]) {
+    assert.equal(structuredCoursePlans[courseId].detail, "full");
+    assert.equal(structuredCoursePlans[courseId].tasks.length, 24);
+    assert.equal(structuredCoursePlans[courseId].tasks.filter(({ kind }) => kind === "assignment").length, 12);
+  }
+});
+
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {
   const definition = structuredCoursePlans["harvard-cs50x"];
   assert.equal(definition.detail, "full");
