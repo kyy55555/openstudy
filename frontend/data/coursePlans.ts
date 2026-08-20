@@ -1187,6 +1187,33 @@ function berkeleyCs70Tasks(): PlanTask[] {
   return tasks;
 }
 
+function berkeleyCs170Tasks(): PlanTask[] {
+  const url = "https://cs170.org/";
+  const topics = [["Arithmetic Algorithms", "算术算法"], ["Fast Multiplication, Master Theorem, and Median", "快速乘法、主定理与中位数"], ["Fast Matrix Multiplication", "快速矩阵乘法"], ["DFS and Topological Sort", "深度优先搜索与拓扑排序"], ["BFS and Shortest Paths", "广度优先搜索与最短路径"], ["Greedy Algorithms I", "贪心算法（一）"], ["Greedy Algorithms II", "贪心算法（二）"], ["Dynamic Programming I", "动态规划（一）"], ["Dynamic Programming II", "动态规划（二）"], ["Backpropagation", "反向传播"], ["Fast Fourier Transform", "快速傅里叶变换"], ["FFT Circuits", "FFT 电路"], ["Parallelism", "并行计算"], ["Gradient Descent", "梯度下降"], ["Linear Programming and Duality", "线性规划与对偶"], ["Simplex Algorithm I", "单纯形法（一）"], ["Simplex Algorithm II", "单纯形法（二）"], ["Zero-Sum Games", "零和博弈"], ["Multiplicative Weights", "乘法权重"], ["AdWords", "AdWords 算法"], ["NP-Completeness I", "NP 完全性（一）"], ["NP-Completeness II", "NP 完全性（二）"], ["Dealing with NP-Completeness", "应对 NP 完全问题"], ["Hashing and Streaming I", "哈希与流式算法（一）"], ["Hashing and Streaming II", "哈希与流式算法（二）"], ["Quantum Algorithms", "量子算法"]] as const;
+  const tasks = officialTopicPlan(url, topics);
+  [1,2,3,4,5,6,7,8,9,11,12,13,14,15].forEach(n => tasks.push({ id:`homework-${n}`, title:`Homework ${n}`, titleZh:`作业 ${n}`, url, kind:"assignment" }));
+  tasks.push({id:"midterm-1",title:"Midterm 1",titleZh:"期中考试一",url,kind:"exam"},{id:"midterm-2",title:"Midterm 2",titleZh:"期中考试二",url,kind:"exam"},{id:"final",title:"Final Exam",titleZh:"期末考试",url,kind:"exam"});
+  return tasks;
+}
+
+function berkeleyCs61cTasks(): PlanTask[] {
+  const url = "https://cs61c.org/su26/";
+  const topics = [["Number Representation", "数值表示"], ["C Pointers and Arrays", "C 指针与数组"], ["C Strings and Memory", "C 字符串与内存"], ["C Generics", "C 泛型"], ["Floating Point", "浮点数"], ["RISC-V Introduction", "RISC-V 导论"], ["RISC-V Data and Control", "RISC-V 数据与控制"], ["RISC-V Procedures", "RISC-V 过程"], ["Instruction Formats", "指令格式"], ["Instruction Formats and CALL", "指令格式与 CALL"], ["CALL and Synchronous Digital Systems", "CALL 与同步数字系统"], ["Combinational Logic", "组合逻辑"], ["State", "状态"], ["Single-Cycle Datapath", "单周期数据通路"], ["Datapath Control", "数据通路控制"], ["Pipelining I", "流水线（一）"], ["Pipelining II", "流水线（二）"], ["Caches I", "缓存（一）"], ["Caches II", "缓存（二）"], ["Parallelism I", "并行（一）"], ["Parallelism II", "并行（二）"], ["Parallelism and Synchronization", "并行与同步"], ["Operating Systems", "操作系统"], ["Virtual Memory", "虚拟内存"], ["Architecture Guest Topic", "体系结构专题"], ["Course Wrap-Up", "课程总结"]] as const;
+  const tasks: PlanTask[] = topics.map(([t,z],i)=>({id:`lecture-${i+1}`,title:`Lecture ${i+1}: ${t}`,titleZh:`第 ${i+1} 讲：${z}`,url,kind:"session"}));
+  for(let n=0;n<=8;n++) tasks.push({id:`lab-${n}`,title:`Official Lab ${n}`,titleZh:`官方实验 ${n}`,url,kind:"assignment"});
+  for(let n=1;n<=7;n++) tasks.push({id:`homework-${n}`,title:`Homework ${n}`,titleZh:`作业 ${n}`,url,kind:"assignment"});
+  ["snek","CS61Classify","CS61CPU","61kaChow"].forEach((t,i)=>tasks.push({id:`project-${i+1}`,title:`Project ${i+1}: ${t}`,titleZh:`项目 ${i+1}：${t}`,url,kind:"project"}));
+  tasks.push({id:"midterm",title:"Midterm Exam",titleZh:"期中考试",url,kind:"exam"},{id:"final",title:"Final Exam",titleZh:"期末考试",url,kind:"exam"}); return tasks;
+}
+
+function berkeleyCs184Tasks(): PlanTask[] {
+  const url = "https://cs184.eecs.berkeley.edu/sp26/";
+  const topics = [["Drawing Triangles", "绘制三角形"], ["Sampling and Aliasing", "采样与混叠"], ["Transforms", "变换"], ["Texture Mapping", "纹理映射"], ["Rasterization Pipeline", "光栅化流水线"], ["Bezier Curves and Surfaces", "Bezier 曲线与曲面"], ["Triangle Meshes and Half-Edge Structures", "三角网格与半边结构"], ["Ray Generation and Intersection", "光线生成与求交"], ["Bounding Volume Hierarchies", "包围体层次结构"], ["Direct and Global Illumination", "直接与全局光照"], ["Physical Simulation", "物理模拟"], ["Shaders", "着色器"]] as const;
+  const tasks = officialTopicPlan(url, topics);
+  for(let n=0;n<=4;n++) tasks.push({id:`homework-${n}`,title:`Programming Homework ${n}`,titleZh:`编程作业 ${n}`,url:`${url}hw/`,kind:"project"});
+  tasks.push({id:"final-project",title:"Final Graphics Project",titleZh:"图形学期末项目",url:`${url}project/`,kind:"project"}); return tasks;
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -1294,6 +1321,9 @@ structuredCoursePlans["berkeley-math1a"] = { sourceUrl: "https://undergraduate.c
 structuredCoursePlans["berkeley-math1b"] = { sourceUrl: "https://undergraduate.catalog.berkeley.edu/courses/1145002", detail: "full", tasks: berkeleyCalculusTasks("math1b") };
 structuredCoursePlans["berkeley-cs61a"] = { sourceUrl: "https://cs61a.org/fa26/", detail: "full", tasks: berkeleyCs61aTasks() };
 structuredCoursePlans["berkeley-cs70"] = { sourceUrl: "https://www.eecs70.org/", detail: "full", tasks: berkeleyCs70Tasks() };
+structuredCoursePlans["berkeley-cs170"] = { sourceUrl: "https://cs170.org/", detail: "full", tasks: berkeleyCs170Tasks() };
+structuredCoursePlans["berkeley-cs61c"] = { sourceUrl: "https://cs61c.org/su26/", detail: "full", tasks: berkeleyCs61cTasks() };
+structuredCoursePlans["berkeley-cs184"] = { sourceUrl: "https://cs184.eecs.berkeley.edu/sp26/", detail: "full", tasks: berkeleyCs184Tasks() };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];

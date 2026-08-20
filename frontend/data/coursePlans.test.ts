@@ -510,6 +510,14 @@ test("Berkeley CS 61A and CS 70 follow their current official calendars", () => 
   assert.equal(structuredCoursePlans["berkeley-cs70"].tasks.filter(({ kind }) => kind === "exam").length, 2);
 });
 
+test("Berkeley CS 170, CS 61C, and CS 184 include official lessons and graded work", () => {
+  assert.equal(structuredCoursePlans["berkeley-cs170"].tasks.filter(({id})=>id.startsWith("topic-")).length,26);
+  assert.equal(structuredCoursePlans["berkeley-cs170"].tasks.filter(({id})=>id.startsWith("homework-")).length,14);
+  assert.equal(structuredCoursePlans["berkeley-cs61c"].tasks.filter(({id})=>id.startsWith("lecture-")).length,26);
+  assert.equal(structuredCoursePlans["berkeley-cs61c"].tasks.filter(({kind})=>kind==="project").length,4);
+  assert.equal(structuredCoursePlans["berkeley-cs184"].tasks.filter(({kind})=>kind==="project").length,6);
+});
+
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {
   const definition = structuredCoursePlans["harvard-cs50x"];
   assert.equal(definition.detail, "full");
