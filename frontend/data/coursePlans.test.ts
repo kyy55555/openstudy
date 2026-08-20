@@ -527,6 +527,10 @@ test("all remaining Berkeley courses provide official topic practice and project
   }
 });
 
+test("all Stanford catalog courses now have executable official-source plans",()=>{
+ for(const id of ["stanford-cs103","stanford-cs161","stanford-cs144","stanford-cs143","stanford-cs148","stanford-cs221","stanford-cs155","stanford-cs244b"]){assert.equal(structuredCoursePlans[id].detail,"full");assert.ok(structuredCoursePlans[id].tasks.length>=24);}
+});
+
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {
   const definition = structuredCoursePlans["harvard-cs50x"];
   assert.equal(definition.detail, "full");
