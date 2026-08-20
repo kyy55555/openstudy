@@ -531,6 +531,10 @@ test("all Stanford catalog courses now have executable official-source plans",()
  for(const id of ["stanford-cs103","stanford-cs161","stanford-cs144","stanford-cs143","stanford-cs148","stanford-cs221","stanford-cs155","stanford-cs244b"]){assert.equal(structuredCoursePlans[id].detail,"full");assert.ok(structuredCoursePlans[id].tasks.length>=24);}
 });
 
+test("remaining non-CMU university courses all have executable official curricula",()=>{
+ for(const id of ["washington-cse550","tsinghua-20740112","tsinghua-computer-graphics","pku-computing-intro","pku-data-structures","pku-operating-systems","tsinghua-20740164","tsinghua-database-technology","uiuc-cs124","uiuc-cs128","uiuc-cs225","gatech-cs1301","gatech-cs2110","gatech-cs3510","harvard-cs61"]){assert.equal(structuredCoursePlans[id].detail,"full");assert.ok(structuredCoursePlans[id].tasks.length>=20);}
+});
+
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {
   const definition = structuredCoursePlans["harvard-cs50x"];
   assert.equal(definition.detail, "full");
