@@ -518,6 +518,15 @@ test("Berkeley CS 170, CS 61C, and CS 184 include official lessons and graded wo
   assert.equal(structuredCoursePlans["berkeley-cs184"].tasks.filter(({kind})=>kind==="project").length,6);
 });
 
+test("all remaining Berkeley courses provide official topic practice and projects", () => {
+  const projects={"berkeley-cs61b":6,"berkeley-cs161":3,"berkeley-cs188":6,"berkeley-cs162":4,"berkeley-cs186":5,"berkeley-cs189":0};
+  for(const [id,count] of Object.entries(projects)) {
+    assert.equal(structuredCoursePlans[id].detail,"full");
+    assert.ok(structuredCoursePlans[id].tasks.filter(({id})=>id.startsWith("topic-")).length>=15);
+    assert.equal(structuredCoursePlans[id].tasks.filter(({kind})=>kind==="project").length,count);
+  }
+});
+
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {
   const definition = structuredCoursePlans["harvard-cs50x"];
   assert.equal(definition.detail, "full");

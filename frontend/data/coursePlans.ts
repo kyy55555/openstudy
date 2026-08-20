@@ -1214,6 +1214,20 @@ function berkeleyCs184Tasks(): PlanTask[] {
   tasks.push({id:"final-project",title:"Final Graphics Project",titleZh:"图形学期末项目",url:`${url}project/`,kind:"project"}); return tasks;
 }
 
+function berkeleyAdvancedTasks(courseId: "cs61b"|"cs161"|"cs188"|"cs162"|"cs186"|"cs189"): PlanTask[] {
+  const d = {
+    cs61b:{url:"https://sp26.datastructur.es/",topics:[["Java and Object-Oriented Programming","Java 与面向对象编程"],["Lists and Deques","列表与双端队列"],["Testing and Debugging","测试与调试"],["Inheritance and Interfaces","继承与接口"],["Asymptotic Analysis","渐近分析"],["Disjoint Sets","不相交集合"],["Binary Search Trees","二叉搜索树"],["Balanced Search Trees","平衡搜索树"],["Hash Tables","哈希表"],["Heaps and Priority Queues","堆与优先队列"],["Graph Traversals","图遍历"],["Shortest Paths","最短路径"],["Minimum Spanning Trees","最小生成树"],["Sorting","排序"],["Compression","压缩"]],projects:["Particle Simulator","LinkedListDeque61B","ArrayDeque61B","Percolation","NGrams and Wordnet","Build Your Own World"]},
+    cs161:{url:"https://sp26.cs161.org/",topics:[["Security Principles","安全原则"],["x86 and the Call Stack","x86 与调用栈"],["Memory-Safety Vulnerabilities","内存安全漏洞"],["Memory-Safety Mitigations","内存安全缓解措施"],["Cryptography Foundations","密码学基础"],["Block Ciphers","分组密码"],["Hash Functions and MACs","哈希函数与消息认证码"],["Authenticated Encryption","认证加密"],["Public-Key Cryptography","公钥密码学"],["Authentication and Passwords","认证与密码"],["Web Security","Web 安全"],["Network Security","网络安全"],["Anonymity and Privacy","匿名性与隐私"],["Malware","恶意软件"],["Security Policy and Design","安全策略与设计"]],projects:["Memory Safety","Secure File Sharing","Network Security"]},
+    cs188:{url:"https://inst.eecs.berkeley.edu/~cs188/sp26/",topics:[["Search","搜索"],["Adversarial Search","对抗搜索"],["Constraint Satisfaction","约束满足"],["Markov Decision Processes","马尔可夫决策过程"],["Reinforcement Learning","强化学习"],["Probability Review","概率复习"],["Bayes Nets","贝叶斯网络"],["Hidden Markov Models","隐马尔可夫模型"],["Decision Networks","决策网络"],["Machine Learning","机器学习"],["Regression","回归"],["Classification","分类"],["Neural Networks","神经网络"],["Language Models","语言模型"],["Robotics and AI Applications","机器人与 AI 应用"]],projects:["Python Foundations","Search","Multi-Agent Search","Reinforcement Learning","Ghostbusters","Machine Learning"]},
+    cs162:{url:"https://cs162.org/",topics:[["Operating-System Structure","操作系统结构"],["Processes and System Calls","进程与系统调用"],["Threads","线程"],["Synchronization","同步"],["Scheduling","调度"],["Deadlock","死锁"],["Address Translation","地址转换"],["Virtual Memory","虚拟内存"],["File Systems","文件系统"],["I/O Systems","输入输出系统"],["Distributed Systems","分布式系统"],["Networking","网络"],["Protection and Security","保护与安全"],["Reliability","可靠性"],["Operating-System Design","操作系统设计"]],projects:["Pintos Threads","Pintos User Programs","Pintos File Systems","Pintos Final System"]},
+    cs186:{url:"https://cs186berkeley.net/notes/",topics:[["SQL","SQL"],["Disks and Files","磁盘与文件"],["Buffer Management","缓冲区管理"],["B+ Trees","B+ 树"],["Hashing","哈希"],["External Sorting","外部排序"],["Join Algorithms","连接算法"],["Query Optimization","查询优化"],["Transactions","事务"],["Concurrency Control","并发控制"],["Recovery","恢复"],["Distributed Databases","分布式数据库"],["Parallel Query Processing","并行查询处理"],["Database Design","数据库设计"],["NoSQL Systems","NoSQL 系统"]],projects:["SQL","B+ Tree","Joins","Concurrency","Recovery"]},
+    cs189:{url:"https://eecs189.org/sp26/calendar/",topics:[["Linear Classifiers","线性分类器"],["Optimization","优化"],["Linear Regression","线性回归"],["Logistic Regression","逻辑回归"],["Gaussian Discriminant Analysis","高斯判别分析"],["Support Vector Machines","支持向量机"],["Decision Trees","决策树"],["Ensemble Methods","集成方法"],["Neural Networks","神经网络"],["Convolutional Networks","卷积网络"],["Unsupervised Learning","无监督学习"],["Principal Component Analysis","主成分分析"],["Clustering","聚类"],["Learning Theory","学习理论"],["Generative Models","生成模型"]],projects:[]}
+  } as const;
+  const x=d[courseId]; const tasks=officialTopicPlan(x.url,x.topics);
+  x.projects.forEach((name,i)=>tasks.push({id:`project-${i}`,title:`Project ${i}: ${name}`,titleZh:`项目 ${i}：${name}`,url:x.url,kind:"project"}));
+  return tasks;
+}
+
 export type CoursePlanDefinition = {
   sourceUrl: string;
   tasks: PlanTask[];
@@ -1324,6 +1338,7 @@ structuredCoursePlans["berkeley-cs70"] = { sourceUrl: "https://www.eecs70.org/",
 structuredCoursePlans["berkeley-cs170"] = { sourceUrl: "https://cs170.org/", detail: "full", tasks: berkeleyCs170Tasks() };
 structuredCoursePlans["berkeley-cs61c"] = { sourceUrl: "https://cs61c.org/su26/", detail: "full", tasks: berkeleyCs61cTasks() };
 structuredCoursePlans["berkeley-cs184"] = { sourceUrl: "https://cs184.eecs.berkeley.edu/sp26/", detail: "full", tasks: berkeleyCs184Tasks() };
+for (const id of ["cs61b","cs161","cs188","cs162","cs186","cs189"] as const) structuredCoursePlans[`berkeley-${id}`] = { sourceUrl: ({cs61b:"https://sp26.datastructur.es/",cs161:"https://sp26.cs161.org/",cs188:"https://inst.eecs.berkeley.edu/~cs188/sp26/",cs162:"https://cs162.org/",cs186:"https://cs186berkeley.net/notes/",cs189:"https://eecs189.org/sp26/calendar/"} as const)[id], detail:"full", tasks:berkeleyAdvancedTasks(id) };
 
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];
