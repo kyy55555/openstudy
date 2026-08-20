@@ -535,6 +535,10 @@ test("remaining non-CMU university courses all have executable official curricul
  for(const id of ["washington-cse550","tsinghua-20740112","tsinghua-computer-graphics","pku-computing-intro","pku-data-structures","pku-operating-systems","tsinghua-20740164","tsinghua-database-technology","uiuc-cs124","uiuc-cs128","uiuc-cs225","gatech-cs1301","gatech-cs2110","gatech-cs3510","harvard-cs61"]){assert.equal(structuredCoursePlans[id].detail,"full");assert.ok(structuredCoursePlans[id].tasks.length>=20);}
 });
 
+test("all 125 catalog courses now have substantive official-source plans",()=>{
+ const definitions=Object.values(structuredCoursePlans);assert.equal(definitions.length,125);assert.ok(definitions.every(({detail,tasks})=>detail==="full"&&tasks.length>=2));
+});
+
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {
   const definition = structuredCoursePlans["harvard-cs50x"];
   assert.equal(definition.detail, "full");
