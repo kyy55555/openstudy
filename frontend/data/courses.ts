@@ -117,6 +117,13 @@ export function courseEditionLabel(course: Course, language: "en" | "zh"): strin
     : "Official course page (year not stated)";
 }
 
+export function courseLanguageLabel(value: string, language: "en" | "zh"): string {
+  if (language === "en") return value;
+  return value
+    .replaceAll("Chinese", "中文")
+    .replaceAll("English", "英语");
+}
+
 const verifiedOn = "2026-07-31";
 
 type CourseSeed = Omit<
@@ -627,7 +634,7 @@ export const courses: Course[] = [
     resources: [
       { type: "lectures", title: "Weeks and lectures", url: "https://cs50.harvard.edu/web/weeks/" },
       { type: "assignments", title: "Projects", url: "https://cs50.harvard.edu/web/projects/" },
-      { type: "projects", title: "Final project", url: "https://cs50.harvard.edu/web/project/" },
+      { type: "projects", title: "Final project", url: "https://cs50.harvard.edu/web/projects/final/capstone/" },
     ],
   }),
   course({
@@ -891,7 +898,7 @@ export const courses: Course[] = [
     courseUrl: "https://cs61a.org/",
     sourceName: berkeleySource,
     resources: [
-      { type: "syllabus", title: "Syllabus and course policies", url: "https://cs61a.org/articles/about-61a/" },
+      { type: "syllabus", title: "Course calendar and policies", url: "https://cs61a.org/fa26/" },
       { type: "assignments", title: "Calendar, homework, and projects", url: "https://cs61a.org/#calendar" },
     ],
   }),
@@ -1180,11 +1187,11 @@ export const courses: Course[] = [
     year: 2026,
     hasAssignments: true,
     hasSolutions: true,
-    courseUrl: "https://cs61c.org/su26/",
+    courseUrl: "https://cs61c.org/fa26/",
     sourceName: berkeleySource,
     resources: [
-      { type: "materials", title: "Course resources", url: "https://cs61c.org/su26/resources/" },
-      { type: "assignments", title: "Labs and projects schedule", url: "https://cs61c.org/su26/#schedule" },
+      { type: "materials", title: "Course resources", url: "https://cs61c.org/fa26/resources/" },
+      { type: "assignments", title: "Labs and projects schedule", url: "https://cs61c.org/fa26/#schedule" },
     ],
   }),
   course({
@@ -1802,12 +1809,12 @@ export const courses: Course[] = [
     hasVideos: true,
     hasAssignments: true,
     hasSolutions: true,
-    courseUrl: "https://eecs189.org/sp26/",
+    courseUrl: "https://eecs189.org/fa26/",
     sourceName: berkeleySource,
     resources: [
-      { type: "syllabus", title: "Syllabus and prerequisites", url: "https://eecs189.org/sp26/syllabus/" },
-      { type: "schedule", title: "Lecture schedule and materials", url: "https://eecs189.org/sp26/calendar/" },
-      { type: "materials", title: "Course resources", url: "https://eecs189.org/sp26/resources/" },
+      { type: "syllabus", title: "Syllabus and prerequisites", url: "https://eecs189.org/fa26/syllabus/" },
+      { type: "schedule", title: "Lecture schedule and materials", url: "https://eecs189.org/fa26/calendar/" },
+      { type: "materials", title: "Course resources", url: "https://eecs189.org/fa26/resources/" },
     ],
   }),
   course({
@@ -2155,9 +2162,9 @@ export const courses: Course[] = [
   course({
     id: "cmu-15-210", title: "Parallel and Sequential Data Structures and Algorithms", titleZh: "并行与顺序数据结构和算法", university: "Carnegie Mellon University", subject: "Algorithms", subjectZh: "算法",
     description: "Design, analysis, and implementation of sequential and parallel algorithms and data structures, emphasizing work, span, and transferable algorithmic methods.", descriptionZh: "设计、分析并实现顺序与并行算法及数据结构，重点学习工作量、跨度和可迁移的算法方法。",
-    searchKeywords: ["15-210", "parallel algorithms", "data structures", "CMU"], level: "Undergraduate", prerequisites: ["CMU 15-122", "CMU 15-150"], year: 2025, hasVideos: null, hasAssignments: true, hasSolutions: null,
-    courseUrl: "https://www.cs.cmu.edu/~15210/index.html", sourceName: "Carnegie Mellon University School of Computer Science", verifiedOn: "2026-08-03",
-    resources: [{ type: "schedule", title: "Official schedule, readings, quizzes, and course book", url: "https://www.cs.cmu.edu/~15210/schedule.html" }, { type: "lectures", title: "Official compiled lecture notes", url: "https://www.cs.cmu.edu/afs/cs/academic/class/15210-f11/www/lectures/all.pdf" }],
+    searchKeywords: ["15-210", "parallel algorithms", "data structures", "CMU"], level: "Undergraduate", prerequisites: ["CMU 15-122", "CMU 15-150"], year: 2018, hasVideos: true, hasAssignments: true, hasSolutions: null,
+    courseUrl: "https://www.cs.cmu.edu/afs/cs/academic/class/15210-f18/www/", sourceName: "Carnegie Mellon University School of Computer Science", verifiedOn: "2026-08-22",
+    resources: [{ type: "schedule", title: "Official schedule, readings, quizzes, and course book", url: "https://www.cs.cmu.edu/afs/cs/academic/class/15210-f18/www/schedule.html" }, { type: "lectures", title: "Official compiled lecture notes", url: "https://www.cs.cmu.edu/afs/cs/academic/class/15210-f11/www/lectures/all.pdf" }],
   }),
   course({
     id: "cmu-15-251", title: "Great Ideas in Theoretical Computer Science", titleZh: "理论计算机科学中的伟大思想", university: "Carnegie Mellon University", subject: "Theory of Computation", subjectZh: "计算理论",

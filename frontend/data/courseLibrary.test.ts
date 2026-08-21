@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { courseResourceKey, createCourseLibraryBackup, learningPathCoverage, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, parseCourseLibraryBackup, pathCompletion, phaseCoverage, selectSessionLibrary, studyPlanProgress } from "./courseLibrary.ts";
+import { completionStreak, courseResourceKey, createCourseLibraryBackup, learningPathCoverage, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, parseCourseLibraryBackup, pathCompletion, phaseCoverage, selectSessionLibrary, studyPlanProgress, suggestedGentlePlanDays } from "./courseLibrary.ts";
 
 test("course library safely parses local data", () => {
   assert.deepEqual(parseCourseLibrary(null), { progress: {}, favorites: [], completedResources: [], studyPlans: {}, lastOpenedResource: null });
@@ -50,14 +50,19 @@ test("duplicate synced values are removed and study-plan days are normalized", (
 test("daily completion dates and plan percentages are normalized", () => {
   const parsed = parseCourseLibrary(JSON.stringify({
     studyPlans: {
-      valid: { days: 30, completedTaskIds: ["a", "a", "unknown"], lastDailyCompletionDate: "2026-08-16" },
+      valid: { days: 30, completedTaskIds: ["a", "a", "unknown"], createdOn: "2026-08-01", lastDailyCompletionDate: "2026-08-16", dailyCompletionDates: ["2026-08-15", "bad", "2026-08-16", "2026-08-16"] },
       invalidDate: { days: 10, completedTaskIds: [], lastDailyCompletionDate: "today" },
     },
   }));
   assert.equal(parsed.studyPlans.valid.lastDailyCompletionDate, "2026-08-16");
+  assert.equal(parsed.studyPlans.valid.createdOn, "2026-08-01");
+  assert.deepEqual(parsed.studyPlans.valid.dailyCompletionDates, ["2026-08-15", "2026-08-16"]);
   assert.equal(parsed.studyPlans.invalidDate.lastDailyCompletionDate, undefined);
   assert.deepEqual(studyPlanProgress(["a", "b", "b"], parsed.studyPlans.valid.completedTaskIds), { completed: 1, total: 2, percent: 50 });
   assert.equal(localDateKey(new Date(2026, 7, 6)), "2026-08-06");
+  assert.equal(completionStreak(["2026-08-14", "2026-08-15", "2026-08-16"], new Date(2026, 7, 16)), 3);
+  assert.equal(completionStreak(["2026-08-14", "2026-08-15"], new Date(2026, 7, 16)), 2);
+  assert.equal(completionStreak(["2026-08-13"], new Date(2026, 7, 16)), 0);
 });
 
 test("learning-record backups round-trip and reject unrelated or malformed files", () => {
@@ -71,6 +76,14 @@ test("learning-record backups round-trip and reject unrelated or malformed files
 
 test("resource progress keys include both course and official URL", () => {
   assert.equal(courseResourceKey("mit-6-006", "https://example.edu/lectures"), "mit-6-006::https://example.edu/lectures");
+});
+
+test("gentle replanning only extends an unfinished plan when pace falls behind", () => {
+  const today = new Date(2026, 7, 16);
+  assert.equal(suggestedGentlePlanDays(30, "2026-08-01", 20, 30, today), null);
+  assert.equal(suggestedGentlePlanDays(30, "2026-08-01", 3, 30, today), 184);
+  assert.equal(suggestedGentlePlanDays(30, "2026-07-01", 0, 30, today), 89);
+  assert.equal(suggestedGentlePlanDays(30, "2026-07-01", 30, 30, today), null);
 });
 
 test("path completion deduplicates repeated electives", () => {

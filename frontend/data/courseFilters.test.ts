@@ -129,6 +129,10 @@ test("search suggestions react to partial English and Chinese input", () => {
   assert.ok(courseSearchSuggestions(courses, "a", 3).length <= 3);
 });
 
+test("search suggestions recover a small English typo", () => {
+  assert.ok(courseSearchSuggestions(courses, "websiet").some((suggestion) => suggestion.toLowerCase().includes("website")));
+});
+
 test("subject, university, and material filters compose", () => {
   const results = filterCourses(courses, {
     ...defaults,

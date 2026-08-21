@@ -6,7 +6,7 @@ export type CourseLibraryState = {
   progress: Record<string, CourseProgress>;
   favorites: string[];
   completedResources: string[];
-  studyPlans: Record<string, { days: number; completedTaskIds: string[]; lastDailyCompletionDate?: string }>;
+  studyPlans: Record<string, { days: number; completedTaskIds: string[]; createdOn?: string; lastDailyCompletionDate?: string; dailyCompletionDates?: string[] }>;
   lastOpenedResource: { courseId: string; url: string; title: string; titleZh: string; openedAt: string } | null;
 };
 
@@ -41,6 +41,37 @@ export function localDateKey(date = new Date()) {
   return `${year}-${month}-${day}`;
 }
 
+export function completionStreak(dateKeys: string[], today = new Date()) {
+  const dates = new Set(dateKeys.filter((value) => /^\d{4}-\d{2}-\d{2}$/.test(value)));
+  const cursor = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  if (!dates.has(localDateKey(cursor))) cursor.setDate(cursor.getDate() - 1);
+  let streak = 0;
+  while (dates.has(localDateKey(cursor))) {
+    streak += 1;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  return streak;
+}
+
+export function suggestedGentlePlanDays(
+  currentDays: number,
+  createdOn: string | undefined,
+  completedTasks: number,
+  totalTasks: number,
+  today = new Date(),
+) {
+  if (!createdOn || totalTasks < 1 || completedTasks >= totalTasks) return null;
+  const created = new Date(`${createdOn}T00:00:00`);
+  const current = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  if (Number.isNaN(created.getTime())) return null;
+  const elapsedDays = Math.max(1, Math.floor((current.getTime() - created.getTime()) / 86_400_000) + 1);
+  const expectedCompleted = Math.floor(totalTasks * Math.min(elapsedDays / currentDays, 1));
+  if (elapsedDays <= currentDays && completedTasks >= expectedCompleted) return null;
+  const completionRate = completedTasks / totalTasks;
+  const paceBasedDays = completionRate > 0 ? Math.ceil(elapsedDays / completionRate) : elapsedDays + currentDays;
+  return Math.min(3650, Math.max(currentDays + 7, Math.ceil(paceBasedDays * 1.15)));
+}
+
 export function studyPlanProgress(totalTaskIds: string[], completedTaskIds: string[]) {
   const tasks = [...new Set(totalTaskIds)];
   const completedSet = new Set(completedTaskIds);
@@ -58,12 +89,15 @@ export function parseCourseLibrary(value: string | null): CourseLibraryState {
     const studyPlans = parsed.studyPlans && typeof parsed.studyPlans === "object"
       ? Object.fromEntries(Object.entries(parsed.studyPlans).flatMap(([courseId, plan]) => {
         if (!plan || typeof plan !== "object") return [];
-        const candidate = plan as { days?: unknown; completedTaskIds?: unknown; lastDailyCompletionDate?: unknown };
+        const candidate = plan as { days?: unknown; completedTaskIds?: unknown; createdOn?: unknown; lastDailyCompletionDate?: unknown; dailyCompletionDates?: unknown };
         if (!Number.isInteger(candidate.days) || (candidate.days as number) < 1 || (candidate.days as number) > 3650 || !Array.isArray(candidate.completedTaskIds)) return [];
         const normalized = { days: candidate.days as number, completedTaskIds: uniqueStrings(candidate.completedTaskIds) } as CourseLibraryState["studyPlans"][string];
+        if (typeof candidate.createdOn === "string" && /^\d{4}-\d{2}-\d{2}$/.test(candidate.createdOn)) normalized.createdOn = candidate.createdOn;
         if (typeof candidate.lastDailyCompletionDate === "string" && /^\d{4}-\d{2}-\d{2}$/.test(candidate.lastDailyCompletionDate)) {
           normalized.lastDailyCompletionDate = candidate.lastDailyCompletionDate;
         }
+        const dailyCompletionDates = uniqueStrings(candidate.dailyCompletionDates).filter((value) => /^\d{4}-\d{2}-\d{2}$/.test(value));
+        if (dailyCompletionDates.length > 0) normalized.dailyCompletionDates = dailyCompletionDates;
         return [[courseId, normalized]];
       }))
       : {};

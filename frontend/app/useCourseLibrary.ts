@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { courseLibraryStorageKey, emptyCourseLibrary, normalizeStudyPlanDays, parseCourseLibrary, selectSessionLibrary } from "../data/courseLibrary";
+import { courseLibraryStorageKey, emptyCourseLibrary, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, selectSessionLibrary } from "../data/courseLibrary";
 import type { CourseLibraryState, CourseProgress } from "../data/courseLibrary";
 import { courseResourceKey } from "../data/courseLibrary";
 import { getSupabaseBrowserClient } from "../lib/supabase/client";
@@ -111,7 +111,15 @@ export function useCourseLibrary() {
     const normalizedDays = normalizeStudyPlanDays(days);
     if (normalizedDays === null) return;
     const current = libraryRef.current;
-    update({ ...current, studyPlans: { ...current.studyPlans, [courseId]: { days: normalizedDays, completedTaskIds: [] } } });
+    update({ ...current, studyPlans: { ...current.studyPlans, [courseId]: { days: normalizedDays, completedTaskIds: [], createdOn: localDateKey() } } });
+  }
+
+  function updateStudyPlanDays(courseId: string, days: number) {
+    const normalizedDays = normalizeStudyPlanDays(days);
+    const current = libraryRef.current;
+    const plan = current.studyPlans[courseId];
+    if (!plan || normalizedDays === null || normalizedDays < plan.days) return;
+    update({ ...current, studyPlans: { ...current.studyPlans, [courseId]: { ...plan, days: normalizedDays } } });
   }
 
   function toggleStudyTask(courseId: string, taskId: string) {
@@ -134,6 +142,7 @@ export function useCourseLibrary() {
           ...plan,
           completedTaskIds: [...plan.completedTaskIds, taskId],
           lastDailyCompletionDate: dateKey,
+          dailyCompletionDates: [...new Set([...(plan.dailyCompletionDates ?? []), dateKey])],
         },
       },
     });
@@ -160,5 +169,5 @@ export function useCourseLibrary() {
     update(next);
   }
 
-  return { library, loaded, syncIssue, setProgress, toggleFavorite, toggleResource, createStudyPlan, toggleStudyTask, completeDailyTask, removeStudyPlan, recordResourceOpen, clearLastOpenedResource, replaceLibrary };
+  return { library, loaded, syncIssue, setProgress, toggleFavorite, toggleResource, createStudyPlan, updateStudyPlanDays, toggleStudyTask, completeDailyTask, removeStudyPlan, recordResourceOpen, clearLastOpenedResource, replaceLibrary };
 }

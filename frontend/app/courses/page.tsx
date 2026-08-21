@@ -5,7 +5,7 @@ import type { FormEvent, KeyboardEvent, MouseEvent } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { courseCode, courseEditionLabel, courses, suggestedStudyStage } from "../../data/courses";
+import { courseCode, courseEditionLabel, courseLanguageLabel, courses, suggestedStudyStage } from "../../data/courses";
 import type { Course } from "../../data/courses";
 import { courseDetailPath, prerequisiteCourseIds } from "../../data/courseNavigation";
 import {
@@ -80,6 +80,7 @@ const translations = {
       `${filtered} of ${total} verified courses`,
     noCourses: "No courses found.",
     noCoursesHint: "Try another subject or remove some filters.",
+    relatedSearches: "Try a related search",
     showMore: (remaining: number) => `Show more courses (${remaining} remaining)`,
   },
   zh: {
@@ -135,6 +136,7 @@ const translations = {
       `${total} 门已核实课程，当前 ${filtered} 门`,
     noCourses: "没有找到课程。",
     noCoursesHint: "请尝试其他学科或减少筛选条件。",
+    relatedSearches: "试试相关搜索",
     showMore: (remaining: number) => `显示更多课程（剩余 ${remaining} 门）`,
   },
 } as const;
@@ -371,9 +373,14 @@ function FilterBar({
   onReset,
   copy,
 }: FilterBarProps) {
+  const [filtersOpen, setFiltersOpen] = useState(false);
   return (
     <div className="mt-5 rounded-xl border border-gray-200 p-4">
-      <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
+      <button type="button" aria-expanded={filtersOpen} onClick={() => setFiltersOpen((open) => !open)} className="flex w-full items-center justify-between text-sm font-semibold sm:hidden">
+        <span>{language === "zh" ? "筛选课程" : "Filter courses"}</span>
+        <span aria-hidden="true">{filtersOpen ? "−" : "+"}</span>
+      </button>
+      <div className={`${filtersOpen ? "flex" : "hidden"} mt-4 flex-col gap-4 sm:mt-0 sm:flex sm:flex-row sm:flex-wrap sm:items-center`}>
         <label className="flex flex-col items-start gap-2 text-sm sm:flex-row sm:items-center">
           <span className="font-medium">{copy.university}</span>
 
@@ -570,9 +577,7 @@ function CourseCard({ course, language, copy, favorite, onToggleFavorite }: Cour
 
         <p>
           <span className="font-medium">{copy.language}:</span>{" "}
-          {language === "zh" && course.language === "English"
-            ? "英语"
-            : course.language}
+          {courseLanguageLabel(course.language, language)}
         </p>
 
         <p>
@@ -742,6 +747,9 @@ function CourseExplorer() {
   const suggestions = searchInput.trim() === searchTerm
     ? []
     : courseSearchSuggestions(courses, searchInput);
+  const relatedSearches = filteredCourses.length === 0 && searchTerm
+    ? courseSearchSuggestions(courses, searchTerm).slice(0, 6)
+    : [];
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-4xl px-6 py-12">
@@ -849,6 +857,7 @@ function CourseExplorer() {
             <p className="mt-2 text-sm text-gray-500">
               {copy.noCoursesHint}
             </p>
+            {relatedSearches.length > 0 && <div className="mt-4"><p className="text-xs font-semibold uppercase tracking-wide text-gray-500">{copy.relatedSearches}</p><div className="mt-2 flex flex-wrap justify-center gap-2">{relatedSearches.map((suggestion) => <button key={suggestion} type="button" onClick={() => { setSearchInput(suggestion); handleSearch(suggestion); }} className="rounded-full border border-gray-300 px-3 py-1.5 text-sm hover:border-black">{suggestion}</button>)}</div></div>}
             <button
               type="button"
               onClick={handleResetFilters}

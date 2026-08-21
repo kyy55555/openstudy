@@ -6,8 +6,12 @@ import { Suspense, useState } from "react";
 import { getSupabaseBrowserClient, isSupabaseConfigured } from "../../lib/supabase/client";
 
 function FeedbackContent() {
-  const language = useSearchParams().get("lang") === "zh" ? "zh" : "en";
-  const [message, setMessage] = useState("");
+  const params = useSearchParams();
+  const language = params.get("lang") === "zh" ? "zh" : "en";
+  const courseId = params.get("course")?.slice(0, 100) ?? "";
+  const sourceUrl = params.get("source")?.slice(0, 2000) ?? "";
+  const [issueType, setIssueType] = useState(courseId ? "broken-link" : "other");
+  const [message, setMessage] = useState(() => courseId ? (language === "zh" ? `课程：${courseId}\n官方链接：${sourceUrl}\n\n我发现的问题：` : `Course: ${courseId}\nOfficial link: ${sourceUrl}\n\nProblem found: `) : "");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
@@ -20,7 +24,7 @@ function FeedbackContent() {
     if (website) { setMessage(""); setStatus(language === "zh" ? "已收到，谢谢你的反馈。" : "Received—thank you for the feedback."); return; }
     setBusy(true);
     setStatus("");
-    const { error } = await client.from("feedback").insert({ message: message.trim(), email: email.trim() || null, page_url: window.location.href });
+    const { error } = await client.from("feedback").insert({ message: `[${issueType}] ${message.trim()}`, email: email.trim() || null, page_url: window.location.href });
     setBusy(false);
     if (error) setStatus(language === "zh" ? "暂时无法提交，请稍后重试。" : "Could not submit feedback. Please try again later.");
     else { setMessage(""); setEmail(""); setStatus(language === "zh" ? "已收到，谢谢你的反馈。" : "Received—thank you for the feedback."); }
@@ -33,6 +37,7 @@ function FeedbackContent() {
     {!isSupabaseConfigured() && <p className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">{language === "zh" ? "本地预览尚未连接反馈服务；部署 Beta 时会随免费数据库一并启用。" : "This local preview is not connected to feedback storage; it will be enabled with the free database for Beta."}</p>}
     <form onSubmit={submit} className="mt-8 space-y-5">
       <label className="hidden" aria-hidden="true">Website<input tabIndex={-1} autoComplete="off" value={website} onChange={(event) => setWebsite(event.target.value)} /></label>
+      <label className="block text-sm font-medium">{language === "zh" ? "问题类型" : "Issue type"}<select value={issueType} onChange={(event) => setIssueType(event.target.value)} className="mt-2 block w-full rounded-xl border border-gray-300 bg-white p-3"><option value="broken-link">{language === "zh" ? "链接失效或跳转错误" : "Broken or incorrect link"}</option><option value="course-data">{language === "zh" ? "课程信息不准确" : "Incorrect course information"}</option><option value="study-plan">{language === "zh" ? "学习计划不合理" : "Study-plan problem"}</option><option value="translation">{language === "zh" ? "翻译问题" : "Translation issue"}</option><option value="other">{language === "zh" ? "其他问题或建议" : "Other problem or suggestion"}</option></select></label>
       <label className="block text-sm font-medium">{language === "zh" ? "问题或建议" : "Problem or suggestion"}<textarea required minLength={10} maxLength={4000} value={message} onChange={(event) => setMessage(event.target.value)} rows={7} className="mt-2 block w-full rounded-xl border border-gray-300 p-3" /></label>
       <label className="block text-sm font-medium">{language === "zh" ? "邮箱（选填，用于回复）" : "Email (optional, for a reply)"}<input type="email" maxLength={320} value={email} onChange={(event) => setEmail(event.target.value)} className="mt-2 block w-full rounded-xl border border-gray-300 p-3" /></label>
       <button disabled={busy || !message.trim()} className="rounded-xl bg-black px-5 py-3 font-medium text-white disabled:opacity-50">{busy ? (language === "zh" ? "提交中…" : "Sending…") : (language === "zh" ? "提交反馈" : "Send feedback")}</button>

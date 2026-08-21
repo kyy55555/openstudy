@@ -1,8 +1,12 @@
 import { courses } from "../data/courses.ts";
 import { learningPaths } from "../data/learningPaths.ts";
+import { structuredCoursePlans } from "../data/coursePlans.ts";
+
+const verbose = process.env.LINK_CHECK_VERBOSE === "1";
+const requestHeaders = { "User-Agent": "Mozilla/5.0 (compatible; OpenStudyLinkAudit/1.0; +https://openstudy-sigma.vercel.app/)" };
 
 const pathUrls = learningPaths.flatMap((path) => [path.officialUrl, ...(path.additionalOfficialSources ?? []).map((source) => source.url)]);
-const listedUrls = [...courses.flatMap((course) => [course.courseUrl, ...course.resources.map((resource) => resource.url)]), ...pathUrls];
+const listedUrls = [...courses.flatMap((course) => [course.courseUrl, ...course.resources.map((resource) => resource.url), structuredCoursePlans[course.id]?.sourceUrl, ...(structuredCoursePlans[course.id]?.tasks ?? []).map((task) => task.url)]), ...pathUrls];
 const officialHosts = new Set(listedUrls.map((url) => new URL(url).hostname));
 
 function isApprovedHost(hostname) {
@@ -15,14 +19,15 @@ const officialHomePaths = new Set(["/", "/index.html"]);
 async function checkUrl(course, url, label) {
   let response = await fetch(url, {
     method: "HEAD",
+    headers: requestHeaders,
     redirect: "follow",
-    signal: AbortSignal.timeout(20_000),
+    signal: AbortSignal.timeout(8_000),
   });
-  if (response.status === 405 || response.status === 501) {
+  if (!response.ok && ![401, 403, 429].includes(response.status)) {
     response = await fetch(url, {
-      headers: { Range: "bytes=0-0" },
+      headers: requestHeaders,
       redirect: "follow",
-      signal: AbortSignal.timeout(20_000),
+      signal: AbortSignal.timeout(8_000),
     });
   }
   const finalUrl = new URL(response.url);
@@ -45,14 +50,19 @@ async function checkUrl(course, url, label) {
   return { course, label, requestedUrl: url, finalUrl: finalUrl.href, errors, warnings };
 }
 
-const checks = [...courses.flatMap((course) => [
+const checks = [...courses.flatMap((course) => {
+    const existingUrls = new Set([course.courseUrl, ...course.resources.map((resource) => resource.url)]);
+    const planUrls = [...new Set([structuredCoursePlans[course.id]?.sourceUrl, ...(structuredCoursePlans[course.id]?.tasks ?? []).map((task) => task.url)].filter(Boolean))]
+      .filter((url) => !existingUrls.has(url));
+    return [
     { course, url: course.courseUrl, label: "course" },
     ...course.resources.map((resource) => ({
       course,
       url: resource.url,
       label: resource.type,
     })),
-  ]), ...learningPaths.flatMap((path) => [
+    ...planUrls.map((url) => ({ course, url, label: "study-plan" })),
+  ];}), ...learningPaths.flatMap((path) => [
     { course: path, url: path.officialUrl, label: "curriculum" },
     ...(path.additionalOfficialSources ?? []).map((source) => ({ course: path, url: source.url, label: "curriculum-source" })),
   ])];
@@ -76,25 +86,25 @@ async function worker() {
   }
 }
 
-await Promise.all(Array.from({ length: 6 }, () => worker()));
+await Promise.all(Array.from({ length: 12 }, () => worker()));
 
 let failureCount = 0;
 let warningCount = 0;
 
-for (const { course, label, finalUrl, errors, warnings } of results) {
+for (const { course, label, requestedUrl, finalUrl, errors, warnings } of results) {
   if (warnings.length > 0) {
     warningCount += 1;
     console.warn(`WARN ${course.id} [${label}]: ${warnings.join("; ")}`);
   }
   if (errors.length === 0) {
-    if (warnings.length === 0) console.log(`PASS ${course.id} [${label}] -> ${finalUrl}`);
+    if (warnings.length === 0 && verbose) console.log(`PASS ${course.id} [${label}] -> ${finalUrl}`);
     continue;
   }
 
   failureCount += 1;
-  console.error(`FAIL ${course.id} [${label}]: ${errors.join("; ")}`);
+    console.error(`FAIL ${course.id} [${label}] ${requestedUrl}: ${errors.join("; ")}`);
 }
 
-console.log(`\nChecked ${results.length} official course, resource, and curriculum links: ${results.length - failureCount - warningCount} passed, ${warningCount} warned, ${failureCount} failed.`);
+console.log(`\nChecked ${results.length} official course, resource, study-plan, and curriculum links: ${results.length - failureCount - warningCount} passed, ${warningCount} warned, ${failureCount} failed.`);
 
 if (failureCount > 0) process.exitCode = 1;

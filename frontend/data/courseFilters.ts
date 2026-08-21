@@ -27,16 +27,35 @@ const commonSearchSuggestions = [
   "操作系统", "Operating Systems", "计算机网络", "Computer Networks",
 ] as const;
 
+function editDistance(left: string, right: string) {
+  const row = Array.from({ length: right.length + 1 }, (_, index) => index);
+  for (let leftIndex = 1; leftIndex <= left.length; leftIndex += 1) {
+    let diagonal = row[0];
+    row[0] = leftIndex;
+    for (let rightIndex = 1; rightIndex <= right.length; rightIndex += 1) {
+      const previous = row[rightIndex];
+      row[rightIndex] = Math.min(
+        row[rightIndex] + 1,
+        row[rightIndex - 1] + 1,
+        diagonal + (left[leftIndex - 1] === right[rightIndex - 1] ? 0 : 1),
+      );
+      diagonal = previous;
+    }
+  }
+  return row[right.length];
+}
+
 export function courseSearchSuggestions(courses: Course[], input: string, limit = 8) {
   const query = input.trim().toLowerCase();
   if (!query) return [];
 
   const candidates = Array.from(new Set([
     ...commonSearchSuggestions,
+    ...searchSynonymGroups.flat(),
     ...courses.flatMap((course) => [course.title, course.titleZh, course.subject, course.subjectZh]),
   ].filter((candidate): candidate is string => typeof candidate === "string" && candidate.length > 0)));
 
-  return candidates
+  const directMatches = candidates
     .filter((candidate) => candidate.toLowerCase().includes(query))
     .sort((a, b) => {
       const aStarts = a.toLowerCase().startsWith(query) ? 0 : 1;
@@ -44,6 +63,19 @@ export function courseSearchSuggestions(courses: Course[], input: string, limit 
       return aStarts - bStarts || a.length - b.length || a.localeCompare(b);
     })
     .slice(0, limit);
+  if (directMatches.length > 0) return directMatches;
+
+  if (!/^[a-z\s]+$/.test(query) || query.length < 4) return [];
+  return candidates
+    .map((candidate) => {
+      const words = candidate.toLowerCase().match(/[a-z]+/g) ?? [];
+      const distance = Math.min(...words.map((word) => editDistance(query, word)), Number.POSITIVE_INFINITY);
+      return { candidate, distance };
+    })
+    .filter(({ distance }) => distance <= Math.max(2, Math.floor(query.length * 0.25)))
+    .sort((a, b) => a.distance - b.distance || a.candidate.length - b.candidate.length)
+    .slice(0, limit)
+    .map(({ candidate }) => candidate);
 }
 
 function searchAlternatives(term: string): readonly string[] {

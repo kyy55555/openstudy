@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { courseCode, courseEditionLabel, courses, suggestedStudyStage } from "./courses.ts";
+import { courseCode, courseEditionLabel, courseLanguageLabel, courses, suggestedStudyStage } from "./courses.ts";
 import { courseDetailPath, prerequisiteCourseIds } from "./courseNavigation.ts";
 
 const officialHosts = new Set([
@@ -94,6 +94,12 @@ test("course records have unique ids and real official URLs", () => {
       assert.notEqual(resource.url, course.courseUrl);
     }
   }
+});
+
+test("course language labels are fully localized", () => {
+  assert.equal(courseLanguageLabel("English", "zh"), "英语");
+  assert.equal(courseLanguageLabel("Chinese / English", "zh"), "中文 / 英语");
+  assert.equal(courseLanguageLabel("Chinese", "en"), "Chinese");
 });
 
 test("every course with a verified level has a suggested study stage", () => {
