@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { completionStreak, courseResourceKey, createCourseLibraryBackup, learningPathCoverage, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, parseCourseLibraryBackup, pathCompletion, phaseCoverage, recordStudyTaskCompletion, selectNewestAccountLibrary, selectSessionLibrary, studyPlanProgress, suggestedGentlePlanDays } from "./courseLibrary.ts";
+import { completionStreak, courseResourceKey, createCourseLibraryBackup, learningPathCoverage, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, parseCourseLibraryBackup, pathCompletion, phaseCoverage, recordStudyTaskCompletion, selectNewestAccountLibrary, selectSessionLibrary, studyPlanProgress, suggestedGentlePlanDays, toggleStudyPlanPause } from "./courseLibrary.ts";
 
 test("course library safely parses local data", () => {
   assert.deepEqual(parseCourseLibrary(null), { progress: {}, favorites: [], completedResources: [], studyPlans: {}, lastOpenedResource: null });
@@ -101,6 +101,14 @@ test("completing a plan task records the learning day from every UI entry point"
   assert.deepEqual(completed.dailyCompletionDates, ["2026-08-21", "2026-08-22"]);
   assert.equal(completed.lastDailyCompletionDate, "2026-08-22");
   assert.equal(recordStudyTaskCompletion(completed, "task-2", "2026-08-22"), completed);
+});
+
+test("pausing and resuming a plan adds paused days without losing progress", () => {
+  const original = { days: 30, completedTaskIds: ["task-1"] };
+  const paused = toggleStudyPlanPause(original, new Date(2026, 7, 20));
+  assert.deepEqual(paused, { ...original, paused: true, pausedOn: "2026-08-20" });
+  const resumed = toggleStudyPlanPause(paused, new Date(2026, 7, 25));
+  assert.deepEqual(resumed, { days: 35, completedTaskIds: ["task-1"] });
 });
 
 test("path completion deduplicates repeated electives", () => {

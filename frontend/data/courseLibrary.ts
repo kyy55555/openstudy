@@ -2,7 +2,7 @@ export type CourseProgress = "not-started" | "in-progress" | "completed";
 
 export const courseLibraryStorageKey = "openstudy-course-library-v1";
 
-export type CourseStudyPlan = { days: number; completedTaskIds: string[]; createdOn?: string; lastDailyCompletionDate?: string; dailyCompletionDates?: string[] };
+export type CourseStudyPlan = { days: number; completedTaskIds: string[]; createdOn?: string; lastDailyCompletionDate?: string; dailyCompletionDates?: string[]; paused?: boolean; pausedOn?: string };
 
 export type CourseLibraryState = {
   updatedAt?: string;
@@ -85,6 +85,18 @@ export function recordStudyTaskCompletion(plan: CourseStudyPlan, taskId: string,
   };
 }
 
+export function toggleStudyPlanPause(plan: CourseStudyPlan, today = new Date()): CourseStudyPlan {
+  const todayKey = localDateKey(today);
+  if (!plan.paused) return { ...plan, paused: true, pausedOn: todayKey };
+  const paused = plan.pausedOn ? new Date(`${plan.pausedOn}T00:00:00`) : today;
+  const current = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const pausedDays = Number.isNaN(paused.getTime()) ? 0 : Math.max(0, Math.floor((current.getTime() - paused.getTime()) / 86_400_000));
+  const resumed = { ...plan };
+  delete resumed.paused;
+  delete resumed.pausedOn;
+  return { ...resumed, days: Math.min(3650, plan.days + pausedDays) };
+}
+
 export function selectNewestAccountLibrary(
   cached: CourseLibraryState,
   cloud: CourseLibraryState | null,
@@ -116,7 +128,7 @@ export function parseCourseLibrary(value: string | null): CourseLibraryState {
     const studyPlans = parsed.studyPlans && typeof parsed.studyPlans === "object"
       ? Object.fromEntries(Object.entries(parsed.studyPlans).flatMap(([courseId, plan]) => {
         if (!plan || typeof plan !== "object") return [];
-        const candidate = plan as { days?: unknown; completedTaskIds?: unknown; createdOn?: unknown; lastDailyCompletionDate?: unknown; dailyCompletionDates?: unknown };
+        const candidate = plan as { days?: unknown; completedTaskIds?: unknown; createdOn?: unknown; lastDailyCompletionDate?: unknown; dailyCompletionDates?: unknown; paused?: unknown; pausedOn?: unknown };
         if (!Number.isInteger(candidate.days) || (candidate.days as number) < 1 || (candidate.days as number) > 3650 || !Array.isArray(candidate.completedTaskIds)) return [];
         const normalized = { days: candidate.days as number, completedTaskIds: uniqueStrings(candidate.completedTaskIds) } as CourseLibraryState["studyPlans"][string];
         if (typeof candidate.createdOn === "string" && /^\d{4}-\d{2}-\d{2}$/.test(candidate.createdOn)) normalized.createdOn = candidate.createdOn;
@@ -125,6 +137,10 @@ export function parseCourseLibrary(value: string | null): CourseLibraryState {
         }
         const dailyCompletionDates = uniqueStrings(candidate.dailyCompletionDates).filter((value) => /^\d{4}-\d{2}-\d{2}$/.test(value));
         if (dailyCompletionDates.length > 0) normalized.dailyCompletionDates = dailyCompletionDates;
+        if (candidate.paused === true) {
+          normalized.paused = true;
+          if (typeof candidate.pausedOn === "string" && /^\d{4}-\d{2}-\d{2}$/.test(candidate.pausedOn)) normalized.pausedOn = candidate.pausedOn;
+        }
         return [[courseId, normalized]];
       }))
       : {};

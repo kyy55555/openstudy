@@ -53,7 +53,7 @@ function ProgressBar({ percent, label }: { percent: number; label: string }) {
 function DashboardContent() {
   const params = useSearchParams();
   const language: Language = params.get("lang") === "zh" ? "zh" : "en";
-  const { library, loaded, syncIssue, lastSyncedAt, retryCloudSync, completeDailyTask, recordResourceOpen, clearLastOpenedResource, replaceLibrary } = useCourseLibrary();
+  const { library, loaded, syncIssue, lastSyncedAt, retryCloudSync, completeDailyTask, togglePlanPaused, recordResourceOpen, clearLastOpenedResource, replaceLibrary } = useCourseLibrary();
   const [pendingBackup, setPendingBackup] = useState<CourseLibraryBackup | null>(null);
   const [backupMessage, setBackupMessage] = useState("");
   const [todayKey] = useState(() => localDateKey());
@@ -76,7 +76,8 @@ function DashboardContent() {
     .sort((a, b) => b.completed - a.completed || b.percent - a.percent);
   const completedToday = Boolean(todayKey && activePlans.some(({ saved }) => saved.lastDailyCompletionDate === todayKey));
   const streak = completionStreak(activePlans.flatMap(({ saved }) => saved.dailyCompletionDates ?? []));
-  const todayPlan = completedToday ? null : activePlans.find(({ nextTask }) => nextTask);
+  const runningPlans = activePlans.filter(({ saved }) => !saved.paused);
+  const todayPlan = completedToday ? null : runningPlans.find(({ nextTask }) => nextTask);
   const todayTask = todayPlan?.nextTask ?? null;
 
   const copy = language === "zh" ? {
@@ -85,7 +86,7 @@ function DashboardContent() {
     createPlan: "为正在学习的课程制定计划", browsePlans: "选择课程并制定计划",
     recent: "继续上次学习", noRecent: "打开课程资料后，这里会保留你的上次学习位置。", clear: "清除记录",
     overview: "学习概览", courses: "完成课程", resources: "完成资料", plans: "进行中计划", streak: "连续完成天数",
-    plansTitle: "课程计划", noPlan: "还没有课程计划。你可以在课程详情页输入目标天数。", target: "目标天数", planned: "保守规划", progress: "计划完成度", finishedPlan: "计划任务已全部完成，请自行确认整门课程状态。",
+    plansTitle: "课程计划", noPlan: "还没有课程计划。你可以在课程详情页输入目标天数。", target: "目标天数", planned: "保守规划", progress: "计划完成度", finishedPlan: "计划任务已全部完成，请自行确认整门课程状态。", paused: "已暂停，不会安排今日任务。", pause: "暂停", resume: "继续",
     current: "正在学习", noCurrent: "还没有标记为学习中的课程。", done: "已完成课程", noDone: "完成课程后会显示在这里。", saved: "收藏课程", noSaved: "还没有收藏课程。",
     coverage: "培养方案学期点亮", noCoverage: "完成或开始路线中的课程后，这里会自然显示匹配的参考培养方案，无需选择路线。", reference: "查看完整参考方案", termDone: "已点亮", termPartial: "进行中", termEmpty: "未开始",
     backup: "备份与恢复学习记录", backupHelp: "下载一份不含邮箱和密码的 JSON 文件。恢复备份会覆盖当前游客或当前账号的学习记录，不会自动合并。", download: "下载备份", chooseBackup: "选择备份文件", invalidBackup: "无法读取：请选择 OpenStudy 导出的有效 JSON 备份（最大 2 MB）。", restore: "确认覆盖并恢复", cancel: "取消", restored: "学习记录已从备份恢复。", backupFrom: "备份时间",
@@ -95,7 +96,7 @@ function DashboardContent() {
     createPlan: "Plan an in-progress course", browsePlans: "Choose a course and create a plan",
     recent: "Continue where you left off", noRecent: "Open an official course resource and your latest position will stay here.", clear: "Clear",
     overview: "Learning overview", courses: "Courses completed", resources: "Resources completed", plans: "Active plans", streak: "Completion streak",
-    plansTitle: "Course plans", noPlan: "No course plan yet. Set a target number of days on a course page.", target: "Target days", planned: "Conservative plan", progress: "Plan progress", finishedPlan: "All plan tasks are complete. Confirm the whole course separately.",
+    plansTitle: "Course plans", noPlan: "No course plan yet. Set a target number of days on a course page.", target: "Target days", planned: "Conservative plan", progress: "Plan progress", finishedPlan: "All plan tasks are complete. Confirm the whole course separately.", paused: "Paused; no daily task will be suggested.", pause: "Pause", resume: "Resume",
     current: "In progress", noCurrent: "No courses are marked in progress.", done: "Completed courses", noDone: "Completed courses appear here.", saved: "Saved courses", noSaved: "No saved courses yet.",
     coverage: "Curriculum term progress", noCoverage: "Start or complete curriculum courses to see naturally matching references—no path selection required.", reference: "View full curriculum reference", termDone: "Lit", termPartial: "In progress", termEmpty: "Not started",
     backup: "Back up and restore learning record", backupHelp: "Download a JSON file without your email or password. Restoring replaces the current guest or account record; it never merges automatically.", download: "Download backup", chooseBackup: "Choose backup file", invalidBackup: "Could not read this file. Choose a valid OpenStudy JSON backup up to 2 MB.", restore: "Replace and restore", cancel: "Cancel", restored: "Learning record restored from backup.", backupFrom: "Backup created",
@@ -163,7 +164,7 @@ function DashboardContent() {
       <section className="mt-8">
         <h2 className="text-lg font-semibold">{copy.overview}</h2>
         <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
-          {[[copy.courses, completed.length], [copy.resources, library.completedResources.length], [copy.plans, activePlans.length], [copy.streak, streak]].map(([label, value]) => <div key={String(label)} className="rounded-2xl border border-gray-200 p-3 sm:p-5"><strong className="text-2xl sm:text-3xl">{value}</strong><span className="mt-1 block text-xs text-gray-500 sm:text-sm">{label}</span></div>)}
+          {[[copy.courses, completed.length], [copy.resources, library.completedResources.length], [copy.plans, runningPlans.length], [copy.streak, streak]].map(([label, value]) => <div key={String(label)} className="rounded-2xl border border-gray-200 p-3 sm:p-5"><strong className="text-2xl sm:text-3xl">{value}</strong><span className="mt-1 block text-xs text-gray-500 sm:text-sm">{label}</span></div>)}
         </div>
       </section>
 
@@ -182,9 +183,9 @@ function DashboardContent() {
         {activePlans.length === 0 ? <div className="mt-3"><p className="text-sm text-gray-500">{copy.noPlan}</p><Link href={inProgress[0] ? courseDetailPath(courses.find(({ id }) => id === inProgress[0])!, language) : language === "zh" ? "/courses?lang=zh" : "/courses"} className="mt-3 inline-flex rounded-lg border border-violet-300 px-4 py-2 text-sm font-semibold text-violet-900 hover:bg-violet-50">{inProgress[0] ? copy.createPlan : copy.browsePlans} →</Link></div> : <div className="mt-3 grid gap-4 lg:grid-cols-2">{activePlans.map(({ course, saved, generated, nextTask, progress }) => (
           <article key={course.id} className="rounded-2xl border border-violet-200 bg-violet-50 p-5">
             <Link href={courseDetailPath(course, language)} className="font-semibold text-violet-950 hover:underline">{courseCode(course)} · {language === "zh" ? (course.titleZh ?? course.title) : course.title}</Link>
-            <p className="mt-1 text-xs text-violet-800">{copy.target} {saved.days} · {copy.planned} {generated.plannedDays}</p>
+            <div className="mt-1 flex items-center justify-between gap-3"><p className="text-xs text-violet-800">{copy.target} {saved.days} · {copy.planned} {generated.plannedDays}</p><button type="button" onClick={() => togglePlanPaused(course.id)} className="rounded-lg border border-violet-300 bg-white px-3 py-1.5 text-xs font-semibold text-violet-900 hover:bg-violet-100">{saved.paused ? copy.resume : copy.pause}</button></div>
             <ProgressBar percent={progress.percent} label={`${copy.progress} · ${progress.completed}/${progress.total}`} />
-            {nextTask ? <p className="mt-3 text-sm text-violet-900">{language === "zh" ? nextTask.titleZh : nextTask.title}</p> : <p className="mt-3 text-sm font-medium text-emerald-800">✓ {copy.finishedPlan}</p>}
+            {saved.paused ? <p className="mt-3 text-sm font-medium text-gray-600">⏸ {copy.paused}</p> : nextTask ? <p className="mt-3 text-sm text-violet-900">{language === "zh" ? nextTask.titleZh : nextTask.title}</p> : <p className="mt-3 text-sm font-medium text-emerald-800">✓ {copy.finishedPlan}</p>}
           </article>
         ))}</div>}
       </section>

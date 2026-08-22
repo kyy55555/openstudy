@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { courseLibraryStorageKey, emptyCourseLibrary, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, recordStudyTaskCompletion, selectNewestAccountLibrary, selectSessionLibrary } from "../data/courseLibrary";
+import { courseLibraryStorageKey, emptyCourseLibrary, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, recordStudyTaskCompletion, selectNewestAccountLibrary, selectSessionLibrary, toggleStudyPlanPause } from "../data/courseLibrary";
 import type { CourseLibraryState, CourseProgress } from "../data/courseLibrary";
 import { courseResourceKey } from "../data/courseLibrary";
 import { getSupabaseBrowserClient } from "../lib/supabase/client";
@@ -137,6 +137,13 @@ export function useCourseLibrary() {
     update({ ...current, studyPlans: { ...current.studyPlans, [courseId]: { ...plan, days: normalizedDays } } });
   }
 
+  function togglePlanPaused(courseId: string) {
+    const current = libraryRef.current;
+    const plan = current.studyPlans[courseId];
+    if (!plan) return;
+    update({ ...current, studyPlans: { ...current.studyPlans, [courseId]: toggleStudyPlanPause(plan) } });
+  }
+
   function toggleStudyTask(courseId: string, taskId: string) {
     const current = libraryRef.current;
     const plan = current.studyPlans[courseId];
@@ -185,5 +192,5 @@ export function useCourseLibrary() {
     void saveCloud(userId.current, libraryRef.current);
   }
 
-  return { library, loaded, syncIssue, lastSyncedAt, retryCloudSync, setProgress, toggleFavorite, toggleResource, createStudyPlan, updateStudyPlanDays, toggleStudyTask, completeDailyTask, removeStudyPlan, recordResourceOpen, clearLastOpenedResource, replaceLibrary };
+  return { library, loaded, syncIssue, lastSyncedAt, retryCloudSync, setProgress, toggleFavorite, toggleResource, createStudyPlan, updateStudyPlanDays, togglePlanPaused, toggleStudyTask, completeDailyTask, removeStudyPlan, recordResourceOpen, clearLastOpenedResource, replaceLibrary };
 }
