@@ -15,6 +15,28 @@ export type CourseLibraryState = {
 
 export const emptyCourseLibrary: CourseLibraryState = { progress: {}, favorites: [], completedResources: [], studyPlans: {}, lastOpenedResource: null };
 
+type CourseLibraryStorage = {
+  getItem(key: string): string | null;
+  setItem(key: string, value: string): void;
+};
+
+export function readCourseLibraryStorage(storage: CourseLibraryStorage, key: string) {
+  try {
+    return { library: parseCourseLibrary(storage.getItem(key)), available: true as const };
+  } catch {
+    return { library: emptyCourseLibrary, available: false as const };
+  }
+}
+
+export function writeCourseLibraryStorage(storage: CourseLibraryStorage, key: string, library: CourseLibraryState) {
+  try {
+    storage.setItem(key, JSON.stringify(library));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export type CourseLibraryBackup = {
   format: "openstudy-learning-record";
   version: 1;

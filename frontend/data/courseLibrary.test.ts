@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { cloudRevisionChanged, cloudSyncRequestIsCurrent, cloudSyncRetryDelay, completionStreak, courseResourceKey, createCourseLibraryBackup, learningPathCoverage, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, parseCourseLibraryBackup, pathCompletion, phaseCoverage, recordStudyTaskCompletion, selectNewestAccountLibrary, selectSessionLibrary, studyPlanProgress, suggestedGentlePlanDays, toggleStudyPlanPause, weeklyStudyActivity } from "./courseLibrary.ts";
+import { cloudRevisionChanged, cloudSyncRequestIsCurrent, cloudSyncRetryDelay, completionStreak, courseResourceKey, createCourseLibraryBackup, learningPathCoverage, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, parseCourseLibraryBackup, pathCompletion, phaseCoverage, readCourseLibraryStorage, recordStudyTaskCompletion, selectNewestAccountLibrary, selectSessionLibrary, studyPlanProgress, suggestedGentlePlanDays, toggleStudyPlanPause, weeklyStudyActivity, writeCourseLibraryStorage } from "./courseLibrary.ts";
 
 test("cloud retries back off and stop until the next user action", () => {
   assert.deepEqual([0, 1, 2, 3, 4, 5].map(cloudSyncRetryDelay), [2_000, 5_000, 15_000, 30_000, 60_000, null]);
@@ -29,6 +29,24 @@ test("course library safely parses local data", () => {
   assert.deepEqual(parseCourseLibrary(null), { progress: {}, favorites: [], completedResources: [], studyPlans: {}, lastOpenedResource: null });
   assert.deepEqual(parseCourseLibrary("broken"), { progress: {}, favorites: [], completedResources: [], studyPlans: {}, lastOpenedResource: null });
   assert.deepEqual(parseCourseLibrary('{"progress":{"a":"completed"},"favorites":["a"]}'), { progress: { a: "completed" }, favorites: ["a"], completedResources: [], studyPlans: {}, lastOpenedResource: null });
+});
+
+test("browser storage failures fall back safely without blocking later cloud work", () => {
+  const unavailable = {
+    getItem() { throw new Error("storage denied"); },
+    setItem() { throw new Error("quota exceeded"); },
+  };
+  assert.deepEqual(readCourseLibraryStorage(unavailable, "key"), { library: parseCourseLibrary(null), available: false });
+  assert.equal(writeCourseLibraryStorage(unavailable, "key", parseCourseLibrary('{"favorites":["a"]}')), false);
+
+  const values = new Map<string, string>();
+  const available = {
+    getItem(key: string) { return values.get(key) ?? null; },
+    setItem(key: string, value: string) { values.set(key, value); },
+  };
+  const library = parseCourseLibrary('{"progress":{"a":"completed"}}');
+  assert.equal(writeCourseLibraryStorage(available, "key", library), true);
+  assert.deepEqual(readCourseLibraryStorage(available, "key"), { library, available: true });
 });
 
 test("guest records never merge into an account automatically", () => {

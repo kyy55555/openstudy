@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { cloudRevisionChanged, cloudSyncRequestIsCurrent, cloudSyncRetryDelay, courseLibraryStorageKey, emptyCourseLibrary, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, recordStudyTaskCompletion, selectNewestAccountLibrary, selectSessionLibrary, toggleStudyPlanPause } from "../data/courseLibrary";
+import { cloudRevisionChanged, cloudSyncRequestIsCurrent, cloudSyncRetryDelay, courseLibraryStorageKey, emptyCourseLibrary, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, readCourseLibraryStorage, recordStudyTaskCompletion, selectNewestAccountLibrary, selectSessionLibrary, toggleStudyPlanPause, writeCourseLibraryStorage } from "../data/courseLibrary";
 import type { CourseLibraryState, CourseProgress } from "../data/courseLibrary";
 import { courseResourceKey } from "../data/courseLibrary";
 import { getSupabaseBrowserClient } from "../lib/supabase/client";
@@ -16,6 +16,7 @@ export function useCourseLibrary() {
   const [syncIssue, setSyncIssue] = useState(false);
   const [syncConflict, setSyncConflict] = useState<{ cloud: CourseLibraryState | null; updatedAt: string | null } | null>(null);
   const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null);
+  const [storageIssue, setStorageIssue] = useState(false);
   const userId = useRef<string | null>(null);
   const libraryRef = useRef<CourseLibraryState>(emptyCourseLibrary);
   const activeStorageKey = useRef(courseLibraryStorageKey);
@@ -89,7 +90,9 @@ export function useCourseLibrary() {
   useEffect(() => {
     const timer = window.setTimeout(() => {
       if (userId.current !== null) return;
-      const local = parseCourseLibrary(window.localStorage.getItem(courseLibraryStorageKey));
+      const stored = readCourseLibraryStorage(window.localStorage, courseLibraryStorageKey);
+      const local = stored.library;
+      setStorageIssue(!stored.available);
       libraryRef.current = local;
       setLibrary(local);
       setLoaded(true);
@@ -123,7 +126,9 @@ export function useCourseLibrary() {
         clearCloudRetry();
         retryAttempt.current = 0;
         activeStorageKey.current = courseLibraryStorageKey;
-        const guest = parseCourseLibrary(window.localStorage.getItem(courseLibraryStorageKey));
+        const stored = readCourseLibraryStorage(window.localStorage, courseLibraryStorageKey);
+        const guest = stored.library;
+        setStorageIssue(!stored.available);
         libraryRef.current = guest;
         setLibrary(guest);
         setLoaded(true);
@@ -133,7 +138,9 @@ export function useCourseLibrary() {
         return;
       }
       activeStorageKey.current = accountLibraryStorageKey(nextUserId);
-      const cached = parseCourseLibrary(window.localStorage.getItem(activeStorageKey.current));
+      const stored = readCourseLibraryStorage(window.localStorage, activeStorageKey.current);
+      const cached = stored.library;
+      setStorageIssue(!stored.available);
       const { data, error } = await supabase.from("course_libraries").select("library, updated_at").eq("user_id", nextUserId).maybeSingle();
       if (!cloudSyncRequestIsCurrent(requestGeneration, syncGeneration.current, nextUserId, userId.current)) return;
       if (error) {
@@ -162,7 +169,7 @@ export function useCourseLibrary() {
       libraryRef.current = next;
       setLibrary(next);
       setLoaded(true);
-      window.localStorage.setItem(activeStorageKey.current, JSON.stringify(next));
+      setStorageIssue(!writeCourseLibraryStorage(window.localStorage, activeStorageKey.current, next));
       setSyncIssue(false);
       setSyncConflict(null);
       setLastSyncedAt(data?.updated_at ?? null);
@@ -195,7 +202,7 @@ export function useCourseLibrary() {
     const stamped = { ...next, updatedAt: new Date().toISOString() };
     libraryRef.current = stamped;
     setLibrary(stamped);
-    window.localStorage.setItem(activeStorageKey.current, JSON.stringify(stamped));
+    setStorageIssue(!writeCourseLibraryStorage(window.localStorage, activeStorageKey.current, stamped));
     if (userId.current) {
       clearCloudRetry();
       retryAttempt.current = 0;
@@ -304,7 +311,7 @@ export function useCourseLibrary() {
       const next = syncConflict.cloud ?? emptyCourseLibrary;
       libraryRef.current = next;
       setLibrary(next);
-      window.localStorage.setItem(activeStorageKey.current, JSON.stringify(next));
+      setStorageIssue(!writeCourseLibraryStorage(window.localStorage, activeStorageKey.current, next));
       setLastSyncedAt(syncConflict.updatedAt);
       setSyncIssue(false);
       setSyncConflict(null);
@@ -315,5 +322,5 @@ export function useCourseLibrary() {
     void saveCloud(nextUserId, libraryRef.current);
   }
 
-  return { library, loaded, syncIssue, syncConflict: Boolean(syncConflict), lastSyncedAt, retryCloudSync, resolveCloudConflict, setProgress, toggleFavorite, toggleResource, createStudyPlan, updateStudyPlanDays, togglePlanPaused, toggleStudyTask, completeDailyTask, removeStudyPlan, recordResourceOpen, clearLastOpenedResource, replaceLibrary };
+  return { library, loaded, storageIssue, syncIssue, syncConflict: Boolean(syncConflict), lastSyncedAt, retryCloudSync, resolveCloudConflict, setProgress, toggleFavorite, toggleResource, createStudyPlan, updateStudyPlanDays, togglePlanPaused, toggleStudyTask, completeDailyTask, removeStudyPlan, recordResourceOpen, clearLastOpenedResource, replaceLibrary };
 }
