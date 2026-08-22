@@ -535,8 +535,20 @@ test("remaining non-CMU university courses all have executable official curricul
  for(const id of ["washington-cse550","tsinghua-20740112","tsinghua-computer-graphics","pku-computing-intro","pku-data-structures","pku-operating-systems","tsinghua-20740164","tsinghua-database-technology","uiuc-cs124","uiuc-cs128","uiuc-cs225","gatech-cs1301","gatech-cs2110","gatech-cs3510","harvard-cs61"]){assert.equal(structuredCoursePlans[id].detail,"full");assert.ok(structuredCoursePlans[id].tasks.length>=20);}
 });
 
-test("all 125 catalog courses now have substantive official-source plans",()=>{
- const definitions=Object.values(structuredCoursePlans);assert.equal(definitions.length,125);assert.ok(definitions.every(({detail,tasks})=>detail==="full"&&tasks.length>=2));
+test("all 127 catalog courses now have substantive official-source plans",()=>{
+ const definitions=Object.values(structuredCoursePlans);assert.equal(definitions.length,127);assert.ok(definitions.every(({detail,tasks})=>detail==="full"&&tasks.length>=2));
+});
+
+test("Berkeley MATH 54 and CMU 15-418 follow their official published sequences", () => {
+  const math54 = structuredCoursePlans["berkeley-math54"];
+  assert.equal(math54.tasks.length, 10);
+  assert.equal(math54.tasks.filter(({ kind }) => kind === "assignment").length, 0);
+  assert.ok(math54.tasks.some(({ url }) => url.endsWith("lecture_notes_on_svd_for_math_54.pdf")));
+  const parallel = structuredCoursePlans["cmu-15-418"];
+  assert.equal(parallel.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 25);
+  assert.equal(parallel.tasks.filter(({ kind }) => kind === "assignment").length, 4);
+  assert.equal(parallel.tasks.filter(({ kind }) => kind === "exam").length, 2);
+  assert.equal(parallel.tasks.filter(({ kind }) => kind === "project").length, 5);
 });
 
 test("CS50x follows the official weeks, problem sets, AI module, and final project", () => {

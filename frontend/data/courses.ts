@@ -2263,4 +2263,18 @@ export const courses: Course[] = [
     courseUrl: "https://www.cs.cmu.edu/~rdriley/330/index.html", sourceName: "Carnegie Mellon University School of Computer Science", verifiedOn: "2026-08-03",
     resources: [{ type: "syllabus", title: "Official syllabus and graded work", url: "https://www.cs.cmu.edu/~rdriley/330/syllabus.html" }],
   }),
+  course({
+    id: "berkeley-math54", code: "MATH 54", title: "Linear Algebra and Differential Equations", titleZh: "线性代数与微分方程", university: "UC Berkeley", subject: "Linear Algebra", subjectZh: "线性代数",
+    description: "Linear systems, matrices, vector spaces, eigenvalues, orthogonality, least squares, singular value decomposition, linear differential equations, and Fourier series, following Berkeley Mathematics' official 42-hour outline.", descriptionZh: "依据 Berkeley 数学系官方 42 小时大纲，学习线性方程组、矩阵、向量空间、特征值、正交、最小二乘、奇异值分解、线性微分方程和傅里叶级数。",
+    searchKeywords: ["MATH 54", "linear algebra", "differential equations", "SVD", "Berkeley"], level: "Undergraduate", prerequisites: ["Berkeley MATH 52 or equivalent"], year: null, hasVideos: null, hasAssignments: null, hasSolutions: null,
+    courseUrl: "https://math.berkeley.edu/courses/overview/lowerdivcourses/math54", sourceName: "UC Berkeley Department of Mathematics", verifiedOn: "2026-08-22",
+    resources: [{ type: "lectures", title: "Official Math 54 singular value decomposition notes", url: "https://math.berkeley.edu/sites/default/files/lecture_notes_on_svd_for_math_54.pdf" }],
+  }),
+  course({
+    id: "cmu-15-418", title: "Parallel Computer Architecture and Programming", titleZh: "并行计算机体系结构与编程", university: "Carnegie Mellon University", subject: "Parallel Computing", subjectZh: "并行计算",
+    description: "Parallel programming and architecture across multicore processors, GPUs, CUDA, scheduling, locality, cache coherence, interconnects, memory consistency, synchronization, specialization, graph processing, and parallel deep learning.", descriptionZh: "学习多核处理器、GPU、CUDA、调度、局部性、缓存一致性、互连、内存一致性、同步、专用硬件、图计算和并行深度学习中的并行编程与体系结构。",
+    searchKeywords: ["15-418", "15-618", "parallel computing", "CUDA", "GPU", "CMU"], level: "Advanced Undergraduate", prerequisites: ["CMU 15-213 or equivalent"], year: 2026, hasVideos: true, hasAssignments: true, hasSolutions: null,
+    courseUrl: "https://www.cs.cmu.edu/afs/cs/academic/class/15418-s26/www/", sourceName: "Carnegie Mellon University School of Computer Science", verifiedOn: "2026-08-22",
+    resources: [{ type: "schedule", title: "Official lecture schedule, slides, and linked videos", url: "https://www.cs.cmu.edu/afs/cs/academic/class/15418-s26/www/schedule.html" }, { type: "assignments", title: "Official programming assignment sequence", url: "https://www.cs.cmu.edu/afs/cs/academic/class/15418-s26/www/assignments.html" }, { type: "exams", title: "Official exam dates and review materials", url: "https://www.cs.cmu.edu/afs/cs/academic/class/15418-s26/www/exams.html" }, { type: "projects", title: "Official project milestones and examples", url: "https://www.cs.cmu.edu/afs/cs/academic/class/15418-s26/www/projects.html" }],
+  }),
 ];

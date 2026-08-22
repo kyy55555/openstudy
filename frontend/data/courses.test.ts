@@ -197,9 +197,17 @@ test("CMU's required mathematics sequence is present", () => {
 
 test("CMU advanced elective categories have native public courses", () => {
   const ids = new Set(courses.map(({ id }) => id));
-  for (const id of ["cmu-15-312", "cmu-15-440", "cmu-15-445", "cmu-15-362", "cmu-15-281", "cmu-15-330"]) {
+  for (const id of ["cmu-15-312", "cmu-15-440", "cmu-15-445", "cmu-15-362", "cmu-15-281", "cmu-15-330", "cmu-15-418"]) {
     assert.ok(ids.has(id), `${id} is missing`);
   }
+});
+
+test("Berkeley's official linear algebra course replaces the external curriculum substitute", () => {
+  const course = courses.find(({ id }) => id === "berkeley-math54");
+  assert.equal(course?.code, "MATH 54");
+  assert.equal(course?.university, "UC Berkeley");
+  assert.equal(course?.year, null);
+  assert.ok(course?.resources.some(({ url }) => url.includes("math.berkeley.edu")));
 });
 
 test("audited courses use the latest confirmed public editions", () => {
@@ -215,6 +223,7 @@ test("audited courses use the latest confirmed public editions", () => {
     ["uiuc-cs225", 2026, "https://courses.grainger.illinois.edu/cs225/sp2026/"],
     ["berkeley-math1a", null, "https://undergraduate.catalog.berkeley.edu/courses/1144962"],
     ["berkeley-math1b", null, "https://undergraduate.catalog.berkeley.edu/courses/1145002"],
+    ["cmu-15-418", 2026, "https://www.cs.cmu.edu/afs/cs/academic/class/15418-s26/www/"],
   ] as const) {
     assert.equal(byId.get(id)?.year, expectedYear, `${id} public edition regressed`);
     assert.equal(byId.get(id)?.courseUrl, expectedUrl, `${id} official URL regressed`);

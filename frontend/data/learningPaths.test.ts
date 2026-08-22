@@ -36,3 +36,13 @@ test("learning paths use official sources and known courses", () => {
     }
   }
 });
+
+test("Berkeley and CMU curricula prefer newly verified home-university courses", () => {
+  const berkeley = learningPaths.find(({ id }) => id === "berkeley-cs")!;
+  const cmu = learningPaths.find(({ id }) => id === "cmu-cs")!;
+  const berkeleyIds = berkeley.phases.flatMap(({ courseIds }) => courseIds);
+  const cmuIds = cmu.phases.flatMap(({ courseIds }) => courseIds);
+  assert.ok(berkeleyIds.includes("berkeley-math54"));
+  assert.ok(!berkeleyIds.includes("mit-18-06"));
+  assert.ok(cmuIds.includes("cmu-15-418"));
+});
