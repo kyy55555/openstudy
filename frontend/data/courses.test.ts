@@ -201,6 +201,18 @@ test("verified Tsinghua and Peking University courses are present", () => {
   for (const id of ["tsinghua-20740112", "tsinghua-computer-graphics", "tsinghua-20740164", "tsinghua-database-technology", "pku-computing-intro", "pku-data-structures", "pku-operating-systems"]) assert.ok(ids.has(id), `${id} is missing`);
 });
 
+test("the catalog includes verified non-STEM economics foundations", () => {
+  for (const id of ["mit-14-01", "mit-14-02"]) {
+    const item = courses.find((course) => course.id === id);
+    assert.ok(item, `${id} is missing`);
+    assert.equal(item.sourceName, "MIT OpenCourseWare");
+    assert.equal(item.year, 2023);
+    assert.equal(item.hasVideos, true);
+    assert.equal(item.hasAssignments, true);
+    assert.equal(item.hasSolutions, true);
+  }
+});
+
 test("Princeton BSE foundations use verified Princeton courses", () => {
   const ids = new Set(courses.map(({ id }) => id));
   for (const id of ["princeton-mat103", "princeton-mat104", "princeton-mat201", "princeton-mat202", "princeton-phy103", "princeton-phy104", "princeton-chm201"]) {
