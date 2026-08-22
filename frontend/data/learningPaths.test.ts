@@ -109,3 +109,11 @@ test("Tsinghua and PKU routes prefer verified same-university mathematics resour
   assert.ok(!pkuIds.includes("mit-18-06"));
   assert.ok(!pkuIds.includes("mit-18-05"));
 });
+
+test("Tsinghua route uses its public native operating-systems course", () => {
+  const tsinghua = learningPaths.find(({ id }) => id === "tsinghua-cs");
+  assert.ok(tsinghua);
+  const courseIds = tsinghua.phases.flatMap(({ courseIds }) => courseIds);
+  assert.ok(courseIds.includes("tsinghua-operating-systems"));
+  assert.ok(!courseIds.includes("berkeley-cs162"));
+});

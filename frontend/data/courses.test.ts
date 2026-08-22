@@ -45,6 +45,7 @@ const officialHosts = new Set([
   "dbgroup.cs.tsinghua.edu.cn",
   "www.tsinghua.edu.cn",
   "www.tcm.tsinghua.edu.cn",
+  "os.cs.tsinghua.edu.cn",
   "v1-www.xuetangx.com",
   "higher.smartedu.cn",
   "math.pku.edu.cn",
@@ -278,6 +279,15 @@ test("Tsinghua and PKU native mathematics foundations preserve honest provenance
   assert.equal(byId.get("pku-higher-algebra-1")?.hasAssignments, null);
   assert.equal(byId.get("pku-probability")?.university, "Peking University");
   assert.equal(byId.get("pku-probability")?.year, null);
+});
+
+test("Tsinghua operating systems exposes the complete public ucore sequence", () => {
+  const course = courses.find(({ id }) => id === "tsinghua-operating-systems");
+  assert.equal(course?.university, "Tsinghua University");
+  assert.equal(course?.year, null);
+  assert.equal(course?.hasVideos, true);
+  assert.equal(course?.hasAssignments, true);
+  assert.equal(course?.hasSolutions, null);
 });
 
 test("audited courses use the latest confirmed public editions", () => {

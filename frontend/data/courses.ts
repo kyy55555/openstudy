@@ -1998,6 +1998,13 @@ export const courses: Course[] = [
     resources: [{ type: "assignments", title: "Tsinghua official introduction confirming 34 sections and per-section practice", url: "https://www.tsinghua.edu.cn/info/1181/35976.htm" }, { type: "lectures", title: "Current 2026 Tsinghua video-course record on the national higher-education platform", url: "https://higher.smartedu.cn/course/64befcdfd190d2a6beeefda8" }, { type: "syllabus", title: "Tsinghua mathematics teaching center course record", url: "https://www.tcm.tsinghua.edu.cn/kczy/xxdskz.htm" }],
   }),
   course({
+    id: "tsinghua-operating-systems", code: "30240243X", title: "Operating Systems", titleZh: "操作系统", university: "Tsinghua University", subject: "Operating Systems", subjectZh: "操作系统",
+    description: "A Tsinghua core course using the ucore teaching operating system to cover boot and system calls, physical and virtual memory, processes and threads, scheduling, synchronization, deadlock, IPC, filesystems, and I/O through eight implementation labs.", descriptionZh: "清华计算机核心课程，以 ucore 教学操作系统为实验环境，涵盖启动与系统调用、物理与虚拟内存、进程与线程、调度、同步、死锁、进程通信、文件系统和 I/O，并配有八个实现实验。",
+    searchKeywords: ["30240243X", "operating systems", "ucore", "kernel", "操作系统", "清华"], level: "Undergraduate", prerequisites: ["Computer organization", "C programming and data structures"], language: "Chinese", year: null, hasVideos: true, hasAssignments: true, hasSolutions: null,
+    courseUrl: "https://v1-www.xuetangx.com/courses/course-v1%3ATsinghuaX%2B30240243X%2Bsp/about", sourceName: "Tsinghua University course on XuetangX", verifiedOn: "2026-08-22",
+    resources: [{ type: "lectures", title: "Official Tsinghua ucore course wiki", url: "https://os.cs.tsinghua.edu.cn/oscourse/OS2018spring" }, { type: "assignments", title: "Official public chapter, exercise, and eight-lab sequence", url: "https://v1-www.xuetangx.com/courses/course-v1%3ATsinghuaX%2B30240243X%2Bsp/courseware" }],
+  }),
+  course({
     id: "pku-higher-algebra-1", code: "00132321", title: "Higher Algebra I", titleZh: "高等代数 I", university: "Peking University", subject: "Linear Algebra", subjectZh: "线性代数",
     description: "Rigorous coordinate-and-matrix methods including linear systems, fields, matrices, determinants, polynomial theory, linear spaces, linear mappings, eigenvalues, canonical forms, and quadratic forms.", descriptionZh: "严格学习坐标与矩阵方法，包括线性方程组、数域、矩阵、行列式、多项式理论、线性空间、线性映射、特征值、标准形和二次型。",
     searchKeywords: ["00132321", "higher algebra", "linear algebra", "matrices", "高等代数", "北京大学"], level: "Introductory", prerequisites: [], language: "Chinese", year: null, hasVideos: null, hasAssignments: null, hasSolutions: null,

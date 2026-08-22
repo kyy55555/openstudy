@@ -589,8 +589,15 @@ test("new Tsinghua and PKU mathematics courses follow official published content
   assert.equal(structuredCoursePlans["pku-probability"].tasks.filter(({ kind }) => kind === "session").length, 19);
 });
 
-test("all 150 catalog courses now have substantive official-source plans",()=>{
- const definitions=Object.values(structuredCoursePlans);assert.equal(definitions.length,150);assert.ok(definitions.every(({detail,tasks})=>detail==="full"&&tasks.length>=2));
+test("Tsinghua operating systems follows every official lecture, ucore lab, and final", () => {
+  const definition = structuredCoursePlans["tsinghua-operating-systems"];
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "session").length, 14);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "project").length, 10);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 1);
+});
+
+test("all 151 catalog courses now have substantive official-source plans",()=>{
+ const definitions=Object.values(structuredCoursePlans);assert.equal(definitions.length,151);assert.ok(definitions.every(({detail,tasks})=>detail==="full"&&tasks.length>=2));
 });
 
 test("Berkeley MATH 54 and CMU 15-418 follow their official published sequences", () => {
