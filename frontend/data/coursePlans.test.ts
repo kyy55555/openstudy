@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { buildGentlePlan, completedPlanTaskId, structuredCoursePlans } from "./coursePlans.ts";
+import { buildGentlePlan, completedPlanTaskId, MAX_PLAN_TASKS_PER_DAY, structuredCoursePlans } from "./coursePlans.ts";
 
 test("MIT 18.01SC plan is never shorter than the user's target", () => {
   assert.equal(structuredCoursePlans["mit-18-01sc"].tasks.length, 113);
@@ -41,6 +41,7 @@ test("every catalog course has a plan made only from its official resources", as
       assert.ok(generated.plannedDays >= requestedDays);
       const scheduledTasks = generated.days.flatMap(({ tasks }) => tasks);
       assert.ok(generated.days.every(({ tasks }) => tasks.length > 0), `${course.id} has an empty study day`);
+      assert.ok(generated.days.every(({ tasks }) => tasks.length <= MAX_PLAN_TASKS_PER_DAY), `${course.id} overloads a study day`);
       assert.ok(scheduledTasks.every(({ kind }) => kind !== "buffer"), `${course.id} still generates buffer-only days`);
       const scheduledSourceIds = scheduledTasks.map(({ id, sourceTaskId }) => sourceTaskId ?? id);
       let cursor = 0;
@@ -54,6 +55,14 @@ test("every catalog course has a plan made only from its official resources", as
       }
     }
   }
+});
+
+test("short targets extend instead of overloading each day", () => {
+  const plan = buildGentlePlan("mit-18-02sc", 7);
+  assert.ok(plan);
+  assert.ok(plan.plannedDays > Math.ceil(7 * 1.15));
+  assert.ok(plan.days.every(({ tasks }) => tasks.length <= MAX_PLAN_TASKS_PER_DAY));
+  assert.equal(plan.days.flatMap(({ tasks }) => tasks).length, structuredCoursePlans["mit-18-02sc"].tasks.length);
 });
 
 test("Stanford CS106A follows all 28 official lectures, assignments, and practice exams", () => {

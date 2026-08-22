@@ -12,6 +12,8 @@ export type PlanTask = {
 
 export type PlanDay = { id: string; tasks: PlanTask[] };
 
+export const MAX_PLAN_TASKS_PER_DAY = 4;
+
 export function completedPlanTaskId(task: PlanTask, completedTaskIds: string[]): string | null {
   if (completedTaskIds.includes(task.id)) return task.id;
   if (task.sourceTaskId && completedTaskIds.includes(task.sourceTaskId)) return task.sourceTaskId;
@@ -1610,7 +1612,9 @@ structuredCoursePlans["mit-8-03sc"] = { sourceUrl: mitWavesSource, detail: "full
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];
   if (!course || !Number.isInteger(requestedDays) || requestedDays < 1) return null;
-  const plannedDays = Math.ceil(requestedDays * 1.15);
+  const conservativeDays = Math.ceil(requestedDays * 1.15);
+  const workloadFloor = Math.ceil(course.tasks.length / MAX_PLAN_TASKS_PER_DAY);
+  const plannedDays = Math.max(conservativeDays, workloadFloor);
   const tasksByDay: PlanTask[][] = Array.from({ length: plannedDays }, () => []);
   if (course.tasks.length >= plannedDays) {
     for (let dayIndex = 0; dayIndex < plannedDays; dayIndex += 1) {
