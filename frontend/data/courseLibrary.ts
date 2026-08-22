@@ -2,11 +2,13 @@ export type CourseProgress = "not-started" | "in-progress" | "completed";
 
 export const courseLibraryStorageKey = "openstudy-course-library-v1";
 
+export type CourseStudyPlan = { days: number; completedTaskIds: string[]; createdOn?: string; lastDailyCompletionDate?: string; dailyCompletionDates?: string[] };
+
 export type CourseLibraryState = {
   progress: Record<string, CourseProgress>;
   favorites: string[];
   completedResources: string[];
-  studyPlans: Record<string, { days: number; completedTaskIds: string[]; createdOn?: string; lastDailyCompletionDate?: string; dailyCompletionDates?: string[] }>;
+  studyPlans: Record<string, CourseStudyPlan>;
   lastOpenedResource: { courseId: string; url: string; title: string; titleZh: string; openedAt: string } | null;
 };
 
@@ -70,6 +72,16 @@ export function suggestedGentlePlanDays(
   const completionRate = completedTasks / totalTasks;
   const paceBasedDays = completionRate > 0 ? Math.ceil(elapsedDays / completionRate) : elapsedDays + currentDays;
   return Math.min(3650, Math.max(currentDays + 7, Math.ceil(paceBasedDays * 1.15)));
+}
+
+export function recordStudyTaskCompletion(plan: CourseStudyPlan, taskId: string, dateKey: string): CourseStudyPlan {
+  if (plan.completedTaskIds.includes(taskId)) return plan;
+  return {
+    ...plan,
+    completedTaskIds: [...plan.completedTaskIds, taskId],
+    lastDailyCompletionDate: dateKey,
+    dailyCompletionDates: [...new Set([...(plan.dailyCompletionDates ?? []), dateKey])],
+  };
 }
 
 export function studyPlanProgress(totalTaskIds: string[], completedTaskIds: string[]) {

@@ -82,6 +82,7 @@ function DashboardContent() {
   const copy = language === "zh" ? {
     back: "← OpenStudy", title: "用户中心", subtitle: "从上次的位置继续；每天只推荐一个容易完成的任务。大学培养方案仅作为参考。",
     today: "今日建议", todayDone: "今天的任务已完成", todayDoneHelp: "做得很好。今天不再增加新任务，明天再继续。", noToday: "还没有今日任务。请先在课程详情页创建一个学习计划。", completeToday: "完成今日任务", achievement: "完成啦！今天的学习任务已经记下。",
+    createPlan: "为正在学习的课程制定计划", browsePlans: "选择课程并制定计划",
     recent: "继续上次学习", noRecent: "打开课程资料后，这里会保留你的上次学习位置。", clear: "清除记录",
     overview: "学习概览", courses: "完成课程", resources: "完成资料", plans: "进行中计划", streak: "连续完成天数",
     plansTitle: "课程计划", noPlan: "还没有课程计划。你可以在课程详情页输入目标天数。", target: "目标天数", planned: "保守规划", progress: "计划完成度", finishedPlan: "计划任务已全部完成，请自行确认整门课程状态。",
@@ -91,6 +92,7 @@ function DashboardContent() {
   } : {
     back: "← OpenStudy", title: "User center", subtitle: "Continue where you left off; OpenStudy suggests only one achievable task each day. University curricula remain references.",
     today: "Today's suggestion", todayDone: "Today's task is complete", todayDoneHelp: "Nice work. No extra task will be added today—continue tomorrow.", noToday: "No task for today yet. Create a study plan from a course page first.", completeToday: "Complete today's task", achievement: "Done! Today's learning task has been recorded.",
+    createPlan: "Plan an in-progress course", browsePlans: "Choose a course and create a plan",
     recent: "Continue where you left off", noRecent: "Open an official course resource and your latest position will stay here.", clear: "Clear",
     overview: "Learning overview", courses: "Courses completed", resources: "Resources completed", plans: "Active plans", streak: "Completion streak",
     plansTitle: "Course plans", noPlan: "No course plan yet. Set a target number of days on a course page.", target: "Target days", planned: "Conservative plan", progress: "Plan progress", finishedPlan: "All plan tasks are complete. Confirm the whole course separately.",
@@ -154,7 +156,7 @@ function DashboardContent() {
               <button type="button" onClick={() => { completeDailyTask(todayPlan.course.id, todayTask.id, todayKey); setAchievement(copy.achievement); }} className="rounded-xl border border-violet-300 px-4 py-3 text-sm font-semibold hover:bg-white/10">{copy.completeToday}</button>
             </div>
           </div>
-        ) : <p className="mt-3 text-sm text-violet-100">{copy.noToday}</p>}
+        ) : <div className="mt-3"><p className="text-sm text-violet-100">{copy.noToday}</p><Link href={inProgress[0] ? courseDetailPath(courses.find(({ id }) => id === inProgress[0])!, language) : language === "zh" ? "/courses?lang=zh" : "/courses"} className="mt-4 inline-flex rounded-xl bg-white px-4 py-3 text-sm font-semibold text-violet-950">{inProgress[0] ? copy.createPlan : copy.browsePlans} →</Link></div>}
       </section>
 
       <section className="mt-8">
@@ -176,7 +178,7 @@ function DashboardContent() {
 
       <section className="mt-8">
         <h2 className="text-xl font-semibold">{copy.plansTitle}</h2>
-        {activePlans.length === 0 ? <p className="mt-3 text-sm text-gray-500">{copy.noPlan}</p> : <div className="mt-3 grid gap-4 lg:grid-cols-2">{activePlans.map(({ course, saved, generated, nextTask, progress }) => (
+        {activePlans.length === 0 ? <div className="mt-3"><p className="text-sm text-gray-500">{copy.noPlan}</p><Link href={inProgress[0] ? courseDetailPath(courses.find(({ id }) => id === inProgress[0])!, language) : language === "zh" ? "/courses?lang=zh" : "/courses"} className="mt-3 inline-flex rounded-lg border border-violet-300 px-4 py-2 text-sm font-semibold text-violet-900 hover:bg-violet-50">{inProgress[0] ? copy.createPlan : copy.browsePlans} →</Link></div> : <div className="mt-3 grid gap-4 lg:grid-cols-2">{activePlans.map(({ course, saved, generated, nextTask, progress }) => (
           <article key={course.id} className="rounded-2xl border border-violet-200 bg-violet-50 p-5">
             <Link href={courseDetailPath(course, language)} className="font-semibold text-violet-950 hover:underline">{courseCode(course)} · {language === "zh" ? (course.titleZh ?? course.title) : course.title}</Link>
             <p className="mt-1 text-xs text-violet-800">{copy.target} {saved.days} · {copy.planned} {generated.plannedDays}</p>

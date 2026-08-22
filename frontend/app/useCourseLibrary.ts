@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { courseLibraryStorageKey, emptyCourseLibrary, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, selectSessionLibrary } from "../data/courseLibrary";
+import { courseLibraryStorageKey, emptyCourseLibrary, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, recordStudyTaskCompletion, selectSessionLibrary } from "../data/courseLibrary";
 import type { CourseLibraryState, CourseProgress } from "../data/courseLibrary";
 import { courseResourceKey } from "../data/courseLibrary";
 import { getSupabaseBrowserClient } from "../lib/supabase/client";
@@ -126,26 +126,22 @@ export function useCourseLibrary() {
     const current = libraryRef.current;
     const plan = current.studyPlans[courseId];
     if (!plan) return;
-    const completedTaskIds = plan.completedTaskIds.includes(taskId) ? plan.completedTaskIds.filter((id) => id !== taskId) : [...plan.completedTaskIds, taskId];
-    update({ ...current, studyPlans: { ...current.studyPlans, [courseId]: { ...plan, completedTaskIds } } });
+    const removing = plan.completedTaskIds.includes(taskId);
+    const completedTaskIds = removing ? plan.completedTaskIds.filter((id) => id !== taskId) : [...plan.completedTaskIds, taskId];
+    update({
+      ...current,
+      studyPlans: {
+        ...current.studyPlans,
+        [courseId]: removing ? { ...plan, completedTaskIds } : recordStudyTaskCompletion(plan, taskId, localDateKey()),
+      },
+    });
   }
 
   function completeDailyTask(courseId: string, taskId: string, dateKey: string) {
     const current = libraryRef.current;
     const plan = current.studyPlans[courseId];
     if (!plan || plan.completedTaskIds.includes(taskId)) return;
-    update({
-      ...current,
-      studyPlans: {
-        ...current.studyPlans,
-        [courseId]: {
-          ...plan,
-          completedTaskIds: [...plan.completedTaskIds, taskId],
-          lastDailyCompletionDate: dateKey,
-          dailyCompletionDates: [...new Set([...(plan.dailyCompletionDates ?? []), dateKey])],
-        },
-      },
-    });
+    update({ ...current, studyPlans: { ...current.studyPlans, [courseId]: recordStudyTaskCompletion(plan, taskId, dateKey) } });
   }
 
   function removeStudyPlan(courseId: string) {

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { completionStreak, courseResourceKey, createCourseLibraryBackup, learningPathCoverage, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, parseCourseLibraryBackup, pathCompletion, phaseCoverage, selectSessionLibrary, studyPlanProgress, suggestedGentlePlanDays } from "./courseLibrary.ts";
+import { completionStreak, courseResourceKey, createCourseLibraryBackup, learningPathCoverage, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, parseCourseLibraryBackup, pathCompletion, phaseCoverage, recordStudyTaskCompletion, selectSessionLibrary, studyPlanProgress, suggestedGentlePlanDays } from "./courseLibrary.ts";
 
 test("course library safely parses local data", () => {
   assert.deepEqual(parseCourseLibrary(null), { progress: {}, favorites: [], completedResources: [], studyPlans: {}, lastOpenedResource: null });
@@ -84,6 +84,15 @@ test("gentle replanning only extends an unfinished plan when pace falls behind",
   assert.equal(suggestedGentlePlanDays(30, "2026-08-01", 3, 30, today), 184);
   assert.equal(suggestedGentlePlanDays(30, "2026-07-01", 0, 30, today), 89);
   assert.equal(suggestedGentlePlanDays(30, "2026-07-01", 30, 30, today), null);
+});
+
+test("completing a plan task records the learning day from every UI entry point", () => {
+  const plan = { days: 30, completedTaskIds: ["task-1"], dailyCompletionDates: ["2026-08-21"] };
+  const completed = recordStudyTaskCompletion(plan, "task-2", "2026-08-22");
+  assert.deepEqual(completed.completedTaskIds, ["task-1", "task-2"]);
+  assert.deepEqual(completed.dailyCompletionDates, ["2026-08-21", "2026-08-22"]);
+  assert.equal(completed.lastDailyCompletionDate, "2026-08-22");
+  assert.equal(recordStudyTaskCompletion(completed, "task-2", "2026-08-22"), completed);
 });
 
 test("path completion deduplicates repeated electives", () => {
