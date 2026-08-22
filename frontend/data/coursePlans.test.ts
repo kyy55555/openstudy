@@ -625,8 +625,8 @@ test("Tsinghua digital logic and computer organization follow current official l
   assert.equal(structuredCoursePlans["tsinghua-computer-organization"].tasks.filter(({ kind }) => kind === "assignment").length, 4);
 });
 
-test("all 161 catalog courses now have substantive official-source plans",()=>{
- const definitions=Object.values(structuredCoursePlans);assert.equal(definitions.length,161);assert.ok(definitions.every(({detail,tasks})=>detail==="full"&&tasks.length>=2));
+test("all 164 catalog courses now have substantive official-source plans",()=>{
+ const definitions=Object.values(structuredCoursePlans);assert.equal(definitions.length,164);assert.ok(definitions.every(({detail,tasks})=>detail==="full"&&tasks.length>=2));
 });
 
 test("MIT economics plans follow every official lecture and assessment", () => {
@@ -640,6 +640,20 @@ test("MIT economics plans follow every official lecture and assessment", () => {
   assert.equal(macro.tasks.filter(({ kind }) => kind === "session").length, 25);
   assert.equal(macro.tasks.filter(({ kind }) => kind === "assignment").length, 8);
   assert.equal(macro.tasks.filter(({ kind }) => kind === "exam").length, 3);
+});
+
+test("MIT genetics, organic chemistry, and waves follow their complete official sequences", () => {
+  const expected = {
+    "mit-7-03": { session: 35, assignment: 7, exam: 4 },
+    "mit-5-12": { session: 35, assignment: 9, exam: 5 },
+    "mit-8-03sc": { session: 24, assignment: 10, exam: 3 },
+  } as const;
+  for (const [id, counts] of Object.entries(expected)) {
+    const definition = structuredCoursePlans[id];
+    assert.equal(definition.tasks.filter(({ kind }) => kind === "session").length, counts.session);
+    assert.equal(definition.tasks.filter(({ kind }) => kind === "assignment").length, counts.assignment);
+    assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, counts.exam);
+  }
 });
 
 test("Berkeley MATH 54 and CMU 15-418 follow their official published sequences", () => {

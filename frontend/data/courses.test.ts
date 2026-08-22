@@ -213,6 +213,15 @@ test("the catalog includes verified non-STEM economics foundations", () => {
   }
 });
 
+test("the catalog expands biology, chemistry, and physics beyond survey courses", () => {
+  for (const id of ["mit-7-03", "mit-5-12", "mit-8-03sc"]) {
+    const item = courses.find((course) => course.id === id);
+    assert.ok(item, `${id} is missing`);
+    assert.equal(item.sourceName, "MIT OpenCourseWare");
+    assert.ok(item.resources.length >= 4);
+  }
+});
+
 test("Princeton BSE foundations use verified Princeton courses", () => {
   const ids = new Set(courses.map(({ id }) => id));
   for (const id of ["princeton-mat103", "princeton-mat104", "princeton-mat201", "princeton-mat202", "princeton-phy103", "princeton-phy104", "princeton-chm201"]) {
