@@ -12,6 +12,7 @@ Launch only when all items below are true:
 - Supabase Row Level Security is enabled for `course_libraries` and `feedback`.
 - A fresh account can confirm its email, sign in, reset its password, and sign out in both English and Chinese.
 - Progress created while signed in appears on a second browser after sign-in.
+- When two signed-in browsers edit after one becomes stale, the older browser shows a conflict instead of silently overwriting the newer cloud record; verify both resolution choices using disposable test progress.
 - Guest progress remains separate before and after account sign-in.
 - One feedback submission appears in Supabase and the test row is then removed.
 - The privacy notice matches the services actually enabled in production.
@@ -28,6 +29,7 @@ Test this journey on a phone and a desktop:
 6. Pause the plan and confirm it disappears from today's suggestion; resume it and confirm the target is extended by the paused calendar days.
 7. Open a curriculum reference and confirm home-university courses and external substitutes are clearly labeled.
 8. Submit a feedback item without entering sensitive information.
+9. In two browsers signed into the same test account, change progress in browser A, then make a stale change in browser B. Confirm B pauses sync and asks whether to keep its local copy or use the cloud copy.
 
 ## First tester cohort
 

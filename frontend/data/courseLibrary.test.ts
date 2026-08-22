@@ -1,12 +1,20 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { cloudSyncRetryDelay, completionStreak, courseResourceKey, createCourseLibraryBackup, learningPathCoverage, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, parseCourseLibraryBackup, pathCompletion, phaseCoverage, recordStudyTaskCompletion, selectNewestAccountLibrary, selectSessionLibrary, studyPlanProgress, suggestedGentlePlanDays, toggleStudyPlanPause, weeklyStudyActivity } from "./courseLibrary.ts";
+import { cloudRevisionChanged, cloudSyncRetryDelay, completionStreak, courseResourceKey, createCourseLibraryBackup, learningPathCoverage, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, parseCourseLibraryBackup, pathCompletion, phaseCoverage, recordStudyTaskCompletion, selectNewestAccountLibrary, selectSessionLibrary, studyPlanProgress, suggestedGentlePlanDays, toggleStudyPlanPause, weeklyStudyActivity } from "./courseLibrary.ts";
 
 test("cloud retries back off and stop until the next user action", () => {
   assert.deepEqual([0, 1, 2, 3, 4, 5].map(cloudSyncRetryDelay), [2_000, 5_000, 15_000, 30_000, 60_000, null]);
   assert.equal(cloudSyncRetryDelay(-1), null);
   assert.equal(cloudSyncRetryDelay(1.5), null);
+});
+
+test("cloud revisions detect another device without depending on timestamp formatting", () => {
+  assert.equal(cloudRevisionChanged(undefined, "2026-08-22T10:00:00Z"), false);
+  assert.equal(cloudRevisionChanged(null, null), false);
+  assert.equal(cloudRevisionChanged(null, "2026-08-22T10:00:00Z"), true);
+  assert.equal(cloudRevisionChanged("2026-08-22T10:00:00.000Z", "2026-08-22 10:00:00+00"), false);
+  assert.equal(cloudRevisionChanged("2026-08-22T10:00:00Z", "2026-08-22T10:00:01Z"), true);
 });
 
 test("course library safely parses local data", () => {

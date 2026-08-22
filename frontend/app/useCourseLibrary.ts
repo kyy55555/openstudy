@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { cloudSyncRetryDelay, courseLibraryStorageKey, emptyCourseLibrary, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, recordStudyTaskCompletion, selectNewestAccountLibrary, selectSessionLibrary, toggleStudyPlanPause } from "../data/courseLibrary";
+import { cloudRevisionChanged, cloudSyncRetryDelay, courseLibraryStorageKey, emptyCourseLibrary, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, recordStudyTaskCompletion, selectNewestAccountLibrary, selectSessionLibrary, toggleStudyPlanPause } from "../data/courseLibrary";
 import type { CourseLibraryState, CourseProgress } from "../data/courseLibrary";
 import { courseResourceKey } from "../data/courseLibrary";
 import { getSupabaseBrowserClient } from "../lib/supabase/client";
@@ -14,6 +14,7 @@ export function useCourseLibrary() {
   const [library, setLibrary] = useState<CourseLibraryState>(emptyCourseLibrary);
   const [loaded, setLoaded] = useState(false);
   const [syncIssue, setSyncIssue] = useState(false);
+  const [syncConflict, setSyncConflict] = useState<{ cloud: CourseLibraryState | null; updatedAt: string | null } | null>(null);
   const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null);
   const userId = useRef<string | null>(null);
   const libraryRef = useRef<CourseLibraryState>(emptyCourseLibrary);
@@ -23,6 +24,7 @@ export function useCourseLibrary() {
   const retryAttempt = useRef(0);
   const syncAccount = useRef<((nextUserId: string | null) => Promise<void>) | null>(null);
   const saveCloudRef = useRef<((nextUserId: string, next: CourseLibraryState) => Promise<void>) | null>(null);
+  const knownCloudUpdatedAt = useRef<string | null | undefined>(undefined);
 
   function clearCloudRetry() {
     if (retryTimer.current !== null) window.clearTimeout(retryTimer.current);
@@ -45,14 +47,31 @@ export function useCourseLibrary() {
     if (!client) return Promise.resolve();
     saveQueue.current = saveQueue.current.then(async () => {
       if (userId.current !== nextUserId) return;
-      const { error } = await client.from("course_libraries").upsert({ user_id: nextUserId, library: next, updated_at: new Date().toISOString() });
+      const { data: current, error: readError } = await client.from("course_libraries").select("library, updated_at").eq("user_id", nextUserId).maybeSingle();
+      if (userId.current !== nextUserId) return;
+      if (readError) {
+        setSyncIssue(true);
+        scheduleCloudRetry(nextUserId);
+        return;
+      }
+      const currentRevision = current?.updated_at ?? null;
+      if (cloudRevisionChanged(knownCloudUpdatedAt.current, currentRevision)) {
+        setSyncConflict({ cloud: current?.library ? parseCourseLibrary(JSON.stringify(current.library)) : null, updatedAt: currentRevision });
+        setSyncIssue(false);
+        clearCloudRetry();
+        return;
+      }
+      const savedAt = new Date().toISOString();
+      const { error } = await client.from("course_libraries").upsert({ user_id: nextUserId, library: next, updated_at: savedAt });
       if (userId.current !== nextUserId) return;
       setSyncIssue(Boolean(error));
       if (error) scheduleCloudRetry(nextUserId);
       else {
         clearCloudRetry();
         retryAttempt.current = 0;
-        setLastSyncedAt(new Date().toISOString());
+        knownCloudUpdatedAt.current = savedAt;
+        setSyncConflict(null);
+        setLastSyncedAt(savedAt);
       }
     }).catch(() => {
       if (userId.current === nextUserId) {
@@ -92,6 +111,10 @@ export function useCourseLibrary() {
     if (!client) return;
     const supabase = client;
     async function sync(nextUserId: string | null) {
+      if (userId.current !== nextUserId) {
+        knownCloudUpdatedAt.current = undefined;
+        setSyncConflict(null);
+      }
       userId.current = nextUserId;
       if (!nextUserId) {
         clearCloudRetry();
@@ -102,6 +125,7 @@ export function useCourseLibrary() {
         setLibrary(guest);
         setLoaded(true);
         setSyncIssue(false);
+        knownCloudUpdatedAt.current = undefined;
         setLastSyncedAt(null);
         return;
       }
@@ -117,6 +141,17 @@ export function useCourseLibrary() {
         scheduleCloudRetry(nextUserId);
         return;
       }
+      const currentRevision = data?.updated_at ?? null;
+      if (cloudRevisionChanged(knownCloudUpdatedAt.current, currentRevision)) {
+        libraryRef.current = cached;
+        setLibrary(cached);
+        setLoaded(true);
+        setSyncIssue(false);
+        setSyncConflict({ cloud: data?.library ? parseCourseLibrary(JSON.stringify(data.library)) : null, updatedAt: currentRevision });
+        clearCloudRetry();
+        return;
+      }
+      knownCloudUpdatedAt.current = currentRevision;
       const account = data?.library ? parseCourseLibrary(JSON.stringify(data.library)) : null;
       const selected = selectNewestAccountLibrary(cached, account, data?.updated_at);
       const next = selectSessionLibrary(nextUserId, emptyCourseLibrary, selected.library);
@@ -125,6 +160,7 @@ export function useCourseLibrary() {
       setLoaded(true);
       window.localStorage.setItem(activeStorageKey.current, JSON.stringify(next));
       setSyncIssue(false);
+      setSyncConflict(null);
       setLastSyncedAt(data?.updated_at ?? null);
       clearCloudRetry();
       retryAttempt.current = 0;
@@ -244,11 +280,31 @@ export function useCourseLibrary() {
   }
 
   function retryCloudSync() {
-    if (!userId.current) return;
+    if (!userId.current || syncConflict) return;
     clearCloudRetry();
     retryAttempt.current = 0;
     void syncAccount.current?.(userId.current);
   }
 
-  return { library, loaded, syncIssue, lastSyncedAt, retryCloudSync, setProgress, toggleFavorite, toggleResource, createStudyPlan, updateStudyPlanDays, togglePlanPaused, toggleStudyTask, completeDailyTask, removeStudyPlan, recordResourceOpen, clearLastOpenedResource, replaceLibrary };
+  function resolveCloudConflict(choice: "local" | "cloud") {
+    if (!userId.current || !syncConflict) return;
+    knownCloudUpdatedAt.current = syncConflict.updatedAt;
+    clearCloudRetry();
+    retryAttempt.current = 0;
+    if (choice === "cloud") {
+      const next = syncConflict.cloud ?? emptyCourseLibrary;
+      libraryRef.current = next;
+      setLibrary(next);
+      window.localStorage.setItem(activeStorageKey.current, JSON.stringify(next));
+      setLastSyncedAt(syncConflict.updatedAt);
+      setSyncIssue(false);
+      setSyncConflict(null);
+      return;
+    }
+    const nextUserId = userId.current;
+    setSyncConflict(null);
+    void saveCloud(nextUserId, libraryRef.current);
+  }
+
+  return { library, loaded, syncIssue, syncConflict: Boolean(syncConflict), lastSyncedAt, retryCloudSync, resolveCloudConflict, setProgress, toggleFavorite, toggleResource, createStudyPlan, updateStudyPlanDays, togglePlanPaused, toggleStudyTask, completeDailyTask, removeStudyPlan, recordResourceOpen, clearLastOpenedResource, replaceLibrary };
 }

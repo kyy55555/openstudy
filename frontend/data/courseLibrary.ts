@@ -43,6 +43,15 @@ export function cloudSyncRetryDelay(attempt: number) {
   return Number.isInteger(attempt) && attempt >= 0 ? (cloudRetryDelays[attempt] ?? null) : null;
 }
 
+export function cloudRevisionChanged(knownRevision: string | null | undefined, currentRevision: string | null) {
+  if (knownRevision === undefined) return false;
+  if (knownRevision === null || currentRevision === null) return knownRevision !== currentRevision;
+  const knownTime = Date.parse(knownRevision);
+  const currentTime = Date.parse(currentRevision);
+  if (Number.isFinite(knownTime) && Number.isFinite(currentTime)) return knownTime !== currentTime;
+  return knownRevision !== currentRevision;
+}
+
 export function localDateKey(date = new Date()) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");

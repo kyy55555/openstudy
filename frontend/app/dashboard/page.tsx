@@ -54,7 +54,7 @@ function ProgressBar({ percent, label }: { percent: number; label: string }) {
 function DashboardContent() {
   const params = useSearchParams();
   const language: Language = params.get("lang") === "zh" ? "zh" : "en";
-  const { library, loaded, syncIssue, lastSyncedAt, retryCloudSync, completeDailyTask, togglePlanPaused, recordResourceOpen, clearLastOpenedResource, replaceLibrary } = useCourseLibrary();
+  const { library, loaded, syncIssue, syncConflict, lastSyncedAt, retryCloudSync, resolveCloudConflict, completeDailyTask, togglePlanPaused, recordResourceOpen, clearLastOpenedResource, replaceLibrary } = useCourseLibrary();
   const [pendingBackup, setPendingBackup] = useState<CourseLibraryBackup | null>(null);
   const [backupMessage, setBackupMessage] = useState("");
   const [todayKey] = useState(() => localDateKey());
@@ -147,7 +147,8 @@ function DashboardContent() {
       <Link href={language === "zh" ? "/?lang=zh" : "/"} className="text-sm text-gray-500 hover:text-black">{copy.back}</Link>
       <h1 className="mt-4 text-3xl font-bold">{copy.title}</h1>
       <p className="mt-2 max-w-3xl text-gray-600">{copy.subtitle}</p>
-      {!syncIssue && lastSyncedAt && <p className="mt-2 text-xs text-emerald-700">✓ {language === "zh" ? "云端已同步" : "Cloud synced"} · {new Date(lastSyncedAt).toLocaleString(language === "zh" ? "zh-CN" : "en-US")}</p>}
+      {syncConflict && <div role="alert" className="mt-5 rounded-xl border border-orange-300 bg-orange-50 p-4 text-sm text-orange-950"><p className="font-semibold">{language === "zh" ? "发现另一台设备更新了学习记录" : "Another device updated your learning record"}</p><p className="mt-1">{language === "zh" ? "为避免覆盖，云同步已经暂停。请选择保留当前设备的记录，或改用最新云端记录；系统不会自动合并。" : "Cloud sync is paused to prevent an overwrite. Keep this device's record or use the latest cloud record; OpenStudy will not merge them automatically."}</p><div className="mt-3 flex flex-wrap gap-2"><button type="button" onClick={() => resolveCloudConflict("local")} className="rounded-lg bg-orange-900 px-3 py-2 font-semibold text-white">{language === "zh" ? "保留本机并上传" : "Keep this device"}</button><button type="button" onClick={() => resolveCloudConflict("cloud")} className="rounded-lg border border-orange-400 bg-white px-3 py-2 font-semibold">{language === "zh" ? "使用云端记录" : "Use cloud record"}</button></div></div>}
+      {!syncIssue && !syncConflict && lastSyncedAt && <p className="mt-2 text-xs text-emerald-700">✓ {language === "zh" ? "云端已同步" : "Cloud synced"} · {new Date(lastSyncedAt).toLocaleString(language === "zh" ? "zh-CN" : "en-US")}</p>}
       {syncIssue && <div role="status" className="mt-5 flex flex-col gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 sm:flex-row sm:items-center sm:justify-between"><p>{language === "zh" ? "云端同步暂时失败。当前更改已保存在此设备；网络恢复时会自动重试。" : "Cloud sync is temporarily unavailable. Changes are saved on this device and will retry automatically when the network returns."}</p><button type="button" onClick={retryCloudSync} className="shrink-0 rounded-lg border border-amber-500 px-3 py-2 font-semibold hover:bg-amber-100">{language === "zh" ? "立即重试" : "Retry now"}</button></div>}
 
       <section className="mt-8 rounded-3xl bg-gradient-to-br from-violet-950 to-indigo-800 p-5 text-white shadow-lg sm:p-7">
