@@ -40,6 +40,14 @@ export function useCourseLibrary() {
   }, []);
 
   useEffect(() => {
+    function retryWhenOnline() {
+      if (userId.current) void saveCloud(userId.current, libraryRef.current);
+    }
+    window.addEventListener("online", retryWhenOnline);
+    return () => window.removeEventListener("online", retryWhenOnline);
+  }, []);
+
+  useEffect(() => {
     const client = getSupabaseBrowserClient();
     if (!client) return;
     const supabase = client;
@@ -165,5 +173,10 @@ export function useCourseLibrary() {
     update(next);
   }
 
-  return { library, loaded, syncIssue, setProgress, toggleFavorite, toggleResource, createStudyPlan, updateStudyPlanDays, toggleStudyTask, completeDailyTask, removeStudyPlan, recordResourceOpen, clearLastOpenedResource, replaceLibrary };
+  function retryCloudSync() {
+    if (!userId.current) return;
+    void saveCloud(userId.current, libraryRef.current);
+  }
+
+  return { library, loaded, syncIssue, retryCloudSync, setProgress, toggleFavorite, toggleResource, createStudyPlan, updateStudyPlanDays, toggleStudyTask, completeDailyTask, removeStudyPlan, recordResourceOpen, clearLastOpenedResource, replaceLibrary };
 }

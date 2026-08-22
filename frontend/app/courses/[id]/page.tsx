@@ -26,7 +26,7 @@ export default function CourseDetailPage() {
   const router = useRouter();
   const language = searchParams.get("lang") === "zh" ? "zh" : "en";
   const course = courses.find(({ id }) => id === params.id);
-  const { library, loaded, syncIssue, setProgress, toggleFavorite, toggleResource, createStudyPlan, updateStudyPlanDays, toggleStudyTask, removeStudyPlan, recordResourceOpen } = useCourseLibrary();
+  const { library, loaded, syncIssue, retryCloudSync, setProgress, toggleFavorite, toggleResource, createStudyPlan, updateStudyPlanDays, toggleStudyTask, removeStudyPlan, recordResourceOpen } = useCourseLibrary();
   const [planDays, setPlanDays] = useState(30);
 
   if (!course) {
@@ -64,7 +64,7 @@ export default function CourseDetailPage() {
         <p className="mt-6 text-lg leading-8 text-gray-700">{language === "zh" ? course.descriptionZh : course.description}</p>
 
         {loaded && <div className="mt-6 flex flex-col gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-sm font-semibold text-emerald-950">{language === "zh" ? "课程学习状态" : "Course progress"}</p><div className="mt-2 flex flex-wrap gap-2">{(["not-started", "in-progress", "completed"] as CourseProgress[]).map((status) => <button key={status} onClick={() => setProgress(course.id, status)} className={`rounded-full border px-3 py-1.5 text-sm ${library.progress[course.id] === status || (!library.progress[course.id] && status === "not-started") ? "border-emerald-800 bg-emerald-800 text-white" : "border-emerald-300 bg-white"}`}>{language === "zh" ? ({ "not-started": "未开始", "in-progress": "学习中", completed: "已完成" }[status]) : ({ "not-started": "Not started", "in-progress": "In progress", completed: "Completed" }[status])}</button>)}</div></div><button onClick={() => toggleFavorite(course.id)} className="rounded-lg border border-emerald-700 px-4 py-2 text-sm font-medium text-emerald-900">{library.favorites.includes(course.id) ? (language === "zh" ? "★ 已收藏" : "★ Saved") : (language === "zh" ? "☆ 收藏课程" : "☆ Save course")}</button></div>}
-        {syncIssue && <p role="status" className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">{language === "zh" ? "云端同步暂时失败，当前更改已安全保存在此设备。恢复连接后再修改一次即可重试同步。" : "Cloud sync is temporarily unavailable. This change is safely stored on this device; make another change after reconnecting to retry."}</p>}
+        {syncIssue && <div role="status" className="mt-4 flex flex-col gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 sm:flex-row sm:items-center sm:justify-between"><p>{language === "zh" ? "云端同步暂时失败，当前更改已安全保存在此设备；网络恢复时会自动重试。" : "Cloud sync is temporarily unavailable. This change is safely stored on this device and will retry automatically when the network returns."}</p><button type="button" onClick={retryCloudSync} className="shrink-0 rounded-lg border border-amber-500 px-3 py-2 font-semibold hover:bg-amber-100">{language === "zh" ? "立即重试" : "Retry now"}</button></div>}
 
         <div className="mt-7 grid gap-3 rounded-xl bg-gray-50 p-5 text-sm sm:grid-cols-2 lg:grid-cols-3">
           {displayedSubjects.length > 0 && <p><b>{language === "zh" ? "学科" : "Subject"}：</b>{displayedSubjects.join(" / ")}</p>}
