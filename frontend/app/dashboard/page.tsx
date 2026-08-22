@@ -15,6 +15,7 @@ import {
   parseCourseLibraryBackup,
   phaseCoverage,
   studyPlanProgress,
+  weeklyStudyActivity,
 } from "../../data/courseLibrary";
 import type { CourseLibraryBackup } from "../../data/courseLibrary";
 import { learningPaths } from "../../data/learningPaths";
@@ -76,6 +77,8 @@ function DashboardContent() {
     .sort((a, b) => b.completed - a.completed || b.percent - a.percent);
   const completedToday = Boolean(todayKey && activePlans.some(({ saved }) => saved.lastDailyCompletionDate === todayKey));
   const streak = completionStreak(activePlans.flatMap(({ saved }) => saved.dailyCompletionDates ?? []));
+  const weeklyActivity = weeklyStudyActivity(activePlans.flatMap(({ saved }) => saved.dailyCompletionDates ?? []));
+  const weeklyCompleted = weeklyActivity.filter(({ completed: dayCompleted }) => dayCompleted).length;
   const runningPlans = activePlans.filter(({ saved }) => !saved.paused);
   const todayPlan = completedToday ? null : runningPlans.find(({ nextTask }) => nextTask);
   const todayTask = todayPlan?.nextTask ?? null;
@@ -85,7 +88,7 @@ function DashboardContent() {
     today: "今日建议", todayDone: "今天的任务已完成", todayDoneHelp: "做得很好。今天不再增加新任务，明天再继续。", noToday: "还没有今日任务。请先在课程详情页创建一个学习计划。", completeToday: "完成今日任务", achievement: "完成啦！今天的学习任务已经记下。",
     createPlan: "为正在学习的课程制定计划", browsePlans: "选择课程并制定计划",
     recent: "继续上次学习", noRecent: "打开课程资料后，这里会保留你的上次学习位置。", clear: "清除记录",
-    overview: "学习概览", courses: "完成课程", resources: "完成资料", plans: "进行中计划", streak: "连续完成天数",
+    overview: "学习概览", courses: "完成课程", resources: "完成资料", plans: "进行中计划", streak: "连续完成天数", week: "最近 7 天", weekUnit: "天完成任务", gentleWin: "稳步前进", gentleWinHelp: "完成一次也算进步。这里记录真实完成，不要求每天打卡。",
     plansTitle: "课程计划", noPlan: "还没有课程计划。你可以在课程详情页输入目标天数。", target: "目标天数", planned: "保守规划", progress: "计划完成度", finishedPlan: "计划任务已全部完成，请自行确认整门课程状态。", paused: "已暂停，不会安排今日任务。", pause: "暂停", resume: "继续",
     current: "正在学习", noCurrent: "还没有标记为学习中的课程。", done: "已完成课程", noDone: "完成课程后会显示在这里。", saved: "收藏课程", noSaved: "还没有收藏课程。",
     coverage: "培养方案学期点亮", noCoverage: "完成或开始路线中的课程后，这里会自然显示匹配的参考培养方案，无需选择路线。", reference: "查看完整参考方案", termDone: "已点亮", termPartial: "进行中", termEmpty: "未开始",
@@ -95,7 +98,7 @@ function DashboardContent() {
     today: "Today's suggestion", todayDone: "Today's task is complete", todayDoneHelp: "Nice work. No extra task will be added today—continue tomorrow.", noToday: "No task for today yet. Create a study plan from a course page first.", completeToday: "Complete today's task", achievement: "Done! Today's learning task has been recorded.",
     createPlan: "Plan an in-progress course", browsePlans: "Choose a course and create a plan",
     recent: "Continue where you left off", noRecent: "Open an official course resource and your latest position will stay here.", clear: "Clear",
-    overview: "Learning overview", courses: "Courses completed", resources: "Resources completed", plans: "Active plans", streak: "Completion streak",
+    overview: "Learning overview", courses: "Courses completed", resources: "Resources completed", plans: "Active plans", streak: "Completion streak", week: "Last 7 days", weekUnit: "days with a completed task", gentleWin: "Steady progress", gentleWinHelp: "One completion still counts. This records real progress without demanding a daily streak.",
     plansTitle: "Course plans", noPlan: "No course plan yet. Set a target number of days on a course page.", target: "Target days", planned: "Conservative plan", progress: "Plan progress", finishedPlan: "All plan tasks are complete. Confirm the whole course separately.", paused: "Paused; no daily task will be suggested.", pause: "Pause", resume: "Resume",
     current: "In progress", noCurrent: "No courses are marked in progress.", done: "Completed courses", noDone: "Completed courses appear here.", saved: "Saved courses", noSaved: "No saved courses yet.",
     coverage: "Curriculum term progress", noCoverage: "Start or complete curriculum courses to see naturally matching references—no path selection required.", reference: "View full curriculum reference", termDone: "Lit", termPartial: "In progress", termEmpty: "Not started",
@@ -166,6 +169,11 @@ function DashboardContent() {
         <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
           {[[copy.courses, completed.length], [copy.resources, library.completedResources.length], [copy.plans, runningPlans.length], [copy.streak, streak]].map(([label, value]) => <div key={String(label)} className="rounded-2xl border border-gray-200 p-3 sm:p-5"><strong className="text-2xl sm:text-3xl">{value}</strong><span className="mt-1 block text-xs text-gray-500 sm:text-sm">{label}</span></div>)}
         </div>
+      </section>
+
+      <section className="mt-8 rounded-2xl border border-emerald-200 bg-emerald-50 p-5 sm:p-6">
+        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end"><div><p className="text-sm font-semibold text-emerald-800">{copy.week}</p><h2 className="mt-1 text-2xl font-bold text-emerald-950">{weeklyCompleted} {copy.weekUnit}</h2><p className="mt-2 text-sm text-emerald-900">{copy.gentleWinHelp}</p></div>{weeklyCompleted > 0 && <span className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-emerald-900">✓ {copy.gentleWin}</span>}</div>
+        <div className="mt-5 grid grid-cols-7 gap-2">{weeklyActivity.map(({ dateKey, completed: dayCompleted }) => <div key={dateKey} className="text-center"><div title={dateKey} aria-label={`${dateKey}: ${dayCompleted ? copy.completeToday : copy.noToday}`} className={`mx-auto flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold ${dayCompleted ? "bg-emerald-700 text-white" : "border border-emerald-200 bg-white text-gray-400"}`}>{dayCompleted ? "✓" : "·"}</div><span className="mt-1 block text-[10px] text-emerald-900">{new Date(`${dateKey}T00:00:00`).toLocaleDateString(language === "zh" ? "zh-CN" : "en-US", { weekday: "short" })}</span></div>)}</div>
       </section>
 
       <section className="mt-8 rounded-2xl border border-blue-200 bg-blue-50 p-5">

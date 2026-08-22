@@ -56,6 +56,17 @@ export function completionStreak(dateKeys: string[], today = new Date()) {
   return streak;
 }
 
+export function weeklyStudyActivity(dateKeys: string[], today = new Date()) {
+  const completed = new Set(dateKeys.filter((value) => /^\d{4}-\d{2}-\d{2}$/.test(value)));
+  const end = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  return Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(end);
+    date.setDate(end.getDate() - (6 - index));
+    const dateKey = localDateKey(date);
+    return { dateKey, completed: completed.has(dateKey) };
+  });
+}
+
 export function suggestedGentlePlanDays(
   currentDays: number,
   createdOn: string | undefined,
