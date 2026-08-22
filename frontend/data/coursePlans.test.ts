@@ -607,8 +607,18 @@ test("Tsinghua combinatorics and algorithms follow every published unit and asse
   assert.equal(algorithms.tasks.filter(({ kind }) => kind === "exam").length, 1);
 });
 
-test("all 153 catalog courses now have substantive official-source plans",()=>{
- const definitions=Object.values(structuredCoursePlans);assert.equal(definitions.length,153);assert.ok(definitions.every(({detail,tasks})=>detail==="full"&&tasks.length>=2));
+test("PKU systems, network, database, and algorithm plans follow official outlines", () => {
+  assert.equal(structuredCoursePlans["pku-algorithm-design"].tasks.filter(({ kind }) => kind === "session").length, 13);
+  assert.equal(structuredCoursePlans["pku-computer-organization"].tasks.filter(({ kind }) => kind === "session").length, 12);
+  assert.equal(structuredCoursePlans["pku-computer-organization"].tasks.filter(({ kind }) => kind === "project").length, 3);
+  assert.equal(structuredCoursePlans["pku-computer-networks"].tasks.filter(({ kind }) => kind === "session").length, 16);
+  assert.equal(structuredCoursePlans["pku-computer-networks"].tasks.filter(({ kind }) => kind === "assignment").length, 3);
+  assert.equal(structuredCoursePlans["pku-databases"].tasks.filter(({ kind }) => kind === "session").length, 15);
+  assert.equal(structuredCoursePlans["pku-databases"].tasks.filter(({ kind }) => kind === "assignment").length, 4);
+});
+
+test("all 157 catalog courses now have substantive official-source plans",()=>{
+ const definitions=Object.values(structuredCoursePlans);assert.equal(definitions.length,157);assert.ok(definitions.every(({detail,tasks})=>detail==="full"&&tasks.length>=2));
 });
 
 test("Berkeley MATH 54 and CMU 15-418 follow their official published sequences", () => {

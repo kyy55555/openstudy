@@ -126,3 +126,15 @@ test("Tsinghua route offers its public algorithm and combinatorics courses", () 
   assert.ok(courseIds.includes("tsinghua-combinatorics"));
   assert.ok(!courseIds.includes("mit-6-006"));
 });
+
+test("PKU route uses its verified native algorithm, systems, network, and database courses", () => {
+  const pku = learningPaths.find(({ id }) => id === "pku-cs");
+  assert.ok(pku);
+  const courseIds = pku.phases.flatMap(({ courseIds }) => courseIds);
+  for (const id of ["pku-algorithm-design", "pku-computer-organization", "pku-computer-networks", "pku-databases"]) {
+    assert.ok(courseIds.includes(id), `${id} is missing from PKU's curriculum`);
+  }
+  for (const id of ["mit-6-006", "berkeley-cs61c", "stanford-cs144", "berkeley-cs186"]) {
+    assert.ok(!courseIds.includes(id), `${id} still substitutes for a verified PKU course`);
+  }
+});

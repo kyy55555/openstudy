@@ -337,9 +337,9 @@ export const learningPaths: LearningPath[] = [
     phases: [
       term("Year 1 · Fall", "大一上", "Begin programming and mathematical analysis/calculus.", "开始程序设计与数学分析/微积分。", ["pku-computing-intro", "mit-18-01sc"]),
       term("Year 1 · Spring", "大一下", "Continue programming, calculus, and physics.", "继续程序设计、微积分与物理。", ["berkeley-cs61a", "mit-18-02sc", "mit-8-01sc"]),
-      term("Year 2 · Fall", "大二上", "Build data structures, discrete mathematics, PKU higher algebra, and computer organization.", "建立数据结构、离散数学、北大高等代数与计算机组成基础。", ["pku-data-structures", "mit-6-042j", "pku-higher-algebra-1", "berkeley-cs61c"]),
-      term("Year 2 · Spring", "大二下", "Study PKU probability, algorithms, systems programming, and physics.", "学习北大概率论、算法、系统编程与物理。", ["pku-probability", "mit-6-006", "princeton-cos217", "mit-8-02"]),
-      term("Year 3 · Fall", "大三上", "Complete operating systems, databases, networks, and theory foundations.", "完成操作系统、数据库、网络与理论基础。", ["pku-operating-systems", "berkeley-cs186", "stanford-cs144", "stanford-cs103"]),
+      term("Year 2 · Fall", "大二上", "Build data structures, discrete mathematics, PKU higher algebra, and computer organization.", "建立数据结构、离散数学、北大高等代数与计算机组成基础。", ["pku-data-structures", "mit-6-042j", "pku-higher-algebra-1", "pku-computer-organization"]),
+      term("Year 2 · Spring", "大二下", "Study PKU probability, algorithms, systems programming, and physics.", "学习北大概率论、算法、系统编程与物理。", ["pku-probability", "pku-algorithm-design", "princeton-cos217", "mit-8-02"]),
+      term("Year 3 · Fall", "大三上", "Complete PKU operating systems, databases, and networks, plus theory foundations.", "完成北大操作系统、数据库和网络课程，并巩固理论基础。", ["pku-operating-systems", "pku-databases", "pku-computer-networks", "stanford-cs103"]),
       term("Year 3 · Spring", "大三下", "Choose upper-level courses across AI, graphics, security, and programming languages.", "在人工智能、图形学、安全与编程语言等方向选课。", ["stanford-cs221", "mit-6-837", "mit-6-858", "stanford-cs143", "berkeley-cs189"], [], [], 2),
       term("Year 4 · Fall", "大四上", "Continue technical electives and research or project work.", "继续技术选修与科研或项目实践。", ["mit-6-824", "mit-6-830", "stanford-cs155", "princeton-cos461"], ["Research or practical project"], ["科研或实践项目"], 2),
       term("Year 4 · Spring", "大四下", "Finish electives and the graduation thesis or project.", "完成选修与毕业论文或毕业设计。", ["cornell-cs6787", "mit-6-036", "stanford-cs148"], ["Graduation thesis or project"], ["毕业论文或毕业设计"], 1),
