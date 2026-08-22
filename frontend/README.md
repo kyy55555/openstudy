@@ -50,6 +50,8 @@ The current Beta does not use advertising trackers or a third-party product-anal
 
 ## Beta deployment checklist
 
+The full release, tester-cohort, incident, and rollback procedure is in [`docs/BETA_LAUNCH.md`](docs/BETA_LAUNCH.md).
+
 - Configure the three environment variables from `.env.example` in the host.
 - When importing the GitHub repository into Vercel, set the project Root Directory to `frontend` and keep the detected Next.js build settings.
 - Run `supabase/schema.sql` and verify Row Level Security is enabled on both tables.
