@@ -552,8 +552,26 @@ test("Harvard foundations follow official schedules, lectures, and public practi
   assert.equal(structuredCoursePlans["harvard-stat110"].tasks.filter(({ kind }) => kind === "assignment").length, 11);
 });
 
-test("all 134 catalog courses now have substantive official-source plans",()=>{
- const definitions=Object.values(structuredCoursePlans);assert.equal(definitions.length,134);assert.ok(definitions.every(({detail,tasks})=>detail==="full"&&tasks.length>=2));
+test("Illinois foundations and core courses follow their official public sequences", () => {
+  assert.equal(structuredCoursePlans["uiuc-math221"].tasks.filter(({ kind }) => kind === "session").length, 22);
+  assert.equal(structuredCoursePlans["uiuc-math231"].tasks.filter(({ kind }) => kind === "session").length, 21);
+  assert.equal(structuredCoursePlans["uiuc-cs173"].tasks.filter(({ kind }) => kind === "session").length, 21);
+  assert.equal(structuredCoursePlans["uiuc-cs341"].tasks.filter(({ kind }) => kind === "session").length, 40);
+  assert.equal(structuredCoursePlans["uiuc-cs341"].tasks.filter(({ kind }) => kind === "project").length, 8);
+  assert.equal(structuredCoursePlans["uiuc-cs341"].tasks.filter(({ kind }) => kind === "assignment").length, 14);
+  assert.equal(structuredCoursePlans["uiuc-cs341"].tasks.filter(({ kind }) => kind === "exam").length, 2);
+  assert.equal(structuredCoursePlans["uiuc-cs357"].tasks.filter(({ kind }) => kind === "session").length, 19);
+  assert.equal(structuredCoursePlans["uiuc-cs357"].tasks.filter(({ kind }) => kind === "assignment").length, 19);
+  assert.equal(structuredCoursePlans["uiuc-cs357"].tasks.filter(({ kind }) => kind === "project").length, 5);
+  assert.equal(structuredCoursePlans["uiuc-cs357"].tasks.filter(({ kind }) => kind === "exam").length, 7);
+  assert.equal(structuredCoursePlans["uiuc-cs361"].tasks.filter(({ kind }) => kind === "session").length, 24);
+  assert.equal(structuredCoursePlans["uiuc-cs374"].tasks.filter(({ kind }) => kind === "session").length, 26);
+  assert.equal(structuredCoursePlans["uiuc-cs374"].tasks.filter(({ kind }) => kind === "assignment").length, 12);
+  assert.equal(structuredCoursePlans["uiuc-cs374"].tasks.filter(({ kind }) => kind === "exam").length, 3);
+});
+
+test("all 141 catalog courses now have substantive official-source plans",()=>{
+ const definitions=Object.values(structuredCoursePlans);assert.equal(definitions.length,141);assert.ok(definitions.every(({detail,tasks})=>detail==="full"&&tasks.length>=2));
 });
 
 test("Berkeley MATH 54 and CMU 15-418 follow their official published sequences", () => {

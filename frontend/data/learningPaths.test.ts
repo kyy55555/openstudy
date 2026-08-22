@@ -70,3 +70,15 @@ test("Harvard's early curriculum uses verified native discrete math, linear alge
     assert.ok(!earlyCourseIds.includes(id), `${id} still substitutes for a verified Harvard course`);
   }
 });
+
+test("Illinois curriculum uses verified native foundations and core courses", () => {
+  const illinois = learningPaths.find(({ id }) => id === "uiuc-cs");
+  assert.ok(illinois);
+  const courseIds = illinois.phases.flatMap(({ courseIds }) => courseIds);
+  for (const id of ["uiuc-math221", "uiuc-math231", "uiuc-cs173", "uiuc-cs341", "uiuc-cs357", "uiuc-cs361", "uiuc-cs374"]) {
+    assert.ok(courseIds.includes(id), `${id} is missing from Illinois's curriculum`);
+  }
+  for (const id of ["mit-6-042j", "mit-18-05", "berkeley-cs162", "berkeley-cs170", "mit-6-0002"]) {
+    assert.ok(!courseIds.includes(id), `${id} still substitutes for a verified Illinois course`);
+  }
+});

@@ -49,6 +49,12 @@ const officialHosts = new Set([
   "www.cs128.org",
   "courses.illinois.edu",
   "courses.grainger.illinois.edu",
+  "catalog.illinois.edu",
+  "math.illinois.edu",
+  "ece.illinois.edu",
+  "cs341.cs.illinois.edu",
+  "cs357.cs.illinois.edu",
+  "ws.engr.illinois.edu",
   "syllabus.gatech.edu",
   "catalog.gatech.edu",
   "cs2110.gatech.edu",
@@ -236,6 +242,16 @@ test("Harvard's native discrete math, linear algebra, and probability courses ar
   }
   assert.equal(byId.get("harvard-cs20")?.hasAssignments, null);
   assert.equal(byId.get("harvard-stat110")?.hasSolutions, true);
+});
+
+test("Illinois's public foundations and core courses are present without unsupported claims", () => {
+  const byId = new Map(courses.map((course) => [course.id, course]));
+  for (const id of ["uiuc-math221", "uiuc-math231", "uiuc-cs173", "uiuc-cs341", "uiuc-cs357", "uiuc-cs361", "uiuc-cs374"]) {
+    assert.equal(byId.get(id)?.university, "University of Illinois Urbana-Champaign");
+  }
+  assert.equal(byId.get("uiuc-cs341")?.year, null);
+  assert.equal(byId.get("uiuc-cs361")?.hasAssignments, null);
+  assert.equal(byId.get("uiuc-cs374")?.hasSolutions, null);
 });
 
 test("audited courses use the latest confirmed public editions", () => {
