@@ -37,6 +37,12 @@ export function normalizeStudyPlanDays(days: number) {
   return Math.min(3650, Math.max(1, Math.ceil(days)));
 }
 
+const cloudRetryDelays = [2_000, 5_000, 15_000, 30_000, 60_000] as const;
+
+export function cloudSyncRetryDelay(attempt: number) {
+  return Number.isInteger(attempt) && attempt >= 0 ? (cloudRetryDelays[attempt] ?? null) : null;
+}
+
 export function localDateKey(date = new Date()) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
