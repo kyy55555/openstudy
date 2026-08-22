@@ -81,6 +81,8 @@ const translations = {
     noCourses: "No courses found.",
     noCoursesHint: "Try another subject or remove some filters.",
     relatedSearches: "Try a related search",
+    filteredOut: (count: number) => `${count} matching courses are hidden by the current filters.`,
+    clearFiltersKeepSearch: "Clear filters and keep this search",
     showMore: (remaining: number) => `Show more courses (${remaining} remaining)`,
   },
   zh: {
@@ -137,6 +139,8 @@ const translations = {
     noCourses: "没有找到课程。",
     noCoursesHint: "请尝试其他学科或减少筛选条件。",
     relatedSearches: "试试相关搜索",
+    filteredOut: (count: number) => `有 ${count} 门匹配课程被当前筛选条件隐藏。`,
+    clearFiltersKeepSearch: "清除筛选并保留搜索词",
     showMore: (remaining: number) => `显示更多课程（剩余 ${remaining} 门）`,
   },
 } as const;
@@ -732,6 +736,15 @@ function CourseExplorer() {
     router.replace(coursesPath("", language));
   }
 
+  function clearFiltersKeepSearch() {
+    setUniversityFilter("All");
+    setSubjectFilter("All");
+    setOnlyVideos(false);
+    setOnlyAssignments(false);
+    setOnlySolutions(false);
+    setVisibleCount(coursesPerPage);
+  }
+
   const filteredCourses = sortCourses(
     filterCourses(courses, {
       searchTerm,
@@ -750,6 +763,9 @@ function CourseExplorer() {
   const relatedSearches = filteredCourses.length === 0 && searchTerm
     ? courseSearchSuggestions(courses, searchTerm).slice(0, 6)
     : [];
+  const searchOnlyMatches = filteredCourses.length === 0 && searchTerm
+    ? filterCourses(courses, { searchTerm, university: "All", subject: "All", onlyVideos: false, onlyAssignments: false, onlySolutions: false }).length
+    : 0;
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-4xl px-6 py-12">
@@ -857,6 +873,7 @@ function CourseExplorer() {
             <p className="mt-2 text-sm text-gray-500">
               {copy.noCoursesHint}
             </p>
+            {searchOnlyMatches > 0 && <div className="mt-4 rounded-lg bg-blue-50 p-3 text-sm text-blue-900"><p>{copy.filteredOut(searchOnlyMatches)}</p><button type="button" onClick={clearFiltersKeepSearch} className="mt-2 rounded-lg border border-blue-300 bg-white px-3 py-2 font-semibold hover:bg-blue-100">{copy.clearFiltersKeepSearch}</button></div>}
             {relatedSearches.length > 0 && <div className="mt-4"><p className="text-xs font-semibold uppercase tracking-wide text-gray-500">{copy.relatedSearches}</p><div className="mt-2 flex flex-wrap justify-center gap-2">{relatedSearches.map((suggestion) => <button key={suggestion} type="button" onClick={() => { setSearchInput(suggestion); handleSearch(suggestion); }} className="rounded-full border border-gray-300 px-3 py-1.5 text-sm hover:border-black">{suggestion}</button>)}</div></div>}
             <button
               type="button"

@@ -119,6 +119,17 @@ test("search understands common bilingual synonyms instead of requiring exact wo
       ({ id }) => id === "harvard-cs50-web",
     ),
   );
+
+  for (const [query, expectedId] of [
+    ["networking", "stanford-cs144"],
+    ["信息安全", "berkeley-cs161"],
+    ["graphics", "berkeley-cs184"],
+    ["概率统计", "mit-18-05"],
+    ["distributed system", "mit-6-824"],
+    ["编译原理", "stanford-cs143"],
+  ]) {
+    assert.ok(filterCourses(courses, { ...defaults, searchTerm: query }).some(({ id }) => id === expectedId), `${query} should find ${expectedId}`);
+  }
 });
 
 test("search suggestions react to partial English and Chinese input", () => {

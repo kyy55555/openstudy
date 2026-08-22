@@ -17,6 +17,17 @@ const searchSynonymGroups = [
   ["machine learning", "ml", "机器学习"],
   ["database", "databases", "数据库"],
   ["algorithm", "algorithms", "算法"],
+  ["data structure", "data structures", "数据结构"],
+  ["operating system", "operating systems", "os", "操作系统"],
+  ["computer network", "computer networks", "networking", "网络", "计算机网络"],
+  ["cybersecurity", "cyber security", "computer security", "网络安全", "信息安全"],
+  ["computer graphics", "graphics", "图形学", "计算机图形学"],
+  ["linear algebra", "线性代数"],
+  ["calculus", "微积分"],
+  ["probability", "statistics", "probability and statistics", "概率", "统计", "概率统计"],
+  ["data science", "数据科学"],
+  ["distributed systems", "distributed system", "分布式系统"],
+  ["compiler", "compilers", "编译器", "编译原理"],
 ] as const;
 
 const commonSearchSuggestions = [
@@ -25,6 +36,9 @@ const commonSearchSuggestions = [
   "人工智能", "Artificial Intelligence", "机器学习", "Machine Learning",
   "数据结构", "Data Structures", "数据库", "Databases",
   "操作系统", "Operating Systems", "计算机网络", "Computer Networks",
+  "网络安全", "Cybersecurity", "计算机图形学", "Computer Graphics",
+  "线性代数", "Linear Algebra", "微积分", "Calculus",
+  "概率统计", "Probability and Statistics", "分布式系统", "Distributed Systems",
 ] as const;
 
 function editDistance(left: string, right: string) {
