@@ -79,6 +79,7 @@ npm test
 npm run lint
 npm run check:data
 npm run build
+npm run check:bundle
 npm run check:links
 npm run check:smoke
 ```

@@ -30,3 +30,4 @@ jobs:
       - run: npm run lint
       - run: npm run check:data
       - run: npm run build
+      - run: npm run check:bundle

@@ -14,7 +14,8 @@
     "test": "node --test data/*.test.ts",
     "check:links": "node scripts/check-course-links.mjs",
     "check:data": "node scripts/check-course-data-health.mjs",
-    "check:beta": "npm test && npm run lint && npm run check:data && npm run build && npm run check:links",
+    "check:bundle": "node scripts/check-client-bundle-size.mjs",
+    "check:beta": "npm test && npm run lint && npm run check:data && npm run build && npm run check:bundle && npm run check:links",
     "check:launch-env": "node scripts/check-launch-env.mjs",
     "check:smoke": "node scripts/smoke-test.mjs"
   },

@@ -19,6 +19,23 @@ const results = await Promise.all(checks.map(async ([path, marker]) => {
   const body = await response.text();
   if (!response.ok) throw new Error(`${path} returned HTTP ${response.status}`);
   if (!body.includes(marker)) throw new Error(`${path} is missing expected content: ${marker}`);
+  const requiredHeaders = {
+    "content-security-policy": ["default-src 'self'", "frame-ancestors 'none'", "object-src 'none'"],
+    "referrer-policy": ["strict-origin-when-cross-origin"],
+    "x-content-type-options": ["nosniff"],
+    "x-frame-options": ["DENY"],
+    "permissions-policy": ["camera=()", "microphone=()", "geolocation=()"],
+    "cross-origin-opener-policy": ["same-origin"],
+  };
+  for (const [header, expectedParts] of Object.entries(requiredHeaders)) {
+    const value = response.headers.get(header) ?? "";
+    for (const expected of expectedParts) {
+      if (!value.includes(expected)) throw new Error(`${path} is missing security header value ${header}: ${expected}`);
+    }
+  }
+  if (base.startsWith("https://") && !response.headers.get("strict-transport-security")?.includes("max-age=")) {
+    throw new Error(`${path} is missing Strict-Transport-Security on HTTPS`);
+  }
   return path;
 }));
 
