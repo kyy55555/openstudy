@@ -5,6 +5,7 @@ export const courseLibraryStorageKey = "openstudy-course-library-v1";
 export type CourseStudyPlan = { days: number; completedTaskIds: string[]; createdOn?: string; lastDailyCompletionDate?: string; dailyCompletionDates?: string[] };
 
 export type CourseLibraryState = {
+  updatedAt?: string;
   progress: Record<string, CourseProgress>;
   favorites: string[];
   completedResources: string[];
@@ -84,6 +85,19 @@ export function recordStudyTaskCompletion(plan: CourseStudyPlan, taskId: string,
   };
 }
 
+export function selectNewestAccountLibrary(
+  cached: CourseLibraryState,
+  cloud: CourseLibraryState | null,
+  cloudUpdatedAt?: string | null,
+) {
+  if (!cloud) return { library: cached, source: "cache" as const };
+  const cachedTime = cached.updatedAt ? Date.parse(cached.updatedAt) : Number.NEGATIVE_INFINITY;
+  const cloudTimestamp = cloud.updatedAt ?? cloudUpdatedAt;
+  const cloudTime = cloudTimestamp ? Date.parse(cloudTimestamp) : Number.NEGATIVE_INFINITY;
+  if (Number.isFinite(cachedTime) && cachedTime > cloudTime) return { library: cached, source: "cache" as const };
+  return { library: cloud, source: "cloud" as const };
+}
+
 export function studyPlanProgress(totalTaskIds: string[], completedTaskIds: string[]) {
   const tasks = [...new Set(totalTaskIds)];
   const completedSet = new Set(completedTaskIds);
@@ -95,6 +109,7 @@ export function parseCourseLibrary(value: string | null): CourseLibraryState {
   if (!value) return emptyCourseLibrary;
   try {
     const parsed = JSON.parse(value) as Partial<CourseLibraryState>;
+    const updatedAt = typeof parsed.updatedAt === "string" && !Number.isNaN(Date.parse(parsed.updatedAt)) ? parsed.updatedAt : undefined;
     const progress = parsed.progress && typeof parsed.progress === "object"
       ? Object.fromEntries(Object.entries(parsed.progress).filter((entry): entry is [string, CourseProgress] => typeof entry[0] === "string" && ["not-started", "in-progress", "completed"].includes(entry[1] as string)))
       : {};
@@ -118,6 +133,7 @@ export function parseCourseLibrary(value: string | null): CourseLibraryState {
       ? recent
       : null;
     return {
+      ...(updatedAt ? { updatedAt } : {}),
       progress,
       favorites: uniqueStrings(parsed.favorites),
       completedResources: uniqueStrings(parsed.completedResources),

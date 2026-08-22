@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { courseLibraryStorageKey, emptyCourseLibrary, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, recordStudyTaskCompletion, selectSessionLibrary } from "../data/courseLibrary";
+import { courseLibraryStorageKey, emptyCourseLibrary, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, recordStudyTaskCompletion, selectNewestAccountLibrary, selectSessionLibrary } from "../data/courseLibrary";
 import type { CourseLibraryState, CourseProgress } from "../data/courseLibrary";
 import { courseResourceKey } from "../data/courseLibrary";
 import { getSupabaseBrowserClient } from "../lib/supabase/client";
@@ -14,6 +14,7 @@ export function useCourseLibrary() {
   const [library, setLibrary] = useState<CourseLibraryState>(emptyCourseLibrary);
   const [loaded, setLoaded] = useState(false);
   const [syncIssue, setSyncIssue] = useState(false);
+  const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null);
   const userId = useRef<string | null>(null);
   const libraryRef = useRef<CourseLibraryState>(emptyCourseLibrary);
   const activeStorageKey = useRef(courseLibraryStorageKey);
@@ -25,6 +26,7 @@ export function useCourseLibrary() {
     saveQueue.current = saveQueue.current.then(async () => {
       const { error } = await client.from("course_libraries").upsert({ user_id: nextUserId, library: next, updated_at: new Date().toISOString() });
       setSyncIssue(Boolean(error));
+      if (!error) setLastSyncedAt(new Date().toISOString());
     }).catch(() => setSyncIssue(true));
     return saveQueue.current;
   }
@@ -60,26 +62,30 @@ export function useCourseLibrary() {
         setLibrary(guest);
         setLoaded(true);
         setSyncIssue(false);
+        setLastSyncedAt(null);
         return;
       }
       activeStorageKey.current = accountLibraryStorageKey(nextUserId);
       const cached = parseCourseLibrary(window.localStorage.getItem(activeStorageKey.current));
-      const { data, error } = await supabase.from("course_libraries").select("library").eq("user_id", nextUserId).maybeSingle();
+      const { data, error } = await supabase.from("course_libraries").select("library, updated_at").eq("user_id", nextUserId).maybeSingle();
       if (error) {
         libraryRef.current = cached;
         setLibrary(cached);
         setLoaded(true);
         setSyncIssue(true);
+        setLastSyncedAt(null);
         return;
       }
       const account = data?.library ? parseCourseLibrary(JSON.stringify(data.library)) : null;
-      const next = selectSessionLibrary(nextUserId, emptyCourseLibrary, account ?? cached);
+      const selected = selectNewestAccountLibrary(cached, account, data?.updated_at);
+      const next = selectSessionLibrary(nextUserId, emptyCourseLibrary, selected.library);
       libraryRef.current = next;
       setLibrary(next);
       setLoaded(true);
       window.localStorage.setItem(activeStorageKey.current, JSON.stringify(next));
       setSyncIssue(false);
-      if (!data) {
+      setLastSyncedAt(data?.updated_at ?? null);
+      if (!data || selected.source === "cache") {
         await saveCloud(nextUserId, next);
       }
     }
@@ -89,10 +95,11 @@ export function useCourseLibrary() {
   }, []);
 
   function update(next: CourseLibraryState) {
-    libraryRef.current = next;
-    setLibrary(next);
-    window.localStorage.setItem(activeStorageKey.current, JSON.stringify(next));
-    if (userId.current) void saveCloud(userId.current, next);
+    const stamped = { ...next, updatedAt: new Date().toISOString() };
+    libraryRef.current = stamped;
+    setLibrary(stamped);
+    window.localStorage.setItem(activeStorageKey.current, JSON.stringify(stamped));
+    if (userId.current) void saveCloud(userId.current, stamped);
   }
 
   function setProgress(id: string, progress: CourseProgress) {
@@ -178,5 +185,5 @@ export function useCourseLibrary() {
     void saveCloud(userId.current, libraryRef.current);
   }
 
-  return { library, loaded, syncIssue, retryCloudSync, setProgress, toggleFavorite, toggleResource, createStudyPlan, updateStudyPlanDays, toggleStudyTask, completeDailyTask, removeStudyPlan, recordResourceOpen, clearLastOpenedResource, replaceLibrary };
+  return { library, loaded, syncIssue, lastSyncedAt, retryCloudSync, setProgress, toggleFavorite, toggleResource, createStudyPlan, updateStudyPlanDays, toggleStudyTask, completeDailyTask, removeStudyPlan, recordResourceOpen, clearLastOpenedResource, replaceLibrary };
 }

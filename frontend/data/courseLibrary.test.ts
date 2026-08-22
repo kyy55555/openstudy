@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { completionStreak, courseResourceKey, createCourseLibraryBackup, learningPathCoverage, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, parseCourseLibraryBackup, pathCompletion, phaseCoverage, recordStudyTaskCompletion, selectSessionLibrary, studyPlanProgress, suggestedGentlePlanDays } from "./courseLibrary.ts";
+import { completionStreak, courseResourceKey, createCourseLibraryBackup, learningPathCoverage, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, parseCourseLibraryBackup, pathCompletion, phaseCoverage, recordStudyTaskCompletion, selectNewestAccountLibrary, selectSessionLibrary, studyPlanProgress, suggestedGentlePlanDays } from "./courseLibrary.ts";
 
 test("course library safely parses local data", () => {
   assert.deepEqual(parseCourseLibrary(null), { progress: {}, favorites: [], completedResources: [], studyPlans: {}, lastOpenedResource: null });
@@ -16,6 +16,14 @@ test("guest records never merge into an account automatically", () => {
   assert.deepEqual(selectSessionLibrary("user-1", guest, account), account);
   assert.deepEqual(selectSessionLibrary("new-user", guest, null), parseCourseLibrary(null));
   assert.ok(!("guest-course" in selectSessionLibrary("new-user", guest, null).progress));
+});
+
+test("newer offline account progress wins over stale cloud data", () => {
+  const cached = parseCourseLibrary('{"updatedAt":"2026-08-22T10:00:00.000Z","progress":{"offline":"completed"}}');
+  const cloud = parseCourseLibrary('{"updatedAt":"2026-08-22T09:00:00.000Z","progress":{"cloud":"in-progress"}}');
+  assert.deepEqual(selectNewestAccountLibrary(cached, cloud, "2026-08-22T09:30:00.000Z"), { library: cached, source: "cache" });
+  assert.deepEqual(selectNewestAccountLibrary(parseCourseLibrary(null), cloud, "2026-08-22T09:30:00.000Z"), { library: cloud, source: "cloud" });
+  assert.deepEqual(selectNewestAccountLibrary(cached, null), { library: cached, source: "cache" });
 });
 
 test("invalid synced fields are discarded without losing valid records", () => {
