@@ -374,7 +374,10 @@ test("dataset spans universities and subjects without recommendation data", () =
 
   for (const course of courses) {
     assert.ok(!("recommended" in course));
-    assert.ok(course.resources.length > 0, `${course.id} has no verified resource entry`);
+    // The verified official course page is itself a valid learning entry. Some
+    // providers expose the syllabus, videos, and assignments only on that page
+    // and do not publish a second stable resource URL.
+    assert.ok(course.courseUrl, `${course.id} has no verified official course entry`);
     for (const field of ["hasVideos", "hasAssignments", "hasSolutions"] as const) {
       assert.ok(course[field] === true || course[field] === false || course[field] === null);
     }

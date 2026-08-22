@@ -2009,14 +2009,14 @@ export const courses: Course[] = [
     description: "A Tsinghua computer-science theory course on counting principles, permutations and combinations, generating functions, recurrence relations, Catalan and Stirling numbers, inclusion-exclusion, pigeonhole and Ramsey ideas, groups, Burnside's lemma, and Pólya enumeration.", descriptionZh: "清华计算机理论课程，涵盖计数法则、排列组合、母函数、递推关系、Catalan 与 Stirling 数、容斥与鸽巢原理、Ramsey 思想、群、Burnside 引理和 Pólya 计数。",
     searchKeywords: ["60240013X", "combinatorics", "generating functions", "Polya", "组合数学", "清华"], level: "Advanced Undergraduate", prerequisites: ["Elementary discrete mathematics"], language: "Chinese", year: null, hasVideos: true, hasAssignments: true, hasSolutions: null,
     courseUrl: "https://v1-www.xuetangx.com/courses/course-v1%3ATsinghuaX%2B60240013X%2Bsp/about", sourceName: "Tsinghua University course on XuetangX", verifiedOn: "2026-08-22",
-    resources: [{ type: "lectures", title: "Official eight-week video and demonstration sequence", url: "https://v1-www.xuetangx.com/courses/course-v1%3ATsinghuaX%2B60240013X%2Bsp/courseware" }, { type: "exams", title: "Official Tsinghua MOOC exam review", url: "https://studio.xuetangx.com/asset-v1%3ATsinghuaX%2B60240013X%2Bsp%2Btype%40asset%2Bblock/review.pdf" }],
+    resources: [{ type: "exams", title: "Official Tsinghua MOOC exam review", url: "https://studio.xuetangx.com/asset-v1%3ATsinghuaX%2B60240013X%2Bsp%2Btype%40asset%2Bblock/review.pdf" }],
   }),
   course({
     id: "tsinghua-algorithm-design", code: "2018122106X", title: "Algorithm Design and Analysis", titleZh: "算法设计与分析", university: "Tsinghua University", subject: "Algorithms", subjectZh: "算法",
     description: "A Tsinghua advanced course covering stable matching, asymptotic analysis, graph traversal, greedy methods, divide and conquer, dynamic programming, network flow, NP-completeness, approximation, local search, and randomized algorithms.", descriptionZh: "清华高阶课程，涵盖稳定匹配、渐近分析、图遍历、贪心方法、分治、动态规划、网络流、NP 完全性、近似算法、局部搜索和随机算法。",
     searchKeywords: ["2018122106X", "algorithm design", "network flow", "NP completeness", "算法设计与分析", "清华"], level: "Advanced Undergraduate", prerequisites: ["Data structures", "Discrete mathematics"], language: "Chinese", year: 2018, hasVideos: true, hasAssignments: true, hasSolutions: null,
     courseUrl: "https://v1-www.xuetangx.com/courses/course-v1%3ATsinghuaX%2B2018122106X%2B2018_T2/about", sourceName: "Tsinghua University course on XuetangX", verifiedOn: "2026-08-22",
-    resources: [{ type: "lectures", title: "Official eleven-unit video, slide, homework, and examination sequence", url: "https://v1-www.xuetangx.com/courses/course-v1%3ATsinghuaX%2B2018122106X%2B2018_T2/courseware" }],
+    resources: [],
   }),
   course({
     id: "pku-higher-algebra-1", code: "00132321", title: "Higher Algebra I", titleZh: "高等代数 I", university: "Peking University", subject: "Linear Algebra", subjectZh: "线性代数",
