@@ -2208,6 +2208,13 @@ export const courses: Course[] = [
     resources: [{ type: "schedule", title: "Official 2026 lecture and section schedule", url: "https://read.seas.harvard.edu/cs1610/2026/schedule/" }, { type: "assignments", title: "Official Chickadee problem-set sequence", url: "https://read.seas.harvard.edu/cs1610/2026/pset1/" }],
   }),
   course({
+    id: "harvard-cs1650", code: "CS 1650", title: "Data Systems", titleZh: "数据系统", university: "Harvard University", subject: "Databases", subjectZh: "数据库",
+    description: "Harvard's undergraduate data-systems course covers relational and modern data-system design, storage layouts, indexing, cache-conscious algorithms, query processing, concurrency, recovery, and hardware-aware optimization through a five-milestone main-memory column-store project in C.", descriptionZh: "Harvard 本科数据系统课程，涵盖关系型与现代数据系统设计、存储布局、索引、缓存感知算法、查询处理、并发、恢复和硬件感知优化，并通过五阶段 C 语言内存列式数据库项目实践。",
+    searchKeywords: ["CS 1650", "CS 165", "data systems", "database internals", "column store", "Harvard", "数据系统", "数据库"], level: "Advanced Undergraduate", prerequisites: ["Harvard CS 50 and CS 61, or equivalent algorithms and systems programming"], language: "English", year: 2025, hasVideos: true, hasAssignments: true, hasSolutions: null,
+    courseUrl: "https://daslab.seas.harvard.edu/classes/cs165", sourceName: "Harvard Data Systems Laboratory", verifiedOn: "2026-08-22",
+    resources: [{ type: "projects", title: "Official five-milestone data-system project", url: "https://daslab.seas.harvard.edu/classes/cs165/project.html" }, { type: "materials", title: "Official Harvard Data Systems Laboratory course overview", url: "https://daslab.seas.harvard.edu/" }],
+  }),
+  course({
     id: "stanford-cs244b", title: "Distributed Systems", titleZh: "分布式系统", university: "Stanford University", subject: "Distributed Systems", subjectZh: "分布式系统",
     description: "Distributed systems and applications with protocols, shared state, consistency, transactions, consensus, storage, robustness, failure handling, and security.", descriptionZh: "学习分布式系统与应用，涵盖协议、共享状态、一致性、事务、共识、存储、鲁棒性、故障处理与安全。",
     searchKeywords: ["CS 244B", "distributed systems", "consensus", "Stanford"], level: "Graduate", prerequisites: ["Stanford CS 144"], year: 2024, hasVideos: null, hasAssignments: true, hasSolutions: null,

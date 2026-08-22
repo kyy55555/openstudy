@@ -73,6 +73,7 @@ const officialHosts = new Set([
   "cs3110.github.io",
   "cs61.seas.harvard.edu",
   "read.seas.harvard.edu",
+  "daslab.seas.harvard.edu",
   "lewis.seas.harvard.edu",
   "stat110.hsites.harvard.edu",
   "people.math.harvard.edu",
@@ -283,6 +284,14 @@ test("Harvard's current public operating-systems course is present", () => {
   assert.equal(course.year, 2026);
   assert.equal(course.university, "Harvard University");
   assert.ok(course.resources.some(({ type }) => type === "assignments"));
+});
+
+test("Harvard's current public data-systems course is present", () => {
+  const course = courses.find(({ id }) => id === "harvard-cs1650");
+  assert.ok(course);
+  assert.equal(course.year, 2025);
+  assert.equal(course.university, "Harvard University");
+  assert.ok(course.resources.some(({ type }) => type === "projects"));
 });
 
 test("Illinois's public foundations and core courses are present without unsupported claims", () => {
