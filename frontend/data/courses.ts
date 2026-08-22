@@ -2481,6 +2481,20 @@ export const courses: Course[] = [
     resources: [{ type: "syllabus", title: "Official Fall 2025 syllabus", url: "https://ws.engr.illinois.edu/custom/getsyllabus.asp?id=3220" }, { type: "materials", title: "Official 2026–2027 catalog description", url: "https://catalog.illinois.edu/courses-of-instruction/cs/" }],
   }),
   course({
+    id: "tsinghua-digital-logic-lab", title: "Digital Logic Laboratory", titleZh: "数字逻辑实验", university: "Tsinghua University", subject: "Computer Systems", subjectZh: "计算机系统",
+    description: "Tsinghua's introductory hardware laboratory covering oscilloscopes, NAND gates, combinational circuits, FPGA development with SystemVerilog, adders, counters, finite-state machines, and static-memory access through eight individual experiments.", descriptionZh: "清华计算机专业入门硬件实验课，通过八个独立实验学习示波器、与非门、组合逻辑、SystemVerilog 与 FPGA 开发、加法器、计数器、有限状态机和静态存储器访问。",
+    searchKeywords: ["digital logic", "FPGA", "SystemVerilog", "数字逻辑实验", "清华"], level: "Introductory", prerequisites: [], language: "Chinese", year: 2026, hasVideos: null, hasAssignments: true, hasSolutions: true,
+    courseUrl: "https://lab.cs.tsinghua.edu.cn/digital-logic-lab/doc/", sourceName: "Tsinghua University Computer Laboratory Teaching Center", verifiedOn: "2026-08-22",
+    resources: [{ type: "schedule", title: "Official 2026 weekly schedule and eight-experiment overview", url: "https://lab.cs.tsinghua.edu.cn/digital-logic-lab/doc/#课程安排" }, { type: "assignments", title: "Official experiment documentation", url: "https://lab.cs.tsinghua.edu.cn/digital-logic-lab/doc/lab1/lab/" }, { type: "materials", title: "Official SystemVerilog introduction", url: "https://lab.cs.tsinghua.edu.cn/digital-logic-lab/doc/hdl-tutorial/1.first-hardware/" }],
+  }),
+  course({
+    id: "tsinghua-computer-organization", title: "Computer Organization", titleZh: "计算机组成原理", university: "Tsinghua University", subject: "Computer Systems", subjectZh: "计算机系统",
+    description: "Tsinghua's 2025 computer-organization course using RISC-V and THINPAD to study instruction sets, data representation, arithmetic hardware, CPU datapaths and control, pipelines, caches, virtual memory, buses, interrupts, and I/O through written work and processor labs.", descriptionZh: "清华 2025 年计算机组成原理课程，以 RISC-V 与 THINPAD 为主线，学习指令系统、数据表示、运算硬件、CPU 数据通路与控制、流水线、缓存、虚拟内存、总线、中断和 I/O，并完成书面作业与处理器实验。",
+    searchKeywords: ["computer organization", "RISC-V", "THINPAD", "CPU", "计算机组成原理", "清华"], level: "Undergraduate", prerequisites: ["Digital logic", "C programming"], language: "Chinese", year: 2025, hasVideos: null, hasAssignments: true, hasSolutions: null,
+    courseUrl: "https://lab.cs.tsinghua.edu.cn/cod-lab-docs/", sourceName: "Tsinghua University Computer Laboratory Teaching Center", verifiedOn: "2026-08-22",
+    resources: [{ type: "schedule", title: "Official 2025 lecture, homework, and laboratory schedule", url: "https://lab.cs.tsinghua.edu.cn/cod-lab-docs/#课程安排2025" }, { type: "projects", title: "Official processor laboratory guide", url: "https://lab.cs.tsinghua.edu.cn/cod-lab-docs/labs/" }, { type: "materials", title: "Official RISC-V emulator and laboratory environment", url: "https://lab.cs.tsinghua.edu.cn/cod-lab-docs/labs/lab1/emulator/" }],
+  }),
+  course({
     id: "uiuc-cs374", code: "CS 374", title: "Introduction to Algorithms and Models of Computation", titleZh: "算法与计算模型导论", university: "University of Illinois Urbana-Champaign", subject: "Algorithms", subjectZh: "算法",
     description: "Formal languages and automata, recursive algorithms, divide and conquer, backtracking, dynamic programming, graph algorithms, greedy algorithms, reductions, NP-completeness, and undecidability.", descriptionZh: "学习形式语言与自动机、递归算法、分治、回溯、动态规划、图算法、贪心算法、归约、NP 完全性和不可判定性。",
     searchKeywords: ["CS 374", "algorithms", "models of computation", "automata", "complexity", "UIUC"], level: "Advanced Undergraduate", prerequisites: ["UIUC CS 173", "UIUC CS 225"], year: 2026, hasVideos: true, hasAssignments: true, hasSolutions: null,

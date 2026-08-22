@@ -311,7 +311,7 @@ export const learningPaths: LearningPath[] = [
     phases: [
       term("Year 1 · Fall", "大一上", "Begin calculus, programming, and science foundations.", "开始微积分、程序设计与科学基础。", ["mit-18-01sc", "tsinghua-20740164", "mit-8-01sc"]),
       term("Year 1 · Spring", "大一下", "Continue calculus, physics, programming, and Tsinghua's public linear-algebra sequence.", "继续微积分、物理、程序设计，并学习清华公开线性代数课程。", ["mit-18-02sc", "mit-8-02", "berkeley-cs61a", "tsinghua-linear-algebra"]),
-      term("Year 2 · Fall", "大二上", "Build discrete mathematics, data structures, and digital/computer organization.", "建立离散数学、数据结构与数字逻辑/计算机组成基础。", ["mit-6-042j", "tsinghua-20740112", "berkeley-cs61c"]),
+      term("Year 2 · Fall", "大二上", "Build discrete mathematics, data structures, digital logic, and computer organization.", "建立离散数学、数据结构、数字逻辑与计算机组成基础。", ["mit-6-042j", "tsinghua-20740112", "tsinghua-digital-logic-lab", "tsinghua-computer-organization"]),
       term("Year 2 · Spring", "大二下", "Study probability, Tsinghua's public algorithm sequence, software construction, and systems foundations.", "学习概率、清华公开算法课程、软件构造与系统基础。", ["mit-18-05", "tsinghua-algorithm-design", "mit-6-031", "princeton-cos217"]),
       term("Year 3 · Fall", "大三上", "Complete Tsinghua operating systems alongside networks, databases, and theory.", "完成清华操作系统，并同步学习网络、数据库与理论核心。", ["tsinghua-operating-systems", "stanford-cs144", "tsinghua-database-technology", "stanford-cs103"]),
       term("Year 3 · Spring", "大三下", "Choose advanced directions after the common core, including Tsinghua combinatorics for theory depth.", "完成共同核心后选择高阶方向，其中可选清华组合数学深化理论基础。", ["tsinghua-computer-graphics", "tsinghua-combinatorics", "stanford-cs221", "berkeley-cs189", "mit-6-858", "stanford-cs143"], [], [], 2),

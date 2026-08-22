@@ -617,8 +617,16 @@ test("PKU systems, network, database, and algorithm plans follow official outlin
   assert.equal(structuredCoursePlans["pku-databases"].tasks.filter(({ kind }) => kind === "assignment").length, 4);
 });
 
-test("all 157 catalog courses now have substantive official-source plans",()=>{
- const definitions=Object.values(structuredCoursePlans);assert.equal(definitions.length,157);assert.ok(definitions.every(({detail,tasks})=>detail==="full"&&tasks.length>=2));
+test("Tsinghua digital logic and computer organization follow current official labs and schedules", () => {
+  assert.equal(structuredCoursePlans["tsinghua-digital-logic-lab"].tasks.filter(({ kind }) => kind === "project").length, 8);
+  assert.equal(structuredCoursePlans["tsinghua-digital-logic-lab"].tasks.filter(({ kind }) => kind === "exam").length, 1);
+  assert.equal(structuredCoursePlans["tsinghua-computer-organization"].tasks.filter(({ kind }) => kind === "session").length, 22);
+  assert.equal(structuredCoursePlans["tsinghua-computer-organization"].tasks.filter(({ kind }) => kind === "project").length, 6);
+  assert.equal(structuredCoursePlans["tsinghua-computer-organization"].tasks.filter(({ kind }) => kind === "assignment").length, 4);
+});
+
+test("all 159 catalog courses now have substantive official-source plans",()=>{
+ const definitions=Object.values(structuredCoursePlans);assert.equal(definitions.length,159);assert.ok(definitions.every(({detail,tasks})=>detail==="full"&&tasks.length>=2));
 });
 
 test("Berkeley MATH 54 and CMU 15-418 follow their official published sequences", () => {

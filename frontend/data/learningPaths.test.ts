@@ -138,3 +138,12 @@ test("PKU route uses its verified native algorithm, systems, network, and databa
     assert.ok(!courseIds.includes(id), `${id} still substitutes for a verified PKU course`);
   }
 });
+
+test("Tsinghua route uses current native digital-logic and computer-organization laboratories", () => {
+  const tsinghua = learningPaths.find(({ id }) => id === "tsinghua-cs");
+  assert.ok(tsinghua);
+  const courseIds = tsinghua.phases.flatMap(({ courseIds }) => courseIds);
+  assert.ok(courseIds.includes("tsinghua-digital-logic-lab"));
+  assert.ok(courseIds.includes("tsinghua-computer-organization"));
+  assert.ok(!courseIds.includes("berkeley-cs61c"));
+});

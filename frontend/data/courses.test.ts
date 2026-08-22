@@ -46,6 +46,7 @@ const officialHosts = new Set([
   "www.tsinghua.edu.cn",
   "www.tcm.tsinghua.edu.cn",
   "os.cs.tsinghua.edu.cn",
+  "lab.cs.tsinghua.edu.cn",
   "v1-www.xuetangx.com",
   "studio.xuetangx.com",
   "higher.smartedu.cn",
