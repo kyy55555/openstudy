@@ -570,8 +570,20 @@ test("Illinois foundations and core courses follow their official public sequenc
   assert.equal(structuredCoursePlans["uiuc-cs374"].tasks.filter(({ kind }) => kind === "exam").length, 3);
 });
 
-test("all 141 catalog courses now have substantive official-source plans",()=>{
- const definitions=Object.values(structuredCoursePlans);assert.equal(definitions.length,141);assert.ok(definitions.every(({detail,tasks})=>detail==="full"&&tasks.length>=2));
+test("Georgia Tech shared foundations follow official 2026 syllabi", () => {
+  assert.equal(structuredCoursePlans["gatech-math1551"].tasks.filter(({ kind }) => kind === "session").length, 14);
+  assert.equal(structuredCoursePlans["gatech-math1552"].tasks.filter(({ kind }) => kind === "session").length, 17);
+  assert.equal(structuredCoursePlans["gatech-math1552"].tasks.filter(({ kind }) => kind === "exam").length, 4);
+  assert.equal(structuredCoursePlans["gatech-cs1331"].tasks.filter(({ kind }) => kind === "session").length, 15);
+  assert.equal(structuredCoursePlans["gatech-cs1332"].tasks.filter(({ kind }) => kind === "session").length, 22);
+  assert.equal(structuredCoursePlans["gatech-cs2050"].tasks.filter(({ kind }) => kind === "session").length, 25);
+  assert.equal(structuredCoursePlans["gatech-cs2050"].tasks.filter(({ kind }) => kind === "exam").length, 4);
+  assert.equal(structuredCoursePlans["gatech-cs2340"].tasks.filter(({ kind }) => kind === "session").length, 13);
+  assert.equal(structuredCoursePlans["gatech-cs2340"].tasks.filter(({ kind }) => kind === "project").length, 5);
+});
+
+test("all 147 catalog courses now have substantive official-source plans",()=>{
+ const definitions=Object.values(structuredCoursePlans);assert.equal(definitions.length,147);assert.ok(definitions.every(({detail,tasks})=>detail==="full"&&tasks.length>=2));
 });
 
 test("Berkeley MATH 54 and CMU 15-418 follow their official published sequences", () => {

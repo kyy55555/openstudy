@@ -82,3 +82,15 @@ test("Illinois curriculum uses verified native foundations and core courses", ()
     assert.ok(!courseIds.includes(id), `${id} still substitutes for a verified Illinois course`);
   }
 });
+
+test("Georgia Tech's early curriculum uses its verified shared foundations", () => {
+  const gatech = learningPaths.find(({ id }) => id === "gatech-cs");
+  assert.ok(gatech);
+  const earlyCourseIds = gatech.phases.slice(0, 4).flatMap(({ courseIds }) => courseIds);
+  for (const id of ["gatech-math1551", "gatech-math1552", "gatech-cs1331", "gatech-cs1332", "gatech-cs2050", "gatech-cs2110", "gatech-cs2340"]) {
+    assert.ok(earlyCourseIds.includes(id), `${id} is missing from Georgia Tech's early curriculum`);
+  }
+  for (const id of ["mit-18-01sc", "mit-18-02sc", "berkeley-cs61a", "berkeley-cs61b", "mit-6-042j", "princeton-cos217"]) {
+    assert.ok(!earlyCourseIds.includes(id), `${id} still substitutes for a verified Georgia Tech course`);
+  }
+});

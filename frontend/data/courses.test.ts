@@ -254,6 +254,16 @@ test("Illinois's public foundations and core courses are present without unsuppo
   assert.equal(byId.get("uiuc-cs374")?.hasSolutions, null);
 });
 
+test("Georgia Tech's shared computing and calculus foundations are present", () => {
+  const byId = new Map(courses.map((course) => [course.id, course]));
+  for (const id of ["gatech-math1551", "gatech-math1552", "gatech-cs1331", "gatech-cs1332", "gatech-cs2050", "gatech-cs2340"]) {
+    assert.equal(byId.get(id)?.university, "Georgia Institute of Technology");
+    assert.equal(byId.get(id)?.year, 2026);
+  }
+  assert.equal(byId.get("gatech-cs1331")?.hasSolutions, null);
+  assert.equal(byId.get("gatech-cs2340")?.hasVideos, null);
+});
+
 test("audited courses use the latest confirmed public editions", () => {
   const byId = new Map(courses.map((course) => [course.id, course]));
   for (const [id, expectedYear, expectedUrl] of [
