@@ -46,6 +46,8 @@ Only authenticated users write to Supabase. Guest and account records remain sep
 
 Anonymous and authenticated visitors can submit Beta feedback, but cannot read feedback rows. The SQL script is safe to run again when policies change.
 
+Feedback rows include a category, review status, interface language, coarse viewport class, and deployment commit when available. The form automatically falls back to the legacy columns during a staggered deployment, so run `supabase/schema.sql` before or shortly after publishing the matching frontend. Manage the `new → reviewing → resolved/closed` workflow in the Supabase dashboard; these operational fields are never readable through the public client.
+
 The current Beta does not use advertising trackers or a third-party product-analytics service. Feedback stores the submitted message, optional reply email, submission time, and feedback-page URL. Never ask users to include passwords in feedback.
 
 ## Beta deployment checklist

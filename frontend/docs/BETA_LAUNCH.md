@@ -45,6 +45,8 @@ Record problems by severity:
 - **P1:** core search, course opening, progress, or feedback is unusable. Fix before expanding the cohort.
 - **P2:** confusing copy, missing course, isolated broken link, or layout issue. Keep testing and schedule the fix.
 
+In the Supabase feedback table, triage every `new` row within 48 hours: change it to `reviewing` when accepted, then `resolved` after the fix is deployed or `closed` when no action is needed. Filter by `issue_type`, `viewport`, and `app_version` to identify repeated failures without collecting browsing histories. Never change or delete the original message while resolving an item.
+
 ## Privacy-preserving Beta signals
 
 Do not add behavior tracking merely to measure growth. For the first cohort, use only aggregate operational counts already available from the services and voluntary feedback:

@@ -33,6 +33,23 @@ create table if not exists public.feedback (
   created_at timestamptz not null default now()
 );
 
+alter table public.feedback add column if not exists issue_type text;
+alter table public.feedback add column if not exists status text not null default 'new';
+alter table public.feedback add column if not exists language text;
+alter table public.feedback add column if not exists viewport text;
+alter table public.feedback add column if not exists app_version text;
+
+alter table public.feedback drop constraint if exists feedback_issue_type_check;
+alter table public.feedback add constraint feedback_issue_type_check check (issue_type is null or issue_type in ('broken-link', 'course-data', 'missing-course', 'study-plan', 'account-sync', 'mobile-accessibility', 'translation', 'account-deletion', 'other'));
+alter table public.feedback drop constraint if exists feedback_status_check;
+alter table public.feedback add constraint feedback_status_check check (status in ('new', 'reviewing', 'resolved', 'closed'));
+alter table public.feedback drop constraint if exists feedback_language_check;
+alter table public.feedback add constraint feedback_language_check check (language is null or language in ('en', 'zh'));
+alter table public.feedback drop constraint if exists feedback_viewport_check;
+alter table public.feedback add constraint feedback_viewport_check check (viewport is null or viewport in ('mobile', 'tablet', 'desktop'));
+alter table public.feedback drop constraint if exists feedback_app_version_length_check;
+alter table public.feedback add constraint feedback_app_version_length_check check (app_version is null or char_length(app_version) <= 40);
+
 alter table public.feedback enable row level security;
 
 drop policy if exists "Anyone can submit beta feedback" on public.feedback;
@@ -42,3 +59,5 @@ to anon, authenticated
 with check (char_length(message) between 10 and 4000);
 
 create index if not exists feedback_created_at_idx on public.feedback (created_at desc);
+create index if not exists feedback_status_created_at_idx on public.feedback (status, created_at desc);
+create index if not exists feedback_issue_type_created_at_idx on public.feedback (issue_type, created_at desc);

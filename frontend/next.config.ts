@@ -2,6 +2,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  env: {
+    NEXT_PUBLIC_OPENSTUDY_COMMIT: process.env.VERCEL_GIT_COMMIT_SHA ?? "",
+  },
   async headers() {
     const scripts = process.env.NODE_ENV === "development" ? "'self' 'unsafe-inline' 'unsafe-eval'" : "'self' 'unsafe-inline'";
     return [{
