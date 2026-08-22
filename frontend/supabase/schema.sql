@@ -91,7 +91,7 @@ alter table public.feedback add column if not exists viewport text;
 alter table public.feedback add column if not exists app_version text;
 
 alter table public.feedback drop constraint if exists feedback_issue_type_check;
-alter table public.feedback add constraint feedback_issue_type_check check (issue_type is null or issue_type in ('broken-link', 'course-data', 'missing-course', 'study-plan', 'account-sync', 'mobile-accessibility', 'translation', 'account-deletion', 'other'));
+alter table public.feedback add constraint feedback_issue_type_check check (issue_type is null or issue_type in ('broken-link', 'course-data', 'curriculum-data', 'missing-course', 'study-plan', 'account-sync', 'mobile-accessibility', 'translation', 'account-deletion', 'other'));
 alter table public.feedback drop constraint if exists feedback_status_check;
 alter table public.feedback add constraint feedback_status_check check (status in ('new', 'reviewing', 'resolved', 'closed'));
 alter table public.feedback drop constraint if exists feedback_language_check;

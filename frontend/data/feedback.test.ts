@@ -1,10 +1,15 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { feedbackAppVersion, feedbackViewport, isFeedbackIssueType, legacyFeedbackMessage, shouldRetryLegacyFeedback } from "./feedback.ts";
+import { feedbackAppVersion, feedbackPrefill, feedbackViewport, isFeedbackIssueType, legacyFeedbackMessage, shouldRetryLegacyFeedback } from "./feedback.ts";
 
 test("feedback categories are explicit and reject unknown values", () => {
   assert.equal(isFeedbackIssueType("account-sync"), true);
   assert.equal(isFeedbackIssueType("computer-science"), false);
+});
+
+test("feedback links prefill bounded bilingual course and curriculum context", () => {
+  assert.equal(feedbackPrefill("zh", { pathId: "mit-6-3", sourceUrl: "https://catalog.mit.edu/" }), "培养方案：mit-6-3\n官方来源：https://catalog.mit.edu/\n\n我发现的问题：");
+  assert.match(feedbackPrefill("en", { courseId: "x".repeat(120) }), /^Course：x{100}\n\nProblem found: $/);
 });
 
 test("feedback records only a coarse viewport category", () => {

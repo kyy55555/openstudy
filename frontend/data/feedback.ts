@@ -1,6 +1,7 @@
 export const feedbackIssueTypes = [
   "broken-link",
   "course-data",
+  "curriculum-data",
   "missing-course",
   "study-plan",
   "account-sync",
@@ -31,6 +32,18 @@ export function feedbackAppVersion(commitSha?: string): string {
 
 export function legacyFeedbackMessage(issueType: FeedbackIssueType, message: string): string {
   return `[${issueType}] ${message.trim()}`;
+}
+
+export function feedbackPrefill(
+  language: FeedbackLanguage,
+  context: { courseId?: string; pathId?: string; sourceUrl?: string },
+): string {
+  const lines: string[] = [];
+  if (context.courseId) lines.push(`${language === "zh" ? "课程" : "Course"}：${context.courseId.slice(0, 100)}`);
+  if (context.pathId) lines.push(`${language === "zh" ? "培养方案" : "Curriculum"}：${context.pathId.slice(0, 100)}`);
+  if (context.sourceUrl) lines.push(`${language === "zh" ? "官方来源" : "Official source"}：${context.sourceUrl.slice(0, 2000)}`);
+  if (lines.length === 0) return "";
+  return `${lines.join("\n")}\n\n${language === "zh" ? "我发现的问题：" : "Problem found: "}`;
 }
 
 export function shouldRetryLegacyFeedback(error: { code?: string; message?: string } | null): boolean {

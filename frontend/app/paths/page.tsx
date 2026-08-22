@@ -73,7 +73,10 @@ function PathsContent() {
             <p className="mt-2 text-xs text-gray-500">{language === "zh" ? `来源版本：${path.sourceEditionZh} · 核验日期：${path.verifiedOn}` : `Source edition: ${path.sourceEdition} · Verified: ${path.verifiedOn}`}</p>
             {path.additionalOfficialSources?.map((source) => <a key={source.url} href={source.url} target="_blank" rel="noreferrer" className="mr-4 mt-2 inline-block text-xs font-medium text-gray-600 underline underline-offset-4">{language === "zh" ? source.titleZh : source.title} ↗</a>)}
           </div>
-          <a href={path.officialUrl} target="_blank" rel="noreferrer" className="shrink-0 text-sm font-medium underline underline-offset-4">{language === "zh" ? "查看官方培养方案 ↗" : "Official curriculum ↗"}</a>
+          <div className="flex shrink-0 flex-col items-start gap-3 sm:items-end">
+            <a href={path.officialUrl} target="_blank" rel="noreferrer" className="text-sm font-medium underline underline-offset-4">{language === "zh" ? "查看官方培养方案 ↗" : "Official curriculum ↗"}</a>
+            <Link href={`/feedback?${new URLSearchParams({ ...(language === "zh" ? { lang: "zh" } : {}), type: "curriculum-data", path: path.id, source: path.officialUrl }).toString()}`} className="text-sm text-gray-600 underline underline-offset-4">{language === "zh" ? "报告方案问题" : "Report curriculum issue"}</Link>
+          </div>
         </div>
 
         {loaded && <div className="mt-6 rounded-xl bg-emerald-50 p-4"><div className="flex items-center justify-between gap-4 text-sm"><span className="font-semibold text-emerald-950">{language === "zh" ? `参考方案覆盖度：${completion.completed}/${completion.total} 个课程位置` : `Curriculum coverage: ${completion.completed}/${completion.total} course slots`}</span><span className="font-bold text-emerald-900">{completion.percent}%</span></div><div className="mt-2 h-2 overflow-hidden rounded-full bg-emerald-100"><div className="h-full rounded-full bg-emerald-600" style={{ width: `${completion.percent}%` }} /></div><p className="mt-2 text-xs text-emerald-800">{language === "zh" ? "这只是参考覆盖度，不代表大学学分或必须完成的路线。选修按要求数量计算；暂无公开课链接的要求不计入。" : "This is reference coverage, not university credit or a required path. Electives count by required slots; requirements without open-course links are excluded."}</p></div>}
