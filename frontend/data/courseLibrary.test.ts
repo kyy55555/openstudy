@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { cloudRevisionChanged, cloudSyncRetryDelay, completionStreak, courseResourceKey, createCourseLibraryBackup, learningPathCoverage, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, parseCourseLibraryBackup, pathCompletion, phaseCoverage, recordStudyTaskCompletion, selectNewestAccountLibrary, selectSessionLibrary, studyPlanProgress, suggestedGentlePlanDays, toggleStudyPlanPause, weeklyStudyActivity } from "./courseLibrary.ts";
+import { cloudRevisionChanged, cloudSyncRequestIsCurrent, cloudSyncRetryDelay, completionStreak, courseResourceKey, createCourseLibraryBackup, learningPathCoverage, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, parseCourseLibraryBackup, pathCompletion, phaseCoverage, recordStudyTaskCompletion, selectNewestAccountLibrary, selectSessionLibrary, studyPlanProgress, suggestedGentlePlanDays, toggleStudyPlanPause, weeklyStudyActivity } from "./courseLibrary.ts";
 
 test("cloud retries back off and stop until the next user action", () => {
   assert.deepEqual([0, 1, 2, 3, 4, 5].map(cloudSyncRetryDelay), [2_000, 5_000, 15_000, 30_000, 60_000, null]);
@@ -15,6 +15,14 @@ test("cloud revisions detect another device without depending on timestamp forma
   assert.equal(cloudRevisionChanged(null, "2026-08-22T10:00:00Z"), true);
   assert.equal(cloudRevisionChanged("2026-08-22T10:00:00.000Z", "2026-08-22 10:00:00+00"), false);
   assert.equal(cloudRevisionChanged("2026-08-22T10:00:00Z", "2026-08-22T10:00:01Z"), true);
+});
+
+test("late cloud responses cannot overwrite a newer account or signed-out session", () => {
+  assert.equal(cloudSyncRequestIsCurrent(4, 4, "user-a", "user-a"), true);
+  assert.equal(cloudSyncRequestIsCurrent(3, 4, "user-a", "user-a"), false);
+  assert.equal(cloudSyncRequestIsCurrent(4, 4, "user-a", "user-b"), false);
+  assert.equal(cloudSyncRequestIsCurrent(4, 4, "user-a", null), false);
+  assert.equal(cloudSyncRequestIsCurrent(5, 5, null, null), true);
 });
 
 test("course library safely parses local data", () => {

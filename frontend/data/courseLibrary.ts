@@ -52,6 +52,15 @@ export function cloudRevisionChanged(knownRevision: string | null | undefined, c
   return knownRevision !== currentRevision;
 }
 
+export function cloudSyncRequestIsCurrent(
+  requestGeneration: number,
+  currentGeneration: number,
+  requestedUserId: string | null,
+  activeUserId: string | null,
+) {
+  return requestGeneration === currentGeneration && requestedUserId === activeUserId;
+}
+
 export function localDateKey(date = new Date()) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
