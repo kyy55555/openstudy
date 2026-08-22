@@ -58,3 +58,15 @@ test("Cornell's early curriculum uses its required home-university foundations",
     assert.ok(!earlyCourseIds.includes(id), `${id} still substitutes for a verified Cornell course`);
   }
 });
+
+test("Harvard's early curriculum uses verified native discrete math, linear algebra, and probability", () => {
+  const harvard = learningPaths.find(({ id }) => id === "harvard-cs");
+  assert.ok(harvard);
+  const earlyCourseIds = harvard.phases.slice(0, 4).flatMap(({ courseIds }) => courseIds);
+  for (const id of ["harvard-cs20", "harvard-math21b", "harvard-stat110"]) {
+    assert.ok(earlyCourseIds.includes(id), `${id} is missing from Harvard's early curriculum`);
+  }
+  for (const id of ["mit-6-042j", "mit-18-06", "mit-18-05"]) {
+    assert.ok(!earlyCourseIds.includes(id), `${id} still substitutes for a verified Harvard course`);
+  }
+});

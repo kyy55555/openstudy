@@ -544,8 +544,16 @@ test("Cornell's required math and foundations courses use only verified official
   }
 });
 
-test("all 131 catalog courses now have substantive official-source plans",()=>{
- const definitions=Object.values(structuredCoursePlans);assert.equal(definitions.length,131);assert.ok(definitions.every(({detail,tasks})=>detail==="full"&&tasks.length>=2));
+test("Harvard foundations follow official schedules, lectures, and public practice", () => {
+  assert.equal(structuredCoursePlans["harvard-cs20"].tasks.filter(({ kind }) => kind === "session").length, 34);
+  assert.equal(structuredCoursePlans["harvard-cs20"].tasks.filter(({ kind }) => kind === "exam").length, 2);
+  assert.equal(structuredCoursePlans["harvard-math21b"].tasks.filter(({ kind }) => kind === "assignment").length, 13);
+  assert.equal(structuredCoursePlans["harvard-stat110"].tasks.filter(({ kind }) => kind === "session").length, 34);
+  assert.equal(structuredCoursePlans["harvard-stat110"].tasks.filter(({ kind }) => kind === "assignment").length, 11);
+});
+
+test("all 134 catalog courses now have substantive official-source plans",()=>{
+ const definitions=Object.values(structuredCoursePlans);assert.equal(definitions.length,134);assert.ok(definitions.every(({detail,tasks})=>detail==="full"&&tasks.length>=2));
 });
 
 test("Berkeley MATH 54 and CMU 15-418 follow their official published sequences", () => {

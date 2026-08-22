@@ -55,6 +55,12 @@ const officialHosts = new Set([
   "faculty.cc.gatech.edu",
   "cs3110.github.io",
   "cs61.seas.harvard.edu",
+  "lewis.seas.harvard.edu",
+  "stat110.hsites.harvard.edu",
+  "people.math.harvard.edu",
+  "abel.math.harvard.edu",
+  "courses.my.harvard.edu",
+  "www.seas.harvard.edu",
   "www.scs.stanford.edu",
   "undergraduate.catalog.berkeley.edu",
   "math.berkeley.edu",
@@ -221,6 +227,15 @@ test("Cornell's required mathematics and computing foundations are present", () 
   }
   assert.equal(byId.get("cornell-cs2800")?.hasAssignments, null);
   assert.equal(byId.get("cornell-math2940")?.hasVideos, null);
+});
+
+test("Harvard's native discrete math, linear algebra, and probability courses are present", () => {
+  const byId = new Map(courses.map((course) => [course.id, course]));
+  for (const id of ["harvard-cs20", "harvard-math21b", "harvard-stat110"]) {
+    assert.equal(byId.get(id)?.university, "Harvard University");
+  }
+  assert.equal(byId.get("harvard-cs20")?.hasAssignments, null);
+  assert.equal(byId.get("harvard-stat110")?.hasSolutions, true);
 });
 
 test("audited courses use the latest confirmed public editions", () => {

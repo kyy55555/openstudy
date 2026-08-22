@@ -2305,4 +2305,25 @@ export const courses: Course[] = [
     courseUrl: "https://math.cornell.edu/lower-level-courses", sourceName: "Cornell University Department of Mathematics", verifiedOn: "2026-08-22",
     resources: [{ type: "syllabus", title: "Official mathematics catalog entry", url: "https://catalog.cornell.edu/courses/math/" }, { type: "materials", title: "Official textbook information", url: "https://math.cornell.edu/textbooks" }],
   }),
+  course({
+    id: "harvard-cs20", code: "CS 20", title: "Discrete Mathematics for Computer Science", titleZh: "计算机科学离散数学", university: "Harvard University", subject: "Discrete Mathematics", subjectZh: "离散数学",
+    description: "Mathematical tools for computer science including formal proof, logic, set theory, induction, graph theory, combinatorics, number theory, probability, recurrences, and public-key cryptography.", descriptionZh: "学习计算机科学所需的形式化证明、逻辑、集合论、归纳法、图论、组合数学、数论、概率、递推关系和公钥密码学。",
+    searchKeywords: ["CS 20", "discrete mathematics", "proofs", "logic", "graphs", "Harvard"], level: "Introductory", prerequisites: null, year: null, hasVideos: null, hasAssignments: null, hasSolutions: null,
+    courseUrl: "https://lewis.seas.harvard.edu/pages/harvard-computer-science-20-discrete-mathematics-computer-science", sourceName: "Harvard John A. Paulson School of Engineering and Applied Sciences", verifiedOn: "2026-08-22",
+    resources: [{ type: "schedule", title: "Official public topic schedule", url: "https://lewis.seas.harvard.edu/pages/schedule-1" }, { type: "materials", title: "Official course notes", url: "https://www.seas.harvard.edu/courses/cs20/MIT-notes.pdf" }],
+  }),
+  course({
+    id: "harvard-math21b", code: "MATH 21B", title: "Linear Algebra and Differential Equations", titleZh: "线性代数与微分方程", university: "Harvard University", subject: "Linear Algebra", subjectZh: "线性代数",
+    description: "Matrices, linear transformations and spaces, determinants, eigenvalues and eigenvectors, dynamical systems, ordinary and partial differential equations, and Fourier series.", descriptionZh: "学习矩阵、线性变换与线性空间、行列式、特征值与特征向量、动力系统、常微分与偏微分方程以及傅里叶级数。",
+    searchKeywords: ["MATH 21B", "linear algebra", "differential equations", "Harvard"], level: "Introductory", prerequisites: null, year: 2025, hasVideos: null, hasAssignments: true, hasSolutions: true,
+    courseUrl: "https://courses.my.harvard.edu/dw_course/fas_crse_cat.pdf", sourceName: "Harvard University Faculty of Arts and Sciences", verifiedOn: "2026-08-22",
+    resources: [{ type: "syllabus", title: "Official detailed syllabus archive", url: "https://abel.math.harvard.edu/archive/21b_spring_04/syllabus/syllabus.html" }, { type: "assignments", title: "Official homework archive", url: "https://abel.math.harvard.edu/archive/21b_spring_04/reg_assignments/index.html" }, { type: "exams", title: "Official exams and review archive", url: "https://people.math.harvard.edu/archive/21b_spring_04/exams/" }],
+  }),
+  course({
+    id: "harvard-stat110", code: "STAT 110", title: "Introduction to Probability", titleZh: "概率论导论", university: "Harvard University", subject: "Probability and Statistics", subjectZh: "概率与统计",
+    description: "Counting and probability, conditional probability, random variables and distributions, expectation, joint distributions, limit theorems, and Markov chains.", descriptionZh: "学习计数与概率、条件概率、随机变量与分布、期望、联合分布、极限定理和马尔可夫链。",
+    searchKeywords: ["STAT 110", "probability", "statistics", "random variables", "Markov chains", "Harvard"], level: "Intermediate", prerequisites: ["Single-variable calculus"], year: null, hasVideos: true, hasAssignments: true, hasSolutions: true,
+    courseUrl: "https://stat110.hsites.harvard.edu/", sourceName: "Harvard University Department of Statistics", verifiedOn: "2026-08-22",
+    resources: [{ type: "lectures", title: "Official 34-lecture video sequence", url: "https://stat110.hsites.harvard.edu/youtube" }, { type: "assignments", title: "Official strategic practice and homework sets with solutions", url: "https://stat110.hsites.harvard.edu/strategic-practice-problems" }, { type: "materials", title: "Official handouts and selected solutions", url: "https://stat110.hsites.harvard.edu/handouts" }],
+  }),
 ];
