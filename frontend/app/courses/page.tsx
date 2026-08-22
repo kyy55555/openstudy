@@ -14,6 +14,7 @@ import {
   displayCourseSubjects,
   courseSubjectLabel,
   programmingLanguageSubjectPrefix,
+  rankCoursesForSearch,
   sortCourses,
   uniqueCourseValues,
   uniqueCourseSubjects,
@@ -745,7 +746,7 @@ function CourseExplorer() {
     setVisibleCount(coursesPerPage);
   }
 
-  const filteredCourses = sortCourses(
+  const filteredCourses = rankCoursesForSearch(sortCourses(
     filterCourses(courses, {
       searchTerm,
       university: universityFilter,
@@ -755,7 +756,7 @@ function CourseExplorer() {
       onlySolutions,
     }),
     sort,
-  );
+  ), searchTerm);
   const visibleCourses = filteredCourses.slice(0, visibleCount);
   const suggestions = searchInput.trim() === searchTerm
     ? []

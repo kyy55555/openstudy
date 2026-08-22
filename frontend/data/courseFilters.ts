@@ -1,3 +1,4 @@
+import { courseCode } from "./courses.ts";
 import type { Course } from "./courses";
 
 export type CourseFilters = {
@@ -66,7 +67,7 @@ export function courseSearchSuggestions(courses: Course[], input: string, limit 
   const candidates = Array.from(new Set([
     ...commonSearchSuggestions,
     ...searchSynonymGroups.flat(),
-    ...courses.flatMap((course) => [course.title, course.titleZh, course.subject, course.subjectZh]),
+    ...courses.flatMap((course) => [courseCode(course), course.title, course.titleZh, course.subject, course.subjectZh]),
   ].filter((candidate): candidate is string => typeof candidate === "string" && candidate.length > 0)));
 
   const directMatches = candidates
@@ -207,6 +208,7 @@ export function uniqueCourseValues(
 export function filterCourses(courses: Course[], filters: CourseFilters) {
   return courses.filter((course) => {
     const searchableText = [
+      courseCode(course),
       course.title,
       course.titleZh,
       course.university,
@@ -234,6 +236,24 @@ export function filterCourses(courses: Course[], filters: CourseFilters) {
       (!filters.onlySolutions || course.hasSolutions === true)
     );
   });
+}
+
+export function rankCoursesForSearch(courses: Course[], searchTerm: string) {
+  const query = searchTerm.trim().toLowerCase();
+  if (!query) return [...courses];
+  function score(course: Course) {
+    const code = courseCode(course).toLowerCase();
+    const titles = [course.title, course.titleZh].filter((value): value is string => Boolean(value)).map((value) => value.toLowerCase());
+    const subjects = [course.subject, course.subjectZh].map((value) => value.toLowerCase());
+    if (code === query) return 0;
+    if (titles.some((title) => title === query)) return 1;
+    if (code.startsWith(query)) return 2;
+    if (titles.some((title) => title.startsWith(query))) return 3;
+    if (titles.some((title) => title.includes(query))) return 4;
+    if (subjects.some((subject) => subject.includes(query))) return 5;
+    return 6;
+  }
+  return [...courses].sort((a, b) => score(a) - score(b));
 }
 
 export function sortCourses(courses: Course[], sort: CourseSort) {

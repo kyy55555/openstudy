@@ -10,6 +10,7 @@ import {
   courseProgrammingLanguages,
   courseSubjectLabel,
   programmingLanguageSubjectPrefix,
+  rankCoursesForSearch,
   uniqueCourseValues,
   uniqueCourseSubjects,
   uniqueProgrammingLanguages,
@@ -102,6 +103,13 @@ test("search supports English, Chinese, and keywords", () => {
   assert.ok(filterCourses(courses, { ...defaults, searchTerm: "Python" }).length > 0);
   assert.ok(filterCourses(courses, { ...defaults, searchTerm: "算法" }).length > 0);
   assert.ok(filterCourses(courses, { ...defaults, searchTerm: "Django" }).length > 0);
+  assert.deepEqual(filterCourses(courses, { ...defaults, searchTerm: "CS50P" }).map(({ id }) => id), ["harvard-cs50-python"]);
+});
+
+test("search results prioritize exact course codes and titles", () => {
+  const matches = filterCourses(courses, { ...defaults, searchTerm: "CS 61A" });
+  assert.equal(rankCoursesForSearch(matches, "CS 61A")[0]?.id, "berkeley-cs61a");
+  assert.ok(courseSearchSuggestions(courses, "CS50").includes("CS50P"));
 });
 
 test("search understands common bilingual synonyms instead of requiring exact wording", () => {
