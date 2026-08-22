@@ -46,6 +46,8 @@ Only authenticated users write to Supabase. Guest and account records remain sep
 
 Anonymous and authenticated visitors can submit Beta feedback, but cannot read feedback rows. The SQL script is safe to run again when policies change.
 
+The current Beta does not use advertising trackers or a third-party product-analytics service. Feedback stores the submitted message, optional reply email, submission time, and feedback-page URL. Never ask users to include passwords in feedback.
+
 ## Beta deployment checklist
 
 - Configure the three environment variables from `.env.example` in the host.
@@ -56,6 +58,8 @@ Anonymous and authenticated visitors can submit Beta feedback, but cannot read f
 - Verify that guest progress does not appear inside the account after sign-in.
 - Download a learning-record backup from `/dashboard` and confirm that it contains no email or password.
 - Run all checks below and review any link warnings manually.
+- Submit one test item from `/feedback`, verify that it appears in Supabase, and remove the test row.
+- Confirm both English and Chinese privacy pages accurately describe the deployed services before launch.
 - Use a custom domain only after the preview deployment passes these checks.
 
 ## Checks
@@ -71,6 +75,7 @@ Or run the individual checks:
 ```bash
 npm test
 npm run lint
+npm run check:data
 npm run build
 npm run check:links
 npm run check:smoke
