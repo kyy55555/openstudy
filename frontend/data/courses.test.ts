@@ -47,6 +47,7 @@ const officialHosts = new Set([
   "www.tcm.tsinghua.edu.cn",
   "os.cs.tsinghua.edu.cn",
   "v1-www.xuetangx.com",
+  "studio.xuetangx.com",
   "higher.smartedu.cn",
   "math.pku.edu.cn",
   "www.cs.cmu.edu",
@@ -288,6 +289,18 @@ test("Tsinghua operating systems exposes the complete public ucore sequence", ()
   assert.equal(course?.hasVideos, true);
   assert.equal(course?.hasAssignments, true);
   assert.equal(course?.hasSolutions, null);
+});
+
+test("Tsinghua combinatorics and algorithms expose their official public sequences", () => {
+  const byId = new Map(courses.map((course) => [course.id, course]));
+  for (const id of ["tsinghua-combinatorics", "tsinghua-algorithm-design"]) {
+    assert.equal(byId.get(id)?.university, "Tsinghua University");
+    assert.equal(byId.get(id)?.hasVideos, true);
+    assert.equal(byId.get(id)?.hasAssignments, true);
+    assert.equal(byId.get(id)?.hasSolutions, null);
+  }
+  assert.equal(byId.get("tsinghua-combinatorics")?.year, null);
+  assert.equal(byId.get("tsinghua-algorithm-design")?.year, 2018);
 });
 
 test("audited courses use the latest confirmed public editions", () => {

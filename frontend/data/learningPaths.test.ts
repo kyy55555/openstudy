@@ -117,3 +117,12 @@ test("Tsinghua route uses its public native operating-systems course", () => {
   assert.ok(courseIds.includes("tsinghua-operating-systems"));
   assert.ok(!courseIds.includes("berkeley-cs162"));
 });
+
+test("Tsinghua route offers its public algorithm and combinatorics courses", () => {
+  const tsinghua = learningPaths.find(({ id }) => id === "tsinghua-cs");
+  assert.ok(tsinghua);
+  const courseIds = tsinghua.phases.flatMap(({ courseIds }) => courseIds);
+  assert.ok(courseIds.includes("tsinghua-algorithm-design"));
+  assert.ok(courseIds.includes("tsinghua-combinatorics"));
+  assert.ok(!courseIds.includes("mit-6-006"));
+});

@@ -596,8 +596,19 @@ test("Tsinghua operating systems follows every official lecture, ucore lab, and 
   assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 1);
 });
 
-test("all 151 catalog courses now have substantive official-source plans",()=>{
- const definitions=Object.values(structuredCoursePlans);assert.equal(definitions.length,151);assert.ok(definitions.every(({detail,tasks})=>detail==="full"&&tasks.length>=2));
+test("Tsinghua combinatorics and algorithms follow every published unit and assessment", () => {
+  const combinatorics = structuredCoursePlans["tsinghua-combinatorics"];
+  assert.equal(combinatorics.tasks.filter(({ kind }) => kind === "session").length, 8);
+  assert.equal(combinatorics.tasks.filter(({ kind }) => kind === "assignment").length, 8);
+  assert.equal(combinatorics.tasks.filter(({ kind }) => kind === "exam").length, 1);
+  const algorithms = structuredCoursePlans["tsinghua-algorithm-design"];
+  assert.equal(algorithms.tasks.filter(({ kind }) => kind === "session").length, 11);
+  assert.equal(algorithms.tasks.filter(({ kind }) => kind === "assignment").length, 11);
+  assert.equal(algorithms.tasks.filter(({ kind }) => kind === "exam").length, 1);
+});
+
+test("all 153 catalog courses now have substantive official-source plans",()=>{
+ const definitions=Object.values(structuredCoursePlans);assert.equal(definitions.length,153);assert.ok(definitions.every(({detail,tasks})=>detail==="full"&&tasks.length>=2));
 });
 
 test("Berkeley MATH 54 and CMU 15-418 follow their official published sequences", () => {
