@@ -915,7 +915,7 @@ export const courses: Course[] = [
     level: "Intermediate",
     prerequisites: ["CS 61A"],
     year: 2026,
-    hasVideos: true,
+    hasVideos: null,
     hasAssignments: true,
     hasSolutions: true,
     courseUrl: "https://sp26.datastructur.es/",
@@ -967,6 +967,7 @@ export const courses: Course[] = [
     sourceName: berkeleySource,
     verifiedOn: "2026-08-04",
     resources: [
+      { type: "lectures", title: "Lecture recordings in the official course calendar", url: "https://sp26.cs161.org/#course-calendar" },
       { type: "materials", title: "Official course resources", url: "https://sp26.cs161.org/resources/" },
       { type: "projects", title: "Course projects", url: "https://sp26.cs161.org/proj1/" },
       { type: "exams", title: "Exam materials", url: "https://sp26.cs161.org/exam/" },
@@ -1031,6 +1032,7 @@ export const courses: Course[] = [
     courseUrl: "https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/",
     sourceName: mitSource,
     resources: [
+      { type: "lectures", title: "Lecture and recitation videos", url: "https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/pages/1.-differentiation/" },
       { type: "materials", title: "Course units and learning materials", url: "https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/pages/syllabus/" },
       { type: "downloads", title: "Download course and solutions", url: "https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/download/" },
     ],
@@ -1054,6 +1056,7 @@ export const courses: Course[] = [
     courseUrl: "https://ocw.mit.edu/courses/18-02sc-multivariable-calculus-fall-2010/",
     sourceName: mitSource,
     resources: [
+      { type: "lectures", title: "Lecture and recitation videos", url: "https://ocw.mit.edu/courses/18-02sc-multivariable-calculus-fall-2010/pages/1.-vectors-and-matrices/" },
       { type: "materials", title: "Syllabus and course units", url: "https://ocw.mit.edu/courses/18-02sc-multivariable-calculus-fall-2010/pages/syllabus/" },
       { type: "downloads", title: "Download course and solutions", url: "https://ocw.mit.edu/courses/18-02sc-multivariable-calculus-fall-2010/download/" },
     ],
@@ -1077,6 +1080,7 @@ export const courses: Course[] = [
     courseUrl: "https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/",
     sourceName: mitSource,
     resources: [
+      { type: "lectures", title: "Video lectures", url: "https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/video_galleries/video-lectures/" },
       { type: "assignments", title: "Problem sets and solutions", url: "https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/pages/assignments/" },
       { type: "downloads", title: "Download course and solutions", url: "https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/download/" },
     ],
@@ -1311,6 +1315,7 @@ export const courses: Course[] = [
     courseUrl: "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/",
     sourceName: mitSource,
     resources: [
+      { type: "lectures", title: "Lecture videos", url: "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/resources/lecture-videos/" },
       { type: "syllabus", title: "Syllabus and prerequisites", url: "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/pages/syllabus/" },
       { type: "assignments", title: "Problem sets", url: "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/pages/assignments/" },
       { type: "downloads", title: "Download course", url: "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/download/" },
@@ -1334,6 +1339,7 @@ export const courses: Course[] = [
     courseUrl: "https://ocw.mit.edu/courses/8-02-physics-ii-electricity-and-magnetism-spring-2019/",
     sourceName: mitSource,
     resources: [
+      { type: "lectures", title: "MITx video modules", url: "https://openlearninglibrary.mit.edu/courses/course-v1%3AMITx%2B8.02.1x%2B1T2019/about" },
       { type: "syllabus", title: "Course syllabus", url: "https://ocw.mit.edu/courses/8-02-physics-ii-electricity-and-magnetism-spring-2019/pages/syllabus/" },
     ],
   }),
@@ -1554,7 +1560,7 @@ export const courses: Course[] = [
     level: "Advanced Undergraduate",
     prerequisites: ["CS 61B", "CS 70"],
     year: 2026,
-    hasVideos: true,
+    hasVideos: null,
     hasAssignments: true,
     hasSolutions: true,
     courseUrl: "https://cs170.org/",
@@ -1781,7 +1787,7 @@ export const courses: Course[] = [
     level: "Advanced Undergraduate",
     prerequisites: ["CS 61B", "Linear algebra", "Single Variable Calculus"],
     year: 2026,
-    hasVideos: true,
+    hasVideos: null,
     hasAssignments: true,
     hasSolutions: null,
     courseUrl: "https://cs184.eecs.berkeley.edu/sp26/",
@@ -1806,7 +1812,7 @@ export const courses: Course[] = [
     level: "Advanced Undergraduate",
     prerequisites: ["Linear algebra", "Probability", "Single Variable Calculus", "Programming"],
     year: 2026,
-    hasVideos: true,
+    hasVideos: null,
     hasAssignments: true,
     hasSolutions: true,
     courseUrl: "https://eecs189.org/fa26/",
@@ -2015,14 +2021,14 @@ export const courses: Course[] = [
   course({
     id: "uiuc-cs124", title: "Introduction to Computer Science I", titleZh: "计算机科学导论 I", university: "University of Illinois Urbana-Champaign", subject: "Programming", subjectZh: "编程",
     description: "UIUC's first course for computer-science majors, teaching computing concepts and fundamental techniques for solving computational problems through daily lessons and practice.", descriptionZh: "UIUC 计算机专业第一门课程，通过每日课程与练习学习计算概念和解决计算问题的基本方法。",
-    searchKeywords: ["CS 124", "Java", "Kotlin", "programming", "UIUC"], level: "Introductory", prerequisites: ["Three years of high school mathematics or MATH 112"], year: 2026, hasVideos: true, hasAssignments: true, hasSolutions: null,
+    searchKeywords: ["CS 124", "Java", "Kotlin", "programming", "UIUC"], level: "Introductory", prerequisites: ["Three years of high school mathematics or MATH 112"], year: 2026, hasVideos: null, hasAssignments: true, hasSolutions: null,
     courseUrl: "https://www.cs124.org/", sourceName: "University of Illinois CS 124", verifiedOn: "2026-08-03",
     resources: [{ type: "syllabus", title: "Spring 2026 syllabus and daily lessons", url: "https://www.cs124.org/syllabus/Spring2026" }, { type: "materials", title: "Official catalog record", url: "https://courses.illinois.edu/schedule/2025/fall/CS/124" }],
   }),
   course({
     id: "uiuc-cs128", title: "Introduction to Computer Science II", titleZh: "计算机科学导论 II", university: "University of Illinois Urbana-Champaign", subject: "Programming", subjectZh: "编程",
     description: "A continuation of CS 124 covering more advanced computing concepts and approaches to solving computational problems.", descriptionZh: "CS 124 的后续课程，学习更高级的计算概念以及解决计算问题的技术与方法。",
-    searchKeywords: ["CS 128", "C++", "programming", "UIUC"], level: "Intermediate", prerequisites: ["UIUC CS 124 or CS 125"], year: 2026, hasVideos: true, hasAssignments: true, hasSolutions: null,
+    searchKeywords: ["CS 128", "C++", "programming", "UIUC"], level: "Intermediate", prerequisites: ["UIUC CS 124 or CS 125"], year: 2026, hasVideos: null, hasAssignments: true, hasSolutions: null,
     courseUrl: "https://www.cs128.org/", sourceName: "University of Illinois CS 128", verifiedOn: "2026-08-03",
     resources: [{ type: "materials", title: "Fall 2026 official catalog and prerequisites", url: "https://courses.illinois.edu/schedule/DEFAULT/DEFAULT/CS/128" }],
   }),
@@ -2073,7 +2079,7 @@ export const courses: Course[] = [
     description: "Advanced functional programming, data structures, software design, correctness, performance analysis, abstraction, and type systems using OCaml.", descriptionZh: "使用 OCaml 学习高阶函数式编程、数据结构、软件设计、正确性、性能分析、抽象与类型系统。",
     searchKeywords: ["CS 3110", "OCaml", "functional programming", "Cornell"], level: "Undergraduate", prerequisites: ["Cornell CS 2110", "Cornell CS 2800"], year: 2025, hasVideos: true, hasAssignments: null, hasSolutions: null,
     courseUrl: "https://www.cs.cornell.edu/courses/cs3110/2025sp/", sourceName: "Cornell University Department of Computer Science", verifiedOn: "2026-08-03",
-    resources: [{ type: "materials", title: "Open official textbook", url: "https://cs3110.github.io/textbook/cover.html" }],
+    resources: [{ type: "lectures", title: "Official textbook and linked video series", url: "https://cs3110.github.io/textbook/cover.html" }],
   }),
   course({
     id: "harvard-cs61", title: "Systems Programming and Machine Organization", titleZh: "系统编程与机器组成", university: "Harvard University", subject: "Computer Systems", subjectZh: "计算机系统",
@@ -2115,7 +2121,7 @@ export const courses: Course[] = [
     description: "The continuation of MAT 103, covering integration techniques, improper integrals, sequences and series, Taylor series, differential equations, and geometric applications.", descriptionZh: "MAT 103 的后续课程，涵盖积分技巧、反常积分、数列与级数、泰勒级数、微分方程及几何应用。",
     searchKeywords: ["MAT 104", "calculus", "series", "Princeton"], level: "Introductory", prerequisites: ["Princeton MAT 103 or equivalent"], year: 2010, hasVideos: true, hasAssignments: true, hasSolutions: true,
     courseUrl: "https://web.math.princeton.edu/~nelson/104/", sourceName: "Princeton University Department of Mathematics", verifiedOn: "2026-08-03",
-    resources: [{ type: "syllabus", title: "Official course outline", url: "https://web.math.princeton.edu/~nelson/104/outline.pdf" }],
+    resources: [{ type: "syllabus", title: "Official course outline", url: "https://web.math.princeton.edu/~nelson/104/outline.pdf" }, { type: "lectures", title: "Official review videos", url: "https://web.math.princeton.edu/~nelson/104/videos/" }],
   }),
   course({
     id: "princeton-mat201", title: "Multivariable Calculus", titleZh: "多元微积分", university: "Princeton University", subject: "Calculus", subjectZh: "微积分",

@@ -30,7 +30,9 @@ for (const course of courses) {
   if (new Set(resourceUrls).size !== resourceUrls.length) add(critical, course.id, "duplicate official resource URL");
   if (resourceUrls.includes(course.courseUrl)) add(warnings, course.id, "resource repeats the main course URL");
   if (course.resources.length === 0) add(warnings, course.id, "no separate official resource entry");
-  if (course.hasVideos === true && !course.resources.some(({ type }) => type === "lectures")) add(warnings, course.id, "video claim has no separate lecture/video entry");
+  const planHasVideoEntry = plan?.tasks.some(({ title }) => /lecture|video/i.test(title));
+  const resourceHasVideoEntry = course.resources.some(({ type, title }) => type === "lectures" || /lecture|video|recording/i.test(title));
+  if (course.hasVideos === true && !resourceHasVideoEntry && !planHasVideoEntry && !/video course/i.test(course.sourceName)) add(warnings, course.id, "video claim has no official lecture/video entry in resources or plan");
   if (course.hasAssignments === true && !course.resources.some(({ type }) => ["assignments", "projects", "exams"].includes(type)) && !plan?.tasks.some(({ kind }) => ["assignment", "project", "exam"].includes(kind))) add(warnings, course.id, "assignment claim has no official work entry in resources or plan");
 
   if (!plan) add(critical, course.id, "missing study plan");
