@@ -35,7 +35,7 @@ test("every catalog course has a plan made only from its official resources", as
     const plan = structuredCoursePlans[course.id];
     assert.ok(plan.tasks.length > 0, `${course.id} has no plan tasks`);
     assert.ok(plan.tasks.every(({ url }) => new URL(url).protocol === "https:"));
-    for (const requestedDays of [1, 7, 30]) {
+    for (const requestedDays of [1, 7, 14, 30, 60, 120, 365]) {
       const generated = buildGentlePlan(course.id, requestedDays);
       assert.ok(generated, `${course.id} could not generate a ${requestedDays}-day plan`);
       assert.ok(generated.plannedDays >= requestedDays);
@@ -63,6 +63,22 @@ test("short targets extend instead of overloading each day", () => {
   assert.ok(plan.plannedDays > Math.ceil(7 * 1.15));
   assert.ok(plan.days.every(({ tasks }) => tasks.length <= MAX_PLAN_TASKS_PER_DAY));
   assert.equal(plan.days.flatMap(({ tasks }) => tasks).length, structuredCoursePlans["mit-18-02sc"].tasks.length);
+});
+
+test("every course preserves completed work across longer replans", async () => {
+  const { courses } = await import("./courses.ts");
+  for (const course of courses) {
+    const shorter = buildGentlePlan(course.id, 30);
+    const longer = buildGentlePlan(course.id, 120);
+    assert.ok(shorter && longer);
+    const completedIds = shorter.days.flatMap(({ tasks }) => tasks).slice(0, 10).map(({ id }) => id);
+    for (const task of longer.days.flatMap(({ tasks }) => tasks)) {
+      const representsCompletedSource = completedIds.some((id) => id === task.sourceTaskId || id === task.id);
+      if (representsCompletedSource) {
+        assert.ok(completedPlanTaskId(task, completedIds), `${course.id} lost completed work for ${task.id}`);
+      }
+    }
+  }
 });
 
 test("Stanford CS106A follows all 28 official lectures, assignments, and practice exams", () => {
