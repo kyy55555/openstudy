@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { cloudRevisionChanged, cloudSyncRequestIsCurrent, cloudSyncRetryDelay, courseLibraryStorageKey, emptyCourseLibrary, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, readCourseLibraryStorage, recordStudyTaskCompletion, selectNewestAccountLibrary, selectSessionLibrary, toggleStudyPlanPause, writeCourseLibraryStorage } from "../data/courseLibrary";
+import { cloudAtomicSaveUnavailable, cloudRevisionChanged, cloudSyncRequestIsCurrent, cloudSyncRetryDelay, courseLibraryStorageKey, emptyCourseLibrary, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, readCourseLibraryStorage, recordStudyTaskCompletion, selectNewestAccountLibrary, selectSessionLibrary, toggleStudyPlanPause, writeCourseLibraryStorage } from "../data/courseLibrary";
 import type { CourseLibraryState, CourseProgress } from "../data/courseLibrary";
 import { courseResourceKey } from "../data/courseLibrary";
 import { getSupabaseBrowserClient } from "../lib/supabase/client";
@@ -49,6 +49,32 @@ export function useCourseLibrary() {
     if (!client) return Promise.resolve();
     saveQueue.current = saveQueue.current.then(async () => {
       if (userId.current !== nextUserId) return;
+      const expectedRevision = knownCloudUpdatedAt.current ?? null;
+      const atomic = await client.rpc("save_course_library", { p_expected_updated_at: expectedRevision, p_library: next }).maybeSingle();
+      if (userId.current !== nextUserId) return;
+      if (!atomic.error && atomic.data) {
+        const result = atomic.data as { result_status: "saved" | "conflict"; result_updated_at: string | null; result_library: unknown };
+        if (result.result_status === "conflict") {
+          setSyncConflict({ cloud: result.result_library ? parseCourseLibrary(JSON.stringify(result.result_library)) : null, updatedAt: result.result_updated_at });
+          setSyncIssue(false);
+          clearCloudRetry();
+          return;
+        }
+        setSyncIssue(false);
+        clearCloudRetry();
+        retryAttempt.current = 0;
+        knownCloudUpdatedAt.current = result.result_updated_at;
+        setSyncConflict(null);
+        setLastSyncedAt(result.result_updated_at);
+        return;
+      }
+      if (atomic.error && !cloudAtomicSaveUnavailable(atomic.error.code, atomic.error.message)) {
+        setSyncIssue(true);
+        scheduleCloudRetry(nextUserId);
+        return;
+      }
+
+      // Compatibility for deployments that have not applied the atomic-save schema yet.
       const { data: current, error: readError } = await client.from("course_libraries").select("library, updated_at").eq("user_id", nextUserId).maybeSingle();
       if (userId.current !== nextUserId) return;
       if (readError) {

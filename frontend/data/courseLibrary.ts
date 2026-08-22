@@ -83,6 +83,12 @@ export function cloudSyncRequestIsCurrent(
   return requestGeneration === currentGeneration && requestedUserId === activeUserId;
 }
 
+export function cloudAtomicSaveUnavailable(code: string | undefined, message: string | undefined) {
+  return code === "PGRST202"
+    || code === "42883"
+    || Boolean(message && /(?:could not find|does not exist).*save_course_library|save_course_library.*does not exist/i.test(message));
+}
+
 export function localDateKey(date = new Date()) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");

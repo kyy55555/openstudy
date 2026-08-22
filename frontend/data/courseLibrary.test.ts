@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { cloudRevisionChanged, cloudSyncRequestIsCurrent, cloudSyncRetryDelay, completionStreak, courseResourceKey, createCourseLibraryBackup, learningPathCoverage, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, parseCourseLibraryBackup, pathCompletion, phaseCoverage, readCourseLibraryStorage, recordStudyTaskCompletion, selectNewestAccountLibrary, selectSessionLibrary, studyPlanProgress, suggestedGentlePlanDays, toggleStudyPlanPause, weeklyStudyActivity, writeCourseLibraryStorage } from "./courseLibrary.ts";
+import { cloudAtomicSaveUnavailable, cloudRevisionChanged, cloudSyncRequestIsCurrent, cloudSyncRetryDelay, completionStreak, courseResourceKey, createCourseLibraryBackup, learningPathCoverage, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, parseCourseLibraryBackup, pathCompletion, phaseCoverage, readCourseLibraryStorage, recordStudyTaskCompletion, selectNewestAccountLibrary, selectSessionLibrary, studyPlanProgress, suggestedGentlePlanDays, toggleStudyPlanPause, weeklyStudyActivity, writeCourseLibraryStorage } from "./courseLibrary.ts";
 
 test("cloud retries back off and stop until the next user action", () => {
   assert.deepEqual([0, 1, 2, 3, 4, 5].map(cloudSyncRetryDelay), [2_000, 5_000, 15_000, 30_000, 60_000, null]);
@@ -23,6 +23,15 @@ test("late cloud responses cannot overwrite a newer account or signed-out sessio
   assert.equal(cloudSyncRequestIsCurrent(4, 4, "user-a", "user-b"), false);
   assert.equal(cloudSyncRequestIsCurrent(4, 4, "user-a", null), false);
   assert.equal(cloudSyncRequestIsCurrent(5, 5, null, null), true);
+});
+
+test("atomic cloud save falls back only when the database function is not installed", () => {
+  assert.equal(cloudAtomicSaveUnavailable("PGRST202", "function missing"), true);
+  assert.equal(cloudAtomicSaveUnavailable("42883", "undefined function"), true);
+  assert.equal(cloudAtomicSaveUnavailable(undefined, "Could not find save_course_library"), true);
+  assert.equal(cloudAtomicSaveUnavailable("42501", "permission denied"), false);
+  assert.equal(cloudAtomicSaveUnavailable("42501", "permission denied for function save_course_library"), false);
+  assert.equal(cloudAtomicSaveUnavailable(undefined, "network error"), false);
 });
 
 test("course library safely parses local data", () => {
