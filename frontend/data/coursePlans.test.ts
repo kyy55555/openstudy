@@ -665,8 +665,8 @@ test("Tsinghua digital logic and computer organization follow current official l
   assert.equal(structuredCoursePlans["tsinghua-computer-organization"].tasks.filter(({ kind }) => kind === "assignment").length, 4);
 });
 
-test("all 164 catalog courses now have substantive official-source plans",()=>{
- const definitions=Object.values(structuredCoursePlans);assert.equal(definitions.length,164);assert.ok(definitions.every(({detail,tasks})=>detail==="full"&&tasks.length>=2));
+test("all catalog courses have substantive official-source plans", async()=>{
+ const { courses } = await import("./courses.ts"); const definitions=Object.values(structuredCoursePlans);assert.equal(definitions.length,courses.length);assert.ok(definitions.every(({detail,tasks})=>detail==="full"&&tasks.length>=2));
 });
 
 test("MIT economics plans follow every official lecture and assessment", () => {

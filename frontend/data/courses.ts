@@ -2201,6 +2201,13 @@ export const courses: Course[] = [
     resources: [{ type: "schedule", title: "Official schedule, notes, exercises, and problem sets", url: "https://cs61.seas.harvard.edu/site/2025/Schedule/" }, { type: "syllabus", title: "Course description and policies", url: "https://cs61.seas.harvard.edu/site/2025/CourseDescription/" }],
   }),
   course({
+    id: "harvard-cs1610", code: "CS 1610", title: "Operating Systems", titleZh: "操作系统", university: "Harvard University", subject: "Operating Systems", subjectZh: "操作系统",
+    description: "Harvard's current operating-systems course studies processor architecture, virtual memory, interrupts, concurrency, synchronization, filesystems, device interaction, security, scheduling, virtualization, networking, GPUs, and kernel implementation through the Chickadee teaching kernel.", descriptionZh: "Harvard 当前操作系统课程，通过 Chickadee 教学内核学习处理器体系结构、虚拟内存、中断、并发与同步、文件系统、设备交互、安全、调度、虚拟化、网络、GPU 和内核实现。",
+    searchKeywords: ["CS 1610", "CS 161", "operating systems", "Chickadee", "kernel", "Harvard", "操作系统"], level: "Advanced Undergraduate", prerequisites: ["Harvard CS 61 or equivalent systems programming"], language: "English", year: 2026, hasVideos: null, hasAssignments: true, hasSolutions: null,
+    courseUrl: "https://read.seas.harvard.edu/cs1610/2026/", sourceName: "Harvard School of Engineering and Applied Sciences", verifiedOn: "2026-08-22",
+    resources: [{ type: "schedule", title: "Official 2026 lecture and section schedule", url: "https://read.seas.harvard.edu/cs1610/2026/schedule/" }, { type: "assignments", title: "Official Chickadee problem-set sequence", url: "https://read.seas.harvard.edu/cs1610/2026/pset1/" }],
+  }),
+  course({
     id: "stanford-cs244b", title: "Distributed Systems", titleZh: "分布式系统", university: "Stanford University", subject: "Distributed Systems", subjectZh: "分布式系统",
     description: "Distributed systems and applications with protocols, shared state, consistency, transactions, consensus, storage, robustness, failure handling, and security.", descriptionZh: "学习分布式系统与应用，涵盖协议、共享状态、一致性、事务、共识、存储、鲁棒性、故障处理与安全。",
     searchKeywords: ["CS 244B", "distributed systems", "consensus", "Stanford"], level: "Graduate", prerequisites: ["Stanford CS 144"], year: 2024, hasVideos: null, hasAssignments: true, hasSolutions: null,

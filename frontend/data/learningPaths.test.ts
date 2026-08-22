@@ -71,6 +71,13 @@ test("Harvard's early curriculum uses verified native discrete math, linear alge
   }
 });
 
+test("Harvard's advanced options prefer its current public operating-systems course", () => {
+  const path = learningPaths.find(({ id }) => id === "harvard-cs");
+  assert.ok(path);
+  assert.ok(path.phases.some(({ courseIds }) => courseIds.includes("harvard-cs1610")));
+  assert.ok(!path.phases.some(({ courseIds }) => courseIds.includes("berkeley-cs162")));
+});
+
 test("Illinois curriculum uses verified native foundations and core courses", () => {
   const illinois = learningPaths.find(({ id }) => id === "uiuc-cs");
   assert.ok(illinois);

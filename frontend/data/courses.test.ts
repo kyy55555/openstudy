@@ -72,6 +72,7 @@ const officialHosts = new Set([
   "faculty.cc.gatech.edu",
   "cs3110.github.io",
   "cs61.seas.harvard.edu",
+  "read.seas.harvard.edu",
   "lewis.seas.harvard.edu",
   "stat110.hsites.harvard.edu",
   "people.math.harvard.edu",
@@ -274,6 +275,14 @@ test("Harvard's native discrete math, linear algebra, and probability courses ar
   }
   assert.equal(byId.get("harvard-cs20")?.hasAssignments, null);
   assert.equal(byId.get("harvard-stat110")?.hasSolutions, true);
+});
+
+test("Harvard's current public operating-systems course is present", () => {
+  const course = courses.find(({ id }) => id === "harvard-cs1610");
+  assert.ok(course);
+  assert.equal(course.year, 2026);
+  assert.equal(course.university, "Harvard University");
+  assert.ok(course.resources.some(({ type }) => type === "assignments"));
 });
 
 test("Illinois's public foundations and core courses are present without unsupported claims", () => {

@@ -235,7 +235,7 @@ export const learningPaths: LearningPath[] = [
       term("Year 1 · Spring", "大一下", "Follow Harvard's first-year guidance with discrete mathematics and a second programming/systems course.", "按 Harvard 大一指导学习离散数学和第二门编程/系统课程。", ["harvard-cs20", "harvard-cs61"]),
       term("Year 2 · Fall", "大二上", "Complete Harvard's linear-algebra requirement alongside data structures and software foundations.", "完成 Harvard 线性代数要求，并学习数据结构与软件基础。", ["berkeley-cs61b", "harvard-math21b", "mit-6-031"]),
       term("Year 2 · Spring", "大二下", "Complete Harvard's probability requirement and continue algorithms foundations.", "完成 Harvard 概率要求，并继续算法基础。", ["harvard-stat110", "mit-6-006"]),
-      term("Year 3 · Fall", "大三上", "Choose theoretical CS and software courses under the official breadth rules.", "按官方广度规则选择理论计算机与软件课程。", ["mit-6-046j", "stanford-cs143", "berkeley-cs162", "berkeley-cs186"], [], [], 2),
+      term("Year 3 · Fall", "大三上", "Choose theoretical CS and systems courses under the official breadth rules.", "按官方广度规则选择理论计算机与系统课程。", ["harvard-cs1610", "mit-6-046j", "stanford-cs143", "berkeley-cs186"], [], [], 2),
       term("Year 3 · Spring", "大三下", "Explore other approved CS areas.", "探索其他获批计算机领域。", ["harvard-cs50-ai", "harvard-cs50-web", "harvard-cs50-sql", "harvard-cs50-cybersecurity"], [], [], 2),
       term("Year 4 · Fall", "大四上", "Continue advanced concentration or honors work.", "继续高阶专业课程或荣誉项目。", ["stanford-cs221", "mit-6-858", "mit-6-824", "berkeley-cs189"], ["Advanced concentration or honors work"], ["高阶专业课程或荣誉项目"], 2),
       term("Year 4 · Spring", "大四下", "Finish remaining breadth, track, or thesis requirements.", "完成剩余广度、方向或论文要求。", ["mit-6-837", "stanford-cs144", "mit-6-830"], ["Remaining track or thesis requirement"], ["剩余方向或论文要求"], 1),
