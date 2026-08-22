@@ -582,8 +582,15 @@ test("Georgia Tech shared foundations follow official 2026 syllabi", () => {
   assert.equal(structuredCoursePlans["gatech-cs2340"].tasks.filter(({ kind }) => kind === "project").length, 5);
 });
 
-test("all 147 catalog courses now have substantive official-source plans",()=>{
- const definitions=Object.values(structuredCoursePlans);assert.equal(definitions.length,147);assert.ok(definitions.every(({detail,tasks})=>detail==="full"&&tasks.length>=2));
+test("new Tsinghua and PKU mathematics courses follow official published content", () => {
+  assert.equal(structuredCoursePlans["tsinghua-linear-algebra"].tasks.filter(({ kind }) => kind === "session").length, 17);
+  assert.equal(structuredCoursePlans["tsinghua-linear-algebra"].tasks.filter(({ kind }) => kind === "assignment").length, 17);
+  assert.equal(structuredCoursePlans["pku-higher-algebra-1"].tasks.filter(({ kind }) => kind === "session").length, 15);
+  assert.equal(structuredCoursePlans["pku-probability"].tasks.filter(({ kind }) => kind === "session").length, 19);
+});
+
+test("all 150 catalog courses now have substantive official-source plans",()=>{
+ const definitions=Object.values(structuredCoursePlans);assert.equal(definitions.length,150);assert.ok(definitions.every(({detail,tasks})=>detail==="full"&&tasks.length>=2));
 });
 
 test("Berkeley MATH 54 and CMU 15-418 follow their official published sequences", () => {

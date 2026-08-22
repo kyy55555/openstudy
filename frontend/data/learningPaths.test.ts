@@ -94,3 +94,18 @@ test("Georgia Tech's early curriculum uses its verified shared foundations", () 
     assert.ok(!earlyCourseIds.includes(id), `${id} still substitutes for a verified Georgia Tech course`);
   }
 });
+
+test("Tsinghua and PKU routes prefer verified same-university mathematics resources", () => {
+  const tsinghua = learningPaths.find(({ id }) => id === "tsinghua-cs");
+  const pku = learningPaths.find(({ id }) => id === "pku-cs");
+  assert.ok(tsinghua);
+  assert.ok(pku);
+  const tsinghuaIds = tsinghua.phases.flatMap(({ courseIds }) => courseIds);
+  const pkuIds = pku.phases.flatMap(({ courseIds }) => courseIds);
+  assert.ok(tsinghuaIds.includes("tsinghua-linear-algebra"));
+  assert.ok(!tsinghuaIds.includes("mit-18-06"));
+  assert.ok(pkuIds.includes("pku-higher-algebra-1"));
+  assert.ok(pkuIds.includes("pku-probability"));
+  assert.ok(!pkuIds.includes("mit-18-06"));
+  assert.ok(!pkuIds.includes("mit-18-05"));
+});

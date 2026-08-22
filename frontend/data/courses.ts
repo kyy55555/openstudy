@@ -1991,6 +1991,27 @@ export const courses: Course[] = [
     resources: [{ type: "schedule", title: "Official weekly schedule", url: "https://dbgroup.cs.tsinghua.edu.cn/jnwang/ai-data-foundation/index.html#schedule" }, { type: "assignments", title: "Official labs", url: "https://dbgroup.cs.tsinghua.edu.cn/jnwang/ai-data-foundation/labs/Lab7/Lab7.html" }],
   }),
   course({
+    id: "tsinghua-linear-algebra", code: "10421094X", title: "Linear Algebra", titleZh: "线性代数", university: "Tsinghua University", subject: "Linear Algebra", subjectZh: "线性代数",
+    description: "A Tsinghua online course centered on solving linear systems, covering matrices, vector spaces, orthogonality, least squares, determinants, eigenvalues, diagonalization, symmetric and similar matrices, SVD, and applications.", descriptionZh: "清华在线课程，以求解线性方程组为主线，涵盖矩阵、向量空间、正交性、最小二乘、行列式、特征值、对角化、对称与相似矩阵、奇异值分解及应用。",
+    searchKeywords: ["10421094X", "linear algebra", "matrices", "SVD", "线性代数", "马辉", "清华"], level: "Introductory", prerequisites: [], language: "Chinese", year: 2026, hasVideos: true, hasAssignments: true, hasSolutions: null,
+    courseUrl: "https://v1-www.xuetangx.com/courses/course-v1%3ATsinghuaX%2B10421094X_2015_2%2Bsp/about", sourceName: "Tsinghua University course on XuetangX", verifiedOn: "2026-08-22",
+    resources: [{ type: "assignments", title: "Tsinghua official introduction confirming 34 sections and per-section practice", url: "https://www.tsinghua.edu.cn/info/1181/35976.htm" }, { type: "lectures", title: "Current 2026 Tsinghua video-course record on the national higher-education platform", url: "https://higher.smartedu.cn/course/64befcdfd190d2a6beeefda8" }, { type: "syllabus", title: "Tsinghua mathematics teaching center course record", url: "https://www.tcm.tsinghua.edu.cn/kczy/xxdskz.htm" }],
+  }),
+  course({
+    id: "pku-higher-algebra-1", code: "00132321", title: "Higher Algebra I", titleZh: "高等代数 I", university: "Peking University", subject: "Linear Algebra", subjectZh: "线性代数",
+    description: "Rigorous coordinate-and-matrix methods including linear systems, fields, matrices, determinants, polynomial theory, linear spaces, linear mappings, eigenvalues, canonical forms, and quadratic forms.", descriptionZh: "严格学习坐标与矩阵方法，包括线性方程组、数域、矩阵、行列式、多项式理论、线性空间、线性映射、特征值、标准形和二次型。",
+    searchKeywords: ["00132321", "higher algebra", "linear algebra", "matrices", "高等代数", "北京大学"], level: "Introductory", prerequisites: [], language: "Chinese", year: null, hasVideos: null, hasAssignments: null, hasSolutions: null,
+    courseUrl: "https://math.pku.edu.cn/bks/sykc/149973.htm", sourceName: "Peking University School of Mathematical Sciences", verifiedOn: "2026-08-22",
+    resources: [{ type: "materials", title: "Official PKU mathematics course catalog", url: "https://math.pku.edu.cn/bks/sykc/index.htm" }, { type: "syllabus", title: "Official PKU mathematics course-introduction collection", url: "https://math.pku.edu.cn/docs/2021-12/20211229095459452355.pdf" }],
+  }),
+  course({
+    id: "pku-probability", code: "00131300", title: "Probability Theory", titleZh: "概率论", university: "Peking University", subject: "Probability and Statistics", subjectZh: "概率与统计",
+    description: "Probability spaces, conditional probability and independence, random variables and vectors, distributions, expectation, variance, covariance, characteristic functions, laws of large numbers, and central limit theorems.", descriptionZh: "学习概率空间、条件概率与独立性、随机变量与随机向量、分布、期望、方差、协方差、特征函数、大数定律和中心极限定理。",
+    searchKeywords: ["00131300", "probability theory", "random variables", "概率论", "北京大学"], level: "Intermediate", prerequisites: ["Mathematical analysis", "Higher algebra"], language: "Chinese", year: null, hasVideos: null, hasAssignments: true, hasSolutions: null,
+    courseUrl: "https://math.pku.edu.cn/bks/sykc/148677.htm", sourceName: "Peking University School of Mathematical Sciences", verifiedOn: "2026-08-22",
+    resources: [{ type: "materials", title: "Official PKU mathematics course catalog", url: "https://math.pku.edu.cn/bks/sykc/index.htm" }, { type: "assignments", title: "Official course collection confirming homework and assessment", url: "https://math.pku.edu.cn/docs/2021-12/20211229095459452355.pdf" }],
+  }),
+  course({
     id: "cmu-15-112", title: "Fundamentals of Programming and Computer Science", titleZh: "程序设计与计算机科学基础", university: "Carnegie Mellon University", subject: "Programming", subjectZh: "编程",
     description: "CMU's established introductory programming and computer-science course, with published schedules, assessments, and prior offerings.", descriptionZh: "CMU 成熟的程序设计与计算机科学入门课程，公开课程安排、考核和历年课程资料。",
     searchKeywords: ["15-112", "programming", "CMU"], level: "Introductory", prerequisites: [], year: 2025, hasVideos: null, hasAssignments: true, hasSolutions: null,

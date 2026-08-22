@@ -43,6 +43,11 @@ const officialHosts = new Set([
   "center.pku.edu.cn",
   "elective.pku.edu.cn",
   "dbgroup.cs.tsinghua.edu.cn",
+  "www.tsinghua.edu.cn",
+  "www.tcm.tsinghua.edu.cn",
+  "v1-www.xuetangx.com",
+  "higher.smartedu.cn",
+  "math.pku.edu.cn",
   "www.cs.cmu.edu",
   "www.csd.cs.cmu.edu",
   "www.cs124.org",
@@ -262,6 +267,17 @@ test("Georgia Tech's shared computing and calculus foundations are present", () 
   }
   assert.equal(byId.get("gatech-cs1331")?.hasSolutions, null);
   assert.equal(byId.get("gatech-cs2340")?.hasVideos, null);
+});
+
+test("Tsinghua and PKU native mathematics foundations preserve honest provenance", () => {
+  const byId = new Map(courses.map((course) => [course.id, course]));
+  assert.equal(byId.get("tsinghua-linear-algebra")?.university, "Tsinghua University");
+  assert.equal(byId.get("tsinghua-linear-algebra")?.year, 2026);
+  assert.equal(byId.get("tsinghua-linear-algebra")?.hasVideos, true);
+  assert.equal(byId.get("pku-higher-algebra-1")?.university, "Peking University");
+  assert.equal(byId.get("pku-higher-algebra-1")?.hasAssignments, null);
+  assert.equal(byId.get("pku-probability")?.university, "Peking University");
+  assert.equal(byId.get("pku-probability")?.year, null);
 });
 
 test("audited courses use the latest confirmed public editions", () => {
