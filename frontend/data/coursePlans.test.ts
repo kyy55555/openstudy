@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { buildGentlePlan, structuredCoursePlans } from "./coursePlans.ts";
+import { buildGentlePlan, completedPlanTaskId, structuredCoursePlans } from "./coursePlans.ts";
 
 test("MIT 18.01SC plan is never shorter than the user's target", () => {
   assert.equal(structuredCoursePlans["mit-18-01sc"].tasks.length, 113);
@@ -11,6 +11,21 @@ test("MIT 18.01SC plan is never shorter than the user's target", () => {
   assert.equal(plan?.days.length, 35);
   assert.equal(plan?.days.flatMap(({ tasks }) => tasks).filter(({ kind }) => kind !== "buffer").length, 113);
   assert.ok(plan?.days.flatMap(({ tasks }) => tasks).every(({ url }) => url.startsWith("https://ocw.mit.edu/")));
+});
+
+test("extending a plan preserves split-task progress and legacy completion records", () => {
+  const original = buildGentlePlan("harvard-cs50-sql", 30);
+  const extended = buildGentlePlan("harvard-cs50-sql", 60);
+  assert.ok(original && extended);
+  const originalTask = original.days.flatMap(({ tasks }) => tasks).find(({ sourceTaskId }) => sourceTaskId);
+  assert.ok(originalTask?.sourceTaskId);
+  const matchingExtendedTask = extended.days.flatMap(({ tasks }) => tasks).find(({ id }) => id === originalTask.id);
+  assert.ok(matchingExtendedTask, "stable split id disappeared after extending the plan");
+  assert.equal(completedPlanTaskId(matchingExtendedTask, [originalTask.id]), originalTask.id);
+  const part = originalTask.id.match(/--part-(\d+)$/)?.[1];
+  assert.ok(part);
+  const legacyId = `${originalTask.sourceTaskId}--part-${part}-of-99`;
+  assert.equal(completedPlanTaskId(matchingExtendedTask, [legacyId]), legacyId);
 });
 
 test("every catalog course has a plan made only from its official resources", async () => {

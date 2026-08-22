@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 
 import { courseCode, courses } from "../../data/courses";
 import { courseDetailPath } from "../../data/courseNavigation";
-import { buildGentlePlan } from "../../data/coursePlans";
+import { buildGentlePlan, completedPlanTaskId } from "../../data/coursePlans";
 import {
   completionStreak,
   createCourseLibraryBackup,
@@ -14,7 +14,6 @@ import {
   localDateKey,
   parseCourseLibraryBackup,
   phaseCoverage,
-  studyPlanProgress,
   weeklyStudyActivity,
 } from "../../data/courseLibrary";
 import type { CourseLibraryBackup } from "../../data/courseLibrary";
@@ -67,8 +66,9 @@ function DashboardContent() {
     const generated = buildGentlePlan(courseId, saved.days);
     if (!course || !generated) return [];
     const tasks = generated.days.flatMap(({ tasks }) => tasks).filter((task) => task.kind !== "buffer");
-    const nextTask = tasks.find((task) => !saved.completedTaskIds.includes(task.id));
-    const progress = studyPlanProgress(tasks.map(({ id }) => id), saved.completedTaskIds);
+    const completedCount = tasks.filter((task) => completedPlanTaskId(task, saved.completedTaskIds)).length;
+    const nextTask = tasks.find((task) => !completedPlanTaskId(task, saved.completedTaskIds));
+    const progress = { completed: completedCount, total: tasks.length, percent: tasks.length === 0 ? 0 : Math.round(completedCount / tasks.length * 100) };
     return [{ course, saved, generated, nextTask, progress }];
   });
   const coverage = learningPaths

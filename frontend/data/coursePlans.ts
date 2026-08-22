@@ -12,6 +12,16 @@ export type PlanTask = {
 
 export type PlanDay = { id: string; tasks: PlanTask[] };
 
+export function completedPlanTaskId(task: PlanTask, completedTaskIds: string[]): string | null {
+  if (completedTaskIds.includes(task.id)) return task.id;
+  if (task.sourceTaskId && completedTaskIds.includes(task.sourceTaskId)) return task.sourceTaskId;
+  if (!task.sourceTaskId) return null;
+  const partMatch = task.id.match(/--part-(\d+)$/);
+  if (!partMatch) return null;
+  const legacyPrefix = `${task.sourceTaskId}--part-${partMatch[1]}-of-`;
+  return completedTaskIds.find((id) => id.startsWith(legacyPrefix)) ?? null;
+}
+
 type Segment = {
   start: number;
   end: number;
@@ -1633,7 +1643,7 @@ export function buildGentlePlan(courseId: string, requestedDays: number): { requ
       sourceParts[sourceIndex] = part;
       tasksByDay[dayIndex].push({
         ...task,
-        id: `${task.id}--part-${part}-of-${total}`,
+        id: `${task.id}--part-${part}`,
         sourceTaskId: task.id,
         title: `${task.title} · Part ${part}/${total}`,
         titleZh: `${task.titleZh} · 第 ${part}/${total} 部分`,
