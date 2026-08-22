@@ -25,5 +25,5 @@ export default function AccountMenu() {
       ? (language === "zh" ? "我的账号" : "My account")
       : (language === "zh" ? "登录同步" : "Sign in to sync");
 
-  return <div className="fixed bottom-5 right-5 z-50 flex items-center gap-2"><Link href={language === "zh" ? "/dashboard?lang=zh" : "/dashboard"} className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium shadow-lg hover:border-gray-400">{language === "zh" ? "用户中心" : "User center"}</Link><Link href={href} className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium shadow-lg hover:border-gray-400">{label}</Link></div>;
+  return <nav aria-label={language === "zh" ? "用户快捷操作" : "Account shortcuts"} className="fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] left-4 right-4 z-50 flex flex-wrap items-center justify-end gap-2"><Link href={language === "zh" ? "/dashboard?lang=zh" : "/dashboard"} className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium shadow-lg hover:border-gray-400">{language === "zh" ? "用户中心" : "User center"}</Link><Link href={href} className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium shadow-lg hover:border-gray-400">{label}</Link></nav>;
 }

@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Suspense } from "react";
 import "./globals.css";
 import AccountMenu from "./AccountMenu";
+import DocumentLanguage from "./DocumentLanguage";
 import SiteFooter from "./SiteFooter";
 import { publicSiteUrl } from "../lib/siteUrl";
 
@@ -37,7 +38,7 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}<Suspense><SiteFooter /></Suspense><Suspense><AccountMenu /></Suspense></body>
+      <body className="min-h-full flex flex-col"><a href="#main-content" className="skip-link">Skip to main content / 跳到主要内容</a><Suspense><DocumentLanguage /></Suspense><div id="main-content" tabIndex={-1} className="contents">{children}</div><Suspense><SiteFooter /></Suspense><Suspense><AccountMenu /></Suspense></body>
     </html>
   );
 }
