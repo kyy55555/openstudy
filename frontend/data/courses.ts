@@ -2277,4 +2277,32 @@ export const courses: Course[] = [
     courseUrl: "https://www.cs.cmu.edu/afs/cs/academic/class/15418-s26/www/", sourceName: "Carnegie Mellon University School of Computer Science", verifiedOn: "2026-08-22",
     resources: [{ type: "schedule", title: "Official lecture schedule, slides, and linked videos", url: "https://www.cs.cmu.edu/afs/cs/academic/class/15418-s26/www/schedule.html" }, { type: "assignments", title: "Official programming assignment sequence", url: "https://www.cs.cmu.edu/afs/cs/academic/class/15418-s26/www/assignments.html" }, { type: "exams", title: "Official exam dates and review materials", url: "https://www.cs.cmu.edu/afs/cs/academic/class/15418-s26/www/exams.html" }, { type: "projects", title: "Official project milestones and examples", url: "https://www.cs.cmu.edu/afs/cs/academic/class/15418-s26/www/projects.html" }],
   }),
+  course({
+    id: "cornell-math1910", code: "MATH 1910", title: "Calculus for Engineers", titleZh: "工程微积分", university: "Cornell University", subject: "Calculus", subjectZh: "微积分",
+    description: "Cornell Engineering's required first calculus course, covering integration techniques and applications, exponential growth, infinite sequences and series, convergence, and power series.", descriptionZh: "Cornell 工学院要求的第一门微积分课程，涵盖积分方法与应用、指数增长、无穷数列与级数、收敛性及幂级数。",
+    searchKeywords: ["MATH 1910", "calculus for engineers", "integration", "series", "Cornell"], level: "Introductory", prerequisites: ["A first course in differential calculus or equivalent placement"], year: null, hasVideos: null, hasAssignments: null, hasSolutions: null,
+    courseUrl: "https://math.cornell.edu/math-engineering", sourceName: "Cornell University Department of Mathematics", verifiedOn: "2026-08-22",
+    resources: [{ type: "materials", title: "Official lower-level course descriptions", url: "https://math.cornell.edu/lower-level-courses" }, { type: "syllabus", title: "Official mathematics catalog entry", url: "https://catalog.cornell.edu/courses/math/" }],
+  }),
+  course({
+    id: "cornell-math1920", code: "MATH 1920", title: "Multivariable Calculus for Engineers", titleZh: "工程多元微积分", university: "Cornell University", subject: "Calculus", subjectZh: "微积分",
+    description: "Partial derivatives, multiple integrals, line and surface integrals, vector fields, and the Green, Stokes, and divergence theorems for engineering students.", descriptionZh: "面向工程学生学习偏导数、重积分、线积分与曲面积分、向量场，以及 Green、Stokes 和散度定理。",
+    searchKeywords: ["MATH 1920", "multivariable calculus", "vector calculus", "Cornell"], level: "Introductory", prerequisites: ["Cornell MATH 1910 or equivalent"], year: null, hasVideos: null, hasAssignments: null, hasSolutions: null,
+    courseUrl: "https://pi.math.cornell.edu/~web1920/info.html", sourceName: "Cornell University Department of Mathematics", verifiedOn: "2026-08-22",
+    resources: [{ type: "materials", title: "Official current lower-level course description", url: "https://math.cornell.edu/lower-level-courses" }, { type: "syllabus", title: "Official mathematics catalog entry", url: "https://catalog.cornell.edu/courses/math/" }],
+  }),
+  course({
+    id: "cornell-cs2800", code: "CS 2800", title: "Mathematical Foundations of Computing", titleZh: "计算数学基础", university: "Cornell University", subject: "Discrete Mathematics", subjectZh: "离散数学",
+    description: "Induction and proof, propositional and predicate logic, sets, functions, relations, graph theory, combinatorics, discrete mathematics, probability, and finite-state machines.", descriptionZh: "学习归纳与证明、命题与谓词逻辑、集合、函数、关系、图论、组合数学、离散数学、概率和有限状态机。",
+    searchKeywords: ["CS 2800", "mathematical foundations", "discrete mathematics", "proofs", "Cornell"], level: "Intermediate", prerequisites: null, year: 2025, hasVideos: null, hasAssignments: null, hasSolutions: null,
+    courseUrl: "https://classes.cornell.edu/browse/roster/FA25/class/CS/2800", sourceName: "Cornell University Class Roster", verifiedOn: "2026-08-22",
+    resources: [{ type: "syllabus", title: "Official computer science catalog entry", url: "https://catalog.cornell.edu/courses/cs/" }],
+  }),
+  course({
+    id: "cornell-math2940", code: "MATH 2940", title: "Linear Algebra for Engineers", titleZh: "工程线性代数", university: "Cornell University", subject: "Linear Algebra", subjectZh: "线性代数",
+    description: "Matrices and determinants, vector spaces, eigenvalues and eigenvectors, orthogonality and inner products, difference equations, Markov chains, and systems of linear differential equations.", descriptionZh: "学习矩阵与行列式、向量空间、特征值与特征向量、正交与内积、差分方程、马尔可夫链及线性微分方程组。",
+    searchKeywords: ["MATH 2940", "linear algebra for engineers", "matrices", "eigenvalues", "Cornell"], level: "Intermediate", prerequisites: ["Cornell MATH 1920 or equivalent"], year: null, hasVideos: null, hasAssignments: null, hasSolutions: null,
+    courseUrl: "https://math.cornell.edu/lower-level-courses", sourceName: "Cornell University Department of Mathematics", verifiedOn: "2026-08-22",
+    resources: [{ type: "syllabus", title: "Official mathematics catalog entry", url: "https://catalog.cornell.edu/courses/math/" }, { type: "materials", title: "Official textbook information", url: "https://math.cornell.edu/textbooks" }],
+  }),
 ];

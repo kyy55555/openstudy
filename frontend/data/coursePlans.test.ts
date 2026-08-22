@@ -535,8 +535,17 @@ test("remaining non-CMU university courses all have executable official curricul
  for(const id of ["washington-cse550","tsinghua-20740112","tsinghua-computer-graphics","pku-computing-intro","pku-data-structures","pku-operating-systems","tsinghua-20740164","tsinghua-database-technology","uiuc-cs124","uiuc-cs128","uiuc-cs225","gatech-cs1301","gatech-cs2110","gatech-cs3510","harvard-cs61"]){assert.equal(structuredCoursePlans[id].detail,"full");assert.ok(structuredCoursePlans[id].tasks.length>=20);}
 });
 
-test("all 127 catalog courses now have substantive official-source plans",()=>{
- const definitions=Object.values(structuredCoursePlans);assert.equal(definitions.length,127);assert.ok(definitions.every(({detail,tasks})=>detail==="full"&&tasks.length>=2));
+test("Cornell's required math and foundations courses use only verified official topic sequences", () => {
+  for (const id of ["cornell-math1910", "cornell-math1920", "cornell-cs2800", "cornell-math2940"]) {
+    const definition = structuredCoursePlans[id];
+    assert.equal(definition.detail, "full");
+    assert.ok(definition.tasks.length >= 7);
+    assert.ok(definition.tasks.every(({ kind }) => kind === "session"));
+  }
+});
+
+test("all 131 catalog courses now have substantive official-source plans",()=>{
+ const definitions=Object.values(structuredCoursePlans);assert.equal(definitions.length,131);assert.ok(definitions.every(({detail,tasks})=>detail==="full"&&tasks.length>=2));
 });
 
 test("Berkeley MATH 54 and CMU 15-418 follow their official published sequences", () => {

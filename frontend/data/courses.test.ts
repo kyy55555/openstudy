@@ -10,6 +10,10 @@ const officialHosts = new Set([
   "cs50.harvard.edu",
   "www.cs.princeton.edu",
   "www.cs.cornell.edu",
+  "classes.cornell.edu",
+  "math.cornell.edu",
+  "pi.math.cornell.edu",
+  "catalog.cornell.edu",
   "inst.eecs.berkeley.edu",
   "eecs.berkeley.edu",
   "sp26.cs161.org",
@@ -208,6 +212,15 @@ test("Berkeley's official linear algebra course replaces the external curriculum
   assert.equal(course?.university, "UC Berkeley");
   assert.equal(course?.year, null);
   assert.ok(course?.resources.some(({ url }) => url.includes("math.berkeley.edu")));
+});
+
+test("Cornell's required mathematics and computing foundations are present", () => {
+  const byId = new Map(courses.map((course) => [course.id, course]));
+  for (const id of ["cornell-math1910", "cornell-math1920", "cornell-cs2800", "cornell-math2940"]) {
+    assert.equal(byId.get(id)?.university, "Cornell University");
+  }
+  assert.equal(byId.get("cornell-cs2800")?.hasAssignments, null);
+  assert.equal(byId.get("cornell-math2940")?.hasVideos, null);
 });
 
 test("audited courses use the latest confirmed public editions", () => {

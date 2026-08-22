@@ -46,3 +46,15 @@ test("Berkeley and CMU curricula prefer newly verified home-university courses",
   assert.ok(!berkeleyIds.includes("mit-18-06"));
   assert.ok(cmuIds.includes("cmu-15-418"));
 });
+
+test("Cornell's early curriculum uses its required home-university foundations", () => {
+  const cornell = learningPaths.find(({ id }) => id === "cornell-cs");
+  assert.ok(cornell);
+  const earlyCourseIds = cornell.phases.slice(0, 3).flatMap(({ courseIds }) => courseIds);
+  for (const id of ["cornell-math1910", "cornell-math1920", "cornell-cs2800", "cornell-math2940"]) {
+    assert.ok(earlyCourseIds.includes(id), `${id} is missing from Cornell's early curriculum`);
+  }
+  for (const id of ["mit-18-01sc", "mit-18-02sc", "mit-6-042j", "mit-18-06"]) {
+    assert.ok(!earlyCourseIds.includes(id), `${id} still substitutes for a verified Cornell course`);
+  }
+});

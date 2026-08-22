@@ -1390,6 +1390,16 @@ cmu15418Tasks.push({ id: "exam-1", title: "Exam 1", titleZh: "考试一", url: `
 [["Project Proposal", "项目提案"], ["Milestone Report", "里程碑报告"], ["Milestone Meeting", "里程碑会议"], ["Final Report", "最终报告"], ["Poster Session", "海报展示"]].forEach(([title, titleZh], index) => cmu15418Tasks.push({ id: `project-${index + 1}`, title, titleZh, url: `${cmu15418Base}/projects.html`, kind: "project" }));
 structuredCoursePlans["cmu-15-418"] = { sourceUrl: cmu15418Schedule, detail: "full", tasks: cmu15418Tasks };
 
+function catalogTopicPlan(url: string, topics: readonly (readonly [string, string])[]): PlanTask[] {
+  return topics.map(([title, titleZh], index) => ({ id: `official-unit-${index + 1}`, title: `Official unit ${index + 1}: ${title}`, titleZh: `官方单元 ${index + 1}：${titleZh}`, url, kind: "session" }));
+}
+const cornellMathCatalog = "https://math.cornell.edu/lower-level-courses";
+structuredCoursePlans["cornell-math1910"] = { sourceUrl: "https://math.cornell.edu/math-engineering", detail: "full", tasks: catalogTopicPlan(cornellMathCatalog, [["Integration Techniques", "积分方法"], ["Areas and Volumes", "面积与体积"], ["Exponential Growth", "指数增长"], ["Partial Fractions", "部分分式"], ["Infinite Sequences and Series", "无穷数列与级数"], ["Convergence Tests", "收敛判别法"], ["Power Series", "幂级数"]]) };
+structuredCoursePlans["cornell-math1920"] = { sourceUrl: "https://pi.math.cornell.edu/~web1920/info.html", detail: "full", tasks: catalogTopicPlan(cornellMathCatalog, [["Partial Derivatives", "偏导数"], ["Double Integrals", "二重积分"], ["Triple Integrals", "三重积分"], ["Line Integrals", "线积分"], ["Surface Integrals", "曲面积分"], ["Vector Fields", "向量场"], ["Green's Theorem", "Green 定理"], ["Stokes' Theorem", "Stokes 定理"], ["Divergence Theorem", "散度定理"]]) };
+const cornellCs2800Roster = "https://classes.cornell.edu/browse/roster/FA25/class/CS/2800";
+structuredCoursePlans["cornell-cs2800"] = { sourceUrl: cornellCs2800Roster, detail: "full", tasks: catalogTopicPlan(cornellCs2800Roster, [["Induction and Logical Proof", "归纳与逻辑证明"], ["Propositional Calculus", "命题演算"], ["Predicate Calculus", "谓词演算"], ["Sets, Functions, and Relations", "集合、函数与关系"], ["Graph Theory", "图论"], ["Combinatorics", "组合数学"], ["Discrete Mathematics", "离散数学"], ["Basic Probability", "基础概率"], ["Finite-State Machines", "有限状态机"]]) };
+structuredCoursePlans["cornell-math2940"] = { sourceUrl: cornellMathCatalog, detail: "full", tasks: catalogTopicPlan(cornellMathCatalog, [["Matrices and Determinants", "矩阵与行列式"], ["Vector Spaces", "向量空间"], ["Eigenvalues and Eigenvectors", "特征值与特征向量"], ["Orthogonality and Inner Products", "正交与内积"], ["Difference Equations", "差分方程"], ["Markov Chains", "马尔可夫链"], ["Systems of Linear Differential Equations", "线性微分方程组"]]) };
+
 export function buildGentlePlan(courseId: string, requestedDays: number): { requestedDays: number; plannedDays: number; totalTasks: number; days: PlanDay[] } | null {
   const course = structuredCoursePlans[courseId];
   if (!course || !Number.isInteger(requestedDays) || requestedDays < 1) return null;
