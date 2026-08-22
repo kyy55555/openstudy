@@ -50,3 +50,9 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+@media (pointer: coarse) {
+  :where(button, select, input[type="submit"], input[type="button"]) {
+    min-height: 44px;
+  }
+}
