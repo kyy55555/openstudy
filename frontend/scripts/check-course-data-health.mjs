@@ -60,10 +60,18 @@ for (const path of learningPaths) {
 const universityCoverage = Object.entries(Object.groupBy(courses, ({ university }) => university))
   .map(([university, items]) => ({ university, courses: items.length, withResources: items.filter(({ resources }) => resources.length > 0).length }))
   .sort((a, b) => b.courses - a.courses || a.university.localeCompare(b.university));
+const coursesById = new Map(courses.map((course) => [course.id, course]));
+const curriculumCoverage = learningPaths.map((path) => {
+  const ids = [...new Set(path.phases.flatMap((phase) => [...phase.courseIds, ...phase.choiceGroups.flatMap((group) => group.courseIds)]))];
+  const homeCourses = ids.filter((id) => coursesById.get(id)?.university === path.university).length;
+  return { id: path.id, university: path.university, homeCourses, externalSubstitutes: ids.length - homeCourses, total: ids.length };
+});
 
 console.log(`Course data health: ${courses.length} courses, ${learningPaths.length} curricula, ${critical.length} critical issues, ${warnings.length} warnings.`);
 console.log("University coverage:");
 for (const item of universityCoverage) console.log(`- ${item.university}: ${item.courses} courses; ${item.withResources} with separate official resources`);
+console.log("Curriculum course provenance:");
+for (const item of curriculumCoverage) console.log(`- ${item.id}: ${item.homeCourses}/${item.total} home-university courses; ${item.externalSubstitutes} explicit external substitutes`);
 if (warnings.length) {
   console.log("Warnings:");
   for (const warning of warnings) console.log(`- ${warning.id}: ${warning.issue}`);

@@ -19,6 +19,9 @@ function PathsContent() {
   const path = learningPaths.find(({ id }) => id === selectedId) ?? learningPaths[0];
   const { library, loaded, setProgress } = useCourseLibrary();
   const completion = learningPathCoverage(path.phases, library.progress);
+  const pathCourseIds = [...new Set(path.phases.flatMap((phase) => [...phase.courseIds, ...phase.choiceGroups.flatMap((group) => group.courseIds)]))];
+  const homeCourseCount = pathCourseIds.filter((id) => courses.find((course) => course.id === id)?.university === path.university).length;
+  const substituteCount = pathCourseIds.length - homeCourseCount;
 
   function pathsUrl(nextPathId: string, nextLanguage: "en" | "zh") {
     const nextParams = new URLSearchParams({ path: nextPathId });
@@ -66,6 +69,7 @@ function PathsContent() {
               <ul className="mt-2 space-y-1 text-sm text-blue-900">{(language === "zh" ? path.officialRequirementNotesZh : path.officialRequirementNotes).map((note) => <li key={note}>• {note}</li>)}</ul>
             </div>
             <p className="mt-3 inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-800">{language === "zh" ? `官方要求 · ${path.calendar === "quarter" ? "按学季" : "按学期"} · 时间位置为先修关系推导` : `Official requirements · ${path.calendar === "quarter" ? "Quarter system" : "Semester system"} · Placement inferred from prerequisites`}</p>
+            <p className="mt-2 text-xs font-medium text-gray-700">{language === "zh" ? `当前公开课覆盖：本校 ${homeCourseCount} 门 · 明确标注的外校替代 ${substituteCount} 门` : `Current open-course coverage: ${homeCourseCount} home-university courses · ${substituteCount} explicitly labeled external substitutes`}</p>
             <p className="mt-2 text-xs text-gray-500">{language === "zh" ? `来源版本：${path.sourceEditionZh} · 核验日期：${path.verifiedOn}` : `Source edition: ${path.sourceEdition} · Verified: ${path.verifiedOn}`}</p>
             {path.additionalOfficialSources?.map((source) => <a key={source.url} href={source.url} target="_blank" rel="noreferrer" className="mr-4 mt-2 inline-block text-xs font-medium text-gray-600 underline underline-offset-4">{language === "zh" ? source.titleZh : source.title} ↗</a>)}
           </div>
