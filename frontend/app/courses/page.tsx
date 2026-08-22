@@ -270,13 +270,38 @@ function SearchBox({
   suggestions,
   copy,
 }: SearchBoxProps) {
+  const [activeSuggestion, setActiveSuggestion] = useState(-1);
+
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     void onSearch();
   }
 
+  function chooseSuggestion(suggestion: string) {
+    setSearchInput(suggestion);
+    setActiveSuggestion(-1);
+    void onSearch(suggestion);
+  }
+
+  function handleSearchKeyDown(event: KeyboardEvent<HTMLInputElement>) {
+    if (suggestions.length === 0) return;
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      setActiveSuggestion((current) => current >= suggestions.length - 1 ? 0 : current + 1);
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      setActiveSuggestion((current) => current <= 0 ? suggestions.length - 1 : current - 1);
+    } else if (event.key === "Enter" && activeSuggestion >= 0) {
+      event.preventDefault();
+      chooseSuggestion(suggestions[activeSuggestion]);
+    } else if (event.key === "Escape") {
+      event.preventDefault();
+      setActiveSuggestion(-1);
+    }
+  }
+
   return (
-    <form onSubmit={handleSubmit} className="relative mt-6 flex gap-2">
+    <form onSubmit={handleSubmit} className="relative mt-6 flex flex-col gap-2 sm:flex-row">
       <div className="relative min-w-0 flex-1">
         <input
           type="search"
@@ -284,9 +309,11 @@ function SearchBox({
           aria-autocomplete="list"
           aria-expanded={suggestions.length > 0}
           aria-controls="course-search-suggestions"
+          aria-activedescendant={activeSuggestion >= 0 ? `course-search-suggestion-${activeSuggestion}` : undefined}
           placeholder={copy.searchPlaceholder}
           value={searchInput}
-          onChange={(event) => setSearchInput(event.target.value)}
+          onChange={(event) => { setSearchInput(event.target.value); setActiveSuggestion(-1); }}
+          onKeyDown={handleSearchKeyDown}
           className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-gray-700"
         />
 
@@ -296,18 +323,17 @@ function SearchBox({
             role="listbox"
             className="absolute z-20 mt-2 max-h-72 w-full overflow-auto rounded-xl border border-gray-200 bg-white p-2 shadow-lg"
           >
-            {suggestions.map((suggestion) => (
+            {suggestions.map((suggestion, index) => (
               <button
                 key={suggestion}
+                id={`course-search-suggestion-${index}`}
                 type="button"
                 role="option"
-                aria-selected={false}
+                aria-selected={activeSuggestion === index}
                 onMouseDown={(event) => event.preventDefault()}
-                onClick={() => {
-                  setSearchInput(suggestion);
-                  onSearch(suggestion);
-                }}
-                className="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+                onMouseEnter={() => setActiveSuggestion(index)}
+                onClick={() => chooseSuggestion(suggestion)}
+                className={`block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-gray-100 focus:bg-gray-100 focus:outline-none ${activeSuggestion === index ? "bg-gray-100" : ""}`}
               >
                 {suggestion}
               </button>
@@ -769,7 +795,7 @@ function CourseExplorer() {
     : 0;
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-4xl px-6 py-12">
+    <main className="mx-auto min-h-screen w-full max-w-4xl px-4 py-8 sm:px-6 sm:py-12">
       <Title
         text="OpenStudy"
         subtitle={copy.subtitle}

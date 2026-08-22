@@ -41,7 +41,7 @@ function HomeContent() {
   const copy = homeCopy[language];
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center px-6 py-16">
+    <main className="relative flex min-h-screen items-center justify-center px-4 py-20 sm:px-6 sm:py-16">
       <button
         type="button"
         onClick={() => {
@@ -50,7 +50,7 @@ function HomeContent() {
           router.replace(nextLanguage === "zh" ? "/?lang=zh" : "/");
         }}
         aria-label={copy.switchLabel}
-        className="absolute right-6 top-6 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50"
+        className="absolute right-4 top-4 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50 sm:right-6 sm:top-6"
       >
         {copy.switchLanguage}
       </button>
@@ -71,7 +71,7 @@ function HomeContent() {
           {copy.scope}
         </p>
 
-        <form action="/courses" method="get" className="mt-10 flex gap-2">
+        <form action="/courses" method="get" className="mt-10 flex flex-col gap-2 sm:flex-row">
           {language === "zh" && <input type="hidden" name="lang" value="zh" />}
 
           <label htmlFor="course-search" className="sr-only">
@@ -88,7 +88,7 @@ function HomeContent() {
 
           <button
             type="submit"
-            className="rounded-xl bg-black px-6 py-4 font-medium text-white hover:bg-gray-800"
+            className="rounded-xl bg-black px-6 py-4 font-medium text-white hover:bg-gray-800 sm:w-auto"
           >
             {copy.search}
           </button>
