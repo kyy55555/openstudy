@@ -85,6 +85,13 @@ test("Harvard's advanced options prefer its public data-systems course", () => {
   assert.ok(!path.phases.some(({ courseIds }) => courseIds.includes("berkeley-cs186")));
 });
 
+test("Harvard's advanced options prefer its current algorithms course", () => {
+  const path = learningPaths.find(({ id }) => id === "harvard-cs");
+  assert.ok(path);
+  assert.ok(path.phases.some(({ courseIds }) => courseIds.includes("harvard-cs1200")));
+  assert.ok(!path.phases.some(({ courseIds }) => courseIds.includes("mit-6-046j")));
+});
+
 test("Illinois curriculum uses verified native foundations and core courses", () => {
   const illinois = learningPaths.find(({ id }) => id === "uiuc-cs");
   assert.ok(illinois);

@@ -2215,6 +2215,13 @@ export const courses: Course[] = [
     resources: [{ type: "projects", title: "Official five-milestone data-system project", url: "https://daslab.seas.harvard.edu/classes/cs165/project.html" }, { type: "materials", title: "Official Harvard Data Systems Laboratory course overview", url: "https://daslab.seas.harvard.edu/" }],
   }),
   course({
+    id: "harvard-cs1200", code: "CS 1200", title: "Introduction to Algorithms and Their Limitations", titleZh: "算法及其局限性导论", university: "Harvard University", subject: "Algorithms", subjectZh: "算法",
+    description: "Harvard's current introductory theory course combines algorithms, data structures, computational models, graph and logic algorithms, complexity, NP-completeness, and uncomputability, with rigorous proofs and analysis of correctness and efficiency.", descriptionZh: "Harvard 当前理论入门课程，结合算法、数据结构、计算模型、图与逻辑算法、复杂度、NP 完全性和不可计算性，强调严格证明以及正确性与效率分析。",
+    searchKeywords: ["CS 1200", "CS 120", "algorithms and limitations", "complexity", "NP completeness", "Harvard", "算法", "计算复杂度"], level: "Undergraduate", prerequisites: ["Harvard CS 20 discrete mathematics", "Python programming at Harvard CS 50 level"], language: "English", year: 2026, hasVideos: null, hasAssignments: true, hasSolutions: true,
+    courseUrl: "https://harvard-cs-1200.github.io/cs1200/", sourceName: "Harvard CS 1200 course team", verifiedOn: "2026-08-22",
+    resources: [{ type: "schedule", title: "Official Spring 2026 schedule, lecture notes, problem sets, and exams", url: "https://docs.google.com/spreadsheets/d/1mnbqSTgJGc4nRCR9vSJrPSvmCyY8zVAWi88YkILdJEQ/edit?gid=1779133089" }, { type: "syllabus", title: "Official Spring 2026 syllabus", url: "https://harvard-cs-1200.github.io/cs1200/spring2026/Syllabus.pdf" }],
+  }),
+  course({
     id: "stanford-cs244b", title: "Distributed Systems", titleZh: "分布式系统", university: "Stanford University", subject: "Distributed Systems", subjectZh: "分布式系统",
     description: "Distributed systems and applications with protocols, shared state, consistency, transactions, consensus, storage, robustness, failure handling, and security.", descriptionZh: "学习分布式系统与应用，涵盖协议、共享状态、一致性、事务、共识、存储、鲁棒性、故障处理与安全。",
     searchKeywords: ["CS 244B", "distributed systems", "consensus", "Stanford"], level: "Graduate", prerequisites: ["Stanford CS 144"], year: 2024, hasVideos: null, hasAssignments: true, hasSolutions: null,
