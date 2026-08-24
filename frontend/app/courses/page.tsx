@@ -21,6 +21,7 @@ import {
   uniqueProgrammingLanguages,
 } from "../../data/courseFilters";
 import type { CourseSort } from "../../data/courseFilters";
+import { structuredCoursePlans } from "../../data/coursePlans";
 import { useCourseLibrary } from "../useCourseLibrary";
 
 const coursesPerPage = 12;
@@ -193,27 +194,27 @@ function Title({
   savedCount,
 }: TitleProps) {
   return (
-    <header className="flex flex-col items-start gap-4 sm:flex-row sm:justify-between">
+    <header className="flex flex-col items-start gap-5 overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-violet-950 to-indigo-900 p-6 text-white shadow-xl sm:flex-row sm:justify-between sm:p-8">
       <div>
         <h1 className="text-3xl font-bold">
           <Link href="/" className="hover:opacity-70">{text}</Link>
         </h1>
 
-        <p className="mt-2 text-gray-600">{subtitle}</p>
+        <p className="mt-2 max-w-2xl leading-7 text-slate-200">{subtitle}</p>
       </div>
 
       <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:shrink-0 sm:flex-nowrap">
-        <Link href={language === "zh" ? "/compare?lang=zh" : "/compare"} className="rounded-full border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50">
+        <Link href={language === "zh" ? "/compare?lang=zh" : "/compare"} className="rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-medium backdrop-blur hover:bg-white/20">
           {language === "zh" ? `收藏比较${savedCount ? ` (${savedCount})` : ""}` : `Compare${savedCount ? ` (${savedCount})` : ""}`}
         </Link>
-        <Link href={language === "zh" ? "/paths?lang=zh" : "/paths"} className="rounded-full border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50">
+        <Link href={language === "zh" ? "/paths?lang=zh" : "/paths"} className="rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-medium backdrop-blur hover:bg-white/20">
           {language === "zh" ? "学习路线" : "Learning paths"}
         </Link>
         <button
           type="button"
           onClick={onToggleLanguage}
           aria-label={language === "en" ? "切换到中文" : "Switch to English"}
-          className="rounded-full border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50"
+          className="rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-medium backdrop-blur hover:bg-white/20"
         >
           {switchLanguageLabel}
         </button>
@@ -368,7 +369,7 @@ function FilterBar({
 }: FilterBarProps) {
   const [filtersOpen, setFiltersOpen] = useState(false);
   return (
-    <div className="mt-5 rounded-xl border border-gray-200 p-4">
+    <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
       <button type="button" aria-expanded={filtersOpen} onClick={() => setFiltersOpen((open) => !open)} className="flex w-full items-center justify-between text-sm font-semibold sm:hidden">
         <span>{language === "zh" ? "筛选课程" : "Filter courses"}</span>
         <span aria-hidden="true">{filtersOpen ? "−" : "+"}</span>
@@ -488,13 +489,13 @@ function CourseCard({ course, language, copy, favorite, onToggleFavorite }: Cour
   const studyStage = suggestedStudyStage(course);
   const displayedSubjects = displayCourseSubjects(course, language);
   const detailPath = courseDetailPath(course, language);
-  const availableResourceTypes = new Set(course.resources.map(({ type }) => type));
+  const planTasks = structuredCoursePlans[course.id]?.tasks ?? [];
   const resourceBadges = [
-    { key: "lectures", label: language === "zh" ? "讲义 / 视频" : "Lectures / video", available: course.hasVideos === true || availableResourceTypes.has("lectures") },
-    { key: "assignments", label: language === "zh" ? "作业" : "Assignments", available: course.hasAssignments === true || availableResourceTypes.has("assignments") },
-    { key: "exams", label: language === "zh" ? "考试" : "Exams", available: availableResourceTypes.has("exams") },
-    { key: "projects", label: language === "zh" ? "项目" : "Projects", available: availableResourceTypes.has("projects") },
-  ].filter(({ available }) => available);
+    { key: "lectures", label: language === "zh" ? "讲义 / 视频" : "Lectures / video", icon: "▶", kind: "session", className: "border-blue-200 bg-blue-50 text-blue-900" },
+    { key: "assignments", label: language === "zh" ? "作业" : "Assignments", icon: "✓", kind: "assignment", className: "border-emerald-200 bg-emerald-50 text-emerald-900" },
+    { key: "exams", label: language === "zh" ? "考试" : "Exams", icon: "◇", kind: "exam", className: "border-amber-200 bg-amber-50 text-amber-950" },
+    { key: "projects", label: language === "zh" ? "项目" : "Projects", icon: "◆", kind: "project", className: "border-fuchsia-200 bg-fuchsia-50 text-fuchsia-900" },
+  ].map((item) => ({ ...item, task: planTasks.find(({ kind }) => kind === item.kind) })).filter(({ task }) => Boolean(task));
 
   function openCourse(event: MouseEvent<HTMLElement>) {
     const target = event.target;
@@ -542,8 +543,11 @@ function CourseCard({ course, language, copy, favorite, onToggleFavorite }: Cour
         {studyStage && <span className="rounded-full bg-blue-50 px-2.5 py-1 text-blue-900">{language === "zh" ? studyStageZh[studyStage] : studyStage}</span>}
       </div>
 
-      <div className="mt-5 flex min-h-7 flex-wrap gap-2">
-        {resourceBadges.map(({ key, label }) => <span key={key} className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-900"><span aria-hidden="true">✓</span>{label}</span>)}
+      <div className="mt-5 border-t border-slate-100 pt-4">
+        <p className="mb-2 text-[0.68rem] font-bold uppercase tracking-[0.13em] text-slate-400">{language === "zh" ? "直接打开官方资料" : "Open official material"}</p>
+        <div className="flex min-h-7 flex-wrap gap-2">
+        {resourceBadges.map(({ key, label, icon, className, task }) => <a key={key} href={task!.url} target="_blank" rel="noreferrer" title={language === "zh" ? `直接打开${label}` : `Open ${label}`} className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-bold transition hover:-translate-y-0.5 hover:shadow-sm ${className}`}><span aria-hidden="true">{icon}</span>{label}<span aria-hidden="true">↗</span></a>)}
+        </div>
       </div>
 
       <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4 text-sm">
@@ -653,7 +657,7 @@ function CourseExplorer() {
     : 0;
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-4xl px-4 py-8 sm:px-6 sm:py-12">
+    <main className="mx-auto min-h-screen w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
       <Title
         text="OpenStudy"
         subtitle={copy.subtitle}
@@ -757,7 +761,7 @@ function CourseExplorer() {
             </button>
           </div>
         ) : (
-          <div className="mt-6 space-y-5">
+          <div className="mt-6 grid items-stretch gap-5 md:grid-cols-2">
             {visibleCourses.map((course) => (
               <CourseCard
                 key={course.id}
