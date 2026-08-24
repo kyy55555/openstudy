@@ -115,38 +115,41 @@ html.dark .course-card-favorite { background-color: #1e293b; color: #f8fafc; --t
   inset: 0;
   width: 100%;
   height: 100%;
-  z-index: 0;
+  z-index: 1;
 }
 
 .knowledge-space > svg {
   position: relative;
-  z-index: 1;
+  z-index: 2;
+}
+
+.knowledge-cosmos-art {
+  z-index: 0;
+  object-fit: cover;
+  object-position: center bottom;
+  filter: saturate(0.9) brightness(0.82);
+}
+
+.knowledge-selected-lamb {
+  position: absolute;
+  z-index: 3;
+  left: clamp(0.65rem, 1.8vw, 1.75rem);
+  bottom: clamp(-0.4rem, -0.25vh, -0.1rem);
+  width: clamp(8rem, 13vw, 12rem);
+  aspect-ratio: 2 / 3;
+  pointer-events: none;
+  filter: drop-shadow(0 10px 15px rgb(2 6 23 / 0.42));
+}
+
+.knowledge-selected-lamb img {
+  object-fit: contain;
+  object-position: left bottom;
 }
 
 .home-cosmos-content h1,
 .home-cosmos-content p,
 .home-cosmos-content a {
   text-shadow: 0 2px 8px rgb(0 0 0 / 0.66);
-}
-
-.knowledge-lamb-lookout {
-  position: absolute;
-  z-index: 3;
-  left: clamp(0.75rem, 2vw, 2rem);
-  bottom: clamp(3.5rem, 7vh, 5rem);
-  width: clamp(7rem, 11vw, 9rem);
-  aspect-ratio: 2 / 3;
-  pointer-events: none;
-}
-
-.knowledge-lamb-scene {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: bottom left;
-  opacity: 0.92;
-  filter: saturate(0.78) brightness(0.82) contrast(0.94) drop-shadow(0 0 9px rgb(99 102 241 / 0.34));
-  image-rendering: auto;
 }
 
 .knowledge-float { animation: knowledge-float 5s ease-in-out infinite; }
