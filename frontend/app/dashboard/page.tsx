@@ -11,7 +11,6 @@ import {
   completionStreak,
   createCourseLibraryBackup,
   learningPathCoverage,
-  localDateKey,
   parseCourseLibraryBackup,
   phaseCoverage,
   weeklyStudyActivity,
@@ -53,11 +52,10 @@ function ProgressBar({ percent, label }: { percent: number; label: string }) {
 function DashboardContent() {
   const params = useSearchParams();
   const language: Language = params.get("lang") === "zh" ? "zh" : "en";
-  const { library, loaded, storageIssue, syncIssue, syncConflict, lastSyncedAt, retryCloudSync, resolveCloudConflict, completeDailyTask, togglePlanPaused, recordResourceOpen, clearLastOpenedResource, replaceLibrary } = useCourseLibrary();
+  const { library, loaded, storageIssue, syncIssue, syncConflict, lastSyncedAt, retryCloudSync, resolveCloudConflict, togglePlanPaused, removeStudyPlan, recordResourceOpen, clearLastOpenedResource, replaceLibrary } = useCourseLibrary();
   const [pendingBackup, setPendingBackup] = useState<CourseLibraryBackup | null>(null);
   const [backupMessage, setBackupMessage] = useState("");
-  const [todayKey] = useState(() => localDateKey());
-  const [achievement, setAchievement] = useState("");
+  const [pendingPlanRemoval, setPendingPlanRemoval] = useState<string | null>(null);
 
   const inProgress = courses.filter((course) => library.progress[course.id] === "in-progress").map((course) => course.id);
   const completed = courses.filter((course) => library.progress[course.id] === "completed").map((course) => course.id);
@@ -75,44 +73,28 @@ function DashboardContent() {
     .map((path) => ({ path, ...learningPathCoverage(path.phases, library.progress) }))
     .filter(({ completed: count }) => count > 0)
     .sort((a, b) => b.completed - a.completed || b.percent - a.percent);
-  const completedToday = Boolean(todayKey && activePlans.some(({ saved }) => saved.lastDailyCompletionDate === todayKey));
   const streak = completionStreak(activePlans.flatMap(({ saved }) => saved.dailyCompletionDates ?? []));
   const weeklyActivity = weeklyStudyActivity(activePlans.flatMap(({ saved }) => saved.dailyCompletionDates ?? []));
   const weeklyCompleted = weeklyActivity.filter(({ completed: dayCompleted }) => dayCompleted).length;
   const activityDates = [...new Set(activePlans.flatMap(({ saved }) => saved.dailyCompletionDates ?? []))].sort().reverse();
   const completedPlanTaskCount = activePlans.reduce((total, { saved }) => total + saved.completedTaskIds.length, 0);
   const runningPlans = activePlans.filter(({ saved }) => !saved.paused);
-  const todayPlan = completedToday ? null : runningPlans.find(({ nextTask }) => nextTask);
-  const todayTask = todayPlan?.nextTask ?? null;
-  const todayTaskNumber = todayPlan && todayTask
-    ? todayPlan.generated.days.flatMap(({ tasks }) => tasks).filter((task) => task.kind !== "buffer").findIndex((task) => task.id === todayTask.id) + 1
-    : 0;
-  const todayLabel = new Date(`${todayKey}T00:00:00`).toLocaleDateString(language === "zh" ? "zh-CN" : "en-US", { month: "long", day: "numeric", weekday: "long" });
-  const taskKind = todayTask ? ({
-    session: language === "zh" ? "讲义 / 视频" : "Lecture / video",
-    assignment: language === "zh" ? "作业" : "Assignment",
-    exam: language === "zh" ? "考试" : "Exam",
-    project: language === "zh" ? "项目" : "Project",
-    buffer: language === "zh" ? "复习" : "Review",
-  }[todayTask.kind]) : "";
 
   const copy = language === "zh" ? {
-    back: "← OpenStudy", title: "今日学习", subtitle: "今天只完成这一小步。任务来自你选择的真实官方课程资料。",
-    today: "今日任务", todayDone: "今天的学习完成了", todayDoneHelp: "做得很好。今天不再增加任务，明天从下一项继续。", noToday: "还没有今日任务。先选择一门课程并制定学习计划。", completeToday: "完成今天的任务", achievement: "完成啦！今天的学习进度已经保存。", openTask: "打开官方内容", taskProgress: "课程计划进度", userCenter: "用户中心概览",
+    back: "← OpenStudy", title: "用户中心", subtitle: "管理课程计划、学习进度、收藏和云端记录。培养方案仅作为参考。",
     createPlan: "为正在学习的课程制定计划", browsePlans: "选择课程并制定计划",
     recent: "继续上次学习", noRecent: "打开课程资料后，这里会保留你的上次学习位置。", clear: "清除记录",
-    overview: "学习概览", courses: "完成课程", resources: "完成资料", plans: "进行中计划", streak: "连续完成天数", week: "最近 7 天", weekUnit: "天完成任务", gentleWin: "稳步前进", gentleWinHelp: "完成一次也算进步。这里记录真实完成，不要求每天打卡。", achievements: "学习成就", achievementHelp: "只根据你主动确认的完成记录点亮。", firstStep: "完成第一个计划任务", threeDays: "累计学习 3 天", sevenDays: "累计学习 7 天", firstCourse: "完成第一门课程", history: "学习历史", noHistory: "完成计划任务后，会在这里记录学习日期。", completedTask: "完成了当天的计划任务",
-    plansTitle: "课程计划", noPlan: "还没有课程计划。你可以在课程详情页输入目标天数。", target: "目标天数", planned: "保守规划", progress: "计划完成度", finishedPlan: "计划任务已全部完成，请自行确认整门课程状态。", paused: "已暂停，不会安排今日任务。", pause: "暂停", resume: "继续",
+    overview: "学习概览", courses: "完成课程", resources: "完成资料", plans: "进行中计划", streak: "连续完成天数", week: "最近 7 天", weekUnit: "天完成任务", activityDone: "有学习记录", noActivity: "无学习记录", gentleWin: "稳步前进", gentleWinHelp: "完成一次也算进步。这里记录真实完成，不要求每天打卡。", achievements: "学习成就", achievementHelp: "只根据你主动确认的完成记录点亮。", firstStep: "完成第一个计划任务", threeDays: "累计学习 3 天", sevenDays: "累计学习 7 天", firstCourse: "完成第一门课程", history: "学习历史", noHistory: "完成计划任务后，会在这里记录学习日期。", completedTask: "完成了当天的计划任务",
+    plansTitle: "课程计划", noPlan: "还没有课程计划。你可以在课程详情页输入目标天数。", target: "目标天数", planned: "保守规划", progress: "计划完成度", finishedPlan: "计划任务已全部完成，请自行确认整门课程状态。", paused: "已暂停，不会安排今日任务。", pause: "暂停", resume: "继续", removePlan: "删除计划", confirmRemove: "确定删除这个课程计划吗？计划任务的完成记录也会删除，但不会影响收藏、课程状态和资料完成记录。", confirm: "确定删除", cancelRemove: "取消",
     current: "正在学习", noCurrent: "还没有标记为学习中的课程。", done: "已完成课程", noDone: "完成课程后会显示在这里。", saved: "收藏课程", noSaved: "还没有收藏课程。",
     coverage: "培养方案学期点亮", noCoverage: "完成或开始路线中的课程后，这里会自然显示匹配的参考培养方案，无需选择路线。", reference: "查看完整参考方案", termDone: "已点亮", termPartial: "进行中", termEmpty: "未开始",
     backup: "备份与恢复学习记录", backupHelp: "下载一份不含邮箱和密码的 JSON 文件。恢复备份会覆盖当前游客或当前账号的学习记录，不会自动合并。", download: "下载备份", chooseBackup: "选择备份文件", invalidBackup: "无法读取：请选择 OpenStudy 导出的有效 JSON 备份（最大 2 MB）。", restore: "确认覆盖并恢复", cancel: "取消", restored: "学习记录已从备份恢复。", backupFrom: "备份时间",
   } : {
-    back: "← OpenStudy", title: "Today’s study", subtitle: "Take one small step today. Every task comes from the real official course materials you selected.",
-    today: "Today’s task", todayDone: "Today’s study is complete", todayDoneHelp: "Nice work. No extra task will be added today—continue with the next item tomorrow.", noToday: "No task for today yet. Choose a course and create a study plan first.", completeToday: "Complete today’s task", achievement: "Done! Today’s progress has been saved.", openTask: "Open official content", taskProgress: "Course plan progress", userCenter: "User center overview",
+    back: "← OpenStudy", title: "User center", subtitle: "Manage course plans, learning progress, saved courses, and cloud records. Curricula remain references.",
     createPlan: "Plan an in-progress course", browsePlans: "Choose a course and create a plan",
     recent: "Continue where you left off", noRecent: "Open an official course resource and your latest position will stay here.", clear: "Clear",
-    overview: "Learning overview", courses: "Courses completed", resources: "Resources completed", plans: "Active plans", streak: "Completion streak", week: "Last 7 days", weekUnit: "days with a completed task", gentleWin: "Steady progress", gentleWinHelp: "One completion still counts. This records real progress without demanding a daily streak.", achievements: "Learning achievements", achievementHelp: "Unlocked only from progress you explicitly confirm.", firstStep: "Complete your first plan task", threeDays: "Learn on 3 days", sevenDays: "Learn on 7 days", firstCourse: "Complete your first course", history: "Learning history", noHistory: "Completed plan tasks will add their learning dates here.", completedTask: "Completed the day's plan task",
-    plansTitle: "Course plans", noPlan: "No course plan yet. Set a target number of days on a course page.", target: "Target days", planned: "Conservative plan", progress: "Plan progress", finishedPlan: "All plan tasks are complete. Confirm the whole course separately.", paused: "Paused; no daily task will be suggested.", pause: "Pause", resume: "Resume",
+    overview: "Learning overview", courses: "Courses completed", resources: "Resources completed", plans: "Active plans", streak: "Completion streak", week: "Last 7 days", weekUnit: "days with a completed task", activityDone: "Learning recorded", noActivity: "No learning recorded", gentleWin: "Steady progress", gentleWinHelp: "One completion still counts. This records real progress without demanding a daily streak.", achievements: "Learning achievements", achievementHelp: "Unlocked only from progress you explicitly confirm.", firstStep: "Complete your first plan task", threeDays: "Learn on 3 days", sevenDays: "Learn on 7 days", firstCourse: "Complete your first course", history: "Learning history", noHistory: "Completed plan tasks will add their learning dates here.", completedTask: "Completed the day's plan task",
+    plansTitle: "Course plans", noPlan: "No course plan yet. Set a target number of days on a course page.", target: "Target days", planned: "Conservative plan", progress: "Plan progress", finishedPlan: "All plan tasks are complete. Confirm the whole course separately.", paused: "Paused; no daily task will be suggested.", pause: "Pause", resume: "Resume", removePlan: "Delete plan", confirmRemove: "Delete this course plan? Its task-completion history will also be removed, but saved status, course status, and completed resources remain.", confirm: "Delete plan", cancelRemove: "Cancel",
     current: "In progress", noCurrent: "No courses are marked in progress.", done: "Completed courses", noDone: "Completed courses appear here.", saved: "Saved courses", noSaved: "No saved courses yet.",
     coverage: "Curriculum term progress", noCoverage: "Start or complete curriculum courses to see naturally matching references—no path selection required.", reference: "View full curriculum reference", termDone: "Lit", termPartial: "In progress", termEmpty: "Not started",
     backup: "Back up and restore learning record", backupHelp: "Download a JSON file without your email or password. Restoring replaces the current guest or account record; it never merges automatically.", download: "Download backup", chooseBackup: "Choose backup file", invalidBackup: "Could not read this file. Choose a valid OpenStudy JSON backup up to 2 MB.", restore: "Replace and restore", cancel: "Cancel", restored: "Learning record restored from backup.", backupFrom: "Backup created",
@@ -156,36 +138,14 @@ function DashboardContent() {
   return (
     <main className="mx-auto min-h-screen max-w-6xl px-5 py-8 sm:px-6 sm:py-10">
       <Link href={language === "zh" ? "/?lang=zh" : "/"} className="text-sm text-gray-500 hover:text-black">{copy.back}</Link>
-      <p className="mt-5 text-sm font-semibold uppercase tracking-[0.18em] text-violet-700">{todayLabel}</p>
-      <h1 className="mt-2 text-4xl font-bold tracking-tight sm:text-5xl">{copy.title}</h1>
+      <h1 className="mt-4 text-3xl font-bold">{copy.title}</h1>
       <p className="mt-2 max-w-3xl text-gray-600">{copy.subtitle}</p>
       {syncConflict && <div role="alert" className="mt-5 rounded-xl border border-orange-300 bg-orange-50 p-4 text-sm text-orange-950"><p className="font-semibold">{language === "zh" ? "发现另一台设备更新了学习记录" : "Another device updated your learning record"}</p><p className="mt-1">{language === "zh" ? "为避免覆盖，云同步已经暂停。请选择保留当前设备的记录，或改用最新云端记录；系统不会自动合并。" : "Cloud sync is paused to prevent an overwrite. Keep this device's record or use the latest cloud record; OpenStudy will not merge them automatically."}</p><div className="mt-3 flex flex-wrap gap-2"><button type="button" onClick={() => resolveCloudConflict("local")} className="rounded-lg bg-orange-900 px-3 py-2 font-semibold text-white">{language === "zh" ? "保留本机并上传" : "Keep this device"}</button><button type="button" onClick={() => resolveCloudConflict("cloud")} className="rounded-lg border border-orange-400 bg-white px-3 py-2 font-semibold">{language === "zh" ? "使用云端记录" : "Use cloud record"}</button></div></div>}
       {!syncIssue && !syncConflict && lastSyncedAt && <p className="mt-2 text-xs text-emerald-700">✓ {language === "zh" ? "云端已同步" : "Cloud synced"} · {new Date(lastSyncedAt).toLocaleString(language === "zh" ? "zh-CN" : "en-US")}</p>}
       {syncIssue && <div role="status" className="mt-5 flex flex-col gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 sm:flex-row sm:items-center sm:justify-between"><p>{storageIssue ? (language === "zh" ? "云端与浏览器存储当前均不可用。请保持页面打开并立即下载备份。" : "Cloud and browser storage are both unavailable. Keep this page open and download a backup now.") : (language === "zh" ? "云端同步暂时失败。当前更改已保存在此设备；网络恢复时会自动重试。" : "Cloud sync is temporarily unavailable. Changes are saved on this device and will retry automatically when the network returns.")}</p><button type="button" onClick={retryCloudSync} className="shrink-0 rounded-lg border border-amber-500 px-3 py-2 font-semibold hover:bg-amber-100">{language === "zh" ? "立即重试" : "Retry now"}</button></div>}
       {storageIssue && <div role="alert" className="mt-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-900">{language === "zh" ? "当前浏览器无法保存本地学习记录。请不要关闭页面；如果已经登录，OpenStudy 仍会尝试保存到云端。你也可以立即下载备份。" : "This browser cannot save the learning record locally. Keep this page open; if you are signed in, OpenStudy will still try to save to the cloud. You can also download a backup now."}</div>}
 
-      <section className="mt-8 overflow-hidden rounded-3xl bg-gradient-to-br from-violet-950 via-violet-900 to-indigo-700 p-5 text-white shadow-xl shadow-violet-950/15 sm:p-8">
-        <div className="flex flex-wrap items-center justify-between gap-3"><p className="text-sm font-semibold text-violet-200">{copy.today}</p>{todayPlan && <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold text-violet-50">{taskKind}</span>}</div>
-        {completedToday || achievement ? (
-          <div className="mt-5 py-3"><div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-400 text-2xl font-bold text-emerald-950">✓</div><h2 className="mt-4 text-2xl font-bold sm:text-3xl">{copy.todayDone}</h2><p className="mt-2 text-sm text-violet-100">{achievement || copy.todayDoneHelp}</p></div>
-        ) : todayPlan && todayTask ? (
-          <div className="mt-5">
-            <Link href={courseDetailPath(todayPlan.course, language)} className="text-sm font-medium text-violet-200 hover:text-white hover:underline">{courseCode(todayPlan.course)} · {language === "zh" ? (todayPlan.course.titleZh ?? todayPlan.course.title) : todayPlan.course.title}</Link>
-            <h2 className="mt-3 max-w-3xl text-2xl font-bold leading-tight sm:text-3xl">{language === "zh" ? todayTask.titleZh : todayTask.title}</h2>
-            <div className="mt-5 max-w-2xl"><div className="flex justify-between text-xs text-violet-200"><span>{copy.taskProgress}</span><span>{todayPlan.progress.completed}/{todayPlan.progress.total}</span></div><div className="mt-2 h-2 overflow-hidden rounded-full bg-white/15"><div className="h-full rounded-full bg-white" style={{ width: `${todayPlan.progress.percent}%` }} /></div>{todayTaskNumber > 0 && <p className="mt-2 text-xs text-violet-200">{language === "zh" ? `接下来是第 ${todayTaskNumber} 项，共 ${todayPlan.progress.total} 项` : `Next is task ${todayTaskNumber} of ${todayPlan.progress.total}`}</p>}</div>
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-              <a href={todayTask.url} target="_blank" rel="noreferrer" onClick={() => recordResourceOpen(todayPlan.course.id, todayTask.url, todayTask.title, todayTask.titleZh)} className="rounded-xl bg-white px-5 py-3 text-center text-sm font-semibold text-violet-950 transition hover:bg-violet-50">{copy.openTask} ↗</a>
-              <button type="button" onClick={() => { completeDailyTask(todayPlan.course.id, todayTask.id, todayKey); setAchievement(copy.achievement); }} className="rounded-xl border border-violet-300 px-4 py-3 text-sm font-semibold hover:bg-white/10">{copy.completeToday}</button>
-            </div>
-          </div>
-        ) : <div className="mt-3"><p className="text-sm text-violet-100">{copy.noToday}</p><Link href={inProgress[0] ? courseDetailPath(courses.find(({ id }) => id === inProgress[0])!, language) : language === "zh" ? "/courses?lang=zh" : "/courses"} className="mt-4 inline-flex rounded-xl bg-white px-4 py-3 text-sm font-semibold text-violet-950">{inProgress[0] ? copy.createPlan : copy.browsePlans} →</Link></div>}
-      </section>
-
-      <section className="mt-10">
-        <h2 className="text-2xl font-bold tracking-tight">{copy.userCenter}</h2>
-      </section>
-
-      <section className="mt-5">
+      <section className="mt-8">
         <h2 className="text-lg font-semibold">{copy.overview}</h2>
         <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
           {[[copy.courses, completed.length], [copy.resources, library.completedResources.length], [copy.plans, runningPlans.length], [copy.streak, streak]].map(([label, value]) => <div key={String(label)} className="rounded-2xl border border-gray-200 p-3 sm:p-5"><strong className="text-2xl sm:text-3xl">{value}</strong><span className="mt-1 block text-xs text-gray-500 sm:text-sm">{label}</span></div>)}
@@ -194,7 +154,7 @@ function DashboardContent() {
 
       <section className="mt-8 rounded-2xl border border-emerald-200 bg-emerald-50 p-5 sm:p-6">
         <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end"><div><p className="text-sm font-semibold text-emerald-800">{copy.week}</p><h2 className="mt-1 text-2xl font-bold text-emerald-950">{weeklyCompleted} {copy.weekUnit}</h2><p className="mt-2 text-sm text-emerald-900">{copy.gentleWinHelp}</p></div>{weeklyCompleted > 0 && <span className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-emerald-900">✓ {copy.gentleWin}</span>}</div>
-        <div className="mt-5 grid grid-cols-7 gap-2">{weeklyActivity.map(({ dateKey, completed: dayCompleted }) => <div key={dateKey} className="text-center"><div title={dateKey} aria-label={`${dateKey}: ${dayCompleted ? copy.completeToday : copy.noToday}`} className={`mx-auto flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold ${dayCompleted ? "bg-emerald-700 text-white" : "border border-emerald-200 bg-white text-gray-400"}`}>{dayCompleted ? "✓" : "·"}</div><span className="mt-1 block text-[10px] text-emerald-900">{new Date(`${dateKey}T00:00:00`).toLocaleDateString(language === "zh" ? "zh-CN" : "en-US", { weekday: "short" })}</span></div>)}</div>
+        <div className="mt-5 grid grid-cols-7 gap-2">{weeklyActivity.map(({ dateKey, completed: dayCompleted }) => <div key={dateKey} className="text-center"><div title={dateKey} aria-label={`${dateKey}: ${dayCompleted ? copy.activityDone : copy.noActivity}`} className={`mx-auto flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold ${dayCompleted ? "bg-emerald-700 text-white" : "border border-emerald-200 bg-white text-gray-400"}`}>{dayCompleted ? "✓" : "·"}</div><span className="mt-1 block text-[10px] text-emerald-900">{new Date(`${dateKey}T00:00:00`).toLocaleDateString(language === "zh" ? "zh-CN" : "en-US", { weekday: "short" })}</span></div>)}</div>
       </section>
 
       <section className="mt-8 grid gap-6 lg:grid-cols-2">
@@ -222,9 +182,10 @@ function DashboardContent() {
         {activePlans.length === 0 ? <div className="mt-3"><p className="text-sm text-gray-500">{copy.noPlan}</p><Link href={inProgress[0] ? courseDetailPath(courses.find(({ id }) => id === inProgress[0])!, language) : language === "zh" ? "/courses?lang=zh" : "/courses"} className="mt-3 inline-flex rounded-lg border border-violet-300 px-4 py-2 text-sm font-semibold text-violet-900 hover:bg-violet-50">{inProgress[0] ? copy.createPlan : copy.browsePlans} →</Link></div> : <div className="mt-3 grid gap-4 lg:grid-cols-2">{activePlans.map(({ course, saved, generated, nextTask, progress }) => (
           <article key={course.id} className="rounded-2xl border border-violet-200 bg-violet-50 p-5">
             <Link href={courseDetailPath(course, language)} className="font-semibold text-violet-950 hover:underline">{courseCode(course)} · {language === "zh" ? (course.titleZh ?? course.title) : course.title}</Link>
-            <div className="mt-1 flex items-center justify-between gap-3"><p className="text-xs text-violet-800">{copy.target} {saved.days} · {copy.planned} {generated.plannedDays}</p><button type="button" onClick={() => togglePlanPaused(course.id)} className="rounded-lg border border-violet-300 bg-white px-3 py-1.5 text-xs font-semibold text-violet-900 hover:bg-violet-100">{saved.paused ? copy.resume : copy.pause}</button></div>
+            <div className="mt-1 flex flex-wrap items-center justify-between gap-3"><p className="text-xs text-violet-800">{copy.target} {saved.days} · {copy.planned} {generated.plannedDays}</p><div className="flex gap-2"><button type="button" onClick={() => togglePlanPaused(course.id)} className="rounded-lg border border-violet-300 bg-white px-3 py-1.5 text-xs font-semibold text-violet-900 hover:bg-violet-100">{saved.paused ? copy.resume : copy.pause}</button><button type="button" onClick={() => setPendingPlanRemoval(course.id)} className="rounded-lg border border-red-200 bg-white px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-50">{copy.removePlan}</button></div></div>
             <ProgressBar percent={progress.percent} label={`${copy.progress} · ${progress.completed}/${progress.total}`} />
             {saved.paused ? <p className="mt-3 text-sm font-medium text-gray-600">⏸ {copy.paused}</p> : nextTask ? <p className="mt-3 text-sm text-violet-900">{language === "zh" ? nextTask.titleZh : nextTask.title}</p> : <p className="mt-3 text-sm font-medium text-emerald-800">✓ {copy.finishedPlan}</p>}
+            {pendingPlanRemoval === course.id && <div role="alert" className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-950"><p>{copy.confirmRemove}</p><div className="mt-3 flex gap-2"><button type="button" onClick={() => { removeStudyPlan(course.id); setPendingPlanRemoval(null); }} className="rounded-lg bg-red-700 px-3 py-2 text-xs font-semibold text-white">{copy.confirm}</button><button type="button" onClick={() => setPendingPlanRemoval(null)} className="rounded-lg border border-red-200 bg-white px-3 py-2 text-xs font-semibold">{copy.cancelRemove}</button></div></div>}
           </article>
         ))}</div>}
       </section>

@@ -15,6 +15,7 @@ const homeCopy = {
     search: "Search",
     browse: `Browse all ${courses.length} verified courses →`,
     paths: "Explore university curriculum references →",
+    today: "Today’s study →",
     dashboard: "User center →",
     switchLanguage: "中文",
     switchLabel: "切换到中文",
@@ -28,6 +29,7 @@ const homeCopy = {
     search: "搜索",
     browse: `浏览全部 ${courses.length} 门已核实课程 →`,
     paths: "查看顶尖大学培养方案参考 →",
+    today: "今日学习 →",
     dashboard: "用户中心 →",
     switchLanguage: "English",
     switchLabel: "Switch to English",
@@ -107,6 +109,8 @@ function HomeContent() {
         >
           {copy.paths}
         </Link>
+        <span className="mx-3 text-gray-300">·</span>
+        <Link href={language === "zh" ? "/today?lang=zh" : "/today"} className="mt-5 inline-block text-sm font-medium text-violet-700 hover:text-violet-950 hover:underline">{copy.today}</Link>
         <span className="mx-3 text-gray-300">·</span>
         <Link href={language === "zh" ? "/dashboard?lang=zh" : "/dashboard"} className="mt-5 inline-block text-sm text-gray-500 hover:text-black hover:underline">{copy.dashboard}</Link>
       </section>
