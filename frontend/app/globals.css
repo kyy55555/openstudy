@@ -88,3 +88,45 @@ html.dark footer.bg-white { background-color: #0b1220; }
     min-height: 44px;
   }
 }
+
+.knowledge-space {
+  position: relative;
+  height: clamp(18rem, 48vw, 30rem);
+  overflow: hidden;
+  border: 1px solid rgb(221 214 254 / 0.9);
+  border-radius: 2rem;
+  box-shadow: 0 24px 70px rgb(76 29 149 / 0.12);
+}
+
+.knowledge-wanderer {
+  transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.knowledge-wander-button {
+  position: absolute;
+  width: 5.5rem;
+  height: 8.5rem;
+  transform: translate(-50%, -48%);
+  cursor: pointer;
+  border-radius: 999px;
+  background: transparent;
+}
+
+.knowledge-float { animation: knowledge-float 5s ease-in-out infinite; }
+.knowledge-float-slow { animation-duration: 7s; }
+.knowledge-float-reverse { animation-direction: reverse; animation-duration: 6s; }
+
+@keyframes knowledge-float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -10px; }
+}
+
+html.dark .knowledge-space {
+  border-color: #4c1d95;
+  box-shadow: 0 24px 70px rgb(0 0 0 / 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .knowledge-wanderer { transition: none; }
+  .knowledge-float { animation: none; }
+}

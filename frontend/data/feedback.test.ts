@@ -10,6 +10,8 @@ test("feedback categories are explicit and reject unknown values", () => {
 test("feedback links prefill bounded bilingual course and curriculum context", () => {
   assert.equal(feedbackPrefill("zh", { pathId: "mit-6-3", sourceUrl: "https://catalog.mit.edu/" }), "培养方案：mit-6-3\n官方来源：https://catalog.mit.edu/\n\n我发现的问题：");
   assert.match(feedbackPrefill("en", { courseId: "x".repeat(120) }), /^Course：x{100}\n\nProblem found: $/);
+  assert.equal(feedbackPrefill("zh", { requestedCourse: "土壤力学" }), "希望增加的课程或主题：土壤力学\n\n我发现的问题：");
+  assert.match(feedbackPrefill("en", { requestedCourse: "x".repeat(250) }), /^Requested course or topic：x{200}\n\nProblem found: $/);
 });
 
 test("feedback records only a coarse viewport category", () => {

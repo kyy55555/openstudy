@@ -12,9 +12,10 @@ function FeedbackContent() {
   const courseId = params.get("course")?.slice(0, 100) ?? "";
   const pathId = params.get("path")?.slice(0, 100) ?? "";
   const sourceUrl = params.get("source")?.slice(0, 2000) ?? "";
+  const requestedCourse = params.get("request")?.slice(0, 200) ?? "";
   const requestedType = params.get("type") ?? "";
   const [issueType, setIssueType] = useState<FeedbackIssueType>(isFeedbackIssueType(requestedType) ? requestedType : courseId ? "broken-link" : pathId ? "curriculum-data" : "other");
-  const [message, setMessage] = useState(() => feedbackPrefill(language, { courseId, pathId, sourceUrl }));
+  const [message, setMessage] = useState(() => feedbackPrefill(language, { courseId, pathId, sourceUrl, requestedCourse }));
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { courses } from "../data/courses";
+import KnowledgeExplorer from "./KnowledgeExplorer";
 
 const homeCopy = {
   en: {
@@ -57,7 +58,7 @@ function HomeContent() {
         {copy.switchLanguage}
       </button>
 
-      <section className="w-full max-w-2xl text-center">
+      <section className="w-full max-w-4xl text-center">
         <p className="text-sm font-semibold uppercase tracking-[0.25em] text-gray-500">
           {copy.eyebrow}
         </p>
@@ -73,7 +74,11 @@ function HomeContent() {
           {copy.scope}
         </p>
 
-        <form action="/courses" method="get" className="mt-10 flex flex-col gap-2 sm:flex-row">
+        <div className="mt-8">
+          <KnowledgeExplorer language={language} />
+        </div>
+
+        <form action="/courses" method="get" className="mx-auto mt-8 flex max-w-2xl flex-col gap-2 sm:flex-row">
           {language === "zh" && <input type="hidden" name="lang" value="zh" />}
 
           <label htmlFor="course-search" className="sr-only">

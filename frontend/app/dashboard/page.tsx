@@ -18,6 +18,7 @@ import {
 import type { CourseLibraryBackup } from "../../data/courseLibrary";
 import { learningPaths } from "../../data/learningPaths";
 import { useCourseLibrary } from "../useCourseLibrary";
+import LearningJourney from "./LearningJourney";
 
 type Language = "en" | "zh";
 
@@ -79,6 +80,7 @@ function DashboardContent() {
   const activityDates = [...new Set(activePlans.flatMap(({ saved }) => saved.dailyCompletionDates ?? []))].sort().reverse();
   const completedPlanTaskCount = activePlans.reduce((total, { saved }) => total + saved.completedTaskIds.length, 0);
   const runningPlans = activePlans.filter(({ saved }) => !saved.paused);
+  const journeyCourses = activePlans.map(({ course, saved, progress }) => ({ id: course.id, code: courseCode(course), title: language === "zh" ? (course.titleZh ?? course.title) : course.title, href: courseDetailPath(course, language), percent: progress.percent, completed: progress.completed, total: progress.total, paused: Boolean(saved.paused) }));
 
   const copy = language === "zh" ? {
     back: "← OpenStudy", title: "用户中心", subtitle: "管理课程计划、学习进度、收藏和云端记录。培养方案仅作为参考。",
@@ -144,6 +146,8 @@ function DashboardContent() {
       {!syncIssue && !syncConflict && lastSyncedAt && <p className="mt-2 text-xs text-emerald-700">✓ {language === "zh" ? "云端已同步" : "Cloud synced"} · {new Date(lastSyncedAt).toLocaleString(language === "zh" ? "zh-CN" : "en-US")}</p>}
       {syncIssue && <div role="status" className="mt-5 flex flex-col gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 sm:flex-row sm:items-center sm:justify-between"><p>{storageIssue ? (language === "zh" ? "云端与浏览器存储当前均不可用。请保持页面打开并立即下载备份。" : "Cloud and browser storage are both unavailable. Keep this page open and download a backup now.") : (language === "zh" ? "云端同步暂时失败。当前更改已保存在此设备；网络恢复时会自动重试。" : "Cloud sync is temporarily unavailable. Changes are saved on this device and will retry automatically when the network returns.")}</p><button type="button" onClick={retryCloudSync} className="shrink-0 rounded-lg border border-amber-500 px-3 py-2 font-semibold hover:bg-amber-100">{language === "zh" ? "立即重试" : "Retry now"}</button></div>}
       {storageIssue && <div role="alert" className="mt-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-900">{language === "zh" ? "当前浏览器无法保存本地学习记录。请不要关闭页面；如果已经登录，OpenStudy 仍会尝试保存到云端。你也可以立即下载备份。" : "This browser cannot save the learning record locally. Keep this page open; if you are signed in, OpenStudy will still try to save to the cloud. You can also download a backup now."}</div>}
+
+      <LearningJourney items={journeyCourses} language={language} />
 
       <section className="mt-8">
         <h2 className="text-lg font-semibold">{copy.overview}</h2>

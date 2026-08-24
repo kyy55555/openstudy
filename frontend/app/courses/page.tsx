@@ -85,6 +85,8 @@ const translations = {
       `${filtered} of ${total} verified courses`,
     noCourses: "No courses found.",
     noCoursesHint: "Try another subject or remove some filters.",
+    requestCourse: "Request a missing course",
+    requestCourseHelp: "Tell us what you searched for. Real requests decide what OpenStudy verifies and adds next.",
     relatedSearches: "Try a related search",
     filteredOut: (count: number) => `${count} matching courses are hidden by the current filters.`,
     clearFiltersKeepSearch: "Clear filters and keep this search",
@@ -145,6 +147,8 @@ const translations = {
       `${total} 门已核实课程，当前 ${filtered} 门`,
     noCourses: "没有找到课程。",
     noCoursesHint: "请尝试其他学科或减少筛选条件。",
+    requestCourse: "提交缺少的课程",
+    requestCourseHelp: "告诉我们你想找什么；真实搜索需求将决定 OpenStudy 下一批核实和增加的课程。",
     relatedSearches: "试试相关搜索",
     filteredOut: (count: number) => `有 ${count} 门匹配课程被当前筛选条件隐藏。`,
     clearFiltersKeepSearch: "清除筛选并保留搜索词",
@@ -501,7 +505,7 @@ function CourseCard({ course, language, copy, favorite, favoriteCount, onToggleF
     { key: "assignments", label: language === "zh" ? "作业" : "Assignments", icon: "✓", kind: "assignment", className: "border-emerald-200 bg-emerald-50 text-emerald-900" },
     { key: "exams", label: language === "zh" ? "考试" : "Exams", icon: "◇", kind: "exam", className: "border-amber-200 bg-amber-50 text-amber-950" },
     { key: "projects", label: language === "zh" ? "项目" : "Projects", icon: "◆", kind: "project", className: "border-fuchsia-200 bg-fuchsia-50 text-fuchsia-900" },
-  ].map((item) => ({ ...item, task: planTasks.find(({ kind }) => kind === item.kind) })).filter(({ task }) => Boolean(task));
+  ].map((item) => ({ ...item, tasks: planTasks.filter(({ kind }) => kind === item.kind) })).filter(({ tasks }) => tasks.length > 0);
 
   function openCourse(event: MouseEvent<HTMLElement>) {
     const target = event.target;
@@ -552,7 +556,7 @@ function CourseCard({ course, language, copy, favorite, favoriteCount, onToggleF
       <div className="mt-5 border-t border-slate-100 pt-4">
         <p className="mb-2 text-[0.68rem] font-bold uppercase tracking-[0.13em] text-slate-400">{language === "zh" ? "直接打开官方资料" : "Open official material"}</p>
         <div className="flex min-h-7 flex-wrap gap-2">
-        {resourceBadges.map(({ key, label, icon, className, task }) => <a key={key} href={task!.url} target="_blank" rel="noreferrer" title={language === "zh" ? `直接打开${label}` : `Open ${label}`} className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-bold transition hover:-translate-y-0.5 hover:shadow-sm ${className}`}><span aria-hidden="true">{icon}</span>{label}<span aria-hidden="true">↗</span></a>)}
+        {resourceBadges.map(({ key, label, icon, className, tasks }) => <Link key={key} href={`${detailPath}#resource-${tasks[0].kind}`} title={language === "zh" ? `查看全部${label}` : `View all ${label}`} className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-bold transition hover:-translate-y-0.5 hover:shadow-sm ${className}`}><span aria-hidden="true">{icon}</span>{label}<span className="rounded-full bg-white/70 px-1.5 py-0.5 text-[0.65rem]">{tasks.length}</span><span aria-hidden="true">→</span></Link>)}
         </div>
       </div>
 
@@ -663,6 +667,7 @@ function CourseExplorer() {
   const searchOnlyMatches = filteredCourses.length === 0 && searchTerm
     ? filterCourses(courses, { searchTerm, university: "All", subject: "All", onlyVideos: false, onlyAssignments: false, onlySolutions: false }).length
     : 0;
+  const requestCoursePath = `/feedback?${new URLSearchParams({ ...(language === "zh" ? { lang: "zh" } : {}), type: "missing-course", ...(searchTerm ? { request: searchTerm } : {}) }).toString()}`;
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
@@ -761,13 +766,8 @@ function CourseExplorer() {
             </p>
             {searchOnlyMatches > 0 && <div className="mt-4 rounded-lg bg-blue-50 p-3 text-sm text-blue-900"><p>{copy.filteredOut(searchOnlyMatches)}</p><button type="button" onClick={clearFiltersKeepSearch} className="mt-2 rounded-lg border border-blue-300 bg-white px-3 py-2 font-semibold hover:bg-blue-100">{copy.clearFiltersKeepSearch}</button></div>}
             {relatedSearches.length > 0 && <div className="mt-4"><p className="text-xs font-semibold uppercase tracking-wide text-gray-500">{copy.relatedSearches}</p><div className="mt-2 flex flex-wrap justify-center gap-2">{relatedSearches.map((suggestion) => <button key={suggestion} type="button" onClick={() => { setSearchInput(suggestion); handleSearch(suggestion); }} className="rounded-full border border-gray-300 px-3 py-1.5 text-sm hover:border-black">{suggestion}</button>)}</div></div>}
-            <button
-              type="button"
-              onClick={handleResetFilters}
-              className="mt-4 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50"
-            >
-              {copy.reset}
-            </button>
+            <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row"><Link href={requestCoursePath} className="rounded-lg bg-violet-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-violet-800">{copy.requestCourse} →</Link><button type="button" onClick={handleResetFilters} className="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium hover:bg-gray-50">{copy.reset}</button></div>
+            <p className="mx-auto mt-4 max-w-xl text-xs leading-5 text-gray-500">{copy.requestCourseHelp}</p>
           </div>
         ) : (
           <div className="mt-6 grid items-stretch gap-5 md:grid-cols-2">
@@ -798,6 +798,7 @@ function CourseExplorer() {
             {copy.showMore(filteredCourses.length - visibleCount)}
           </button>
         )}
+        {filteredCourses.length > 0 && <div className="mt-8 flex flex-col items-start justify-between gap-3 rounded-2xl border border-violet-100 bg-violet-50 p-5 sm:flex-row sm:items-center"><div><p className="font-semibold text-violet-950">{copy.requestCourse}</p><p className="mt-1 text-sm text-violet-800">{copy.requestCourseHelp}</p></div><Link href={requestCoursePath} className="shrink-0 rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-violet-800 shadow-sm ring-1 ring-violet-200 hover:ring-violet-400">{copy.requestCourse} →</Link></div>}
       </section>
     </main>
   );
