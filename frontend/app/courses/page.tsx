@@ -1,13 +1,13 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import type { FormEvent, KeyboardEvent, MouseEvent } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { courseCode, courseEditionLabel, courseLanguageLabel, courses, suggestedStudyStage } from "../../data/courses";
+import { courseCode, courseEditionLabel, courses, suggestedStudyStage } from "../../data/courses";
 import type { Course } from "../../data/courses";
-import { courseDetailPath, prerequisiteCourseIds } from "../../data/courseNavigation";
+import { courseDetailPath } from "../../data/courseNavigation";
 import {
   filterCourses,
   courseSearchSuggestions,
@@ -171,35 +171,6 @@ const studyStageZh: Record<string, string> = {
   "Years 2–3": "本科二至三年级",
   "Years 3–4": "本科三至四年级",
   Graduate: "研究生",
-};
-
-const prerequisiteZh: Record<string, string> = {
-  "Introductory Python programming": "Python 编程入门",
-  "Introductory programming": "编程入门",
-  "Programming Abstractions or equivalent": "编程抽象或同等课程",
-  Programming: "编程基础",
-  Probability: "概率论",
-  "Linear algebra": "线性代数",
-  "Convex Optimization I or equivalent": "凸优化 I 或同等课程",
-  "CS50x or prior Python experience": "CS50x 或 Python 编程经验",
-  "CS50x or prior programming experience": "CS50x 或编程经验",
-  "COS 126 or equivalent": "COS 126 或同等课程",
-  "COS 217": "COS 217",
-  "COS 226": "COS 226",
-  "CS 3410 or ECE 3140 equivalent": "CS 3410、ECE 3140 或同等课程",
-  "Discrete mathematics": "离散数学",
-  "Data structures": "数据结构",
-  "Machine learning": "机器学习",
-  "Computer architecture": "计算机体系结构",
-  "CS 61A or CS 61B equivalent": "CS 61A、CS 61B 或同等课程",
-  "CS 61A": "CS 61A",
-  "CS 61B": "CS 61B",
-  "CS 70": "CS 70",
-  "Single Variable Calculus": "单变量微积分",
-  "Multivariable Calculus": "多元微积分",
-  "MIT 6.006": "MIT 6.006 算法导论",
-  "Stanford CS 103": "Stanford CS 103 计算基础的数学原理",
-  "Stanford CS 109": "Stanford CS 109 面向计算机科学家的概率论",
 };
 
 /* -------------------- Title -------------------- */
@@ -526,6 +497,13 @@ function CourseCard({ course, language, copy, favorite, onToggleFavorite }: Cour
   const studyStage = suggestedStudyStage(course);
   const displayedSubjects = displayCourseSubjects(course, language);
   const detailPath = courseDetailPath(course, language);
+  const availableResourceTypes = new Set(course.resources.map(({ type }) => type));
+  const resourceBadges = [
+    { key: "lectures", label: language === "zh" ? "讲义 / 视频" : "Lectures / video", available: course.hasVideos === true || availableResourceTypes.has("lectures") },
+    { key: "assignments", label: language === "zh" ? "作业" : "Assignments", available: course.hasAssignments === true || availableResourceTypes.has("assignments") },
+    { key: "exams", label: language === "zh" ? "考试" : "Exams", available: availableResourceTypes.has("exams") },
+    { key: "projects", label: language === "zh" ? "项目" : "Projects", available: availableResourceTypes.has("projects") },
+  ].filter(({ available }) => available);
 
   function openCourse(event: MouseEvent<HTMLElement>) {
     const target = event.target;
@@ -538,18 +516,6 @@ function CourseCard({ course, language, copy, favorite, onToggleFavorite }: Cour
     router.push(detailPath);
   }
 
-  function prerequisiteLink(prerequisite: string) {
-    const targetId = prerequisiteCourseIds[prerequisite];
-    const target = courses.find(({ id }) => id === targetId);
-    if (!target) return null;
-    return courseDetailPath(target, language);
-  }
-
-  function materialStatus(value: Course["hasVideos"]) {
-    if (value === null) return `? ${copy.notVerified}`;
-    return value ? copy.available : copy.unavailable;
-  }
-
   return (
     <article
       id={course.id}
@@ -558,146 +524,41 @@ function CourseCard({ course, language, copy, favorite, onToggleFavorite }: Cour
       aria-label={`${courseCode(course)} · ${language === "zh" ? course.titleZh : course.title}`}
       onClick={openCourse}
       onKeyDown={openCourseWithKeyboard}
-      className="scroll-mt-6 cursor-pointer rounded-xl border border-gray-200 p-6 shadow-sm transition hover:border-gray-400 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+      className="group scroll-mt-6 cursor-pointer overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-violet-300 hover:shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-700"
     >
-      <div>
-        <div className="flex items-start justify-between gap-3"><p className="text-sm font-medium text-gray-500">{course.university}</p><button type="button" onClick={onToggleFavorite} aria-label={favorite ? "Remove favorite" : "Save favorite"} className="text-xl leading-none" title={favorite ? (language === "zh" ? "取消收藏" : "Remove favorite") : (language === "zh" ? "收藏" : "Save")}>{favorite ? "★" : "☆"}</button></div>
-      </div>
+      <div className="border-b border-slate-100 bg-gradient-to-br from-slate-50 via-white to-violet-50/70 p-5">
+        <div className="flex items-start justify-between gap-3"><p className="text-xs font-bold uppercase tracking-[0.14em] text-violet-700">{course.university}</p><button type="button" onClick={onToggleFavorite} aria-label={favorite ? "Remove favorite" : "Save favorite"} className="rounded-full bg-white/90 p-2 text-xl leading-none shadow-sm ring-1 ring-slate-200 transition hover:scale-105" title={favorite ? (language === "zh" ? "取消收藏" : "Remove favorite") : (language === "zh" ? "收藏" : "Save")}>{favorite ? "★" : "☆"}</button></div>
 
-      <h2 className="mt-2 text-xl font-semibold">
+      <h2 className="mt-3 text-xl font-bold leading-snug text-slate-950">
         <Link href={detailPath} className="hover:underline">
-        <span className="mr-2 text-gray-500">{courseCode(course)}</span>
-        {language === "zh" ? course.titleZh : course.title}
+        <span className="mr-2 text-violet-700">{courseCode(course)}</span>{language === "zh" ? course.titleZh : course.title}
         </Link>
       </h2>
 
-      <p className="mt-1 text-sm text-gray-500">
+      <p className="mt-1 line-clamp-1 text-sm text-slate-500">
         {language === "zh" ? course.title : course.titleZh}
       </p>
+      </div>
 
-      <p className="mt-4 text-gray-700">
+      <div className="p-5">
+      <p className="line-clamp-2 min-h-12 text-sm leading-6 text-slate-600">
         {language === "zh" ? course.descriptionZh : course.description}
       </p>
 
-      <div className="mt-5 grid gap-2 text-sm sm:grid-cols-2">
-        {displayedSubjects.length > 0 && <p>
-          <span className="font-medium">{copy.subject}:</span>{" "}
-          {displayedSubjects.join(" / ")}
-        </p>}
-
-        <p>
-          <span className="font-medium">{copy.level}:</span>{" "}
-          {course.level === null
-            ? copy.notVerified
-            : language === "zh"
-              ? (levelZh[course.level] ?? course.level)
-              : course.level}
-        </p>
-
-        <p>
-          <span className="font-medium">{copy.suggestedStage}:</span>{" "}
-          {studyStage === null
-            ? copy.notVerified
-            : language === "zh"
-              ? studyStageZh[studyStage]
-              : studyStage}{" "}
-          {studyStage !== null && (
-            <span className="text-gray-500">({copy.inferred})</span>
-          )}
-        </p>
-
-        <p>
-          <span className="font-medium">{copy.language}:</span>{" "}
-          {courseLanguageLabel(course.language, language)}
-        </p>
-
-        <p>
-          <span className="font-medium">{copy.year}:</span>{" "}
-          {courseEditionLabel(course, language)}
-        </p>
-
+      <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-slate-700">
+        {displayedSubjects.map((subject) => <span key={subject} className="rounded-full bg-slate-100 px-2.5 py-1">{subject}</span>)}
+        <span className="rounded-full bg-amber-50 px-2.5 py-1 text-amber-900">{course.level === null ? copy.notVerified : language === "zh" ? (levelZh[course.level] ?? course.level) : course.level}</span>
+        {studyStage && <span className="rounded-full bg-blue-50 px-2.5 py-1 text-blue-900">{language === "zh" ? studyStageZh[studyStage] : studyStage}</span>}
       </div>
 
-      <div className="mt-5">
-        <p className="font-medium">{copy.prerequisites}</p>
-
-        {course.prerequisites === null ? (
-          <p className="mt-2 text-sm text-gray-500">{copy.notVerified}</p>
-        ) : course.prerequisites.length === 0 ? (
-          <p className="mt-2 text-sm text-gray-500">
-            {copy.noPrerequisites}
-          </p>
-        ) : (
-          <ul className="mt-2 space-y-1 text-sm text-gray-700">
-            {course.prerequisites.map((prerequisite) => (
-              <li key={`${course.id}-${prerequisite}`}>
-                ✓ {prerequisiteLink(prerequisite) ? (
-                  <Link
-                    href={prerequisiteLink(prerequisite)!}
-                    className="font-medium underline decoration-gray-300 underline-offset-4 hover:decoration-black"
-                  >
-                    {language === "zh"
-                      ? (prerequisiteZh[prerequisite] ?? prerequisite)
-                      : prerequisite} →
-                  </Link>
-                ) : (
-                  language === "zh"
-                    ? (prerequisiteZh[prerequisite] ?? prerequisite)
-                    : prerequisite
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
+      <div className="mt-5 flex min-h-7 flex-wrap gap-2">
+        {resourceBadges.map(({ key, label }) => <span key={key} className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-900"><span aria-hidden="true">✓</span>{label}</span>)}
       </div>
 
-      <div className="mt-5">
-        <p className="font-medium">{copy.materials}</p>
-
-        <div className="mt-2 space-y-1 text-sm">
-          <p>{copy.videos}: {materialStatus(course.hasVideos)}</p>
-          <p>{copy.assignments}: {materialStatus(course.hasAssignments)}</p>
-          <p>{copy.solutions}: {materialStatus(course.hasSolutions)}</p>
-        </div>
+      <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4 text-sm">
+        <span className="text-slate-500">{courseEditionLabel(course, language)}</span>
+        <Link href={detailPath} className="font-bold text-violet-700 group-hover:translate-x-0.5">{copy.viewCourse}</Link>
       </div>
-
-      {course.resources.length > 0 && (
-        <div className="mt-5">
-          <p className="font-medium">{copy.resourceLinks}</p>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {course.resources.map((resource) => (
-              <a
-                key={resource.url}
-                href={resource.url}
-                target="_blank"
-                rel="noreferrer"
-                className="rounded-full border border-gray-300 px-3 py-1.5 text-sm text-blue-700 hover:bg-gray-50 hover:underline"
-              >
-                {language === "zh"
-                  ? copy.resourceTypes[resource.type]
-                  : resource.title}
-              </a>
-            ))}
-          </div>
-        </div>
-      )}
-
-      <p className="mt-5 text-xs text-gray-500">
-        {copy.verifiedFrom}{" "}
-        <a
-          href={course.sourceUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="underline"
-        >
-          {course.sourceName}
-        </a>{" "}
-        {copy.verifiedOn} {course.verifiedOn}.
-      </p>
-
-      <div className="mt-6 flex flex-wrap gap-4">
-        <Link href={detailPath} className="font-medium text-blue-600 hover:underline">{copy.viewCourse}</Link>
-        <a href={course.courseUrl} target="_blank" rel="noreferrer" className="font-medium text-gray-600 hover:underline">{copy.officialCourse}</a>
       </div>
     </article>
   );
@@ -713,7 +574,6 @@ function CourseExplorer() {
   const [language, setLanguage] = useState<Language>(initialLanguage);
   const [searchInput, setSearchInput] = useState(initialSearch);
   const [searchTerm, setSearchTerm] = useState(initialSearch);
-  const [isSearching, setIsSearching] = useState(false);
 
   const [universityFilter, setUniversityFilter] =
     useState("All");
@@ -737,17 +597,26 @@ function CourseExplorer() {
   const subjects = uniqueCourseSubjects(courses);
   const programmingLanguages = uniqueProgrammingLanguages(courses);
 
-  async function handleSearch(suggestedValue?: string) {
+  const isSearching = searchInput.trim() !== searchTerm;
+
+  useEffect(() => {
+    const nextSearch = searchInput.trim();
+    if (nextSearch === searchTerm) return;
+    const timer = window.setTimeout(() => {
+      setSearchTerm(nextSearch);
+      router.replace(coursesPath(nextSearch, language), { scroll: false });
+      setVisibleCount(coursesPerPage);
+    }, 160);
+    return () => window.clearTimeout(timer);
+  }, [language, router, searchInput, searchTerm]);
+
+  function handleSearch(suggestedValue?: string) {
     const nextSearch = (suggestedValue ?? searchInput).trim();
     if (nextSearch === searchTerm) return;
-    setIsSearching(true);
-    // Keep the feedback visible long enough to be perceived without making
-    // this local catalog search feel slow.
-    await new Promise((resolve) => setTimeout(resolve, 250));
+    setSearchInput(nextSearch);
     setSearchTerm(nextSearch);
-    router.replace(coursesPath(nextSearch, language));
+    router.replace(coursesPath(nextSearch, language), { scroll: false });
     setVisibleCount(coursesPerPage);
-    setIsSearching(false);
   }
 
   function handleResetFilters() {
@@ -880,18 +749,7 @@ function CourseExplorer() {
           </div>
         </div>
 
-        {isSearching ? (
-          <div className="mt-6 space-y-5" aria-live="polite" aria-label={copy.searching}>
-            {[0, 1, 2].map((item) => (
-              <div key={item} className="animate-pulse rounded-xl border border-gray-200 p-6">
-                <div className="h-4 w-36 rounded bg-gray-200" />
-                <div className="mt-4 h-7 w-3/5 rounded bg-gray-200" />
-                <div className="mt-4 h-4 w-full rounded bg-gray-100" />
-                <div className="mt-2 h-4 w-4/5 rounded bg-gray-100" />
-              </div>
-            ))}
-          </div>
-        ) : filteredCourses.length === 0 ? (
+        {filteredCourses.length === 0 ? (
           <div className="mt-6 rounded-xl border border-gray-200 p-8 text-center">
             <p className="font-medium">
               {copy.noCourses}
