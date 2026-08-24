@@ -124,30 +124,20 @@ html.dark .today-primary-action:hover { background-color: #ddd6fe; }
 .knowledge-lamb-lookout {
   position: absolute;
   z-index: 3;
-  left: clamp(1.5rem, 7vw, 7rem);
-  bottom: clamp(4.75rem, 11vh, 7.5rem);
-  width: 4.75rem;
-  height: 7rem;
+  left: clamp(0.75rem, 2vw, 2rem);
+  bottom: clamp(3.5rem, 7vh, 5rem);
+  width: clamp(7rem, 11vw, 9rem);
+  aspect-ratio: 2 / 3;
   pointer-events: none;
 }
 
-.knowledge-flyer {
-  display: block;
-  width: 100%;
-  height: 100%;
-  transform-origin: center;
-  transform-box: fill-box;
-  transform: scale(0.72);
-  animation: knowledge-fly 4.8s ease-in-out infinite;
-  will-change: transform;
-}
-
-.knowledge-lamb-image {
+.knowledge-lamb-scene {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  opacity: 0.9;
-  filter: saturate(0.72) brightness(0.86) contrast(0.94) drop-shadow(0 0 7px rgb(129 140 248 / 0.42));
+  object-position: bottom left;
+  opacity: 0.92;
+  filter: saturate(0.78) brightness(0.82) contrast(0.94) drop-shadow(0 0 9px rgb(99 102 241 / 0.34));
   image-rendering: auto;
 }
 
@@ -165,12 +155,6 @@ html.dark .today-primary-action:hover { background-color: #ddd6fe; }
 @keyframes knowledge-twinkle {
   0%, 100% { opacity: 0.25; }
   50% { opacity: 1; }
-}
-
-@keyframes knowledge-fly {
-  0%, 100% { transform: translate(-2px, 4px) rotate(-1deg) scale(0.72); }
-  48% { transform: translate(3px, -8px) rotate(1deg) scale(0.74); }
-  74% { transform: translate(1px, -4px) rotate(0deg) scale(0.73); }
 }
 
 @keyframes knowledge-whispers {
@@ -210,7 +194,6 @@ html.dark .today-primary-action:hover { background-color: #ddd6fe; }
 
 @media (prefers-reduced-motion: reduce) {
   .knowledge-float { animation: none; }
-  .knowledge-flyer { animation: none; }
   .knowledge-stars-far, .knowledge-stars-near, .knowledge-nebula,
   .knowledge-milky-way, .knowledge-constellations { animation: none; }
   .knowledge-whispers { animation: none; }
