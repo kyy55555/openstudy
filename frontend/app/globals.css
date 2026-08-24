@@ -96,14 +96,27 @@ html.dark footer.bg-white { background-color: #0b1220; }
   pointer-events: none;
 }
 
+.knowledge-star-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.knowledge-space > svg {
+  position: relative;
+  z-index: 1;
+}
+
 .knowledge-wanderer {
   transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .knowledge-flyer {
-  transform: rotate(-12deg) scale(0.62);
+  transform: scale(0.58);
   transform-origin: center;
-  animation: knowledge-fly 3.6s ease-in-out infinite;
+  animation: knowledge-fly 4.8s ease-in-out infinite;
 }
 
 .knowledge-wander-button {
@@ -127,6 +140,7 @@ html.dark footer.bg-white { background-color: #0b1220; }
 .knowledge-nebula { animation: knowledge-nebula 18s ease-in-out infinite alternate; transform-origin: center; }
 .knowledge-milky-way { animation: knowledge-milky-way 22s ease-in-out infinite alternate; transform-origin: center; }
 .knowledge-constellations { opacity: 0.22; filter: drop-shadow(0 0 5px rgb(191 219 254 / 0.35)); animation: knowledge-constellations 16s ease-in-out infinite alternate; }
+.knowledge-whispers { opacity: 0.2; animation: knowledge-whispers 9s ease-in-out infinite alternate; }
 
 @keyframes knowledge-twinkle {
   0%, 100% { opacity: 0.25; }
@@ -134,8 +148,14 @@ html.dark footer.bg-white { background-color: #0b1220; }
 }
 
 @keyframes knowledge-fly {
-  0%, 100% { translate: 0 0; rotate: -1deg; }
-  50% { translate: 5px -9px; rotate: 2deg; }
+  0%, 100% { translate: -5px 9px; rotate: -3deg; }
+  45% { translate: 7px -18px; rotate: 3deg; }
+  72% { translate: 2px -10px; rotate: 0deg; }
+}
+
+@keyframes knowledge-whispers {
+  from { opacity: 0.12; translate: 0 4px; }
+  to { opacity: 0.32; translate: 4px -5px; }
 }
 
 @keyframes knowledge-stars-far {
@@ -174,4 +194,5 @@ html.dark footer.bg-white { background-color: #0b1220; }
   .knowledge-flyer { animation: none; }
   .knowledge-stars-far, .knowledge-stars-near, .knowledge-nebula,
   .knowledge-milky-way, .knowledge-constellations { animation: none; }
+  .knowledge-whispers { animation: none; }
 }
