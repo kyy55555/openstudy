@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 
 type Language = "en" | "zh";
 const stops = [
@@ -87,6 +88,7 @@ export default function KnowledgeExplorer({ language }: { language: Language }) 
   const [activeStop, setActiveStop] = useState(0);
   const position = flightStops[activeStop];
   const label = language === "zh" ? "点击探索者，飞向下一颗知识星" : "Select the explorer to fly toward another knowledge star";
+  const moveExplorer = () => setActiveStop(current => (current + 1) % flightStops.length);
   return <div className="knowledge-space" aria-label={language === "zh" ? "浩瀚的知识宇宙" : "A vast universe of knowledge"}>
     <LivingStarfield />
     <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" role="img" aria-hidden="true" className="h-full w-full">
@@ -108,14 +110,8 @@ export default function KnowledgeExplorer({ language }: { language: Language }) 
       <path d="M80 690 C230 610 320 220 470 265 S760 730 980 610 S1190 190 1360 225" fill="none" stroke="#ddd6fe" strokeWidth="3" strokeLinecap="round" strokeDasharray="3 18" opacity="0.35" /><path d="M-40 470 C250 340 390 540 610 380 S1040 190 1490 430" fill="none" stroke="#60a5fa" strokeWidth="2" opacity="0.18" />
       {stops.map((item,index) => <g key={item.en} transform={`translate(${item.x*14.4} ${item.y*9})`} className="knowledge-float" style={{animationDelay:`${index*-1.1}s`}}><circle r={index%2?68:58} fill={item.color} opacity="0.08" filter="url(#star-glow)" /><circle r="22" fill={item.color} opacity="0.22" /><circle r="9" fill={item.color} /><text y={index%2?50:43} textAnchor="middle" fill="#f8fafc" fontSize="18" fontWeight="700" opacity="0.86">{language === "zh"?item.zh:item.en}</text></g>)}
       <g className="knowledge-float knowledge-float-slow" transform="translate(735 145)"><circle r="45" fill="#fef3c7" opacity="0.12" /><path d="M-36 4 C-18 -38 7 39 28 -7 S65 -19 75 11" fill="none" stroke="#fde68a" strokeWidth="5" strokeLinecap="round" /></g><g className="knowledge-float knowledge-float-reverse" transform="translate(300 780)"><path d="M-65 25 L0 -48 L66 25 L0 63 Z" fill="#67e8f9" opacity="0.16" /><path d="M-65 25 L0 -48 L66 25 L0 63 Z M0 -48 V63 M-65 25 H66" fill="none" stroke="#a5f3fc" strokeWidth="3" opacity="0.55" /></g>
-      <g className="knowledge-wanderer" style={{transform:`translate(${position.x*14.4}px, ${position.y*9}px)`}}>
-        <g className="knowledge-flyer">
-          <ellipse cx="0" cy="45" rx="32" ry="9" fill="#93c5fd" opacity="0.15" filter="url(#star-glow)" />
-          <image className="knowledge-lamb-image" href="/art/knowledge-lamb-v2.png" x="-42" y="-66" width="84" height="126" preserveAspectRatio="xMidYMid meet" />
-        </g>
-      </g>
     </svg>
-    <button type="button" onClick={()=>setActiveStop(current=>(current+1)%flightStops.length)} className="knowledge-wander-button" aria-label={label} title={label} style={{left:`${position.x}%`,top:`${position.y}%`}}><span className="sr-only">{label}</span></button>
+    <button type="button" onClick={moveExplorer} className="knowledge-wander-button" aria-label={label} title={label} style={{left:`${position.x}%`,top:`${position.y}%`}}><span className="knowledge-flyer"><Image className="knowledge-lamb-image" src="/art/knowledge-lamb-v2.png" width={84} height={126} sizes="64px" alt="" /></span></button>
     <p className="pointer-events-none absolute bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-slate-950/35 px-4 py-2 text-xs font-medium text-violet-100 backdrop-blur">{label}</p>
   </div>;
 }
