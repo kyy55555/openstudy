@@ -59,7 +59,7 @@ function HomeContent() {
         {copy.switchLanguage}
       </button>
 
-      <section className="pointer-events-none relative z-10 w-full max-w-3xl px-5 py-8 text-center sm:px-10 sm:py-10">
+      <section className="home-cosmos-content pointer-events-none relative z-10 w-full max-w-3xl px-5 py-8 text-center sm:px-10 sm:py-10">
         <p className="text-sm font-semibold uppercase tracking-[0.25em] text-violet-200">
           {copy.eyebrow}
         </p>
