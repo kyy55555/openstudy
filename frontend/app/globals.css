@@ -146,6 +146,12 @@ html.dark .today-primary-action:hover { background-color: #ddd6fe; }
   will-change: transform;
 }
 
+.knowledge-lamb-image {
+  opacity: 0.9;
+  filter: saturate(0.72) brightness(0.86) contrast(0.94) drop-shadow(0 0 7px rgb(129 140 248 / 0.42));
+  image-rendering: auto;
+}
+
 .knowledge-wander-button {
   position: absolute;
   width: 4rem;

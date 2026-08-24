@@ -111,7 +111,7 @@ export default function KnowledgeExplorer({ language }: { language: Language }) 
       <g className="knowledge-wanderer" style={{transform:`translate(${position.x*14.4}px, ${position.y*9}px)`}}>
         <g className="knowledge-flyer">
           <ellipse cx="0" cy="45" rx="32" ry="9" fill="#93c5fd" opacity="0.15" filter="url(#star-glow)" />
-          <image href="/art/knowledge-lamb-v1.png" x="-42" y="-66" width="84" height="126" preserveAspectRatio="xMidYMid meet" />
+          <image className="knowledge-lamb-image" href="/art/knowledge-lamb-v2.png" x="-42" y="-66" width="84" height="126" preserveAspectRatio="xMidYMid meet" />
         </g>
       </g>
     </svg>
