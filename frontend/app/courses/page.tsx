@@ -228,7 +228,6 @@ type SearchBoxProps = {
   searchInput: string;
   setSearchInput: (value: string) => void;
   onSearch: (value?: string) => void;
-  isSearching: boolean;
   suggestions: string[];
   copy: Copy;
 };
@@ -237,7 +236,6 @@ function SearchBox({
   searchInput,
   setSearchInput,
   onSearch,
-  isSearching,
   suggestions,
   copy,
 }: SearchBoxProps) {
@@ -315,16 +313,9 @@ function SearchBox({
 
       <button
         type="submit"
-        disabled={isSearching}
-        aria-busy={isSearching}
-        className="min-w-24 rounded-lg bg-black px-5 py-3 text-white hover:bg-gray-800 disabled:cursor-wait disabled:bg-gray-600"
+        className="min-w-24 rounded-lg bg-black px-5 py-3 text-white hover:bg-gray-800"
       >
-        {isSearching ? (
-          <span className="flex items-center justify-center gap-2">
-            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
-            {copy.searching}
-          </span>
-        ) : copy.search}
+        {copy.search}
       </button>
     </form>
   );
@@ -597,8 +588,6 @@ function CourseExplorer() {
   const subjects = uniqueCourseSubjects(courses);
   const programmingLanguages = uniqueProgrammingLanguages(courses);
 
-  const isSearching = searchInput.trim() !== searchTerm;
-
   useEffect(() => {
     const nextSearch = searchInput.trim();
     if (nextSearch === searchTerm) return;
@@ -682,7 +671,6 @@ function CourseExplorer() {
         searchInput={searchInput}
         setSearchInput={setSearchInput}
         onSearch={handleSearch}
-        isSearching={isSearching}
         suggestions={suggestions}
         copy={copy}
       />
