@@ -9,7 +9,6 @@ import KnowledgeExplorer from "./KnowledgeExplorer";
 const homeCopy = {
   en: {
     eyebrow: "OpenStudy Beta · Verified university courses",
-    subtitle: "Search verified computer science courses and their mathematics and natural-science foundations.",
     scope: "Current Beta focus: computer science, mathematics, physics, and chemistry foundations. More fields will be added without interrupting the site.",
     searchLabel: "Search courses",
     placeholder: "Algorithms, machine learning, Python, 算法...",
@@ -23,7 +22,6 @@ const homeCopy = {
   },
   zh: {
     eyebrow: "OpenStudy Beta · 已核实的大学公开课",
-    subtitle: "搜索已核实的计算机科学课程，以及相关数学与自然科学基础课程。",
     scope: "当前 Beta 重点：计算机科学、数学、物理与化学基础。更多专业将持续加入，网站无需停机。",
     searchLabel: "搜索课程",
     placeholder: "算法、机器学习、Python……",
@@ -71,14 +69,11 @@ function HomeContent() {
           {copy.eyebrow}
         </p>
 
-        <h1 className="mt-4 text-5xl font-bold tracking-tight text-white sm:text-6xl">
+        <h1 className="mt-4 text-6xl font-bold tracking-[-0.04em] text-white sm:text-7xl">
           OpenStudy
         </h1>
 
-        <p className="mx-auto mt-5 max-w-xl text-lg text-slate-200">
-          {copy.subtitle}
-        </p>
-        <p className="mx-auto mt-4 max-w-xl rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm leading-6 text-slate-200">
+        <p className="mx-auto mt-5 max-w-xl rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm leading-6 text-slate-200">
           {copy.scope}
         </p>
 

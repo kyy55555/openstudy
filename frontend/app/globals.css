@@ -115,23 +115,10 @@ html.dark .today-primary-action:hover { background-color: #ddd6fe; }
   z-index: 1;
 }
 
-.home-cosmos-content::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  inset: -1.25rem -2rem;
-  pointer-events: none;
-  background: radial-gradient(ellipse at center, rgb(3 8 28 / 0.78) 0%, rgb(4 10 31 / 0.56) 46%, rgb(4 10 31 / 0.16) 68%, transparent 84%);
-}
-
 .home-cosmos-content h1,
 .home-cosmos-content p,
 .home-cosmos-content a {
   text-shadow: 0 2px 8px rgb(0 0 0 / 0.66);
-}
-
-@media (min-width: 640px) {
-  .home-cosmos-content::before { inset: -1.75rem -3rem; }
 }
 
 .knowledge-wanderer {
