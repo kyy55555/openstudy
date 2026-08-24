@@ -113,15 +113,19 @@ html.dark footer.bg-white { background-color: #0b1220; }
   content: "";
   position: absolute;
   z-index: -1;
-  inset: -4rem -6rem;
+  inset: -1.25rem -2rem;
   pointer-events: none;
-  background: radial-gradient(ellipse at center, rgb(3 8 28 / 0.9) 0%, rgb(4 10 31 / 0.74) 43%, rgb(4 10 31 / 0.28) 66%, transparent 82%);
+  background: radial-gradient(ellipse at center, rgb(3 8 28 / 0.78) 0%, rgb(4 10 31 / 0.56) 46%, rgb(4 10 31 / 0.16) 68%, transparent 84%);
 }
 
 .home-cosmos-content h1,
 .home-cosmos-content p,
 .home-cosmos-content a {
-  text-shadow: 0 2px 14px rgb(0 0 0 / 0.82);
+  text-shadow: 0 2px 8px rgb(0 0 0 / 0.66);
+}
+
+@media (min-width: 640px) {
+  .home-cosmos-content::before { inset: -1.75rem -3rem; }
 }
 
 .knowledge-wanderer {
