@@ -90,12 +90,10 @@ html.dark footer.bg-white { background-color: #0b1220; }
 }
 
 .knowledge-space {
-  position: relative;
-  height: clamp(18rem, 48vw, 30rem);
+  position: absolute;
+  inset: 0;
   overflow: hidden;
-  border: 1px solid rgb(221 214 254 / 0.9);
-  border-radius: 2rem;
-  box-shadow: 0 24px 70px rgb(76 29 149 / 0.12);
+  pointer-events: none;
 }
 
 .knowledge-wanderer {
@@ -110,6 +108,7 @@ html.dark footer.bg-white { background-color: #0b1220; }
   cursor: pointer;
   border-radius: 999px;
   background: transparent;
+  pointer-events: auto;
 }
 
 .knowledge-float { animation: knowledge-float 5s ease-in-out infinite; }
@@ -119,11 +118,6 @@ html.dark footer.bg-white { background-color: #0b1220; }
 @keyframes knowledge-float {
   0%, 100% { translate: 0 0; }
   50% { translate: 0 -10px; }
-}
-
-html.dark .knowledge-space {
-  border-color: #4c1d95;
-  box-shadow: 0 24px 70px rgb(0 0 0 / 0.35);
 }
 
 @media (prefers-reduced-motion: reduce) {

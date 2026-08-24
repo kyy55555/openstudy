@@ -3,82 +3,29 @@
 import { useState } from "react";
 
 type Language = "en" | "zh";
-
 const stops = [
-  { x: 19, y: 67, color: "#7c3aed" },
-  { x: 39, y: 43, color: "#2563eb" },
-  { x: 63, y: 61, color: "#ea580c" },
-  { x: 81, y: 34, color: "#059669" },
+  { x: 14, y: 70, color: "#c4b5fd", en: "Algorithms", zh: "算法" },
+  { x: 31, y: 29, color: "#93c5fd", en: "Mathematics", zh: "数学" },
+  { x: 68, y: 67, color: "#fdba74", en: "Physics", zh: "物理" },
+  { x: 85, y: 25, color: "#6ee7b7", en: "AI", zh: "人工智能" },
 ] as const;
+const stars = [[6,14,2],[12,34,1],[19,8,1.5],[25,56,1],[37,14,2],[44,76,1.5],[51,22,1],[58,47,2],[64,9,1],[73,38,1.5],[78,82,2],[91,55,1],[96,12,1.5],[4,86,1],[48,91,1],[93,91,2]] as const;
 
 export default function KnowledgeExplorer({ language }: { language: Language }) {
   const [activeStop, setActiveStop] = useState(0);
   const stop = stops[activeStop];
-  const label = language === "zh" ? "点击探索者，继续漫步" : "Select the explorer to keep wandering";
-
-  function wander() {
-    setActiveStop((current) => (current + 1) % stops.length);
-  }
-
-  return (
-    <div className="knowledge-space" aria-label={language === "zh" ? "自由探索知识空间" : "A freely explorable knowledge space"}>
-      <svg viewBox="0 0 1000 520" role="img" aria-hidden="true" className="h-full w-full">
-        <defs>
-          <linearGradient id="knowledge-sky" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor="#f5f3ff" />
-            <stop offset="0.48" stopColor="#eff6ff" />
-            <stop offset="1" stopColor="#fff7ed" />
-          </linearGradient>
-          <filter id="paper-shadow" x="-30%" y="-30%" width="160%" height="160%">
-            <feDropShadow dx="0" dy="8" stdDeviation="10" floodColor="#312e81" floodOpacity="0.12" />
-          </filter>
-        </defs>
-        <rect width="1000" height="520" rx="40" fill="url(#knowledge-sky)" />
-        <path d="M58 388 C196 266 290 376 402 248 S628 180 752 272 S890 250 958 126" fill="none" stroke="#312e81" strokeWidth="5" strokeLinecap="round" strokeDasharray="4 18" opacity="0.55" />
-
-        <g className="knowledge-float knowledge-float-slow" transform="translate(105 78)">
-          <circle cx="48" cy="47" r="36" fill="#ede9fe" />
-          <path d="M12 55 L42 29 L72 47 L98 18" fill="none" stroke="#6d28d9" strokeWidth="4" />
-          {[[12,55],[42,29],[72,47],[98,18]].map(([cx, cy]) => <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="7" fill="#6d28d9" />)}
-        </g>
-
-        <g className="knowledge-float" transform="translate(360 82) rotate(-5)" filter="url(#paper-shadow)">
-          <rect width="154" height="92" rx="16" fill="#ffffff" />
-          <path d="M24 29 H128 M24 48 H104 M24 67 H119" stroke="#2563eb" strokeWidth="5" strokeLinecap="round" opacity="0.75" />
-        </g>
-
-        <g className="knowledge-float knowledge-float-reverse" transform="translate(697 78)">
-          <path d="M0 52 C28 2 55 102 84 52 S139 2 168 52" fill="none" stroke="#ea580c" strokeWidth="7" strokeLinecap="round" />
-          <circle cx="0" cy="52" r="8" fill="#fb923c" /><circle cx="168" cy="52" r="8" fill="#fb923c" />
-        </g>
-
-        <g className="knowledge-float knowledge-float-slow" transform="translate(820 322) rotate(7)">
-          <rect x="0" y="0" width="88" height="74" rx="12" fill="#fef3c7" />
-          <rect x="54" y="42" width="86" height="70" rx="12" fill="#d1fae5" />
-          <path d="M18 22 H65 M18 39 H56 M72 65 H120 M72 82 H109" stroke="#065f46" strokeWidth="4" strokeLinecap="round" opacity="0.65" />
-        </g>
-
-        <g transform="translate(545 345)">
-          <path d="M0 42 L45 0 L90 42 L45 84 Z" fill="#bfdbfe" opacity="0.9" />
-          <path d="M45 0 L45 84 M0 42 H90" stroke="#1d4ed8" strokeWidth="3" opacity="0.65" />
-        </g>
-
-        {stops.map((item, index) => <g key={item.x} transform={`translate(${item.x * 10} ${item.y * 5.2})`} opacity={activeStop === index ? 1 : 0.45}><circle r="18" fill={item.color} opacity="0.16" /><circle r="6" fill={item.color} /></g>)}
-
-        <g className="knowledge-wanderer" style={{ transform: `translate(${stop.x * 10}px, ${stop.y * 5.2}px)` }}>
-          <ellipse cx="0" cy="46" rx="35" ry="10" fill="#312e81" opacity="0.13" />
-          <circle cx="0" cy="-23" r="17" fill="#111827" />
-          <path d="M-15 -9 C-33 11 -28 40 -17 52 L20 52 C30 26 28 5 14 -9 Z" fill={stop.color} />
-          <path d="M-12 50 L-24 82 M16 50 L29 79" stroke="#111827" strokeWidth="9" strokeLinecap="round" />
-          <path d="M-19 6 L-46 30 M19 8 L43 20" stroke="#111827" strokeWidth="8" strokeLinecap="round" />
-          <path d="M31 12 L55 -7" stroke="#111827" strokeWidth="4" strokeLinecap="round" />
-          <path d="M42 -6 Q54 -19 68 -6 Q55 2 42 -6" fill="#fbbf24" stroke="#111827" strokeWidth="3" />
-        </g>
-      </svg>
-      <button type="button" onClick={wander} className="knowledge-wander-button" aria-label={label} title={label} style={{ left: `${stop.x}%`, top: `${stop.y}%` }}>
-        <span className="sr-only">{label}</span>
-      </button>
-      <p className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-white/75 px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm backdrop-blur">{label}</p>
-    </div>
-  );
+  const label = language === "zh" ? "点击探索者，飞向下一颗知识星" : "Select the explorer to fly toward another knowledge star";
+  return <div className="knowledge-space" aria-label={language === "zh" ? "浩瀚的知识宇宙" : "A vast universe of knowledge"}>
+    <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" role="img" aria-hidden="true" className="h-full w-full">
+      <defs><radialGradient id="cosmos" cx="50%" cy="42%" r="78%"><stop offset="0" stopColor="#312e81" /><stop offset="0.48" stopColor="#111b4f" /><stop offset="1" stopColor="#050816" /></radialGradient><radialGradient id="violet-nebula"><stop offset="0" stopColor="#8b5cf6" stopOpacity="0.45" /><stop offset="1" stopColor="#8b5cf6" stopOpacity="0" /></radialGradient><radialGradient id="orange-nebula"><stop offset="0" stopColor="#f97316" stopOpacity="0.3" /><stop offset="1" stopColor="#f97316" stopOpacity="0" /></radialGradient><filter id="star-glow"><feGaussianBlur stdDeviation="7" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter></defs>
+      <rect width="1440" height="900" fill="url(#cosmos)" /><ellipse cx="200" cy="220" rx="370" ry="260" fill="url(#violet-nebula)" /><ellipse cx="1250" cy="760" rx="420" ry="300" fill="url(#orange-nebula)" />
+      {stars.map(([x,y,r]) => <circle key={`${x}-${y}`} cx={x*14.4} cy={y*9} r={r} fill="#fff" opacity={0.45+r/6} />)}
+      <path d="M80 690 C230 610 320 220 470 265 S760 730 980 610 S1190 190 1360 225" fill="none" stroke="#ddd6fe" strokeWidth="3" strokeLinecap="round" strokeDasharray="3 18" opacity="0.35" /><path d="M-40 470 C250 340 390 540 610 380 S1040 190 1490 430" fill="none" stroke="#60a5fa" strokeWidth="2" opacity="0.18" />
+      {stops.map((item,index) => <g key={item.en} transform={`translate(${item.x*14.4} ${item.y*9})`} className="knowledge-float" style={{animationDelay:`${index*-1.1}s`}}><circle r={index%2?68:58} fill={item.color} opacity="0.08" filter="url(#star-glow)" /><circle r="22" fill={item.color} opacity="0.22" /><circle r="9" fill={item.color} /><text y={index%2?50:43} textAnchor="middle" fill="#f8fafc" fontSize="18" fontWeight="700" opacity="0.86">{language === "zh"?item.zh:item.en}</text></g>)}
+      <g className="knowledge-float knowledge-float-slow" transform="translate(735 145)"><circle r="45" fill="#fef3c7" opacity="0.12" /><path d="M-36 4 C-18 -38 7 39 28 -7 S65 -19 75 11" fill="none" stroke="#fde68a" strokeWidth="5" strokeLinecap="round" /></g><g className="knowledge-float knowledge-float-reverse" transform="translate(300 780)"><path d="M-65 25 L0 -48 L66 25 L0 63 Z" fill="#67e8f9" opacity="0.16" /><path d="M-65 25 L0 -48 L66 25 L0 63 Z M0 -48 V63 M-65 25 H66" fill="none" stroke="#a5f3fc" strokeWidth="3" opacity="0.55" /></g>
+      <g className="knowledge-wanderer" style={{transform:`translate(${stop.x*14.4}px, ${stop.y*9}px)`}}><ellipse cx="0" cy="53" rx="42" ry="12" fill="#c4b5fd" opacity="0.18" filter="url(#star-glow)" /><circle cx="0" cy="-28" r="17" fill="#f8fafc" /><path d="M-15 -13 C-33 7 -28 39 -17 53 L20 53 C30 25 28 2 14 -13 Z" fill="#f97316" /><path d="M-12 51 L-27 84 M16 51 L31 82 M-19 3 L-48 27 M19 5 L46 16" stroke="#f8fafc" strokeWidth="9" strokeLinecap="round" /><path d="M31 8 L58 -13" stroke="#f8fafc" strokeWidth="4" strokeLinecap="round" /><path d="M44 -12 Q57 -27 73 -12 Q58 -2 44 -12" fill="#fde047" stroke="#f8fafc" strokeWidth="3" /></g>
+    </svg>
+    <button type="button" onClick={()=>setActiveStop(current=>(current+1)%stops.length)} className="knowledge-wander-button" aria-label={label} title={label} style={{left:`${stop.x}%`,top:`${stop.y}%`}}><span className="sr-only">{label}</span></button>
+    <p className="pointer-events-none absolute bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-white/15 bg-slate-950/40 px-4 py-2 text-xs font-medium text-violet-100 shadow-lg backdrop-blur">{label}</p>
+  </div>;
 }

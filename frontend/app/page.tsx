@@ -44,7 +44,8 @@ function HomeContent() {
   const copy = homeCopy[language];
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center px-4 py-20 sm:px-6 sm:py-16">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#050816] px-4 py-20 sm:px-6 sm:py-16">
+      <KnowledgeExplorer language={language} />
       <button
         type="button"
         onClick={() => {
@@ -53,30 +54,26 @@ function HomeContent() {
           router.replace(nextLanguage === "zh" ? "/?lang=zh" : "/");
         }}
         aria-label={copy.switchLabel}
-        className="absolute right-4 top-4 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50 sm:right-6 sm:top-6"
+        className="absolute right-4 top-4 z-20 rounded-full border border-white/25 bg-slate-950/35 px-4 py-2 text-sm font-medium text-white backdrop-blur hover:bg-white/10 sm:right-6 sm:top-6"
       >
         {copy.switchLanguage}
       </button>
 
-      <section className="w-full max-w-4xl text-center">
-        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-gray-500">
+      <section className="relative z-10 w-full max-w-3xl rounded-[2rem] border border-white/15 bg-slate-950/45 px-5 py-8 text-center shadow-2xl backdrop-blur-md sm:px-10 sm:py-10">
+        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-violet-200">
           {copy.eyebrow}
         </p>
 
-        <h1 className="mt-4 text-5xl font-bold tracking-tight sm:text-6xl">
+        <h1 className="mt-4 text-5xl font-bold tracking-tight text-white sm:text-6xl">
           OpenStudy
         </h1>
 
-        <p className="mx-auto mt-5 max-w-xl text-lg text-gray-600">
+        <p className="mx-auto mt-5 max-w-xl text-lg text-slate-200">
           {copy.subtitle}
         </p>
-        <p className="mx-auto mt-4 max-w-xl rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm leading-6 text-blue-950">
+        <p className="mx-auto mt-4 max-w-xl rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm leading-6 text-slate-200">
           {copy.scope}
         </p>
-
-        <div className="mt-8">
-          <KnowledgeExplorer language={language} />
-        </div>
 
         <form action="/courses" method="get" className="mx-auto mt-8 flex max-w-2xl flex-col gap-2 sm:flex-row">
           {language === "zh" && <input type="hidden" name="lang" value="zh" />}
@@ -103,21 +100,21 @@ function HomeContent() {
 
         <Link
           href={language === "zh" ? "/courses?lang=zh" : "/courses"}
-          className="mt-5 inline-block text-sm text-gray-500 hover:text-black hover:underline"
+          className="mt-5 inline-block text-sm text-slate-300 hover:text-white hover:underline"
         >
           {copy.browse}
         </Link>
-        <span className="mx-3 text-gray-300">·</span>
+        <span className="mx-3 text-slate-600">·</span>
         <Link
           href={language === "zh" ? "/paths?lang=zh" : "/paths"}
-          className="mt-5 inline-block text-sm text-gray-500 hover:text-black hover:underline"
+          className="mt-5 inline-block text-sm text-slate-300 hover:text-white hover:underline"
         >
           {copy.paths}
         </Link>
-        <span className="mx-3 text-gray-300">·</span>
-        <Link href={language === "zh" ? "/today?lang=zh" : "/today"} className="mt-5 inline-block text-sm font-medium text-violet-700 hover:text-violet-950 hover:underline">{copy.today}</Link>
-        <span className="mx-3 text-gray-300">·</span>
-        <Link href={language === "zh" ? "/dashboard?lang=zh" : "/dashboard"} className="mt-5 inline-block text-sm text-gray-500 hover:text-black hover:underline">{copy.dashboard}</Link>
+        <span className="mx-3 text-slate-600">·</span>
+        <Link href={language === "zh" ? "/today?lang=zh" : "/today"} className="mt-5 inline-block text-sm font-medium text-violet-300 hover:text-white hover:underline">{copy.today}</Link>
+        <span className="mx-3 text-slate-600">·</span>
+        <Link href={language === "zh" ? "/dashboard?lang=zh" : "/dashboard"} className="mt-5 inline-block text-sm text-slate-300 hover:text-white hover:underline">{copy.dashboard}</Link>
       </section>
     </main>
   );
