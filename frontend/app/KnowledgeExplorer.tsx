@@ -9,6 +9,12 @@ const stops = [
   { x: 78, y: 63, color: "#fdba74", en: "Physics", zh: "物理" },
   { x: 88, y: 18, color: "#6ee7b7", en: "AI", zh: "人工智能" },
 ] as const;
+const flightStops = [
+  { x: 8, y: 36 },
+  { x: 38, y: 13 },
+  { x: 62, y: 13 },
+  { x: 92, y: 36 },
+] as const;
 const stars = Array.from({ length: 180 }, (_, index) => ({
   x: (index * 47 + (index % 7) * 13) % 100,
   y: (index * 71 + (index % 11) * 7) % 100,
@@ -79,7 +85,7 @@ function LivingStarfield() {
 
 export default function KnowledgeExplorer({ language }: { language: Language }) {
   const [activeStop, setActiveStop] = useState(0);
-  const stop = stops[activeStop];
+  const position = flightStops[activeStop];
   const label = language === "zh" ? "点击探索者，飞向下一颗知识星" : "Select the explorer to fly toward another knowledge star";
   return <div className="knowledge-space" aria-label={language === "zh" ? "浩瀚的知识宇宙" : "A vast universe of knowledge"}>
     <LivingStarfield />
@@ -102,24 +108,14 @@ export default function KnowledgeExplorer({ language }: { language: Language }) 
       <path d="M80 690 C230 610 320 220 470 265 S760 730 980 610 S1190 190 1360 225" fill="none" stroke="#ddd6fe" strokeWidth="3" strokeLinecap="round" strokeDasharray="3 18" opacity="0.35" /><path d="M-40 470 C250 340 390 540 610 380 S1040 190 1490 430" fill="none" stroke="#60a5fa" strokeWidth="2" opacity="0.18" />
       {stops.map((item,index) => <g key={item.en} transform={`translate(${item.x*14.4} ${item.y*9})`} className="knowledge-float" style={{animationDelay:`${index*-1.1}s`}}><circle r={index%2?68:58} fill={item.color} opacity="0.08" filter="url(#star-glow)" /><circle r="22" fill={item.color} opacity="0.22" /><circle r="9" fill={item.color} /><text y={index%2?50:43} textAnchor="middle" fill="#f8fafc" fontSize="18" fontWeight="700" opacity="0.86">{language === "zh"?item.zh:item.en}</text></g>)}
       <g className="knowledge-float knowledge-float-slow" transform="translate(735 145)"><circle r="45" fill="#fef3c7" opacity="0.12" /><path d="M-36 4 C-18 -38 7 39 28 -7 S65 -19 75 11" fill="none" stroke="#fde68a" strokeWidth="5" strokeLinecap="round" /></g><g className="knowledge-float knowledge-float-reverse" transform="translate(300 780)"><path d="M-65 25 L0 -48 L66 25 L0 63 Z" fill="#67e8f9" opacity="0.16" /><path d="M-65 25 L0 -48 L66 25 L0 63 Z M0 -48 V63 M-65 25 H66" fill="none" stroke="#a5f3fc" strokeWidth="3" opacity="0.55" /></g>
-      <g className="knowledge-wanderer" style={{transform:`translate(${stop.x*14.4}px, ${stop.y*9}px)`}}>
+      <g className="knowledge-wanderer" style={{transform:`translate(${position.x*14.4}px, ${position.y*9}px)`}}>
         <g className="knowledge-flyer">
-          <ellipse cx="0" cy="56" rx="42" ry="12" fill="#93c5fd" opacity="0.18" filter="url(#star-glow)" />
-          <path d="M-13 -37 Q0 -53 13 -37 L15 -25 Q0 -18 -15 -25 Z" fill="#050816" stroke="#94a3b8" strokeWidth="2" />
-          <path d="M-18 -22 Q0 -31 19 -21 Q31 5 25 39 Q0 52 -25 39 Q-31 5 -18 -22 Z" fill="#071126" stroke="#64748b" strokeWidth="3" />
-          <path d="M-16 -15 Q0 -24 16 -15 L20 22 Q0 34 -20 22 Z" fill="#172554" stroke="#818cf8" strokeWidth="3" />
-          <path d="M-19 -11 Q-39 4 -47 25 M20 -10 Q40 3 49 22" fill="none" stroke="#0f172a" strokeWidth="11" strokeLinecap="round" />
-          <path d="M-13 38 Q-17 59 -18 80 M13 38 Q17 59 18 80" fill="none" stroke="#070d1d" strokeWidth="13" strokeLinecap="round" />
-          <path d="M-18 80 Q-22 86 -29 87 M18 80 Q22 86 29 87" fill="none" stroke="#334155" strokeWidth="9" strokeLinecap="round" />
-          <path d="M-28 -13 Q-47 -22 -66 -17 Q-82 -12 -96 -21" fill="none" stroke="#7c3aed" strokeWidth="7" strokeLinecap="round" />
-          <path d="M-88 -20 L-108 -31 M-90 -17 L-113 -12" stroke="#8b5cf6" strokeWidth="4" strokeLinecap="round" />
-          <path d="M-12 4 L12 4 M-9 12 L9 12" stroke="#60a5fa" strokeWidth="2" opacity="0.65" />
-          <path d="M-4 -48 Q0 -61 5 -48" fill="none" stroke="#fde68a" strokeWidth="2" strokeDasharray="3 4" />
-          <circle cx="0" cy="-66" r="4" fill="#fde047" filter="url(#star-glow)" />
+          <ellipse cx="0" cy="45" rx="32" ry="9" fill="#93c5fd" opacity="0.15" filter="url(#star-glow)" />
+          <image href="/art/knowledge-explorer-v1.png" x="-42" y="-66" width="84" height="126" preserveAspectRatio="xMidYMid meet" />
         </g>
       </g>
     </svg>
-    <button type="button" onClick={()=>setActiveStop(current=>(current+1)%stops.length)} className="knowledge-wander-button" aria-label={label} title={label} style={{left:`${stop.x}%`,top:`${stop.y}%`}}><span className="sr-only">{label}</span></button>
+    <button type="button" onClick={()=>setActiveStop(current=>(current+1)%flightStops.length)} className="knowledge-wander-button" aria-label={label} title={label} style={{left:`${position.x}%`,top:`${position.y}%`}}><span className="sr-only">{label}</span></button>
     <p className="pointer-events-none absolute bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-slate-950/35 px-4 py-2 text-xs font-medium text-violet-100 backdrop-blur">{label}</p>
   </div>;
 }
