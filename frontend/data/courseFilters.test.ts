@@ -181,3 +181,9 @@ test("courses can be sorted without mutating the catalog", () => {
     byDifficulty.map(courseDifficultyRank).toSorted((a, b) => a - b),
   );
 });
+
+test("courses can be sorted by public favorite count", () => {
+  const sample = courses.slice(0, 3);
+  const sorted = sortCourses(sample, "popular", { [sample[1].id]: 4, [sample[2].id]: 2 });
+  assert.deepEqual(sorted.map(({ id }) => id), [sample[1].id, sample[2].id, sample[0].id]);
+});

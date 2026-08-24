@@ -10,7 +10,7 @@ export type CourseFilters = {
   onlySolutions: boolean;
 };
 
-export type CourseSort = "easiest" | "newest";
+export type CourseSort = "easiest" | "newest" | "popular";
 
 const searchSynonymGroups = [
   ["web", "website", "websites", "webpage", "webpages", "网站", "网页", "网站开发", "网页开发", "web开发"],
@@ -256,8 +256,13 @@ export function rankCoursesForSearch(courses: Course[], searchTerm: string) {
   return [...courses].sort((a, b) => score(a) - score(b));
 }
 
-export function sortCourses(courses: Course[], sort: CourseSort) {
+export function sortCourses(courses: Course[], sort: CourseSort, favoriteCounts: Record<string, number> = {}) {
   return [...courses].sort((a, b) => {
+    if (sort === "popular") {
+      const favoriteDifference = (favoriteCounts[b.id] ?? 0) - (favoriteCounts[a.id] ?? 0);
+      if (favoriteDifference !== 0) return favoriteDifference;
+    }
+
     if (sort === "easiest") {
       const stageDifference = courseDifficultyRank(a) - courseDifficultyRank(b);
       if (stageDifference !== 0) return stageDifference;

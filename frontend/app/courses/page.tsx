@@ -23,6 +23,7 @@ import {
 import type { CourseSort } from "../../data/courseFilters";
 import { structuredCoursePlans } from "../../data/coursePlans";
 import { useCourseLibrary } from "../useCourseLibrary";
+import { useCourseFavoriteCounts } from "../useCourseFavoriteCounts";
 
 const coursesPerPage = 12;
 
@@ -78,6 +79,8 @@ const translations = {
     sort: "Sort",
     easiest: "Easiest to hardest",
     newest: "Newest first",
+    popular: "Most saved",
+    savedBy: (count: number) => `${count} saved`,
     verifiedCourses: (filtered: number, total: number) =>
       `${filtered} of ${total} verified courses`,
     noCourses: "No courses found.",
@@ -136,6 +139,8 @@ const translations = {
     sort: "排序",
     easiest: "由易到难",
     newest: "最新优先",
+    popular: "收藏最多",
+    savedBy: (count: number) => `${count} 人收藏`,
     verifiedCourses: (filtered: number, total: number) =>
       `${total} 门已核实课程，当前 ${filtered} 门`,
     noCourses: "没有找到课程。",
@@ -481,10 +486,11 @@ type CourseCardProps = {
   language: Language;
   copy: Copy;
   favorite: boolean;
+  favoriteCount: number | null;
   onToggleFavorite: () => void;
 };
 
-function CourseCard({ course, language, copy, favorite, onToggleFavorite }: CourseCardProps) {
+function CourseCard({ course, language, copy, favorite, favoriteCount, onToggleFavorite }: CourseCardProps) {
   const router = useRouter();
   const studyStage = suggestedStudyStage(course);
   const displayedSubjects = displayCourseSubjects(course, language);
@@ -519,7 +525,7 @@ function CourseCard({ course, language, copy, favorite, onToggleFavorite }: Cour
       className="group scroll-mt-6 cursor-pointer overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-violet-300 hover:shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-700"
     >
       <div className="border-b border-slate-100 bg-gradient-to-br from-slate-50 via-white to-violet-50/70 p-5">
-        <div className="flex items-start justify-between gap-3"><p className="text-xs font-bold uppercase tracking-[0.14em] text-violet-700">{course.university}</p><button type="button" onClick={onToggleFavorite} aria-label={favorite ? "Remove favorite" : "Save favorite"} className="rounded-full bg-white/90 p-2 text-xl leading-none shadow-sm ring-1 ring-slate-200 transition hover:scale-105" title={favorite ? (language === "zh" ? "取消收藏" : "Remove favorite") : (language === "zh" ? "收藏" : "Save")}>{favorite ? "★" : "☆"}</button></div>
+        <div className="flex items-start justify-between gap-3"><p className="text-xs font-bold uppercase tracking-[0.14em] text-violet-700">{course.university}</p><div className="flex items-center gap-2">{favoriteCount !== null && <span className="text-xs font-semibold text-slate-500">{copy.savedBy(favoriteCount)}</span>}<button type="button" onClick={onToggleFavorite} aria-label={favorite ? "Remove favorite" : "Save favorite"} className="rounded-full bg-white/90 p-2 text-xl leading-none shadow-sm ring-1 ring-slate-200 transition hover:scale-105" title={favorite ? (language === "zh" ? "取消收藏" : "Remove favorite") : (language === "zh" ? "收藏" : "Save")}>{favorite ? "★" : "☆"}</button></div></div>
 
       <h2 className="mt-3 text-xl font-bold leading-snug text-slate-950">
         <Link href={detailPath} className="hover:underline">
@@ -586,6 +592,7 @@ function CourseExplorer() {
   const [sort, setSort] = useState<CourseSort>("easiest");
   const [visibleCount, setVisibleCount] = useState(coursesPerPage);
   const { library, toggleFavorite } = useCourseLibrary();
+  const favoriteCounts = useCourseFavoriteCounts();
   const copy = translations[language];
 
   const universities = uniqueCourseValues(courses, "university");
@@ -644,6 +651,7 @@ function CourseExplorer() {
       onlySolutions,
     }),
     sort,
+    favoriteCounts.counts,
   ), searchTerm);
   const visibleCourses = filteredCourses.slice(0, visibleCount);
   const suggestions = searchInput.trim() === searchTerm
@@ -732,6 +740,7 @@ function CourseExplorer() {
               >
                 <option value="easiest">{copy.easiest}</option>
                 <option value="newest">{copy.newest}</option>
+                <option value="popular">{copy.popular}</option>
               </select>
             </label>
 
@@ -769,7 +778,12 @@ function CourseExplorer() {
                 language={language}
                 copy={copy}
                 favorite={library.favorites.includes(course.id)}
-                onToggleFavorite={() => toggleFavorite(course.id)}
+                favoriteCount={favoriteCounts.available ? (favoriteCounts.counts[course.id] ?? 0) : null}
+                onToggleFavorite={() => {
+                  const wasFavorite = library.favorites.includes(course.id);
+                  toggleFavorite(course.id);
+                  favoriteCounts.adjust(course.id, wasFavorite ? -1 : 1);
+                }}
               />
             ))}
           </div>
