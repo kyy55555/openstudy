@@ -3,6 +3,7 @@ import test from "node:test";
 
 import { courses } from "./courses.ts";
 import { learningPaths } from "./learningPaths.ts";
+import type { LearningPathPhase } from "./learningPaths.ts";
 
 test("learning paths use official sources and known courses", () => {
   const courseIds = new Set(courses.map(({ id }) => id));
@@ -34,6 +35,17 @@ test("learning paths use official sources and known courses", () => {
     for (const id of path.phases.flatMap(({ courseIds }) => courseIds)) {
       assert.ok(courseIds.has(id), `${path.id} references missing course ${id}`);
     }
+  }
+});
+
+test("Stanford senior winter and spring expose optional advanced self-study courses", () => {
+  const path = learningPaths.find(({ id }) => id === "stanford-cs");
+  assert.ok(path);
+  for (const title of ["Year 4 · Winter", "Year 4 · Spring"]) {
+    const matchingPhase: LearningPathPhase | undefined = path.phases.find((item) => item.title === title);
+    assert.ok(matchingPhase);
+    assert.equal(matchingPhase.chooseCount, 2);
+    assert.ok(matchingPhase.courseIds.length >= 5);
   }
 });
 

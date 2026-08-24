@@ -91,8 +91,8 @@ export const learningPaths: LearningPath[] = [
     verifiedOn: "2026-08-04",
     summary: "Requirements follow Stanford's current bulletin. Stanford uses quarters, so this suggested sequence has twelve quarters rather than eight semesters.",
     summaryZh: "要求来自 Stanford 当前官方 Bulletin。Stanford 采用学季制，因此建议路线按十二个学季展示，而不是八学期。",
-    officialRequirementNotes: ["The CS BS requires mathematics, an approved science sequence and elective, engineering fundamentals, core CS, a depth track, writing in the major, and a capstone.", "The twelve-quarter placement below is an OpenStudy prerequisite-based example, not a Stanford-prescribed quarter-by-quarter plan."],
-    officialRequirementNotesZh: ["CS 本科要求包括数学、获批科学序列及科学选修、工程基础、CS 核心、深度方向、专业写作和毕业项目。", "下方十二学季仅为 OpenStudy 按先修关系生成的示例，并非 Stanford 规定的逐学季课表。"],
+    officialRequirementNotes: ["The CS BS requires mathematics, an approved science sequence and elective, engineering fundamentals, core CS, a depth track, writing in the major, and a capstone.", "The twelve-quarter placement below is an OpenStudy prerequisite-based example, not a Stanford-prescribed quarter-by-quarter plan.", "When a suitable Stanford course does not have verified public materials, senior-year external courses are clearly marked self-study substitutes and do not imply Stanford credit or degree approval."],
+    officialRequirementNotesZh: ["CS 本科要求包括数学、获批科学序列及科学选修、工程基础、CS 核心、深度方向、专业写作和毕业项目。", "下方十二学季仅为 OpenStudy 按先修关系生成的示例，并非 Stanford 规定的逐学季课表。", "当 Stanford 对应课程没有已核实的公开资料时，大四所列外校课程会明确作为自学替代，不代表 Stanford 学分或学位审核认可。"],
     scheduleStatus: "prerequisite-inferred",
     calendar: "quarter",
     phases: [
@@ -106,8 +106,8 @@ export const learningPaths: LearningPath[] = [
       term("Year 3 · Winter", "大三冬季", "Continue depth with compilers, graphics, optimization, or another approved course.", "通过编译器、图形学、优化或其他获批课程继续深度方向。", ["stanford-cs143", "stanford-cs148", "stanford-ee364a"], [], [], 1),
       term("Year 3 · Spring", "大三春季", "Continue the selected depth pathway.", "继续所选深度方向。", ["stanford-ee364b", "stanford-cs244b", "stanford-cs155"], [], [], 1),
       term("Year 4 · Fall", "大四秋季", "Complete depth electives and begin the capstone.", "完成深度选修并开始毕业项目。", ["stanford-cs144", "stanford-cs143", "stanford-cs148", "stanford-cs155", "stanford-ee364b"], ["Senior project / capstone"], ["高年级项目 / 毕业项目"], 1),
-      term("Year 4 · Winter", "大四冬季", "Continue the capstone and remaining technical depth work.", "继续毕业项目及剩余技术深度课程。", [], ["Remaining depth course"], ["剩余深度课程"]),
-      term("Year 4 · Spring", "大四春季", "Finish remaining depth and capstone units.", "完成剩余深度与毕业项目学分。", [], ["Remaining depth / capstone units"], ["剩余深度 / 毕业项目学分"]),
+      term("Year 4 · Winter", "大四冬季", "Choose two advanced systems courses from verified public offerings at other universities while continuing the Stanford capstone. These are self-study substitutes, not Stanford credit equivalents.", "继续 Stanford 毕业项目，同时从其他大学已核实的公开课中任选两门高级系统课程。这些仅为自学替代，不代表 Stanford 学分。", ["mit-6-824", "mit-6-858", "berkeley-cs162", "berkeley-cs186", "cmu-15-418", "mit-6-830"], ["Continue the Stanford senior project / capstone"], ["继续 Stanford 高年级项目 / 毕业项目"], 2),
+      term("Year 4 · Spring", "大四春季", "Choose two advanced AI, graphics, networking, or machine-learning-systems courses from verified public offerings and finish the capstone. These are optional self-study substitutes.", "从已核实的公开课中任选两门人工智能、图形学、网络或机器学习系统深度课程，并完成毕业项目；这些是可自由选择的外校自学替代。", ["cornell-cs6787", "berkeley-cs189", "mit-6-837", "princeton-cos461", "mit-6-036", "stanford-cs244b"], ["Finish the Stanford senior project / capstone"], ["完成 Stanford 高年级项目 / 毕业项目"], 2),
     ],
   },
   {
