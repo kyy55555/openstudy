@@ -526,10 +526,10 @@ function CourseCard({ course, language, copy, favorite, favoriteCount, onToggleF
       aria-label={`${courseCode(course)} · ${language === "zh" ? course.titleZh : course.title}`}
       onClick={openCourse}
       onKeyDown={openCourseWithKeyboard}
-      className="group scroll-mt-6 cursor-pointer overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-violet-300 hover:shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-700"
+      className="course-card group scroll-mt-6 cursor-pointer overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-violet-300 hover:shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-700"
     >
-      <div className="border-b border-slate-100 bg-gradient-to-br from-slate-50 via-white to-violet-50/70 p-5">
-        <div className="flex items-start justify-between gap-3"><p className="text-xs font-bold uppercase tracking-[0.14em] text-violet-700">{course.university}</p><div className="flex items-center gap-2">{favoriteCount !== null && <span className="text-xs font-semibold text-slate-500">{copy.savedBy(favoriteCount)}</span>}<button type="button" onClick={onToggleFavorite} aria-label={favorite ? "Remove favorite" : "Save favorite"} className="rounded-full bg-white/90 p-2 text-xl leading-none shadow-sm ring-1 ring-slate-200 transition hover:scale-105" title={favorite ? (language === "zh" ? "取消收藏" : "Remove favorite") : (language === "zh" ? "收藏" : "Save")}>{favorite ? "★" : "☆"}</button></div></div>
+      <div className="course-card-hero border-b border-slate-100 bg-gradient-to-br from-slate-50 via-white to-violet-50/70 p-5">
+        <div className="flex items-start justify-between gap-3"><p className="text-xs font-bold uppercase tracking-[0.14em] text-violet-700">{course.university}</p><div className="flex items-center gap-2">{favoriteCount !== null && <span className="text-xs font-semibold text-slate-500">{copy.savedBy(favoriteCount)}</span>}<button type="button" onClick={onToggleFavorite} aria-label={favorite ? "Remove favorite" : "Save favorite"} className="course-card-favorite rounded-full bg-white/90 p-2 text-xl leading-none shadow-sm ring-1 ring-slate-200 transition hover:scale-105" title={favorite ? (language === "zh" ? "取消收藏" : "Remove favorite") : (language === "zh" ? "收藏" : "Save")}>{favorite ? "★" : "☆"}</button></div></div>
 
       <h2 className="mt-3 text-xl font-bold leading-snug text-slate-950">
         <Link href={detailPath} className="hover:underline">

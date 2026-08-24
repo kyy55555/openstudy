@@ -55,6 +55,14 @@ html.dark .today-primary-action {
   border: 1px solid #c4b5fd;
 }
 html.dark .today-primary-action:hover { background-color: #ddd6fe; }
+html.dark .course-card { background-color: #0f172a; border-color: #334155; }
+html.dark .course-card-hero {
+  background: linear-gradient(135deg, #172033 0%, #111827 56%, #241442 100%);
+  border-color: #334155;
+}
+html.dark .course-card-hero h2 { color: #f8fafc; }
+html.dark .course-card-hero .text-violet-700 { color: #c4b5fd; }
+html.dark .course-card-favorite { background-color: #1e293b; color: #f8fafc; --tw-ring-color: #475569; }
 
 .skip-link {
   position: fixed;
