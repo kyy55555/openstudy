@@ -59,6 +59,13 @@ function HomeContent() {
         {copy.switchLanguage}
       </button>
 
+      <nav aria-label={language === "zh" ? "网站信息" : "Site information"} className="absolute bottom-5 left-5 z-20 hidden items-center gap-3 text-xs text-slate-400 sm:flex">
+        <span>© {new Date().getFullYear()} OpenStudy</span>
+        <Link href={language === "zh" ? "/privacy?lang=zh" : "/privacy"} className="hover:text-white hover:underline">{language === "zh" ? "隐私" : "Privacy"}</Link>
+        <Link href={language === "zh" ? "/terms?lang=zh" : "/terms"} className="hover:text-white hover:underline">{language === "zh" ? "使用说明" : "Terms"}</Link>
+        <Link href={language === "zh" ? "/feedback?lang=zh" : "/feedback"} className="hover:text-white hover:underline">{language === "zh" ? "反馈" : "Feedback"}</Link>
+      </nav>
+
       <section className="home-cosmos-content pointer-events-none relative z-10 w-full max-w-3xl px-5 py-8 text-center sm:px-10 sm:py-10">
         <p className="text-sm font-semibold uppercase tracking-[0.25em] text-violet-200">
           {copy.eyebrow}

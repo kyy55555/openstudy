@@ -7,10 +7,9 @@ export default function SiteFooter() {
   const language = useSearchParams().get("lang") === "zh" ? "zh" : "en";
   const suffix = language === "zh" ? "?lang=zh" : "";
   const isHome = usePathname() === "/";
-  const footerClass = isHome
-    ? "border-t border-white/10 bg-[#02040d] px-6 pb-24 pt-8 text-sm text-slate-400 sm:py-8"
-    : "border-t border-gray-200 bg-white px-6 pb-24 pt-8 text-sm text-gray-500 sm:py-8";
-  const linkClass = isHome ? "hover:text-white hover:underline" : "hover:text-black hover:underline";
+  if (isHome) return null;
+  const footerClass = "border-t border-gray-200 bg-white px-6 pb-24 pt-8 text-sm text-gray-500 sm:py-8";
+  const linkClass = "hover:text-black hover:underline";
 
   return <footer className={footerClass}>
     <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4">
