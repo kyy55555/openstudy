@@ -114,9 +114,11 @@ html.dark footer.bg-white { background-color: #0b1220; }
 }
 
 .knowledge-flyer {
-  transform: scale(0.58);
   transform-origin: center;
+  transform-box: fill-box;
+  transform: scale(0.58);
   animation: knowledge-fly 4.8s ease-in-out infinite;
+  will-change: transform;
 }
 
 .knowledge-wander-button {
@@ -148,9 +150,9 @@ html.dark footer.bg-white { background-color: #0b1220; }
 }
 
 @keyframes knowledge-fly {
-  0%, 100% { translate: -5px 9px; rotate: -3deg; }
-  45% { translate: 7px -18px; rotate: 3deg; }
-  72% { translate: 2px -10px; rotate: 0deg; }
+  0%, 100% { transform: translate(-5px, 9px) rotate(-3deg) scale(0.58); }
+  45% { transform: translate(7px, -19px) rotate(3deg) scale(0.6); }
+  72% { transform: translate(2px, -10px) rotate(0deg) scale(0.59); }
 }
 
 @keyframes knowledge-whispers {

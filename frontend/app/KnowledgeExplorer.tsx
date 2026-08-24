@@ -109,8 +109,8 @@ export default function KnowledgeExplorer({ language }: { language: Language }) 
           <path d="M-18 -22 Q0 -31 19 -21 Q31 5 25 39 Q0 52 -25 39 Q-31 5 -18 -22 Z" fill="#071126" stroke="#64748b" strokeWidth="3" />
           <path d="M-16 -15 Q0 -24 16 -15 L20 22 Q0 34 -20 22 Z" fill="#172554" stroke="#818cf8" strokeWidth="3" />
           <path d="M-19 -11 Q-39 4 -47 25 M20 -10 Q40 3 49 22" fill="none" stroke="#0f172a" strokeWidth="11" strokeLinecap="round" />
-          <path d="M-24 36 Q-39 57 -48 79 M23 36 Q39 56 48 78" fill="none" stroke="#070d1d" strokeWidth="13" strokeLinecap="round" />
-          <path d="M-50 78 L-62 84 M50 78 L62 83" stroke="#334155" strokeWidth="10" strokeLinecap="round" />
+          <path d="M-13 38 Q-17 59 -18 80 M13 38 Q17 59 18 80" fill="none" stroke="#070d1d" strokeWidth="13" strokeLinecap="round" />
+          <path d="M-18 80 Q-22 86 -29 87 M18 80 Q22 86 29 87" fill="none" stroke="#334155" strokeWidth="9" strokeLinecap="round" />
           <path d="M-28 -13 Q-47 -22 -66 -17 Q-82 -12 -96 -21" fill="none" stroke="#7c3aed" strokeWidth="7" strokeLinecap="round" />
           <path d="M-88 -20 L-108 -31 M-90 -17 L-113 -12" stroke="#8b5cf6" strokeWidth="4" strokeLinecap="round" />
           <path d="M-12 4 L12 4 M-9 12 L9 12" stroke="#60a5fa" strokeWidth="2" opacity="0.65" />
