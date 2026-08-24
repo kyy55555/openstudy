@@ -49,6 +49,12 @@ html.dark .shadow-sm,
 html.dark .shadow-lg { box-shadow: 0 12px 32px rgb(0 0 0 / 0.28); }
 html.dark .theme-toggle { background-color: #172033; color: #f8fafc; }
 html.dark footer.bg-white { background-color: #0b1220; }
+html.dark .today-primary-action {
+  background-color: #ede9fe;
+  color: #2e1065;
+  border: 1px solid #c4b5fd;
+}
+html.dark .today-primary-action:hover { background-color: #ddd6fe; }
 
 .skip-link {
   position: fixed;
