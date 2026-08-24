@@ -109,11 +109,18 @@ html.dark footer.bg-white { background-color: #0b1220; }
   border-radius: 999px;
   background: transparent;
   pointer-events: auto;
+  z-index: 30;
 }
 
 .knowledge-float { animation: knowledge-float 5s ease-in-out infinite; }
 .knowledge-float-slow { animation-duration: 7s; }
 .knowledge-float-reverse { animation-direction: reverse; animation-duration: 6s; }
+.knowledge-twinkle { animation: knowledge-twinkle 3.4s ease-in-out infinite; }
+
+@keyframes knowledge-twinkle {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 1; }
+}
 
 @keyframes knowledge-float {
   0%, 100% { translate: 0 0; }

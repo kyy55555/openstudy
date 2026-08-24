@@ -59,7 +59,7 @@ function HomeContent() {
         {copy.switchLanguage}
       </button>
 
-      <section className="relative z-10 w-full max-w-3xl rounded-[2rem] border border-white/15 bg-slate-950/45 px-5 py-8 text-center shadow-2xl backdrop-blur-md sm:px-10 sm:py-10">
+      <section className="pointer-events-none relative z-10 w-full max-w-3xl px-5 py-8 text-center sm:px-10 sm:py-10">
         <p className="text-sm font-semibold uppercase tracking-[0.25em] text-violet-200">
           {copy.eyebrow}
         </p>
@@ -75,7 +75,7 @@ function HomeContent() {
           {copy.scope}
         </p>
 
-        <form action="/courses" method="get" className="mx-auto mt-8 flex max-w-2xl flex-col gap-2 sm:flex-row">
+        <form action="/courses" method="get" className="pointer-events-auto mx-auto mt-8 flex max-w-2xl flex-col gap-2 rounded-2xl bg-slate-950/35 p-2 shadow-2xl backdrop-blur-md sm:flex-row">
           {language === "zh" && <input type="hidden" name="lang" value="zh" />}
 
           <label htmlFor="course-search" className="sr-only">
@@ -98,7 +98,7 @@ function HomeContent() {
           </button>
         </form>
 
-        <Link
+        <div className="pointer-events-auto"><Link
           href={language === "zh" ? "/courses?lang=zh" : "/courses"}
           className="mt-5 inline-block text-sm text-slate-300 hover:text-white hover:underline"
         >
@@ -114,7 +114,7 @@ function HomeContent() {
         <span className="mx-3 text-slate-600">·</span>
         <Link href={language === "zh" ? "/today?lang=zh" : "/today"} className="mt-5 inline-block text-sm font-medium text-violet-300 hover:text-white hover:underline">{copy.today}</Link>
         <span className="mx-3 text-slate-600">·</span>
-        <Link href={language === "zh" ? "/dashboard?lang=zh" : "/dashboard"} className="mt-5 inline-block text-sm text-slate-300 hover:text-white hover:underline">{copy.dashboard}</Link>
+        <Link href={language === "zh" ? "/dashboard?lang=zh" : "/dashboard"} className="mt-5 inline-block text-sm text-slate-300 hover:text-white hover:underline">{copy.dashboard}</Link></div>
       </section>
     </main>
   );
