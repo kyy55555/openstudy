@@ -353,7 +353,9 @@ test("Tsinghua combinatorics and algorithms expose their official public sequenc
     assert.equal(byId.get(id)?.hasSolutions, null);
   }
   assert.equal(byId.get("tsinghua-combinatorics")?.year, null);
-  assert.equal(byId.get("tsinghua-algorithm-design")?.year, 2018);
+  assert.equal(byId.get("tsinghua-algorithm-design")?.year, 2026);
+  assert.equal(byId.get("tsinghua-algorithm-design")?.courseUrl, "https://higher.smartedu.cn/course/66a031a9711dc30c34ab77d8");
+  assert.ok(byId.get("tsinghua-algorithm-design")?.resources.some(({ url }) => url.includes("xuetangx.com/courses/course-v1%3ATsinghuaX%2B2018122106X")));
 });
 
 test("audited courses use the latest confirmed public editions", () => {

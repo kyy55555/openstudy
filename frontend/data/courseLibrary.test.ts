@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { cloudAtomicSaveUnavailable, cloudRevisionChanged, cloudSyncRequestIsCurrent, cloudSyncRetryDelay, completionStreak, courseResourceKey, createCourseLibraryBackup, learningPathCoverage, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, parseCourseLibraryBackup, pathCompletion, phaseCoverage, readCourseLibraryStorage, recordStudyTaskCompletion, selectNewestAccountLibrary, selectSessionLibrary, studyPlanProgress, suggestedGentlePlanDays, toggleStudyPlanPause, weeklyStudyActivity, writeCourseLibraryStorage } from "./courseLibrary.ts";
+import { cloudAtomicSaveUnavailable, cloudRevisionChanged, cloudSyncRequestIsCurrent, cloudSyncRetryDelay, completionStreak, courseResourceKey, createCourseLibraryBackup, gentleComebackPlanDays, learningPathCoverage, localDateKey, normalizeStudyPlanDays, parseCourseLibrary, parseCourseLibraryBackup, pathCompletion, phaseCoverage, readCourseLibraryStorage, recordStudyTaskCompletion, selectNewestAccountLibrary, selectSessionLibrary, studyGapDays, studyPlanProgress, suggestedGentlePlanDays, toggleStudyPlanPause, weeklyStudyActivity, writeCourseLibraryStorage } from "./courseLibrary.ts";
 
 test("cloud retries back off and stop until the next user action", () => {
   assert.deepEqual([0, 1, 2, 3, 4, 5].map(cloudSyncRetryDelay), [2_000, 5_000, 15_000, 30_000, 60_000, null]);
@@ -164,6 +164,17 @@ test("weekly activity reports the latest seven local calendar days", () => {
   const activity = weeklyStudyActivity(["2026-08-16", "2026-08-20", "invalid"], new Date(2026, 7, 22));
   assert.deepEqual(activity.map(({ dateKey }) => dateKey), ["2026-08-16", "2026-08-17", "2026-08-18", "2026-08-19", "2026-08-20", "2026-08-21", "2026-08-22"]);
   assert.deepEqual(activity.map(({ completed }) => completed), [true, false, false, false, true, false, false]);
+});
+
+test("returning learners get an optional gentler plan without losing progress", () => {
+  const today = new Date(2026, 7, 26);
+  assert.equal(studyGapDays("2026-08-20", today), 6);
+  assert.equal(studyGapDays("2026-08-26", today), 0);
+  assert.equal(studyGapDays("invalid", today), null);
+  assert.equal(gentleComebackPlanDays(30, 2), null);
+  assert.equal(gentleComebackPlanDays(30, 6), 37);
+  assert.equal(gentleComebackPlanDays(30, 12), 42);
+  assert.equal(gentleComebackPlanDays(3648, 10), 3650);
 });
 
 test("path completion deduplicates repeated electives", () => {

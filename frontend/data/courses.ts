@@ -2014,9 +2014,9 @@ export const courses: Course[] = [
   course({
     id: "tsinghua-algorithm-design", code: "2018122106X", title: "Algorithm Design and Analysis", titleZh: "算法设计与分析", university: "Tsinghua University", subject: "Algorithms", subjectZh: "算法",
     description: "A Tsinghua advanced course covering stable matching, asymptotic analysis, graph traversal, greedy methods, divide and conquer, dynamic programming, network flow, NP-completeness, approximation, local search, and randomized algorithms.", descriptionZh: "清华高阶课程，涵盖稳定匹配、渐近分析、图遍历、贪心方法、分治、动态规划、网络流、NP 完全性、近似算法、局部搜索和随机算法。",
-    searchKeywords: ["2018122106X", "algorithm design", "network flow", "NP completeness", "算法设计与分析", "清华"], level: "Advanced Undergraduate", prerequisites: ["Data structures", "Discrete mathematics"], language: "Chinese", year: 2018, hasVideos: true, hasAssignments: true, hasSolutions: null,
-    courseUrl: "https://v1-www.xuetangx.com/courses/course-v1%3ATsinghuaX%2B2018122106X%2B2018_T2/about", sourceName: "Tsinghua University course on XuetangX", verifiedOn: "2026-08-22",
-    resources: [],
+    searchKeywords: ["2018122106X", "algorithm design", "network flow", "NP completeness", "算法设计与分析", "清华"], level: "Advanced Undergraduate", prerequisites: ["Data structures", "Discrete mathematics"], language: "Chinese", year: 2026, hasVideos: true, hasAssignments: true, hasSolutions: null,
+    courseUrl: "https://higher.smartedu.cn/course/66a031a9711dc30c34ab77d8", sourceName: "National Higher Education Smart Education Platform · Tsinghua University", verifiedOn: "2026-08-26",
+    resources: [{ type: "lectures", title: "Official XuetangX chapter sequence, assignments, and examination access", url: "https://v1-www.xuetangx.com/courses/course-v1%3ATsinghuaX%2B2018122106X%2B2018_T2/about" }],
   }),
   course({
     id: "pku-higher-algebra-1", code: "00132321", title: "Higher Algebra I", titleZh: "高等代数 I", university: "Peking University", subject: "Linear Algebra", subjectZh: "线性代数",

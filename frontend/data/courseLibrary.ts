@@ -119,6 +119,20 @@ export function weeklyStudyActivity(dateKeys: string[], today = new Date()) {
   });
 }
 
+export function studyGapDays(lastCompletionDate: string | undefined, today = new Date()) {
+  if (!lastCompletionDate || !/^\d{4}-\d{2}-\d{2}$/.test(lastCompletionDate)) return null;
+  const last = new Date(`${lastCompletionDate}T00:00:00`);
+  const current = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  if (Number.isNaN(last.getTime())) return null;
+  const gap = Math.floor((current.getTime() - last.getTime()) / 86_400_000);
+  return gap < 0 ? null : gap;
+}
+
+export function gentleComebackPlanDays(currentDays: number, gapDays: number) {
+  if (!Number.isInteger(currentDays) || currentDays < 1 || !Number.isInteger(gapDays) || gapDays < 3) return null;
+  return Math.min(3650, currentDays + Math.max(7, gapDays));
+}
+
 export function suggestedGentlePlanDays(
   currentDays: number,
   createdOn: string | undefined,
