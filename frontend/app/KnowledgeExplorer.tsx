@@ -78,11 +78,40 @@ function LivingStarfield() {
   return <canvas ref={canvasRef} className="knowledge-star-canvas" aria-hidden="true" />;
 }
 
+function DayLandscape({ language }: { language: Language }) {
+  const topics = language === "zh"
+    ? ["数学", "计算机", "物理", "设计", "商业"]
+    : ["Mathematics", "Computing", "Physics", "Design", "Business"];
+
+  return <div className="day-landscape" aria-hidden="true">
+    <div className="day-sun" />
+    <div className="day-cloud day-cloud-one"><i /><i /><i /></div>
+    <div className="day-cloud day-cloud-two"><i /><i /><i /></div>
+    <div className="day-cloud day-cloud-three"><i /><i /><i /></div>
+    <div className="day-horizon day-horizon-far" />
+    <div className="day-horizon day-horizon-near" />
+    <div className="day-meadow">
+      <div className="day-path" />
+      <div className="day-grass day-grass-one" />
+      <div className="day-grass day-grass-two" />
+      <div className="day-grass day-grass-three" />
+      <div className="day-grass day-grass-four" />
+      <div className="day-wildflowers day-wildflowers-one" />
+      <div className="day-wildflowers day-wildflowers-two" />
+    </div>
+    <div className="day-topic-clouds">
+      {topics.map((topic, index) => <span key={topic} className={`day-topic day-topic-${index + 1}`}>{topic}</span>)}
+    </div>
+  </div>;
+}
+
 export default function KnowledgeExplorer({ language }: { language: Language }) {
   return <div className="knowledge-space" aria-label={language === "zh" ? "浩瀚的知识宇宙" : "A vast universe of knowledge"}>
-    <Image className="knowledge-cosmos-art" src="/art/knowledge-cosmos-background-v2.png" fill sizes="100vw" priority alt="" aria-hidden="true" />
-    <LivingStarfield />
-    <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" role="img" aria-hidden="true" className="h-full w-full">
+    <DayLandscape language={language} />
+    <div className="night-knowledge-scene">
+      <Image className="knowledge-cosmos-art" src="/art/knowledge-cosmos-background-v2.png" fill sizes="100vw" priority alt="" aria-hidden="true" />
+      <LivingStarfield />
+      <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" role="img" aria-hidden="true" className="h-full w-full">
       <defs><radialGradient id="cosmos" cx="50%" cy="42%" r="78%"><stop offset="0" stopColor="#312e81" /><stop offset="0.48" stopColor="#111b4f" /><stop offset="1" stopColor="#050816" /></radialGradient><radialGradient id="violet-nebula"><stop offset="0" stopColor="#8b5cf6" stopOpacity="0.45" /><stop offset="1" stopColor="#8b5cf6" stopOpacity="0" /></radialGradient><radialGradient id="orange-nebula"><stop offset="0" stopColor="#f97316" stopOpacity="0.3" /><stop offset="1" stopColor="#f97316" stopOpacity="0" /></radialGradient><linearGradient id="milky-way" x1="0" y1="1" x2="1" y2="0"><stop stopColor="#38bdf8" stopOpacity="0" /><stop offset="0.48" stopColor="#c4b5fd" stopOpacity="0.16" /><stop offset="0.55" stopColor="#f8fafc" stopOpacity="0.2" /><stop offset="1" stopColor="#818cf8" stopOpacity="0" /></linearGradient><filter id="star-glow"><feGaussianBlur stdDeviation="7" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter></defs>
       <rect width="1440" height="900" fill="url(#cosmos)" opacity="0.23" /><g className="knowledge-nebula"><ellipse cx="200" cy="220" rx="370" ry="260" fill="url(#violet-nebula)" opacity="0.45" /><ellipse cx="1250" cy="760" rx="420" ry="300" fill="url(#orange-nebula)" opacity="0.35" /></g><path className="knowledge-milky-way" d="M-180 850 Q450 480 720 420 T1600 -40" fill="none" stroke="url(#milky-way)" strokeWidth="190" opacity="0.45" />
       <g className="knowledge-stars-near">{stars.filter((_,index)=>index%5===0).map((star,index) => <circle className={index % 7 === 0 ? "knowledge-twinkle" : undefined} key={`${star.x}-${star.y}-${index}-near`} cx={star.x*14.4} cy={star.y*9} r={star.radius} fill={index % 11 === 0 ? "#fef3c7" : "#fff"} opacity={star.opacity} style={{animationDelay:`${(index % 10) * -0.34}s`}} />)}</g>
@@ -101,7 +130,7 @@ export default function KnowledgeExplorer({ language }: { language: Language }) 
       <path d="M80 690 C230 610 320 220 470 265 S760 730 980 610 S1190 190 1360 225" fill="none" stroke="#ddd6fe" strokeWidth="3" strokeLinecap="round" strokeDasharray="3 18" opacity="0.35" /><path d="M-40 470 C250 340 390 540 610 380 S1040 190 1490 430" fill="none" stroke="#60a5fa" strokeWidth="2" opacity="0.18" />
       {stops.map((item,index) => <g key={item.en} transform={`translate(${item.x*14.4} ${item.y*9})`} className="knowledge-float" style={{animationDelay:`${index*-1.1}s`}}><circle r={index%2?68:58} fill={item.color} opacity="0.08" filter="url(#star-glow)" /><circle r="22" fill={item.color} opacity="0.22" /><circle r="9" fill={item.color} /><text y={index%2?50:43} textAnchor="middle" fill="#f8fafc" fontSize="18" fontWeight="700" opacity="0.86">{language === "zh"?item.zh:item.en}</text></g>)}
       <g className="knowledge-float knowledge-float-slow" transform="translate(735 145)"><circle r="45" fill="#fef3c7" opacity="0.12" /><path d="M-36 4 C-18 -38 7 39 28 -7 S65 -19 75 11" fill="none" stroke="#fde68a" strokeWidth="5" strokeLinecap="round" /></g><g className="knowledge-float knowledge-float-reverse" transform="translate(300 780)"><path d="M-65 25 L0 -48 L66 25 L0 63 Z" fill="#67e8f9" opacity="0.16" /><path d="M-65 25 L0 -48 L66 25 L0 63 Z M0 -48 V63 M-65 25 H66" fill="none" stroke="#a5f3fc" strokeWidth="3" opacity="0.55" /></g>
-    </svg>
-    <div className="knowledge-selected-lamb" aria-hidden="true"><Image src="/art/knowledge-lamb-selected-v1.png" fill sizes="(max-width: 640px) 128px, 192px" priority alt="" /></div>
+      </svg>
+    </div>
   </div>;
 }
