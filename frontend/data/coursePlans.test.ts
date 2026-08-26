@@ -669,6 +669,17 @@ test("all catalog courses have substantive official-source plans", async()=>{
  const { courses } = await import("./courses.ts"); const definitions=Object.values(structuredCoursePlans);assert.equal(definitions.length,courses.length);assert.ok(definitions.every(({detail,tasks})=>detail==="full"&&tasks.length>=2));
 });
 
+test("MIT product-management courses follow their official sessions and project work", () => {
+  const product = structuredCoursePlans["mit-15-783j"];
+  assert.equal(product.tasks.filter(({ kind }) => kind === "session").length, 23);
+  assert.equal(product.tasks.filter(({ kind }) => kind === "assignment").length, 7);
+  assert.equal(product.tasks.filter(({ kind }) => kind === "project").length, 3);
+  const venture = structuredCoursePlans["mit-15-390"];
+  assert.equal(venture.tasks.filter(({ kind }) => kind === "session").length, 24);
+  assert.equal(venture.tasks.filter(({ kind }) => kind === "assignment").length, 11);
+  assert.equal(venture.tasks.filter(({ kind }) => kind === "project").length, 1);
+});
+
 test("MIT economics plans follow every official lecture and assessment", () => {
   const micro = structuredCoursePlans["mit-14-01"];
   assert.equal(micro.tasks.filter(({ kind }) => kind === "session").length, 26);

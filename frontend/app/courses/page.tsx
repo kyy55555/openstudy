@@ -31,7 +31,7 @@ type Language = "en" | "zh";
 
 const translations = {
   en: {
-    subtitle: "Explore verified computer science courses and related mathematics and natural-science foundations. More fields are coming after Beta.",
+    subtitle: "Explore verified university courses with direct links to lectures, assignments, projects, and exams. More fields are continuously joining OpenStudy.",
     switchLanguage: "中文",
     searchPlaceholder: "Search algorithms, machine learning, 算法...",
     search: "Search",
@@ -93,7 +93,7 @@ const translations = {
     showMore: (remaining: number) => `Show more courses (${remaining} remaining)`,
   },
   zh: {
-    subtitle: "探索已核实的计算机科学课程，以及相关数学与自然科学基础课程；Beta 后将持续扩展更多专业。",
+    subtitle: "探索已核实的大学公开课，直接进入讲义、作业、项目与考试；更多专业正在持续加入 OpenStudy。",
     switchLanguage: "English",
     searchPlaceholder: "搜索算法、机器学习、Python……",
     search: "搜索",

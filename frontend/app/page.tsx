@@ -5,11 +5,12 @@ import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { courses } from "../data/courses";
 import KnowledgeExplorer from "./KnowledgeExplorer";
+import ThemeToggle from "./ThemeToggle";
 
 const homeCopy = {
   en: {
     eyebrow: "OpenStudy Beta · Verified university courses",
-    scope: "Current Beta focus: computer science, mathematics, physics, and chemistry foundations. More fields will be added without interrupting the site.",
+    scope: "Explore verified university courses through direct materials and flexible self-study plans. More fields are continuously joining OpenStudy.",
     searchLabel: "Search courses",
     placeholder: "Algorithms, machine learning, Python, 算法...",
     search: "Search",
@@ -22,7 +23,7 @@ const homeCopy = {
   },
   zh: {
     eyebrow: "OpenStudy Beta · 已核实的大学公开课",
-    scope: "当前 Beta 重点：计算机科学、数学、物理与化学基础。更多专业将持续加入，网站无需停机。",
+    scope: "通过整理好的官方资料与弹性计划，自由探索大学公开课。更多专业正在持续加入 OpenStudy。",
     searchLabel: "搜索课程",
     placeholder: "算法、机器学习、Python……",
     search: "搜索",
@@ -42,9 +43,11 @@ function HomeContent() {
   const copy = homeCopy[language];
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#050816] px-4 py-20 sm:px-6 sm:py-16">
+    <main className="home-universe relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-20 sm:px-6 sm:py-16">
       <KnowledgeExplorer language={language} />
-      <button
+      <div className="absolute right-4 top-4 z-20 flex items-center gap-2 sm:right-6 sm:top-6">
+        <ThemeToggle language={language} />
+        <button
         type="button"
         onClick={() => {
           const nextLanguage = language === "en" ? "zh" : "en";
@@ -52,12 +55,13 @@ function HomeContent() {
           router.replace(nextLanguage === "zh" ? "/?lang=zh" : "/");
         }}
         aria-label={copy.switchLabel}
-        className="absolute right-4 top-4 z-20 rounded-full border border-white/25 bg-slate-950/35 px-4 py-2 text-sm font-medium text-white backdrop-blur hover:bg-white/10 sm:right-6 sm:top-6"
+        className="home-top-control rounded-full border px-4 py-2 text-sm font-medium backdrop-blur"
       >
         {copy.switchLanguage}
-      </button>
+        </button>
+      </div>
 
-      <nav aria-label={language === "zh" ? "网站信息" : "Site information"} className="absolute bottom-5 left-5 z-20 hidden items-center gap-3 text-xs text-slate-400 sm:flex">
+      <nav aria-label={language === "zh" ? "网站信息" : "Site information"} className="home-footer absolute bottom-5 left-5 z-20 hidden items-center gap-3 text-xs sm:flex">
         <span>© {new Date().getFullYear()} OpenStudy</span>
         <Link href={language === "zh" ? "/privacy?lang=zh" : "/privacy"} className="hover:text-white hover:underline">{language === "zh" ? "隐私" : "Privacy"}</Link>
         <Link href={language === "zh" ? "/terms?lang=zh" : "/terms"} className="hover:text-white hover:underline">{language === "zh" ? "使用说明" : "Terms"}</Link>
@@ -65,19 +69,19 @@ function HomeContent() {
       </nav>
 
       <section className="home-cosmos-content pointer-events-none relative z-10 w-full max-w-3xl px-5 py-8 text-center sm:px-10 sm:py-10">
-        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-violet-200">
+        <p className="home-eyebrow text-sm font-semibold uppercase tracking-[0.25em]">
           {copy.eyebrow}
         </p>
 
-        <h1 className="mt-4 text-6xl font-bold tracking-[-0.04em] text-white sm:text-7xl">
+        <h1 className="home-title mt-4 text-6xl font-bold tracking-[-0.04em] sm:text-7xl">
           OpenStudy
         </h1>
 
-        <p className="mx-auto mt-5 max-w-xl rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm leading-6 text-slate-200">
+        <p className="home-scope mx-auto mt-5 max-w-xl rounded-2xl border px-4 py-3 text-sm leading-6 backdrop-blur-sm">
           {copy.scope}
         </p>
 
-        <form action="/courses" method="get" className="pointer-events-auto mx-auto mt-8 flex max-w-2xl flex-col gap-2 rounded-2xl bg-slate-950/35 p-2 shadow-2xl backdrop-blur-md sm:flex-row">
+        <form action="/courses" method="get" className="home-search-shell pointer-events-auto mx-auto mt-8 flex max-w-2xl flex-col gap-2 rounded-2xl p-2 shadow-2xl backdrop-blur-md sm:flex-row">
           {language === "zh" && <input type="hidden" name="lang" value="zh" />}
 
           <label htmlFor="course-search" className="sr-only">
@@ -89,12 +93,12 @@ function HomeContent() {
             type="search"
             placeholder={copy.placeholder}
             autoFocus
-            className="min-w-0 flex-1 rounded-xl border border-gray-300 px-5 py-4 text-base shadow-sm outline-none focus:border-gray-700"
+            className="home-search-input min-w-0 flex-1 rounded-xl border px-5 py-4 text-base shadow-sm outline-none"
           />
 
           <button
             type="submit"
-            className="rounded-xl bg-black px-6 py-4 font-medium text-white hover:bg-gray-800 sm:w-auto"
+            className="home-search-button rounded-xl px-6 py-4 font-medium sm:w-auto"
           >
             {copy.search}
           </button>
@@ -102,21 +106,21 @@ function HomeContent() {
 
         <div className="pointer-events-auto"><Link
           href={language === "zh" ? "/courses?lang=zh" : "/courses"}
-          className="mt-5 inline-block text-sm text-slate-300 hover:text-white hover:underline"
+          className="home-nav-link mt-5 inline-block text-sm hover:underline"
         >
           {copy.browse}
         </Link>
-        <span className="mx-3 text-slate-600">·</span>
+        <span className="home-nav-separator mx-3">·</span>
         <Link
           href={language === "zh" ? "/paths?lang=zh" : "/paths"}
-          className="mt-5 inline-block text-sm text-slate-300 hover:text-white hover:underline"
+          className="home-nav-link mt-5 inline-block text-sm hover:underline"
         >
           {copy.paths}
         </Link>
-        <span className="mx-3 text-slate-600">·</span>
-        <Link href={language === "zh" ? "/today?lang=zh" : "/today"} className="mt-5 inline-block text-sm font-medium text-violet-300 hover:text-white hover:underline">{copy.today}</Link>
-        <span className="mx-3 text-slate-600">·</span>
-        <Link href={language === "zh" ? "/dashboard?lang=zh" : "/dashboard"} className="mt-5 inline-block text-sm text-slate-300 hover:text-white hover:underline">{copy.dashboard}</Link></div>
+        <span className="home-nav-separator mx-3">·</span>
+        <Link href={language === "zh" ? "/today?lang=zh" : "/today"} className="home-nav-link home-nav-link-accent mt-5 inline-block text-sm font-medium hover:underline">{copy.today}</Link>
+        <span className="home-nav-separator mx-3">·</span>
+        <Link href={language === "zh" ? "/dashboard?lang=zh" : "/dashboard"} className="home-nav-link mt-5 inline-block text-sm hover:underline">{copy.dashboard}</Link></div>
       </section>
     </main>
   );

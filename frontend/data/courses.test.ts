@@ -217,6 +217,13 @@ test("the catalog includes verified non-STEM economics foundations", () => {
   }
 });
 
+test("the catalog includes verified product-management foundations", () => {
+  const productCourses = courses.filter(({ subject }) => subject === "Product Management");
+  assert.deepEqual(productCourses.map(({ id }) => id), ["mit-15-783j", "mit-15-390"]);
+  assert.ok(productCourses.every(({ resources }) => resources.some(({ type }) => type === "assignments" || type === "projects")));
+  assert.ok(productCourses.every(({ verifiedOn }) => verifiedOn === "2026-08-26"));
+});
+
 test("the catalog expands biology, chemistry, and physics beyond survey courses", () => {
   for (const id of ["mit-7-03", "mit-5-12", "mit-8-03sc"]) {
     const item = courses.find((course) => course.id === id);

@@ -104,6 +104,9 @@ test("search supports English, Chinese, and keywords", () => {
   assert.ok(filterCourses(courses, { ...defaults, searchTerm: "算法" }).length > 0);
   assert.ok(filterCourses(courses, { ...defaults, searchTerm: "Django" }).length > 0);
   assert.deepEqual(filterCourses(courses, { ...defaults, searchTerm: "CS50P" }).map(({ id }) => id), ["harvard-cs50-python"]);
+  for (const searchTerm of ["PM", "product management", "product manager", "产品管理", "产品经理"]) {
+    assert.ok(filterCourses(courses, { ...defaults, searchTerm }).some(({ subject }) => subject === "Product Management"), `${searchTerm} should find product-management courses`);
+  }
 });
 
 test("search results prioritize exact course codes and titles", () => {
