@@ -5,7 +5,6 @@ import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { courses } from "../data/courses";
 import KnowledgeExplorer from "./KnowledgeExplorer";
-import ThemeToggle from "./ThemeToggle";
 
 const homeCopy = {
   en: {
@@ -46,7 +45,6 @@ function HomeContent() {
     <main className="home-universe relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-20 sm:px-6 sm:py-16">
       <KnowledgeExplorer language={language} />
       <div className="absolute right-4 top-4 z-20 flex items-center gap-2 sm:right-6 sm:top-6">
-        <ThemeToggle language={language} />
         <button
         type="button"
         onClick={() => {
