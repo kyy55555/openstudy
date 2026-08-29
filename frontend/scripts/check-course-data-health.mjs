@@ -16,10 +16,20 @@ function add(target, id, issue) {
   target.push({ id, issue });
 }
 
+function isGenericListingUrl(urlValue) {
+  const url = new URL(urlValue);
+  return url.hostname === "coursecatalog.web.cmu.edu"
+    || (url.hostname === "undergraduate.catalog.berkeley.edu" && url.pathname.startsWith("/courses/"))
+    || url.pathname.includes("/academics/area-of-study/")
+    || url.pathname.includes("/undergraduate-program/program-study")
+    || ["https://db.cs.cmu.edu/courses/", "https://graphics.cs.cmu.edu/courses/"].includes(url.href);
+}
+
 for (const course of courses) {
   if (!course.title.trim() || !course.titleZh?.trim()) add(critical, course.id, "missing bilingual title");
   if (!course.description.trim() || !course.descriptionZh?.trim()) add(critical, course.id, "missing bilingual description");
   if (course.courseUrl !== course.sourceUrl) add(critical, course.id, "course and provenance URLs differ");
+  if (isGenericListingUrl(course.courseUrl)) add(critical, course.id, "main course URL is only a catalog, department, or course-listing page");
   if (!course.sourceName.trim()) add(critical, course.id, "missing source name");
   const verifiedAge = ageInDays(course.verifiedOn);
   if (verifiedAge === null || verifiedAge < 0) add(critical, course.id, "invalid or future verification date");
@@ -38,6 +48,7 @@ for (const course of courses) {
   if (!plan) add(critical, course.id, "missing study plan");
   else {
     if (plan.tasks.length < 2) add(critical, course.id, "study plan has fewer than two substantive tasks");
+    if (isGenericListingUrl(plan.sourceUrl)) add(critical, course.id, "study plan source is only a catalog, department, or course-listing page");
     for (const task of plan.tasks) {
       if (!task.title.trim() || !task.titleZh.trim()) add(critical, course.id, `plan task ${task.id} lacks a bilingual title`);
       try {
@@ -45,6 +56,7 @@ for (const course of courses) {
       } catch {
         add(critical, course.id, `plan task ${task.id} has an invalid URL`);
       }
+      if (isGenericListingUrl(task.url)) add(critical, course.id, `plan task ${task.id} points only to a catalog, department, or course-listing page`);
     }
   }
 }

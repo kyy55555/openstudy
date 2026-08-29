@@ -526,21 +526,32 @@ test("Cornell CS 1110 includes the official curriculum, labs, projects, and exam
   assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 3);
 });
 
-test("Princeton foundation courses expose complete official topic-and-practice plans", () => {
-  for (const courseId of ["princeton-mat103", "princeton-mat201", "princeton-mat202", "princeton-phy103", "princeton-phy104", "princeton-chm201"]) {
+test("Princeton foundation courses with public materials expose official topic-and-practice plans", () => {
+  for (const courseId of ["princeton-mat103", "princeton-mat201", "princeton-mat202"]) {
     const definition = structuredCoursePlans[courseId];
     assert.equal(definition.detail, "full");
     assert.equal(definition.tasks.filter(({ id }) => id.startsWith("topic-")).length, 12);
     assert.equal(definition.tasks.filter(({ id }) => id.startsWith("practice-")).length, 12);
   }
+  for (const courseId of ["princeton-phy103", "princeton-phy104", "princeton-chm201"]) assert.equal(structuredCoursePlans[courseId], undefined);
 });
 
-test("Berkeley calculus courses turn every official topic unit into study and practice", () => {
-  for (const courseId of ["berkeley-math1a", "berkeley-math1b"]) {
-    assert.equal(structuredCoursePlans[courseId].detail, "full");
-    assert.equal(structuredCoursePlans[courseId].tasks.length, 24);
-    assert.equal(structuredCoursePlans[courseId].tasks.filter(({ kind }) => kind === "assignment").length, 12);
-  }
+test("CMU database and graphics plans use direct official content instead of course-listing pages", () => {
+  const databases = structuredCoursePlans["cmu-15-445"];
+  assert.equal(databases.tasks.filter(({ resourceType }) => resourceType === "lectures").length, 25);
+  assert.equal(databases.tasks.filter(({ kind }) => kind === "assignment").length, 6);
+  assert.equal(databases.tasks.filter(({ kind }) => kind === "project").length, 5);
+  assert.ok(databases.tasks.every(({ url }) => !url.includes("db.cs.cmu.edu/courses")));
+
+  const graphics = structuredCoursePlans["cmu-15-362"];
+  assert.equal(graphics.tasks.filter(({ resourceType }) => resourceType === "lectures").length, 23);
+  assert.equal(graphics.tasks.filter(({ kind }) => kind === "assignment").length, 9);
+  assert.ok(graphics.tasks.every(({ url }) => !url.includes("graphics.cs.cmu.edu/courses")));
+});
+
+test("Berkeley catalog-only calculus records do not masquerade as public self-study plans", () => {
+  assert.equal(structuredCoursePlans["berkeley-math1a"], undefined);
+  assert.equal(structuredCoursePlans["berkeley-math1b"], undefined);
 });
 
 test("Berkeley CS 61A and CS 70 follow their current official calendars", () => {

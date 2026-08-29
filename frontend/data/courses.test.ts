@@ -98,6 +98,9 @@ const officialHosts = new Set([
   "coursecatalog.web.cmu.edu",
   "db.cs.cmu.edu",
   "15445.courses.cs.cmu.edu",
+  "15362.courses.cs.cmu.edu",
+  "www.youtube.com",
+  "github.com",
   "graphics.cs.cmu.edu",
 ]);
 
@@ -233,11 +236,12 @@ test("the catalog expands biology, chemistry, and physics beyond survey courses"
   }
 });
 
-test("Princeton BSE foundations use verified Princeton courses", () => {
+test("Princeton BSE foundations keep public Princeton courses and use honest open substitutes", () => {
   const ids = new Set(courses.map(({ id }) => id));
-  for (const id of ["princeton-mat103", "princeton-mat104", "princeton-mat201", "princeton-mat202", "princeton-phy103", "princeton-phy104", "princeton-chm201"]) {
+  for (const id of ["princeton-mat103", "princeton-mat104", "princeton-mat201", "princeton-mat202", "mit-8-01sc", "mit-8-02", "mit-5-111sc"]) {
     assert.ok(ids.has(id), `${id} is missing`);
   }
+  for (const id of ["princeton-phy103", "princeton-phy104", "princeton-chm201"]) assert.ok(!ids.has(id), `${id} should not masquerade as a public self-study course`);
 });
 
 test("CMU's six official CS core courses are present", () => {
@@ -249,9 +253,10 @@ test("CMU's six official CS core courses are present", () => {
 
 test("CMU's required mathematics sequence is present", () => {
   const ids = new Set(courses.map(({ id }) => id));
-  for (const id of ["cmu-15-151", "cmu-21-120", "cmu-21-122", "cmu-21-241", "cmu-21-266", "cmu-15-259"]) {
+  for (const id of ["cmu-15-151", "cmu-21-120", "cmu-21-122", "cmu-21-241", "cmu-15-259", "mit-18-02sc"]) {
     assert.ok(ids.has(id), `${id} is missing`);
   }
+  assert.ok(!ids.has("cmu-21-266"), "CMU 21-266 publishes no complete self-study materials and should use an open substitute");
 });
 
 test("CMU advanced elective categories have native public courses", () => {
@@ -376,8 +381,6 @@ test("audited courses use the latest confirmed public editions", () => {
     ["cornell-cs3410", 2026, "https://www.cs.cornell.edu/courses/cs3410/2026sp/"],
     ["cornell-cs3780", 2026, "https://www.cs.cornell.edu/courses/cs3780/2026sp/"],
     ["uiuc-cs225", 2026, "https://courses.grainger.illinois.edu/cs225/sp2026/"],
-    ["berkeley-math1a", null, "https://undergraduate.catalog.berkeley.edu/courses/1144962"],
-    ["berkeley-math1b", null, "https://undergraduate.catalog.berkeley.edu/courses/1145002"],
     ["cmu-15-418", 2026, "https://www.cs.cmu.edu/afs/cs/academic/class/15418-s26/www/"],
   ] as const) {
     assert.equal(byId.get(id)?.year, expectedYear, `${id} public edition regressed`);
