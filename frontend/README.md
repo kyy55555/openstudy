@@ -56,6 +56,7 @@ After applying `supabase/schema.sql`, use Supabase Table Editor to inspect:
 
 - `product_daily_summary`: daily event, visitor, and session counts.
 - `product_retention`: exact day-1, day-7, day-14, and day-30 returning visitors by first-seen cohort.
+- `product_funnel_30d`: unique visitors and conversion rates from search through course, resource, plan, and task completion during the latest 30 days.
 - `product_events`: bounded raw events for course/search/funnel analysis. This table is owner-only; the public client can insert but cannot read it.
 
 Useful SQL Editor query for the latest 30-day funnel:

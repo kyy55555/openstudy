@@ -181,6 +181,70 @@ create index if not exists product_events_anonymous_created_at_idx on public.pro
 create index if not exists product_events_user_created_at_idx on public.product_events (user_id, created_at) where user_id is not null;
 create index if not exists product_events_course_created_at_idx on public.product_events (course_id, created_at desc) where course_id is not null;
 
+-- Public aggregate counts include guest and account saves. Only the latest
+-- favorite action for each first-party visitor/course pair counts; identities
+-- are never returned to the client. Account-library rows preserve favorites
+-- created before first-party event tracking was introduced.
+create or replace function public.get_course_favorite_counts()
+returns table (
+  course_id text,
+  favorite_count bigint
+)
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  with anonymous_accounts as (
+    select anonymous_id, max(user_id::text) as user_key
+    from public.product_events
+    where user_id is not null
+    group by anonymous_id
+  ), favorite_events as (
+    select
+      coalesce(event.user_id::text, anonymous_accounts.user_key, event.anonymous_id::text) as identity_key,
+      event.course_id,
+      event.event_name,
+      event.created_at,
+      event.id
+    from public.product_events as event
+    left join anonymous_accounts using (anonymous_id)
+    where event.event_name in ('favorite_added', 'favorite_removed')
+      and event.course_id is not null
+  ), latest_favorite_events as (
+    select distinct on (identity_key, course_id)
+      identity_key,
+      course_id,
+      event_name
+    from favorite_events
+    order by identity_key, course_id, created_at desc, id desc
+  ), event_favorites as (
+    select identity_key, course_id
+    from latest_favorite_events
+    where event_name = 'favorite_added'
+  ), account_favorites as (
+    select course_libraries.user_id::text as identity_key, favorite.course_id
+    from public.course_libraries
+    cross join lateral jsonb_array_elements_text(
+      case
+        when jsonb_typeof(course_libraries.library -> 'favorites') = 'array'
+          then course_libraries.library -> 'favorites'
+        else '[]'::jsonb
+      end
+    ) as favorite(course_id)
+  ), all_favorites as (
+    select identity_key, course_id from event_favorites
+    union
+    select identity_key, course_id from account_favorites
+  )
+  select all_favorites.course_id, count(distinct identity_key)::bigint
+  from all_favorites
+  group by all_favorites.course_id;
+$$;
+
+revoke all on function public.get_course_favorite_counts() from public;
+grant execute on function public.get_course_favorite_counts() to anon, authenticated;
+
 -- Open these owner-only views in Supabase Table Editor to inspect daily usage and
 -- exact-day retention. No grants are given to website visitors.
 create or replace view public.product_daily_summary
@@ -216,5 +280,36 @@ select
 from cohorts
 group by cohorts.cohort_date;
 
+-- A visitor-level 30-day funnel for the current Beta journey. Each stage counts
+-- distinct first-party visitor IDs, so repeated clicks never inflate conversion.
+create or replace view public.product_funnel_30d
+with (security_invoker = true)
+as
+with recent as (
+  select anonymous_id, event_name
+  from public.product_events
+  where created_at >= now() - interval '30 days'
+), totals as (
+  select
+    count(distinct anonymous_id)::bigint as active_visitors,
+    count(distinct anonymous_id) filter (where event_name = 'course_search')::bigint as searched,
+    count(distinct anonymous_id) filter (where event_name = 'course_opened')::bigint as opened_course,
+    count(distinct anonymous_id) filter (where event_name = 'resource_opened')::bigint as opened_resource,
+    count(distinct anonymous_id) filter (where event_name = 'favorite_added')::bigint as saved_course,
+    count(distinct anonymous_id) filter (where event_name = 'study_plan_created')::bigint as created_plan,
+    count(distinct anonymous_id) filter (where event_name = 'study_task_completed')::bigint as completed_task,
+    count(distinct anonymous_id) filter (where event_name = 'signup_completed')::bigint as signed_up
+  from recent
+)
+select
+  *,
+  round(100.0 * searched / nullif(active_visitors, 0), 1) as search_rate,
+  round(100.0 * opened_course / nullif(searched, 0), 1) as search_to_course_rate,
+  round(100.0 * opened_resource / nullif(opened_course, 0), 1) as course_to_resource_rate,
+  round(100.0 * created_plan / nullif(opened_course, 0), 1) as course_to_plan_rate,
+  round(100.0 * completed_task / nullif(created_plan, 0), 1) as plan_to_task_rate
+from totals;
+
 revoke all on table public.product_daily_summary from anon, authenticated;
 revoke all on table public.product_retention from anon, authenticated;
+revoke all on table public.product_funnel_30d from anon, authenticated;

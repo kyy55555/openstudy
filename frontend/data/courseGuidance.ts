@@ -7,6 +7,8 @@ type GoalDefinition = {
   courseIds: readonly string[];
 };
 
+export type CourseGoalOption = Pick<GoalDefinition, "topic" | "topicZh">;
+
 const goalDefinitions: readonly GoalDefinition[] = [
   {
     topic: "Distributed Systems",
@@ -45,6 +47,8 @@ const goalDefinitions: readonly GoalDefinition[] = [
     courseIds: ["harvard-cs50-sql", "berkeley-cs186", "mit-6-830", "harvard-cs1650"],
   },
 ];
+
+export const courseGoalOptions: readonly CourseGoalOption[] = goalDefinitions.map(({ topic, topicZh }) => ({ topic, topicZh }));
 
 function matchingGoal(input: string) {
   const normalized = input.trim().toLowerCase();

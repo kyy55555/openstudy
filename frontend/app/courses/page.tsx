@@ -22,7 +22,6 @@ import {
 } from "../../data/courseFilters";
 import type { CourseSort } from "../../data/courseFilters";
 import { structuredCoursePlans } from "../../data/coursePlans";
-import { courseGoalSequence } from "../../data/courseGuidance";
 import { useCourseLibrary } from "../useCourseLibrary";
 import { useCourseFavoriteCounts } from "../useCourseFavoriteCounts";
 import { trackProductEvent } from "../../lib/productAnalytics";
@@ -178,11 +177,10 @@ const translations = {
 
 type Copy = (typeof translations)[Language];
 
-function coursesPath(searchTerm: string, language: Language, goalTerm = "") {
+function coursesPath(searchTerm: string, language: Language) {
   const params = new URLSearchParams();
   if (searchTerm) params.set("q", searchTerm);
   if (language === "zh") params.set("lang", "zh");
-  if (goalTerm) params.set("goal", goalTerm);
   const query = params.toString();
   return query ? `/courses?${query}` : "/courses";
 }
@@ -234,6 +232,9 @@ function Title({
       </div>
 
       <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:shrink-0 sm:flex-nowrap">
+        <Link href={language === "zh" ? "/goals?lang=zh" : "/goals"} className="rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-medium backdrop-blur hover:bg-white/20">
+          {language === "zh" ? "我想学什么" : "What to learn"}
+        </Link>
         <Link href={language === "zh" ? "/compare?lang=zh" : "/compare"} className="rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-medium backdrop-blur hover:bg-white/20">
           {language === "zh" ? `收藏比较${savedCount ? ` (${savedCount})` : ""}` : `Compare${savedCount ? ` (${savedCount})` : ""}`}
         </Link>
@@ -349,42 +350,6 @@ function SearchBox({
         {copy.search}
       </button>
     </form>
-  );
-}
-
-type GoalSearchProps = {
-  language: Language;
-  value: string;
-  onChange: (value: string) => void;
-  onSubmit: () => void;
-  copy: Copy;
-};
-
-function GoalSearch({ language, value, onChange, onSubmit, copy }: GoalSearchProps) {
-  const examples = language === "zh"
-    ? ["分布式系统", "机器学习", "算法", "操作系统", "网站开发", "数据库"]
-    : ["Distributed Systems", "Machine Learning", "Algorithms", "Operating Systems", "Web Development", "Databases"];
-  return (
-    <section className="mt-5 rounded-2xl border border-blue-200 bg-blue-50/70 p-4 sm:p-5">
-      <div className="sm:flex sm:items-end sm:justify-between sm:gap-6">
-        <div className="max-w-2xl">
-          <h2 className="font-bold text-blue-950">{copy.goalSearchTitle}</h2>
-          <p className="mt-1 text-sm leading-6 text-blue-900/75">{copy.goalSearchIntro}</p>
-        </div>
-        <form onSubmit={(event) => { event.preventDefault(); onSubmit(); }} className="mt-4 flex min-w-0 flex-1 gap-2 sm:mt-0 sm:max-w-xl">
-          <input
-            type="search"
-            list="course-goal-examples"
-            value={value}
-            onChange={(event) => onChange(event.target.value)}
-            placeholder={copy.goalSearchPlaceholder}
-            className="min-w-0 flex-1 rounded-xl border border-blue-200 bg-white px-4 py-3 outline-none focus:border-blue-500"
-          />
-          <datalist id="course-goal-examples">{examples.map((example) => <option key={example} value={example} />)}</datalist>
-          <button type="submit" className="shrink-0 rounded-xl bg-blue-700 px-4 py-3 text-sm font-bold text-white hover:bg-blue-800">{copy.findGoalPath}</button>
-        </form>
-      </div>
-    </section>
   );
 }
 
@@ -632,13 +597,10 @@ function CourseExplorer() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialSearch = searchParams.get("q")?.trim() ?? "";
-  const initialGoal = searchParams.get("goal")?.trim() ?? "";
   const initialLanguage: Language = searchParams.get("lang") === "zh" ? "zh" : "en";
   const [language, setLanguage] = useState<Language>(initialLanguage);
   const [searchInput, setSearchInput] = useState(initialSearch);
   const [searchTerm, setSearchTerm] = useState(initialSearch);
-  const [goalInput, setGoalInput] = useState(initialGoal);
-  const [goalTerm, setGoalTerm] = useState(initialGoal);
 
   const [universityFilter, setUniversityFilter] =
     useState("All");
@@ -668,26 +630,24 @@ function CourseExplorer() {
     if (nextSearch === searchTerm) return;
     const timer = window.setTimeout(() => {
       setSearchTerm(nextSearch);
-      router.replace(coursesPath(nextSearch, language, goalTerm), { scroll: false });
+      router.replace(coursesPath(nextSearch, language), { scroll: false });
       setVisibleCount(coursesPerPage);
     }, 160);
     return () => window.clearTimeout(timer);
-  }, [goalTerm, language, router, searchInput, searchTerm]);
+  }, [language, router, searchInput, searchTerm]);
 
   function handleSearch(suggestedValue?: string) {
     const nextSearch = (suggestedValue ?? searchInput).trim();
     if (nextSearch === searchTerm) return;
     setSearchInput(nextSearch);
     setSearchTerm(nextSearch);
-    router.replace(coursesPath(nextSearch, language, goalTerm), { scroll: false });
+    router.replace(coursesPath(nextSearch, language), { scroll: false });
     setVisibleCount(coursesPerPage);
   }
 
   function handleResetFilters() {
     setSearchInput("");
     setSearchTerm("");
-    setGoalInput("");
-    setGoalTerm("");
     setUniversityFilter("All");
     setSubjectFilter("All");
     setOnlyVideos(false);
@@ -730,7 +690,6 @@ function CourseExplorer() {
     ? filterCourses(courses, { searchTerm, university: "All", subject: "All", onlyVideos: false, onlyAssignments: false, onlySolutions: false }).length
     : 0;
   const requestCoursePath = `/feedback?${new URLSearchParams({ ...(language === "zh" ? { lang: "zh" } : {}), type: "missing-course", ...(searchTerm ? { request: searchTerm } : {}) }).toString()}`;
-  const goalSequence = courseGoalSequence(courses, goalTerm);
 
   useEffect(() => {
     if (!searchTerm) return;
@@ -743,13 +702,6 @@ function CourseExplorer() {
     return () => window.clearTimeout(timer);
   }, [filteredCourses.length, language, searchTerm]);
 
-  function handleGoalSearch() {
-    const nextGoal = goalInput.trim();
-    setGoalTerm(nextGoal);
-    router.replace(coursesPath(searchTerm, language, nextGoal), { scroll: false });
-    if (nextGoal) trackProductEvent({ eventName: "goal_route_requested", searchQuery: nextGoal, numericValue: courseGoalSequence(courses, nextGoal)?.courses.length ?? 0, language });
-  }
-
   return (
     <main className="mx-auto min-h-screen w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
       <Title
@@ -759,7 +711,7 @@ function CourseExplorer() {
         onToggleLanguage={() => {
           const nextLanguage = language === "en" ? "zh" : "en";
           setLanguage(nextLanguage);
-          router.replace(coursesPath(searchTerm, nextLanguage, goalTerm));
+          router.replace(coursesPath(searchTerm, nextLanguage));
         }}
         switchLanguageLabel={copy.switchLanguage}
         savedCount={library.favorites.length}
@@ -772,32 +724,6 @@ function CourseExplorer() {
         suggestions={suggestions}
         copy={copy}
       />
-
-      <GoalSearch language={language} value={goalInput} onChange={setGoalInput} onSubmit={handleGoalSearch} copy={copy} />
-
-      {goalSequence && (
-        <section className="mt-5 overflow-hidden rounded-2xl border border-violet-200 bg-gradient-to-br from-violet-50 via-white to-blue-50 p-5 shadow-sm sm:p-6">
-          <div className="max-w-3xl">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-violet-700">{language === "zh" ? "目标学习路线" : "Goal-based guide"}</p>
-            <h2 className="mt-2 text-xl font-bold text-gray-950">{copy.goalTitle(language === "zh" ? goalSequence.topicZh : goalSequence.topic)}</h2>
-            <p className="mt-2 text-sm leading-6 text-gray-700">{copy.goalDescription}</p>
-          </div>
-          <ol className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-            {goalSequence.courses.map((course, index) => (
-              <li key={course.id} className="relative rounded-xl border border-violet-100 bg-white p-4 shadow-sm">
-                <p className="text-xs font-bold uppercase tracking-wide text-violet-700">{copy.goalStep(index, goalSequence.courses.length)}</p>
-                <Link href={courseDetailPath(course, language)} className="mt-2 block font-bold leading-5 text-gray-950 hover:text-violet-700">
-                  <span className="text-violet-700">{courseCode(course)}</span>{" "}
-                  {language === "zh" ? (course.titleZh ?? course.title) : course.title}
-                </Link>
-                <p className="mt-2 text-xs leading-5 text-gray-500">{course.university}</p>
-              </li>
-            ))}
-          </ol>
-          <p className="mt-4 text-xs leading-5 text-gray-500">{copy.goalDisclaimer}</p>
-        </section>
-      )}
-      {goalTerm && !goalSequence && <p className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">{copy.noGoalPath}</p>}
 
       <FilterBar
         language={language}

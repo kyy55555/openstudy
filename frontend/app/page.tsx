@@ -14,6 +14,7 @@ const homeCopy = {
     placeholder: "Algorithms, machine learning, Python, 算法...",
     search: "Search",
     browse: `Browse all ${courses.length} verified courses →`,
+    goals: "Tell us what you want to learn →",
     paths: "Explore university curriculum references →",
     today: "Today’s study →",
     dashboard: "User center →",
@@ -27,6 +28,7 @@ const homeCopy = {
     placeholder: "算法、机器学习、Python……",
     search: "搜索",
     browse: `浏览全部 ${courses.length} 门已核实课程 →`,
+    goals: "告诉我们你想学什么 →",
     paths: "查看顶尖大学培养方案参考 →",
     today: "今日学习 →",
     dashboard: "用户中心 →",
@@ -107,6 +109,13 @@ function HomeContent() {
           className="home-nav-link mt-5 inline-block text-sm hover:underline"
         >
           {copy.browse}
+        </Link>
+        <span className="home-nav-separator mx-3">·</span>
+        <Link
+          href={language === "zh" ? "/goals?lang=zh" : "/goals"}
+          className="home-nav-link home-nav-link-accent mt-5 inline-block text-sm font-medium hover:underline"
+        >
+          {copy.goals}
         </Link>
         <span className="home-nav-separator mx-3">·</span>
         <Link
