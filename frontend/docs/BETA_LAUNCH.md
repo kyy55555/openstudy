@@ -74,4 +74,4 @@ Never export passwords, access tokens, learning-record contents, or individual b
 - OpenStudy links to official university content and does not control external availability.
 - Some official sites block automated link checks; warnings require periodic manual review.
 - Several curriculum references still use clearly labeled external self-study substitutes where the home university does not publish usable open materials.
-- There is no third-party product analytics service in the current Beta.
+- Product behavior is recorded in the first-party Supabase `product_events` table with random visitor/session IDs and bounded fields; review `product_daily_summary` and `product_retention` in Supabase.

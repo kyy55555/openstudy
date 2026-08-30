@@ -20,7 +20,7 @@ Open [http://localhost:3000](http://localhost:3000).
 The site works without cloud configuration: guest progress and saved courses stay in the browser. To enable email accounts and cross-device sync with a free Supabase project:
 
 1. Create a Supabase project.
-2. Run [`supabase/schema.sql`](supabase/schema.sql) in its SQL editor. This creates the progress table and user-only Row Level Security policies.
+2. Run [`supabase/schema.sql`](supabase/schema.sql) in its SQL editor. This creates learning records, first-party product events, aggregate retention views, and Row Level Security policies.
 3. Copy `.env.example` to `.env.local` and enter the project URL and publishable key. Never expose a secret or service-role key.
 4. Set `NEXT_PUBLIC_SITE_URL` to the public Beta URL.
 5. In Supabase Authentication URL Configuration, set the Site URL to the public Beta URL. Add both the public Beta URL and its `/account` page to Redirect URLs so confirmation and password-recovery emails return to OpenStudy.
@@ -48,7 +48,27 @@ Anonymous and authenticated visitors can submit Beta feedback, but cannot read f
 
 Feedback rows include a category, review status, interface language, coarse viewport class, and deployment commit when available. The form automatically falls back to the legacy columns during a staggered deployment, so run `supabase/schema.sql` before or shortly after publishing the matching frontend. Manage the `new → reviewing → resolved/closed` workflow in the Supabase dashboard; these operational fields are never readable through the public client.
 
-The current Beta does not use advertising trackers or a third-party product-analytics service. Feedback stores the submitted message, optional reply email, submission time, and feedback-page URL. Never ask users to include passwords in feedback.
+The current Beta does not use advertising trackers. Vercel provides anonymous traffic aggregates, while the Supabase `product_events` table stores privacy-minimized first-party product actions with random visitor/session IDs. It never stores account email, passwords, full URLs, IP addresses, or device fingerprints. Feedback stores the submitted message, optional reply email, submission time, and feedback-page URL. Never ask users to include passwords in feedback.
+
+### Product behavior and retention
+
+After applying `supabase/schema.sql`, use Supabase Table Editor to inspect:
+
+- `product_daily_summary`: daily event, visitor, and session counts.
+- `product_retention`: exact day-1, day-7, day-14, and day-30 returning visitors by first-seen cohort.
+- `product_events`: bounded raw events for course/search/funnel analysis. This table is owner-only; the public client can insert but cannot read it.
+
+Useful SQL Editor query for the latest 30-day funnel:
+
+```sql
+select event_name, count(*) as events, count(distinct anonymous_id) as visitors
+from public.product_events
+where created_at >= now() - interval '30 days'
+group by event_name
+order by visitors desc;
+```
+
+Apply the schema before deploying the matching frontend. Until the table exists, analytics calls fail silently and never block the learner experience.
 
 ## Beta deployment checklist
 

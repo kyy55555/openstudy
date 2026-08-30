@@ -5,6 +5,7 @@ import { cloudAtomicSaveUnavailable, cloudRevisionChanged, cloudSyncRequestIsCur
 import type { CourseLibraryState, CourseProgress } from "../data/courseLibrary";
 import { courseResourceKey } from "../data/courseLibrary";
 import { getSupabaseBrowserClient } from "../lib/supabase/client";
+import { trackProductEvent } from "../lib/productAnalytics";
 
 function accountLibraryStorageKey(userId: string) {
   return `${courseLibraryStorageKey}-user-${userId}`;
@@ -243,8 +244,10 @@ export function useCourseLibrary() {
 
   function toggleFavorite(id: string) {
     const current = libraryRef.current;
-    const favorites = current.favorites.includes(id) ? current.favorites.filter((item) => item !== id) : [...current.favorites, id];
+    const removing = current.favorites.includes(id);
+    const favorites = removing ? current.favorites.filter((item) => item !== id) : [...current.favorites, id];
     update({ ...current, favorites });
+    trackProductEvent({ eventName: removing ? "favorite_removed" : "favorite_added", courseId: id });
   }
 
   function toggleResource(courseId: string, resourceUrl: string) {
@@ -261,6 +264,7 @@ export function useCourseLibrary() {
     if (normalizedDays === null) return;
     const current = libraryRef.current;
     update({ ...current, studyPlans: { ...current.studyPlans, [courseId]: { days: normalizedDays, completedTaskIds: [], createdOn: localDateKey() } } });
+    trackProductEvent({ eventName: "study_plan_created", courseId, numericValue: normalizedDays });
   }
 
   function updateStudyPlanDays(courseId: string, days: number) {
@@ -291,6 +295,7 @@ export function useCourseLibrary() {
         [courseId]: removing ? { ...plan, completedTaskIds } : recordStudyTaskCompletion(plan, taskId, localDateKey()),
       },
     });
+    if (!removing) trackProductEvent({ eventName: "study_task_completed", courseId });
   }
 
   function completeDailyTask(courseId: string, taskId: string, dateKey: string) {
@@ -298,6 +303,7 @@ export function useCourseLibrary() {
     const plan = current.studyPlans[courseId];
     if (!plan || plan.completedTaskIds.includes(taskId)) return;
     update({ ...current, studyPlans: { ...current.studyPlans, [courseId]: recordStudyTaskCompletion(plan, taskId, dateKey) } });
+    trackProductEvent({ eventName: "study_task_completed", courseId });
   }
 
   function removeStudyPlan(courseId: string) {
@@ -307,10 +313,11 @@ export function useCourseLibrary() {
     update({ ...current, studyPlans });
   }
 
-  function recordResourceOpen(courseId: string, url: string, title: string, titleZh: string) {
+  function recordResourceOpen(courseId: string, url: string, title: string, titleZh: string, resourceType = "study_item") {
     const current = libraryRef.current;
     const progress = current.progress[courseId] === "completed" ? current.progress : { ...current.progress, [courseId]: "in-progress" as CourseProgress };
     update({ ...current, progress, lastOpenedResource: { courseId, url, title, titleZh, openedAt: new Date().toISOString() } });
+    trackProductEvent({ eventName: "resource_opened", courseId, resourceType });
   }
 
   function clearLastOpenedResource() {

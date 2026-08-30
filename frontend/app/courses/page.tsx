@@ -25,6 +25,7 @@ import { structuredCoursePlans } from "../../data/coursePlans";
 import { courseGoalSequence } from "../../data/courseGuidance";
 import { useCourseLibrary } from "../useCourseLibrary";
 import { useCourseFavoriteCounts } from "../useCourseFavoriteCounts";
+import { trackProductEvent } from "../../lib/productAnalytics";
 
 const coursesPerPage = 12;
 
@@ -731,10 +732,22 @@ function CourseExplorer() {
   const requestCoursePath = `/feedback?${new URLSearchParams({ ...(language === "zh" ? { lang: "zh" } : {}), type: "missing-course", ...(searchTerm ? { request: searchTerm } : {}) }).toString()}`;
   const goalSequence = courseGoalSequence(courses, goalTerm);
 
+  useEffect(() => {
+    if (!searchTerm) return;
+    const timer = window.setTimeout(() => {
+      trackProductEvent(
+        { eventName: "course_search", searchQuery: searchTerm, numericValue: filteredCourses.length, language },
+        { oncePerSession: `course-search:${searchTerm.toLocaleLowerCase()}` },
+      );
+    }, 900);
+    return () => window.clearTimeout(timer);
+  }, [filteredCourses.length, language, searchTerm]);
+
   function handleGoalSearch() {
     const nextGoal = goalInput.trim();
     setGoalTerm(nextGoal);
     router.replace(coursesPath(searchTerm, language, nextGoal), { scroll: false });
+    if (nextGoal) trackProductEvent({ eventName: "goal_route_requested", searchQuery: nextGoal, numericValue: courseGoalSequence(courses, nextGoal)?.courses.length ?? 0, language });
   }
 
   return (

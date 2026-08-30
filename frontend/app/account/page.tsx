@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 import { getSupabaseBrowserClient, isSupabaseConfigured } from "../../lib/supabase/client";
 import { authErrorMessage } from "../../data/authMessages";
+import { trackProductEvent } from "../../lib/productAnalytics";
 
 function AccountContent() {
   const router = useRouter();
@@ -52,12 +53,16 @@ function AccountContent() {
     setBusy(false);
     if (result.error) setMessage(authErrorMessage(result.error.message, language));
     else if (mode === "signup" && !result.data.session) {
+      trackProductEvent({ eventName: "signup_completed", language });
       setPassword("");
       setShowPassword(false);
       setMessage(language === "zh" ? "注册成功，请检查邮箱并确认账号。" : "Account created. Check your email to confirm it.");
     }
     else if (mode === "signin") router.replace(language === "zh" ? "/courses?lang=zh" : "/courses");
-    else setMessage(language === "zh" ? "登录成功，正在同步学习记录。" : "Signed in. Your learning record is syncing.");
+    else {
+      trackProductEvent({ eventName: "signup_completed", language });
+      setMessage(language === "zh" ? "登录成功，正在同步学习记录。" : "Signed in. Your learning record is syncing.");
+    }
   }
 
   async function signOut() {
