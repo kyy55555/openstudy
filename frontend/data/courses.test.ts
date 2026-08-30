@@ -74,6 +74,7 @@ const officialHosts = new Set([
   "cs61.seas.harvard.edu",
   "read.seas.harvard.edu",
   "daslab.seas.harvard.edu",
+  "stratos.seas.harvard.edu",
   "harvard-cs-1200.github.io",
   "docs.google.com",
   "lewis.seas.harvard.edu",
@@ -300,10 +301,10 @@ test("Harvard's current public operating-systems course is present", () => {
   assert.ok(course.resources.some(({ type }) => type === "assignments"));
 });
 
-test("Harvard's current public data-systems course is present", () => {
+test("Harvard's archived public data-systems course exposes real materials", () => {
   const course = courses.find(({ id }) => id === "harvard-cs1650");
   assert.ok(course);
-  assert.equal(course.year, 2025);
+  assert.equal(course.year, 2014);
   assert.equal(course.university, "Harvard University");
   assert.ok(course.resources.some(({ type }) => type === "projects"));
 });

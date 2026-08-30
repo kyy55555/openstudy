@@ -1,8 +1,18 @@
 import { courses } from "../data/courses.ts";
 import { learningPaths } from "../data/learningPaths.ts";
 import { structuredCoursePlans } from "../data/coursePlans.ts";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+
+const execFileAsync = promisify(execFile);
 
 const verbose = process.env.LINK_CHECK_VERBOSE === "1";
+const requestedIds = new Set(
+  (process.env.LINK_CHECK_IDS ?? "")
+    .split(",")
+    .map((id) => id.trim())
+    .filter(Boolean),
+);
 const requestHeaders = { "User-Agent": "Mozilla/5.0 (compatible; OpenStudyLinkAudit/1.0; +https://openstudy-sigma.vercel.app/)" };
 
 const pathUrls = learningPaths.flatMap((path) => [path.officialUrl, ...(path.additionalOfficialSources ?? []).map((source) => source.url)]);
@@ -50,7 +60,44 @@ async function checkUrl(course, url, label) {
   return { course, label, requestedUrl: url, finalUrl: finalUrl.href, errors, warnings };
 }
 
-const checks = [...courses.flatMap((course) => {
+async function checkUrlWithCurl(course, url, label) {
+  const { stdout } = await execFileAsync("curl", [
+    "--location",
+    "--silent",
+    "--show-error",
+    "--output",
+    "/dev/null",
+    "--max-time",
+    "20",
+    "--user-agent",
+    requestHeaders["User-Agent"],
+    "--write-out",
+    "%{http_code}\n%{url_effective}",
+    url,
+  ]);
+  const [statusText, ...finalUrlLines] = stdout.trim().split("\n");
+  const status = Number(statusText);
+  const finalUrl = new URL(finalUrlLines.join("\n") || url);
+  const requestedUrl = new URL(url);
+  const errors = [];
+  const warnings = [];
+
+  if ([401, 403, 429].includes(status)) warnings.push(`HTTP ${status}; official site blocks automated checks`);
+  else if (status < 200 || status >= 400) errors.push(`HTTP ${status || "unknown"}`);
+  if (!isApprovedHost(finalUrl.hostname)) {
+    errors.push(`redirected outside an approved official host to ${finalUrl.hostname}`);
+  }
+  if (
+    officialHomePaths.has(finalUrl.pathname) &&
+    !officialHomePaths.has(requestedUrl.pathname)
+  ) {
+    errors.push(`redirected to the official site's home page`);
+  }
+
+  return { course, label, requestedUrl: url, finalUrl: finalUrl.href, errors, warnings };
+}
+
+const allChecks = [...courses.flatMap((course) => {
     const existingUrls = new Set([course.courseUrl, ...course.resources.map((resource) => resource.url)]);
     const planUrls = [...new Set([structuredCoursePlans[course.id]?.sourceUrl, ...(structuredCoursePlans[course.id]?.tasks ?? []).map((task) => task.url)].filter(Boolean))]
       .filter((url) => !existingUrls.has(url));
@@ -66,6 +113,9 @@ const checks = [...courses.flatMap((course) => {
     { course: path, url: path.officialUrl, label: "curriculum" },
     ...(path.additionalOfficialSources ?? []).map((source) => ({ course: path, url: source.url, label: "curriculum-source" })),
   ])];
+const checks = requestedIds.size > 0
+  ? allChecks.filter(({ course }) => requestedIds.has(course.id))
+  : allChecks;
 
 const results = new Array(checks.length);
 let nextCheck = 0;
@@ -80,7 +130,11 @@ async function worker() {
       try {
         results[index] = await checkUrl(course, url, label);
       } catch (retryError) {
-        results[index] = { course, label, requestedUrl: url, finalUrl: null, errors: [], warnings: [`automated request failed twice: ${String(retryError)}`] };
+        try {
+          results[index] = await checkUrlWithCurl(course, url, label);
+        } catch (curlError) {
+          results[index] = { course, label, requestedUrl: url, finalUrl: null, errors: [], warnings: [`fetch and curl checks failed: ${String(retryError)}; ${String(curlError)}`] };
+        }
       }
     }
   }
@@ -94,7 +148,9 @@ let warningCount = 0;
 for (const { course, label, requestedUrl, finalUrl, errors, warnings } of results) {
   if (warnings.length > 0) {
     warningCount += 1;
-    console.warn(`WARN ${course.id} [${label}]: ${warnings.join("; ")}`);
+    console.warn(
+      `WARN ${course.id} [${label}] ${requestedUrl}: ${warnings.join("; ")}`,
+    );
   }
   if (errors.length === 0) {
     if (warnings.length === 0 && verbose) console.log(`PASS ${course.id} [${label}] -> ${finalUrl}`);
