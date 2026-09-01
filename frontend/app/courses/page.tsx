@@ -202,6 +202,29 @@ const studyStageZh: Record<string, string> = {
   Graduate: "研究生",
 };
 
+type DiscoveryField = {
+  id: string;
+  label: string;
+  labelZh: string;
+  description: string;
+  descriptionZh: string;
+  symbol: string;
+  subjects: string[];
+  className: string;
+};
+
+const discoveryFields: DiscoveryField[] = [
+  { id: "computing", label: "Computing", labelZh: "计算与软件", description: "Programming, systems, AI and data", descriptionZh: "编程、系统、人工智能与数据", symbol: "</>", subjects: ["Programming", "Algorithms", "Computer Systems", "Artificial Intelligence", "Machine Learning", "Databases"], className: "from-indigo-600 to-violet-700" },
+  { id: "mathematics", label: "Mathematics", labelZh: "数学", description: "Foundations, probability and modelling", descriptionZh: "数学基础、概率与建模", symbol: "∑", subjects: ["Calculus", "Linear Algebra", "Discrete Mathematics", "Probability and Statistics", "Numerical Methods"], className: "from-cyan-600 to-blue-700" },
+  { id: "science", label: "Natural sciences", labelZh: "自然科学", description: "Physics, chemistry and life science", descriptionZh: "物理、化学与生命科学", symbol: "⚛", subjects: ["Physics", "Astronomy", "Chemistry", "Organic Chemistry", "Biology", "Genetics"], className: "from-emerald-600 to-teal-700" },
+  { id: "society", label: "Society & humanities", labelZh: "社会与人文", description: "Mind, society, ideas and history", descriptionZh: "心理、社会、思想与历史", symbol: "◎", subjects: ["Psychology", "Political Science", "Philosophy", "History"], className: "from-rose-600 to-orange-600" },
+  { id: "business", label: "Economics & product", labelZh: "经济与产品", description: "Markets, finance and building products", descriptionZh: "市场、金融与产品实践", symbol: "↗", subjects: ["Microeconomics", "Macroeconomics", "Economics", "Finance", "Product Management"], className: "from-amber-500 to-orange-600" },
+];
+
+function courseField(course: Course) {
+  return discoveryFields.find((field) => field.subjects.includes(course.subject)) ?? discoveryFields[0];
+}
+
 /* -------------------- Title -------------------- */
 
 type TitleProps = {
@@ -350,6 +373,51 @@ function SearchBox({
         {copy.search}
       </button>
     </form>
+  );
+}
+
+/* -------------------- Subject discovery -------------------- */
+
+type SubjectExplorerProps = {
+  language: Language;
+  subjectFilter: string;
+  onSelectSubject: (subject: string) => void;
+};
+
+function SubjectExplorer({ language, subjectFilter, onSelectSubject }: SubjectExplorerProps) {
+  return (
+    <section className="mt-8" aria-labelledby="explore-fields-title">
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.16em] text-violet-700">{language === "zh" ? "按领域探索" : "Explore by field"}</p>
+          <h2 id="explore-fields-title" className="mt-1 text-2xl font-bold text-slate-950">{language === "zh" ? "先选一个方向，再挑课程" : "Choose a direction, then a course"}</h2>
+        </div>
+        <p className="max-w-lg text-sm leading-6 text-slate-500">{language === "zh" ? "参考主流课程平台的清晰分类，但只收录已核实、可直达官方资料的大学课程。" : "Clear subject discovery, limited to verified university courses with direct official materials."}</p>
+      </div>
+
+      <div className="mt-4 grid snap-x snap-mandatory auto-cols-[82%] grid-flow-col gap-3 overflow-x-auto pb-2 [scrollbar-width:none] sm:auto-cols-auto sm:grid-flow-row sm:grid-cols-2 sm:overflow-visible lg:grid-cols-4">
+        {discoveryFields.filter((field) => courses.some((course) => field.subjects.includes(course.subject))).map((field) => {
+          const availableSubjects = field.subjects.filter((subject) => courses.some((course) => course.subject === subject));
+          const count = courses.filter((course) => field.subjects.includes(course.subject)).length;
+          return (
+            <article key={field.id} className="snap-start overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+              <div className={`bg-gradient-to-br ${field.className} p-4 text-white`}>
+                <div className="flex items-start justify-between gap-3"><span className="text-2xl font-black" aria-hidden="true">{field.symbol}</span><span className="rounded-full bg-white/15 px-2 py-1 text-xs font-bold">{count}</span></div>
+                <h3 className="mt-5 font-bold">{language === "zh" ? field.labelZh : field.label}</h3>
+                <p className="mt-1 min-h-10 text-xs leading-5 text-white/80">{language === "zh" ? field.descriptionZh : field.description}</p>
+              </div>
+              <div className="flex flex-wrap gap-1.5 p-3">
+                {availableSubjects.slice(0, 4).map((subject) => (
+                  <button key={subject} type="button" onClick={() => onSelectSubject(subject)} className={`rounded-full px-2.5 py-1 text-left text-xs font-semibold transition ${subjectFilter === subject ? "bg-violet-700 text-white" : "bg-slate-100 text-slate-700 hover:bg-violet-100 hover:text-violet-900"}`}>
+                    {courseSubjectLabel(courses, subject, language)}
+                  </button>
+                ))}
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </section>
   );
 }
 
@@ -518,6 +586,7 @@ type CourseCardProps = {
 
 function CourseCard({ course, language, copy, favorite, favoriteCount, onToggleFavorite }: CourseCardProps) {
   const router = useRouter();
+  const field = courseField(course);
   const studyStage = suggestedStudyStage(course);
   const displayedSubjects = displayCourseSubjects(course, language);
   const detailPath = courseDetailPath(course, language);
@@ -550,12 +619,20 @@ function CourseCard({ course, language, copy, favorite, favoriteCount, onToggleF
       onKeyDown={openCourseWithKeyboard}
       className="course-card group scroll-mt-6 cursor-pointer overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-violet-300 hover:shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-700"
     >
+      <div className={`course-card-visual relative h-28 overflow-hidden bg-gradient-to-br ${field.className} p-5 text-white`}>
+        <div className="absolute -right-8 -top-10 h-32 w-32 rounded-full border border-white/15 bg-white/10" />
+        <div className="absolute bottom-[-3rem] right-12 h-28 w-28 rounded-full border border-white/10" />
+        <div className="relative flex h-full items-start justify-between">
+          <div><span className="text-3xl font-black" aria-hidden="true">{field.symbol}</span><p className="mt-3 text-xs font-bold uppercase tracking-[0.14em] text-white/80">{language === "zh" ? field.labelZh : field.label}</p></div>
+          <span className="rounded-full bg-slate-950/20 px-2.5 py-1 text-xs font-semibold backdrop-blur">{course.university}</span>
+        </div>
+      </div>
       <div className="course-card-hero border-b border-slate-100 bg-gradient-to-br from-slate-50 via-white to-violet-50/70 p-5">
-        <div className="flex items-start justify-between gap-3"><p className="text-xs font-bold uppercase tracking-[0.14em] text-violet-700">{course.university}</p><div className="flex items-center gap-2">{favoriteCount !== null && <span className="text-xs font-semibold text-slate-500">{copy.savedBy(favoriteCount)}</span>}<button type="button" onClick={onToggleFavorite} aria-label={favorite ? "Remove favorite" : "Save favorite"} className="course-card-favorite rounded-full bg-white/90 p-2 text-xl leading-none shadow-sm ring-1 ring-slate-200 transition hover:scale-105" title={favorite ? (language === "zh" ? "取消收藏" : "Remove favorite") : (language === "zh" ? "收藏" : "Save")}>{favorite ? "★" : "☆"}</button></div></div>
+        <div className="flex items-start justify-between gap-3"><p className="text-xs font-bold uppercase tracking-[0.14em] text-violet-700">{courseCode(course)}</p><div className="flex items-center gap-2">{favoriteCount !== null && <span className="text-xs font-semibold text-slate-500">{copy.savedBy(favoriteCount)}</span>}<button type="button" onClick={onToggleFavorite} aria-label={favorite ? "Remove favorite" : "Save favorite"} className="course-card-favorite rounded-full bg-white/90 p-2 text-xl leading-none shadow-sm ring-1 ring-slate-200 transition hover:scale-105" title={favorite ? (language === "zh" ? "取消收藏" : "Remove favorite") : (language === "zh" ? "收藏" : "Save")}>{favorite ? "★" : "☆"}</button></div></div>
 
       <h2 className="mt-3 text-xl font-bold leading-snug text-slate-950">
         <Link href={detailPath} className="hover:underline">
-        <span className="mr-2 text-violet-700">{courseCode(course)}</span>{language === "zh" ? course.titleZh : course.title}
+        {language === "zh" ? course.titleZh : course.title}
         </Link>
       </h2>
 
@@ -725,6 +802,16 @@ function CourseExplorer() {
         copy={copy}
       />
 
+      <SubjectExplorer
+        language={language}
+        subjectFilter={subjectFilter}
+        onSelectSubject={(subject) => {
+          setSubjectFilter(subject);
+          setVisibleCount(coursesPerPage);
+          document.getElementById("course-results")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }}
+      />
+
       <FilterBar
         language={language}
         universities={universities}
@@ -759,7 +846,7 @@ function CourseExplorer() {
         copy={copy}
       />
 
-      <section className="mt-10">
+      <section id="course-results" className="mt-10 scroll-mt-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <h2 className="text-2xl font-semibold">
             {copy.courses}
@@ -803,7 +890,7 @@ function CourseExplorer() {
             <p className="mx-auto mt-4 max-w-xl text-xs leading-5 text-gray-500">{copy.requestCourseHelp}</p>
           </div>
         ) : (
-          <div className="mt-6 grid items-stretch gap-5 md:grid-cols-2">
+          <div className="mt-6 grid items-stretch gap-5 md:grid-cols-2 xl:grid-cols-3">
             {visibleCourses.map((course) => (
               <CourseCard
                 key={course.id}

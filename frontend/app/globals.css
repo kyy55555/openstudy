@@ -29,6 +29,8 @@ html.dark .bg-gray-50,
 html.dark .bg-slate-50 { background-color: #0f172a; }
 html.dark .bg-gray-100,
 html.dark .bg-slate-100 { background-color: #1e293b; }
+html.dark .bg-gray-200,
+html.dark .bg-slate-200 { background-color: #334155; }
 html.dark .border-gray-200,
 html.dark .border-gray-300,
 html.dark .border-slate-100,
@@ -40,6 +42,69 @@ html.dark .text-slate-600 { color: #94a3b8; }
 html.dark .text-gray-700,
 html.dark .text-slate-700,
 html.dark .text-slate-950 { color: #dbe4f0; }
+html.dark .text-black,
+html.dark .text-slate-800,
+html.dark .text-slate-900 { color: #f1f5f9; }
+html.dark .bg-violet-50,
+html.dark .bg-violet-100 { background-color: #211737; }
+html.dark .bg-blue-50,
+html.dark .bg-blue-100 { background-color: #10233d; }
+html.dark .bg-emerald-50,
+html.dark .bg-emerald-100,
+html.dark .bg-emerald-200 { background-color: #102d27; }
+html.dark .bg-amber-50,
+html.dark .bg-amber-100,
+html.dark .bg-amber-200 { background-color: #35260f; }
+html.dark .bg-orange-50,
+html.dark .bg-orange-100 { background-color: #351c12; }
+html.dark .bg-red-50,
+html.dark .bg-red-100 { background-color: #35161b; }
+html.dark .bg-sky-50 { background-color: #10283a; }
+html.dark .bg-fuchsia-50 { background-color: #321535; }
+html.dark .border-violet-200,
+html.dark .border-violet-300 { border-color: #6d4aa3; }
+html.dark .border-blue-200,
+html.dark .border-blue-300 { border-color: #315f8d; }
+html.dark .border-emerald-200,
+html.dark .border-emerald-300 { border-color: #28745f; }
+html.dark .border-amber-200,
+html.dark .border-amber-300,
+html.dark .border-amber-400 { border-color: #8a6423; }
+html.dark .border-orange-200,
+html.dark .border-orange-300,
+html.dark .border-orange-400 { border-color: #98502f; }
+html.dark .border-red-200,
+html.dark .border-red-300 { border-color: #8d3b4a; }
+html.dark .border-sky-200 { border-color: #32627c; }
+html.dark .border-fuchsia-200 { border-color: #84408d; }
+html.dark .text-violet-600,
+html.dark .text-violet-700,
+html.dark .text-violet-800,
+html.dark .text-violet-900,
+html.dark .text-violet-950 { color: #ddd6fe; }
+html.dark .text-blue-700,
+html.dark .text-blue-800,
+html.dark .text-blue-900,
+html.dark .text-blue-950 { color: #bfdbfe; }
+html.dark .text-emerald-700,
+html.dark .text-emerald-800,
+html.dark .text-emerald-900,
+html.dark .text-emerald-950 { color: #a7f3d0; }
+html.dark .text-amber-700,
+html.dark .text-amber-800,
+html.dark .text-amber-900,
+html.dark .text-amber-950 { color: #fde68a; }
+html.dark .text-orange-700,
+html.dark .text-orange-800,
+html.dark .text-orange-900,
+html.dark .text-orange-950 { color: #fed7aa; }
+html.dark .text-red-700,
+html.dark .text-red-800,
+html.dark .text-red-900,
+html.dark .text-red-950 { color: #fecaca; }
+html.dark .text-sky-800,
+html.dark .text-sky-950 { color: #bae6fd; }
+html.dark .text-fuchsia-900 { color: #f5d0fe; }
 html.dark .hover\:bg-gray-50:hover { background-color: #1e293b; }
 html.dark .hover\:text-black:hover { color: #ffffff; }
 html.dark input,
@@ -63,6 +128,29 @@ html.dark .course-card-hero {
 html.dark .course-card-hero h2 { color: #f8fafc; }
 html.dark .course-card-hero .text-violet-700 { color: #c4b5fd; }
 html.dark .course-card-favorite { background-color: #1e293b; color: #f8fafc; --tw-ring-color: #475569; }
+html.dark .course-shortcut { background-color: #111827; border-color: #334155; }
+html.dark .course-shortcut:hover { background-color: #172033; border-color: #8b5cf6; }
+html.dark .course-shortcut-title { color: #f1f5f9; }
+html.dark .course-plan-shortcut { background-color: #2e1065; border-color: #6d28d9; }
+html.dark .course-plan-shortcut .text-violet-950 { color: #f5f3ff; }
+html.dark .learning-journey {
+  border-color: #4c1d95;
+  background: linear-gradient(135deg, #17122b 0%, #101b34 54%, #27170f 100%);
+}
+html.dark .learning-journey-eyebrow,
+html.dark .learning-journey-code { color: #c4b5fd; }
+html.dark .learning-journey-title,
+html.dark .learning-journey-course-title { color: #f8fafc; }
+html.dark .learning-journey-copy { color: #bac7d8; }
+html.dark .learning-journey-action {
+  background-color: #ede9fe;
+  color: #3b0764;
+  --tw-ring-color: #8b5cf6;
+}
+html.dark .learning-journey-course {
+  border-color: rgb(100 116 139 / 0.65);
+  background-color: rgb(15 23 42 / 0.86);
+}
 
 .skip-link {
   position: fixed;
