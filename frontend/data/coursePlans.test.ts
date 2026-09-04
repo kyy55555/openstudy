@@ -296,30 +296,31 @@ test("MIT 6.837 follows the official lecture, programming-assignment, and exam s
   assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 2);
 });
 
-test("MIT 6.824 follows all public readings, labs, project milestones, and exams", () => {
+test("MIT 6.5840 follows the current public topics, practice, labs, and exams", () => {
   const definition = structuredCoursePlans["mit-6-824"];
   assert.equal(definition.detail, "full");
-  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 24);
-  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lab-")).length, 6);
-  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("project-milestone-")).length, 8);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("topic-")).length, 22);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("practice-")).length, 22);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lab-")).length, 5);
   assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 2);
 });
 
-test("MIT 6.858 follows all official lectures, labs, quizzes, and project milestones", () => {
+test("MIT 6.5660 follows the current official topics, practice, labs, and exams", () => {
   const definition = structuredCoursePlans["mit-6-858"];
   assert.equal(definition.detail, "full");
-  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 24);
-  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lab-")).length, 6);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("topic-")).length, 20);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("practice-")).length, 20);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lab-")).length, 5);
   assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 2);
-  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("project-")).length, 4);
 });
 
-test("MIT 6.S081 follows every official lecture, homework, and xv6 lab", () => {
+test("MIT 6.1810 follows every current official topic, practice item, and xv6 lab", () => {
   const definition = structuredCoursePlans["mit-6-s081"];
   assert.equal(definition.detail, "full");
-  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 25);
-  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("homework-")).length, 23);
-  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lab-")).length, 10);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("topic-")).length, 23);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("practice-")).length, 23);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lab-")).length, 9);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 2);
 });
 
 test("MIT 6.172 follows all official lectures, homework, recitations, quizzes, and projects", () => {
@@ -332,23 +333,24 @@ test("MIT 6.172 follows all official lectures, homework, recitations, quizzes, a
   assert.equal(definition.tasks.filter(({ kind }) => kind === "project").length, 12);
 });
 
-test("MIT 6.830 follows all official readings, problem sets, labs, exams, and project milestones", () => {
+test("MIT 6.5831 follows the current official topics, problem sets, labs, quizzes, and project", () => {
   const definition = structuredCoursePlans["mit-6-830"];
   assert.equal(definition.detail, "full");
-  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 23);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("topic-")).length, 24);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("practice-")).length, 24);
   assert.equal(definition.tasks.filter(({ id }) => id.startsWith("problem-set-")).length, 3);
-  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lab-")).length, 3);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lab-")).length, 4);
   assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 2);
-  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("project-") || id === "final-project").length, 3);
+  assert.equal(definition.tasks.filter(({ id }) => id === "final-project").length, 1);
 });
 
-test("MIT 6.033 follows all official lectures, experiments, critiques, quizzes, and design milestones", () => {
+test("MIT 6.1800 follows all current official topics, practice, labs, exams, and design work", () => {
   const definition = structuredCoursePlans["mit-6-033"];
   assert.equal(definition.detail, "full");
-  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 26);
-  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("hands-on-")).length, 7);
-  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("system-critique-")).length, 2);
-  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("design-project-")).length, 5);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("topic-")).length, 26);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("practice-")).length, 26);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lab-")).length, 4);
+  assert.equal(definition.tasks.filter(({ id }) => id === "design-project").length, 1);
   assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 2);
 });
 
@@ -360,13 +362,14 @@ test("MIT 8.02 follows all three official MITx modules and their published durat
   assert.ok(definition.tasks.every(({ url }) => url.startsWith("https://openlearninglibrary.mit.edu/courses/")));
 });
 
-test("MIT 6.031 follows all official readings, problem sets, quizzes, and project milestones", () => {
+test("MIT 6.102 follows all current official topics, practice, problem sets, exams, and project", () => {
   const definition = structuredCoursePlans["mit-6-031"];
   assert.equal(definition.detail, "full");
-  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("reading-")).length, 29);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("topic-")).length, 19);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("practice-")).length, 19);
   assert.equal(definition.tasks.filter(({ id }) => id.startsWith("problem-set-")).length, 5);
   assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 2);
-  assert.equal(definition.tasks.filter(({ kind }) => kind === "project").length, 2);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "project").length, 1);
 });
 
 test("MIT 6.036 follows every official MITx week and its published work", () => {
@@ -386,12 +389,13 @@ test("MIT 6.253 follows all official lecture notes, homework sets, and the publi
   assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 1);
 });
 
-test("Princeton COS 126 follows the current official lecture, assignment, project, and exam sequence", () => {
+test("Princeton COS 126 follows the public lecture, assignment, review, and capstone sequence", () => {
   const definition = structuredCoursePlans["princeton-cos126"];
   assert.equal(definition.detail, "full");
   assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 21);
   assert.equal(definition.tasks.filter(({ id }) => id.startsWith("assignment-")).length, 10);
-  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 3);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("review-")).length, 1);
+  assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 0);
   assert.equal(definition.tasks.filter(({ kind }) => kind === "project").length, 1);
 });
 
@@ -416,7 +420,7 @@ test("Princeton COS 240 follows the official topic allocation and midterm", () =
   assert.equal(definition.detail, "full");
   assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 24);
   assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 1);
-  assert.ok(definition.tasks.every(({ url }) => url === "https://www.cs.princeton.edu/courses/archive/fall25/cos240/"));
+  assert.ok(definition.tasks.every(({ url }) => url === "https://www.cs.princeton.edu/courses/archive/spring26/cos240/"));
 });
 
 test("Princeton COS 316 follows its current official systems lectures, assignment, and exams", () => {
@@ -430,8 +434,8 @@ test("Princeton COS 316 follows its current official systems lectures, assignmen
 test("Princeton COS 324 follows all official lectures, six assignments, and two exams", () => {
   const definition = structuredCoursePlans["princeton-cos324"];
   assert.equal(definition.detail, "full");
-  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 22);
-  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("assignment-")).length, 6);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lecture-")).length, 24);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("assignment-")).length, 7);
   assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 2);
 });
 
@@ -444,7 +448,7 @@ test("Princeton COS 418 follows all official lectures, precepts, assignments, an
 });
 
 test("additional Princeton courses follow their complete official public sequences", () => {
-  const expected = { "princeton-cos423": [24, 6, 0], "princeton-cos432": [21, 6, 1], "princeton-cos461": [25, 0, 1] } as const;
+  const expected = { "princeton-cos423": [20, 5, 3], "princeton-cos432": [21, 6, 1], "princeton-cos461": [25, 0, 1] } as const;
   for (const [courseId, [lectures, assignments, exams]] of Object.entries(expected)) {
     const definition = structuredCoursePlans[courseId];
     assert.equal(definition.detail, "full");
@@ -522,7 +526,7 @@ test("Cornell CS 1110 includes the official curriculum, labs, projects, and exam
   const definition = structuredCoursePlans["cornell-cs1110"];
   assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lesson-")).length, 26);
   assert.equal(definition.tasks.filter(({ id }) => id.startsWith("lab-")).length, 26);
-  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("assignment-")).length, 7);
+  assert.equal(definition.tasks.filter(({ id }) => id.startsWith("assignment-")).length, 2);
   assert.equal(definition.tasks.filter(({ kind }) => kind === "exam").length, 3);
 });
 
@@ -583,7 +587,9 @@ test("all Stanford catalog courses now have executable official-source plans",()
 });
 
 test("remaining non-CMU university courses all have executable official curricula",()=>{
- for(const id of ["washington-cse550","tsinghua-20740112","tsinghua-computer-graphics","pku-computing-intro","pku-data-structures","pku-operating-systems","tsinghua-20740164","tsinghua-database-technology","uiuc-cs124","uiuc-cs128","uiuc-cs225","gatech-cs1301","gatech-cs2110","gatech-cs3510","harvard-cs61"]){assert.equal(structuredCoursePlans[id].detail,"full");assert.ok(structuredCoursePlans[id].tasks.length>=20);}
+ for(const id of ["washington-cse550","tsinghua-20740112","tsinghua-computer-graphics","pku-computing-intro","pku-data-structures","pku-operating-systems","tsinghua-20740164","tsinghua-database-technology","uiuc-cs124","uiuc-cs128","uiuc-cs225","gatech-cs1301","gatech-cs2110","gatech-cs3510"]){assert.equal(structuredCoursePlans[id].detail,"full");assert.ok(structuredCoursePlans[id].tasks.length>=20);}
+ assert.equal(structuredCoursePlans["harvard-cs61"].detail,"full");
+ assert.ok(structuredCoursePlans["harvard-cs61"].tasks.length>=8);
 });
 
 test("Cornell's required math and foundations courses use only verified official topic sequences", () => {

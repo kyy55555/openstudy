@@ -707,72 +707,30 @@ function mit6837Tasks(): PlanTask[] {
 }
 
 function mit6824Tasks(): PlanTask[] {
-  const courseUrl = "https://ocw.mit.edu/courses/6-824-distributed-computer-systems-engineering-spring-2006/";
-  const topics = ["Introduction and OS review", "I/O concurrency and event-driven programming", "Event-driven programming continued", "Network file system", "RPC transparency", "Crash recovery", "Logging", "Cache consistency and locking", "Memory consistency", "First project conference", "Memory consistency continued", "Vector timestamps and version vectors", "Two-phase commit", "Paxos", "Viewstamped replication", "Harp", "Second project conference", "Frangipani", "Scalable lookup", "Wide-area storage", "Project implementation", "Project demonstrations", "Content distribution", "Distributed computing"];
-  const topicsZh = ["导论与操作系统复习", "I/O 并发与事件驱动编程", "事件驱动编程（续）", "网络文件系统", "RPC 透明性", "崩溃恢复", "日志", "缓存一致性与锁", "内存一致性", "第一次项目讨论", "内存一致性（续）", "向量时间戳与版本向量", "两阶段提交", "Paxos", "视图戳复制", "Harp", "第二次项目讨论", "Frangipani", "可扩展查找", "广域存储", "项目实现", "项目演示", "内容分发", "分布式计算"];
-  const labAfter = new Map([[1, 0], [3, 1], [5, 2], [7, 3], [9, 4], [12, 5]]);
-  const projectAfter = new Map<number, readonly [string, string]>([
-    [6, ["Submit project team list", "提交项目组名单"]], [8, ["Submit project proposal", "提交项目提案"]],
-    [10, ["First project conference", "第一次项目讨论"]], [16, ["Submit first draft report", "提交第一版报告"]],
-    [17, ["Second project conference", "第二次项目讨论"]], [19, ["Submit second draft report", "提交第二版报告"]],
-    [22, ["Demonstrate project", "演示项目"]], [24, ["Submit completed project and final report", "提交完整项目与最终报告"]],
-  ]);
-  const tasks = topics.flatMap((title, index) => {
-    const lecture = index + 1;
-    const result: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title} and assigned reading`, titleZh: `第 ${lecture} 讲：${topicsZh[index]}与指定阅读`, url: `${courseUrl}pages/readings/`, kind: "session" }];
-    const lab = labAfter.get(lecture);
-    if (lab !== undefined) result.push({ id: `lab-${lab}`, title: `Lab ${lab}`, titleZh: `实验 ${lab}`, url: `${courseUrl}pages/labs/`, kind: "project" });
-    const project = projectAfter.get(lecture);
-    if (project) result.push({ id: `project-milestone-${lecture}`, title: project[0], titleZh: project[1], url: `${courseUrl}pages/projects/`, kind: "project" });
-    if (lecture === 12) result.push({ id: "quiz-1", title: "Quiz 1 using published prior-year exam", titleZh: "使用公开往年试题完成测验 1", url: `${courseUrl}pages/exams/`, kind: "exam" });
-    if (lecture === 20) result.push({ id: "quiz-2", title: "Quiz 2 using published prior-year exam", titleZh: "使用公开往年试题完成测验 2", url: `${courseUrl}pages/exams/`, kind: "exam" });
-    return result;
-  });
+  const schedule = "https://pdos.csail.mit.edu/6.5840/schedule.html";
+  const topics = [["Introduction and MapReduce", "导论与 MapReduce"], ["RPC and Threads", "RPC 与线程"], ["Google File System", "Google 文件系统"], ["Paxos", "Paxos"], ["Go Patterns", "Go 编程模式"], ["Raft I", "Raft（一）"], ["Raft II", "Raft（二）"], ["Consistency and Linearizability", "一致性与线性化"], ["ZooKeeper", "ZooKeeper"], ["Raft Lab Q&A", "Raft 实验答疑"], ["Distributed Transactions", "分布式事务"], ["Spanner", "Spanner"], ["Chain Replication", "链式复制"], ["Optimistic Concurrency Control", "乐观并发控制"], ["Verification of Distributed Systems", "分布式系统验证"], ["Cache Consistency and Memcached", "缓存一致性与 Memcached"], ["AWS Lambda", "AWS Lambda"], ["Ray", "Ray"], ["Fork Consistency and SUNDR", "分叉一致性与 SUNDR"], ["Bitcoin", "比特币"], ["Byzantine Fault Tolerance", "拜占庭容错"], ["Project Demonstrations", "项目演示"]] as const;
+  const tasks = officialTopicPlan(schedule, topics);
+  [["lab-1", "Lab 1: MapReduce", "实验 1：MapReduce", "lab-mr.html"], ["lab-2", "Lab 2: Key/Value Server", "实验 2：键值服务器", "lab-kvsrv1.html"], ["lab-3", "Lab 3: Raft", "实验 3：Raft", "lab-raft1.html"], ["lab-4", "Lab 4: KV Raft", "实验 4：KV Raft", "lab-kvraft1.html"], ["lab-5", "Lab 5: Sharded KV", "实验 5：分片键值存储", "lab-shard1.html"]].forEach(([id, title, titleZh, path]) => tasks.push({ id, title, titleZh, url: `https://pdos.csail.mit.edu/6.5840/labs/${path}`, kind: "project" }));
+  tasks.push({ id: "midterm", title: "Midterm using published past exams", titleZh: "使用公开往年试题完成期中考试", url: "https://pdos.csail.mit.edu/6.5840/quizzes.html", kind: "exam" }, { id: "final", title: "Final using published past exams", titleZh: "使用公开往年试题完成期末考试", url: "https://pdos.csail.mit.edu/6.5840/quizzes.html", kind: "exam" });
   return tasks;
 }
 
 function mit6858Tasks(): PlanTask[] {
-  const courseUrl = "https://ocw.mit.edu/courses/6-858-computer-systems-security-fall-2014/";
-  const topics = ["Introduction and Threat Models", "Control Hijacking Attacks", "Buffer Overflow Exploits and Defenses", "Privilege Separation", "Security Industry Guest Lecture", "Capabilities", "Sandboxing Native Code", "Web Security Model", "Securing Web Applications", "Symbolic Execution", "Ur/Web", "Network Security", "Network Protocols", "SSL and HTTPS", "Medical Software", "Side-Channel Attacks", "User Authentication", "Private Browsing", "Anonymous Communication", "Mobile Phone Security", "Data Tracking", "MIT IS&T Security Guest Lecture", "Security Economics", "Project Presentations"];
-  const topicsZh = ["导论与威胁模型", "控制流劫持攻击", "缓冲区溢出攻击与防御", "权限分离", "安全行业专题", "能力机制", "原生代码沙箱", "Web 安全模型", "Web 应用安全", "符号执行", "Ur/Web", "网络安全", "网络协议", "SSL 与 HTTPS", "医疗软件", "侧信道攻击", "用户认证", "隐私浏览", "匿名通信", "移动设备安全", "数据追踪", "MIT IS&T 安全专题", "安全经济学", "项目展示"];
-  const labAfter = new Map([[5, 1], [10, 2], [13, 3], [14, 4], [17, 5], [19, 6]]);
-  const tasks = topics.flatMap((title, index) => {
-    const lecture = index + 1;
-    const result: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${topicsZh[index]}`, url: `${courseUrl}pages/lecture-videos/`, kind: "session" }];
-    const lab = labAfter.get(lecture);
-    if (lab) result.push({ id: `lab-${lab}`, title: `Lab ${lab}`, titleZh: `实验 ${lab}`, url: `${courseUrl}pages/labs/`, kind: "project" });
-    if (lecture === 14) result.push(
-      { id: "quiz-1", title: "Quiz 1", titleZh: "测验 1", url: `${courseUrl}pages/exams/`, kind: "exam" },
-      { id: "project-proposal", title: "Final project proposal", titleZh: "期末项目提案", url: `${courseUrl}pages/final-project/`, kind: "project" },
-    );
-    if (lecture === 19) result.push({ id: "project-status", title: "Final project status update", titleZh: "期末项目进度更新", url: `${courseUrl}pages/final-project/`, kind: "project" });
-    if (lecture === 21) result.push({ id: "quiz-2", title: "Quiz 2", titleZh: "测验 2", url: `${courseUrl}pages/exams/`, kind: "exam" });
-    if (lecture === 24) result.push(
-      { id: "project-presentation", title: "Final project presentation", titleZh: "期末项目展示", url: `${courseUrl}pages/final-project/`, kind: "project" },
-      { id: "project-writeup", title: "Final project writeup and code", titleZh: "期末项目报告与代码", url: `${courseUrl}pages/final-project/`, kind: "project" },
-    );
-    return result;
-  });
+  const courseUrl = "https://css.csail.mit.edu/6.5660/2026/";
+  const topics = [["Introduction and Threat Models", "导论与威胁模型"], ["OS and VM Isolation", "操作系统与虚拟机隔离"], ["Software Fault Isolation", "软件故障隔离"], ["Trusted Hardware", "可信硬件"], ["Privilege Separation", "权限分离"], ["Data Center Infrastructure", "数据中心基础设施"], ["Mobile Phone Security", "移动设备安全"], ["Web Security Model", "Web 安全模型"], ["Buffer Overflow Defenses", "缓冲区溢出防御"], ["Symbolic Execution", "符号执行"], ["Supply Chain Security", "供应链安全"], ["Network Security", "网络安全"], ["Secure Channels", "安全信道"], ["Certificates", "证书"], ["User Authentication", "用户认证"], ["Decentralized Key Management", "去中心化密钥管理"], ["AI Agent Security", "AI 智能体安全"], ["Messaging Security", "消息安全"], ["Information Security in Practice", "现实中的信息安全"], ["Anonymous Communication", "匿名通信"]] as const;
+  const tasks = officialTopicPlan(courseUrl, topics);
+  [["buffer overflows", "缓冲区溢出"], ["privilege separation", "权限分离"], ["symbolic execution", "符号执行"], ["browser security", "浏览器安全"], ["HTTPS and WebAuthn", "HTTPS 与 WebAuthn"]].forEach(([title, titleZh], index) => tasks.push({ id: `lab-${index + 1}`, title: `Lab ${index + 1}: ${title}`, titleZh: `实验 ${index + 1}：${titleZh}`, url: `${courseUrl}labs/lab${index + 1}.html`, kind: "project" }));
+  tasks.push({ id: "quiz-1", title: "Quiz 1 using published past quizzes", titleZh: "使用公开往年试题完成测验 1", url: `${courseUrl}quiz.html`, kind: "exam" }, { id: "final", title: "Final exam using published past quizzes", titleZh: "使用公开往年试题完成期末考试", url: `${courseUrl}quiz.html`, kind: "exam" });
   return tasks;
 }
 
 function mit6s081Tasks(): PlanTask[] {
-  const courseUrl = "https://pdos.csail.mit.edu/6.S081/2021/schedule.html";
-  const topics = ["Introduction", "C and gdb", "OS organization and system calls", "Page tables", "Calling conventions and stack frames", "Isolation and system-call entry/exit", "Page faults", "Lab Q&A I", "Interrupts", "Multiprocessors and locking", "Scheduling I", "Scheduling II", "Lab Q&A II", "File systems", "Crash recovery", "File-system performance and fast recovery", "Virtual memory for applications", "OS organization", "Virtual machines", "Kernels and high-level languages", "Networking", "Meltdown", "Multi-core scalability and RCU", "Radiation tolerance research", "Course Q&A"];
-  const topicsZh = ["导论", "C 与 gdb", "操作系统组织与系统调用", "页表", "调用约定与栈帧", "隔离与系统调用进入/退出", "缺页异常", "实验答疑（一）", "中断", "多处理器与锁", "调度（一）", "调度（二）", "实验答疑（二）", "文件系统", "崩溃恢复", "文件系统性能与快速恢复", "面向应用的虚拟内存", "操作系统组织", "虚拟机", "内核与高级语言", "网络", "Meltdown", "多核可扩展性与 RCU", "抗辐射研究", "课程答疑"];
-  const labAfter = new Map([[1, "util"], [3, "syscall"], [5, "pgtbl"], [7, "traps"], [9, "cow"], [12, "thread"], [14, "net"], [18, "lock"], [20, "fs"], [21, "mmap"]]);
-  let homework = 0;
-  return topics.flatMap((title, index) => {
-    const lecture = index + 1;
-    const result: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title} and preparation`, titleZh: `第 ${lecture} 讲：${topicsZh[index]}与课前阅读`, url: courseUrl, kind: "session" }];
-    if (lecture !== 2 && lecture !== 5) {
-      homework += 1;
-      result.push({ id: `homework-${homework}`, title: `Homework ${homework}`, titleZh: `课后题 ${homework}`, url: courseUrl, kind: "assignment" });
-    }
-    const lab = labAfter.get(lecture);
-    if (lab) result.push({ id: `lab-${lab}`, title: `Lab: ${lab}`, titleZh: `实验：${lab}`, url: courseUrl, kind: "project" });
-    return result;
-  });
+  const courseUrl = "https://pdos.csail.mit.edu/6.S081/2026/schedule.html";
+  const topics = [["Introduction", "导论"], ["C in xv6", "xv6 中的 C"], ["Operating-System Design", "操作系统设计"], ["Locking", "锁"], ["Page Tables", "页表"], ["System Call Entry and Exit", "系统调用进入与退出"], ["System Call Interposition", "系统调用插桩"], ["Page Faults", "缺页异常"], ["Transparent Superpages", "透明大页"], ["Virtual Memory for Applications", "面向应用的虚拟内存"], ["Device Drivers", "设备驱动"], ["Operating-System Organization", "操作系统组织"], ["Thread Switching", "线程切换"], ["Coordination", "协调"], ["Networking", "网络"], ["Tail Latency", "尾延迟"], ["File Systems", "文件系统"], ["Crash Recovery", "崩溃恢复"], ["Verification", "验证"], ["Multicore Scalability and RCU", "多核可扩展性与 RCU"], ["Containers and Virtual Machines", "容器与虚拟机"], ["Kernel Extensibility", "内核可扩展性"], ["Meltdown", "Meltdown"]] as const;
+  const tasks = officialTopicPlan(courseUrl, topics);
+  [["util", "Unix Utilities", "Unix 工具"], ["syscall", "System Calls", "系统调用"], ["pgtbl", "Page Tables", "页表"], ["traps", "Traps", "陷阱"], ["cow", "Copy-on-write Fork", "写时复制 fork"], ["net", "Network Driver", "网络驱动"], ["lock", "Parallelism and Locking", "并行与锁"], ["fs", "File System", "文件系统"], ["mmap", "Mmap", "内存映射"]].forEach(([slug, title, titleZh], index) => tasks.push({ id: `lab-${index + 1}`, title: `Lab: ${title}`, titleZh: `实验：${titleZh}`, url: `https://pdos.csail.mit.edu/6.S081/2026/labs/${slug}.html`, kind: "project" }));
+  tasks.push({ id: "midterm", title: "Midterm using published previous quizzes", titleZh: "使用公开往年试题完成期中考试", url: "https://pdos.csail.mit.edu/6.S081/2026/quiz.html", kind: "exam" }, { id: "final", title: "Final using published previous quizzes", titleZh: "使用公开往年试题完成期末考试", url: "https://pdos.csail.mit.edu/6.S081/2026/quiz.html", kind: "exam" });
+  return tasks;
 }
 
 function mit6172Tasks(): PlanTask[] {
@@ -797,58 +755,22 @@ function mit6172Tasks(): PlanTask[] {
 }
 
 function mit6830Tasks(): PlanTask[] {
-  const courseUrl = "https://ocw.mit.edu/courses/6-830-database-systems-fall-2010/";
-  const topics = ["Introduction", "The Relational Model", "Schema Design", "Introduction to Database Internals", "Database Operators and Query Processing", "Indexing and Access Methods", "Buffer Pool Design and Memory Management", "Join Algorithms", "Query Optimization", "Transactions and Locking", "Optimistic Concurrency Control", "Recovery I", "Recovery II", "Degrees of Consistency", "C-Store", "Distributed Transactions", "Parallel Databases", "Scientific Databases", "NoSQL", "ORM and DryadLINQ", "Streaming Databases", "Database as a Service", "Final Project Presentations"];
-  const topicsZh = ["导论", "关系模型", "模式设计", "数据库内部原理", "数据库算子与查询处理", "索引与访问方法", "缓冲池设计与内存管理", "连接算法", "查询优化", "事务与锁", "乐观并发控制", "恢复（一）", "恢复（二）", "一致性等级", "C-Store", "分布式事务", "并行数据库", "科学数据库", "NoSQL", "ORM 与 DryadLINQ", "流式数据库", "数据库即服务", "期末项目展示"];
-  const problemSetAfter = new Map([[4, 1], [10, 2], [21, 3]]);
-  const labAfter = new Map([[7, 1], [11, 2], [15, 3]]);
-  return topics.flatMap((title, index) => {
-    const lecture = index + 1;
-    const result: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title} and assigned reading`, titleZh: `第 ${lecture} 讲：${topicsZh[index]}与指定阅读`, url: `${courseUrl}pages/readings/`, kind: "session" }];
-    const problemSet = problemSetAfter.get(lecture);
-    if (problemSet) result.push({ id: `problem-set-${problemSet}`, title: `Problem Set ${problemSet}`, titleZh: `习题集 ${problemSet}`, url: `${courseUrl}pages/assignments/`, kind: "assignment" });
-    const lab = labAfter.get(lecture);
-    if (lab) result.push({ id: `lab-${lab}`, title: `Lab ${lab}`, titleZh: `实验 ${lab}`, url: `${courseUrl}pages/assignments/`, kind: "project" });
-    if (lecture === 6) result.push({ id: "project-team", title: "Form final project team", titleZh: "组建期末项目团队", url: `${courseUrl}pages/assignments/project/`, kind: "project" });
-    if (lecture === 11) result.push(
-      { id: "project-proposal", title: "Final project proposal", titleZh: "期末项目提案", url: `${courseUrl}pages/assignments/project/`, kind: "project" },
-      { id: "exam-1", title: "Exam 1", titleZh: "考试 1", url: `${courseUrl}pages/exams/`, kind: "exam" },
-    );
-    if (lecture === 21) result.push({ id: "exam-2", title: "Exam 2", titleZh: "考试 2", url: `${courseUrl}pages/exams/`, kind: "exam" });
-    if (lecture === 23) result.push({ id: "final-project", title: "Complete and present final project", titleZh: "完成并展示期末项目", url: `${courseUrl}pages/assignments/project/`, kind: "project" });
-    return result;
-  });
+  const schedule = "https://dsg.csail.mit.edu/6.5830/sched.php";
+  const assignments = "https://dsg.csail.mit.edu/6.5830/assign.php";
+  const topics = [["Introduction, Relational Model, and SQL I", "导论、关系模型与 SQL（一）"], ["SQL II", "SQL（二）"], ["Schema Design", "模式设计"], ["Introduction to Database Internals", "数据库内部原理导论"], ["Indexing and Access Methods", "索引与访问方法"], ["Database Operators and Query Processing", "数据库算子与查询处理"], ["Join Algorithms", "连接算法"], ["Query Optimization", "查询优化"], ["Normalization", "规范化"], ["OLAP and Column Stores", "OLAP 与列式存储"], ["Transactions and Locking", "事务与锁"], ["Optimistic Concurrency Control and Snapshot Isolation", "乐观并发控制与快照隔离"], ["Recovery I", "恢复（一）"], ["Recovery II", "恢复（二）"], ["Distributed Databases", "分布式数据库"], ["Distributed Transactions", "分布式事务"], ["Vector Databases", "向量数据库"], ["Eventual Consistency", "最终一致性"], ["Cluster Computing with Spark", "使用 Spark 的集群计算"], ["Cloud Databases", "云数据库"], ["Advanced Cardinality Estimation and Sketches", "高级基数估计与草图"], ["Semantic Operators", "语义算子"], ["Final Project Presentations I", "期末项目展示（一）"], ["Final Project Presentations II", "期末项目展示（二）"]] as const;
+  const tasks = officialTopicPlan(schedule, topics);
+  for (let n = 1; n <= 3; n += 1) tasks.push({ id: `problem-set-${n}`, title: `Problem Set ${n}`, titleZh: `习题集 ${n}`, url: assignments, kind: "assignment" });
+  for (let n = 1; n <= 4; n += 1) tasks.push({ id: `lab-${n}`, title: `Lab ${n}${n === 4 ? " (6.5831 only)" : ""}`, titleZh: `实验 ${n}${n === 4 ? "（仅 6.5831）" : ""}`, url: assignments, kind: "project" });
+  tasks.push({ id: "quiz-1", title: "Quiz 1", titleZh: "测验 1", url: assignments, kind: "exam" }, { id: "quiz-2", title: "Quiz 2", titleZh: "测验 2", url: assignments, kind: "exam" }, { id: "final-project", title: "Optional final project and report", titleZh: "可选期末项目与报告", url: assignments, kind: "project" });
+  return tasks;
 }
 
 function mit6033Tasks(): PlanTask[] {
-  const courseUrl = "https://ocw.mit.edu/courses/6-033-computer-system-engineering-spring-2018/";
-  const units = [
-    [1, 7, "Operating systems", "操作系统"], [8, 13, "Computer networking", "计算机网络"],
-    [14, 18, "Distributed systems", "分布式系统"], [19, 26, "Computer security", "计算机安全"],
-  ] as const;
-  const handsOnAfter = new Map([[3, 1], [6, 2], [9, 3], [10, 4], [13, 5], [18, 6], [20, 7]]);
-  const critiqueAfter = new Map([[5, 1], [11, 2]]);
-  const projectAfter = new Map<number, readonly [string, string]>([
-    [5, ["Design project preliminary report: begin", "开始设计项目初步报告"]],
-    [13, ["Submit design project preliminary report", "提交设计项目初步报告"]],
-    [15, ["Prepare design project presentation", "准备设计项目展示"]],
-    [23, ["Submit design project report", "提交设计项目报告"]],
-    [24, ["Complete peer review", "完成同行评审"]],
-  ]);
-  const tasks: PlanTask[] = [];
-  for (const [start, end, title, titleZh] of units) {
-    for (let lecture: number = start; lecture <= end; lecture += 1) {
-      tasks.push({ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${titleZh}`, url: `${courseUrl}pages/calendar/`, kind: "session" });
-      const handsOn = handsOnAfter.get(lecture);
-      if (handsOn) tasks.push({ id: `hands-on-${handsOn}`, title: `Hands-on Experiment ${handsOn}`, titleZh: `动手实验 ${handsOn}`, url: `${courseUrl}pages/calendar/`, kind: "assignment" });
-      const critique = critiqueAfter.get(lecture);
-      if (critique) tasks.push({ id: `system-critique-${critique}`, title: `System Critique ${critique}`, titleZh: `系统评析 ${critique}`, url: `${courseUrl}pages/calendar/`, kind: "assignment" });
-      const project = projectAfter.get(lecture);
-      if (project) tasks.push({ id: `design-project-${lecture}`, title: project[0], titleZh: project[1], url: `${courseUrl}pages/design-project/`, kind: "project" });
-      if (lecture === 15) tasks.push({ id: "quiz-1", title: "Quiz 1", titleZh: "测验 1", url: `${courseUrl}pages/resource-index/`, kind: "exam" });
-      if (lecture === 26) tasks.push({ id: "quiz-2", title: "Quiz 2", titleZh: "测验 2", url: `${courseUrl}pages/resource-index/`, kind: "exam" });
-    }
-  }
+  const courseUrl = "https://web.mit.edu/6.1800/www/";
+  const topics = [["Modularity, Abstraction, and the Impact of Systems", "模块化、抽象与系统影响"], ["Naming", "命名"], ["Virtual Memory", "虚拟内存"], ["Bounded Buffers and Locks", "有界缓冲区与锁"], ["Threads", "线程"], ["OS Structure and Virtual Machines", "操作系统结构与虚拟机"], ["Networking and Layering", "网络与分层"], ["Network-Layer Routing", "网络层路由"], ["BGP and Resilient Overlay Networks", "BGP 与弹性覆盖网络"], ["Transport Layer and TCP", "传输层与 TCP"], ["In-Network Resource Management", "网络内资源管理"], ["Application Layer", "应用层"], ["Datacenters and Clouds", "数据中心与云"], ["Reliability", "可靠性"], ["Transactions", "事务"], ["Logging", "日志"], ["Isolation", "隔离"], ["Distributed Transactions", "分布式事务"], ["Replication", "复制"], ["Security and Authentication", "安全与认证"], ["Low-Level Attacks", "底层攻击"], ["Secure Channels", "安全信道"], ["Tor and Bitcoin I", "Tor 与比特币（一）"], ["Network Attacks and Bitcoin II", "网络攻击与比特币（二）"], ["Recent Security Incidents", "近期安全事件"], ["Systems Synthesis", "系统综合"]] as const;
+  const tasks = officialTopicPlan(`${courseUrl}lectures.shtml`, topics);
+  [["Operating Systems", "操作系统"], ["Networking", "网络"], ["Databases", "数据库"], ["Security", "安全"]].forEach(([title, titleZh], index) => tasks.push({ id: `lab-${index + 1}`, title: `Lab ${index + 1}: ${title}`, titleZh: `实验 ${index + 1}：${titleZh}`, url: `${courseUrl}labs.shtml`, kind: "assignment" }));
+  tasks.push({ id: "exam-1", title: "Exam 1", titleZh: "考试 1", url: `${courseUrl}assignments/exam-1.shtml`, kind: "exam" }, { id: "exam-2", title: "Exam 2", titleZh: "考试 2", url: `${courseUrl}assignments/exam-2.shtml`, kind: "exam" }, { id: "design-project", title: "System design project and presentation", titleZh: "系统设计项目与展示", url: courseUrl, kind: "project" });
   return tasks;
 }
 
@@ -871,20 +793,12 @@ function mit802Tasks(): PlanTask[] {
 }
 
 function mit6031Tasks(): PlanTask[] {
-  const courseUrl = "https://web.mit.edu/6.031/www/fa21/";
-  const topics = ["Static Checking", "Basic TypeScript", "Testing", "Code Review", "Version Control", "Specifications", "Designing Specifications", "Mutability & Immutability", "Avoiding Debugging", "Abstract Data Types", "Abstraction Functions & Rep Invariants", "Interfaces, Generics, & Enums", "Debugging", "Recursion", "Equality", "Map, Filter, Reduce", "Recursive Data Types", "Regular Expressions & Grammars", "Parsers", "Callbacks & Graphical User Interfaces", "Concurrency", "Promises", "Mutual Exclusion", "Message Passing", "Networking", "Little Languages I", "Little Languages II", "Ethical Software Engineering", "Team Version Control"];
-  const topicsZh = ["静态检查", "TypeScript 基础", "测试", "代码审查", "版本控制", "规格说明", "设计规格说明", "可变性与不可变性", "避免调试", "抽象数据类型", "抽象函数与表示不变量", "接口、泛型与枚举", "调试", "递归", "相等性", "Map、Filter 与 Reduce", "递归数据类型", "正则表达式与文法", "解析器", "回调与图形用户界面", "并发", "Promise", "互斥", "消息传递", "网络", "小语言（一）", "小语言（二）", "软件工程伦理", "团队版本控制"];
-  const problemSetAfter = new Map([[2, 0], [7, 1], [13, 2], [19, 3], [25, 4]]);
-  return topics.flatMap((title, index) => {
-    const reading = index + 1;
-    const result: PlanTask[] = [{ id: `reading-${reading}`, title: `Reading ${reading}: ${title}`, titleZh: `阅读 ${reading}：${topicsZh[index]}`, url: `${courseUrl}general/toc.html`, kind: "session" }];
-    const problemSet = problemSetAfter.get(reading);
-    if (problemSet !== undefined) result.push({ id: `problem-set-${problemSet}`, title: `Problem Set ${problemSet}`, titleZh: `习题集 ${problemSet}`, url: courseUrl, kind: "assignment" });
-    if (reading === 15) result.push({ id: "quiz-1", title: "Quiz 1", titleZh: "测验 1", url: courseUrl, kind: "exam" });
-    if (reading === 21) result.push({ id: "project-start", title: "Star Battle project: design and implementation", titleZh: "Star Battle 项目：设计与实现", url: courseUrl, kind: "project" });
-    if (reading === 29) result.push({ id: "project-finish", title: "Complete Star Battle project and reflection", titleZh: "完成 Star Battle 项目与反思", url: courseUrl, kind: "project" }, { id: "quiz-2", title: "Quiz 2", titleZh: "测验 2", url: courseUrl, kind: "exam" });
-    return result;
-  });
+  const courseUrl = "https://web.mit.edu/6.102/www/sp26/";
+  const topics = [["Static Checking", "静态检查"], ["Testing", "测试"], ["Code Review", "代码审查"], ["Specifications", "规格说明"], ["Designing Specifications", "设计规格说明"], ["Abstract Data Types", "抽象数据类型"], ["Abstraction Functions and Representation Invariants", "抽象函数与表示不变量"], ["Interfaces and Subtyping", "接口与子类型"], ["Equality", "相等性"], ["Functional Programming", "函数式编程"], ["Recursive Data Types", "递归数据类型"], ["Grammars and Parsing", "文法与解析"], ["Debugging", "调试"], ["Concurrency", "并发"], ["Promises", "Promise"], ["Mutual Exclusion", "互斥"], ["Callbacks and Graphical User Interfaces", "回调与图形用户界面"], ["Message Passing and Networking", "消息传递与网络"], ["Little Languages", "小语言"]] as const;
+  const tasks = officialTopicPlan(`${courseUrl}general/toc.html`, topics);
+  for (let n = 0; n <= 4; n += 1) tasks.push({ id: `problem-set-${n}`, title: `Problem Set ${n}`, titleZh: `习题集 ${n}`, url: `${courseUrl}psets/ps${n}/`, kind: "assignment" });
+  tasks.push({ id: "project", title: "Star Battle team project", titleZh: "Star Battle 团队项目", url: `${courseUrl}project/starb/`, kind: "project" }, { id: "exam-1", title: "Exam 1 and solution", titleZh: "考试 1 与答案", url: `${courseUrl}exams/archive/exam1.pdf`, kind: "exam" }, { id: "exam-2", title: "Exam 2 and solution", titleZh: "考试 2 与答案", url: `${courseUrl}exams/archive/exam2.pdf`, kind: "exam" });
+  return tasks;
 }
 
 function mit6036Tasks(): PlanTask[] {
@@ -919,8 +833,8 @@ function mit6253Tasks(): PlanTask[] {
 }
 
 function princetonCos126Tasks(): PlanTask[] {
-  const scheduleUrl = "https://www.cs.princeton.edu/courses/archive/spr26/cos126/schedule/";
-  const assignmentUrl = "https://www.cs.princeton.edu/courses/archive/spr26/cos126/assignments/";
+  const scheduleUrl = "https://introcs.cs.princeton.edu/java/lectures/";
+  const assignmentUrl = "https://introcs.cs.princeton.edu/java/assignments/";
   const topics = ["Introduction and Hello, World", "Data Types", "Conditionals", "Loops", "Arrays", "Input and Output", "Functions", "Libraries and Clients", "Recursion", "Performance", "Using Data Types", "Creating Data Types", "Designing Data Types", "Algorithms", "Data Structures", "Theory of Computing", "Introduction to Machine Learning", "Introduction to Deep Learning", "TOY I", "TOY II", "Circuits"];
   const topicsZh = ["课程介绍与 Hello, World", "数据类型", "条件语句", "循环", "数组", "输入与输出", "函数", "库与客户端", "递归", "性能", "使用数据类型", "创建数据类型", "设计数据类型", "算法", "数据结构", "计算理论", "机器学习导论", "深度学习导论", "TOY（一）", "TOY（二）", "电路"];
   const assignments = new Map<number, readonly [number, string, string]>([[1, [0, "Hello, World", "Hello, World"]], [3, [1, "Conditionals and Loops", "条件与循环"]], [6, [2, "Arrays and Input/Output", "数组与输入输出"]], [8, [3, "Conjunction Function", "合取函数"]], [10, [4, "Recursion", "递归"]], [12, [5, "Object Oriented Programming", "面向对象编程"]], [14, [6, "Guitar Hero", "吉他英雄"]], [16, [7, "Chat126", "Chat126"]], [18, [8, "Image Classifier", "图像分类器"]], [20, [9, "Hamming Codes in TOY", "TOY 汉明码"]]]);
@@ -929,8 +843,8 @@ function princetonCos126Tasks(): PlanTask[] {
     const result: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${topicsZh[index]}`, url: scheduleUrl, kind: "session" }];
     const assignment = assignments.get(lecture);
     if (assignment) result.push({ id: `assignment-${assignment[0]}`, title: `Assignment ${assignment[0]}: ${assignment[1]}`, titleZh: `作业 ${assignment[0]}：${assignment[2]}`, url: assignmentUrl, kind: "assignment" });
-    if (lecture === 10) result.push({ id: "midterm", title: "Midterm exam", titleZh: "期中考试", url: "https://www.cs.princeton.edu/courses/archive/spr26/cos126/exams/", kind: "exam" });
-    if (lecture === 21) result.push({ id: "programming-exam", title: "Programming exam", titleZh: "编程考试", url: "https://www.cs.princeton.edu/courses/archive/spr26/cos126/exams/", kind: "exam" }, { id: "atomic-project", title: "Atomic project", titleZh: "Atomic 课程项目", url: "https://www.cs.princeton.edu/courses/archive/spr26/cos126/project/", kind: "project" }, { id: "final-exam", title: "Final exam", titleZh: "期末考试", url: "https://www.cs.princeton.edu/courses/archive/spr26/cos126/exams/", kind: "exam" });
+    if (lecture === 10) result.push({ id: "review-1", title: "Review exercises", titleZh: "阶段复习练习", url: "https://introcs.cs.princeton.edu/java/20functions/", kind: "assignment" });
+    if (lecture === 21) result.push({ id: "capstone-assignment", title: "Choose a capstone programming assignment", titleZh: "选择一个综合编程作业", url: assignmentUrl, kind: "project" });
     return result;
   });
 }
@@ -953,8 +867,8 @@ function princetonCos226Tasks(): PlanTask[] {
 }
 
 function princetonCos217Tasks(): PlanTask[] {
-  const classUrl = "https://www.cs.princeton.edu/courses/archive/spring25/cos217/classes.php";
-  const assignmentUrl = "https://www.cs.princeton.edu/courses/archive/spring25/cos217/assignments.php";
+  const classUrl = "https://www.cs.princeton.edu/courses/archive/spring26/cos217/classes.php";
+  const assignmentUrl = "https://www.cs.princeton.edu/courses/archive/spring26/cos217/assignments.php";
   const topics = ["Course introduction, Linux, and bash", "Git and introduction to C", "Building C programs and DFAs", "C program design and logical operators", "Numeric data types", "Pointers, arrays, and strings", "Building with make", "Structs, arguments, and dynamic memory", "Testing", "Data structures", "Debugging", "Modularity", "Testing and modularity", "Assignment 4 design", "Storage hierarchy", "Assembly language I", "Assembly language II", "Assembly functions", "Assignment 5 design", "Performance", "Assignment 6 design", "Machine language", "Assembler and linker"];
   const topicsZh = ["课程介绍、Linux 与 bash", "Git 与 C 语言导论", "构建 C 程序与确定有限自动机", "C 程序设计与逻辑运算", "数值数据类型", "指针、数组与字符串", "使用 make 构建", "结构体、参数与动态内存", "测试", "数据结构", "调试", "模块化", "测试与模块化", "作业 4 设计", "存储层次结构", "汇编语言（一）", "汇编语言（二）", "汇编函数", "作业 5 设计", "性能", "作业 6 设计", "机器语言", "汇编器与链接器"];
   const assignments = new Map<number, readonly [number, string, string]>([[3, [0, "Introductory Survey", "入门练习"]], [5, [1, "A De-Comment Program", "去注释程序"]], [9, [2, "A String Module and Client", "字符串模块与客户端"]], [14, [3, "A Symbol Table Module", "符号表模块"]], [17, [4, "Directory and File Trees", "目录与文件树"]], [20, [5, "Assembly Language Programming and Testing", "汇编语言编程与测试"]], [23, [6, "A Buffer Overrun Attack", "缓冲区溢出攻击"]]]);
@@ -963,14 +877,14 @@ function princetonCos217Tasks(): PlanTask[] {
     const result: PlanTask[] = [{ id: `lecture-${lecture}`, title: `Lecture ${lecture}: ${title}`, titleZh: `第 ${lecture} 讲：${topicsZh[index]}`, url: classUrl, kind: "session" }];
     const assignment = assignments.get(lecture);
     if (assignment) result.push({ id: `assignment-${assignment[0]}`, title: `Assignment ${assignment[0]}: ${assignment[1]}`, titleZh: `作业 ${assignment[0]}：${assignment[2]}`, url: assignmentUrl, kind: "project" });
-    if (lecture === 11) result.push({ id: "midterm", title: "Midterm exam", titleZh: "期中考试", url: "https://www.cs.princeton.edu/courses/archive/spring25/cos217/exams.php", kind: "exam" });
-    if (lecture === 23) result.push({ id: "final-exam", title: "Final exam", titleZh: "期末考试", url: "https://www.cs.princeton.edu/courses/archive/spring25/cos217/exams.php", kind: "exam" });
+    if (lecture === 11) result.push({ id: "midterm", title: "Midterm exam", titleZh: "期中考试", url: "https://www.cs.princeton.edu/courses/archive/spring26/cos217/exams.php", kind: "exam" });
+    if (lecture === 23) result.push({ id: "final-exam", title: "Final exam", titleZh: "期末考试", url: "https://www.cs.princeton.edu/courses/archive/spring26/cos217/exams.php", kind: "exam" });
     return result;
   });
 }
 
 function princetonCos240Tasks(): PlanTask[] {
-  const courseUrl = "https://www.cs.princeton.edu/courses/archive/fall25/cos240/";
+  const courseUrl = "https://www.cs.princeton.edu/courses/archive/spring26/cos240/";
   const units = [
     [2, "Mathematical proofs", "数学证明"], [2, "Combinatorics", "组合数学"], [6, "Probability theory", "概率论"],
     [4, "Graph theory", "图论"], [2, "Game theory", "博弈论"], [1, "Countable and uncountable sets", "可数集与不可数集"],
@@ -1007,21 +921,21 @@ function princetonCos316Tasks(): PlanTask[] {
 }
 
 function princetonCos324Tasks(): PlanTask[] {
-  const topics = ["Introduction", "Linear Regression I", "Linear Regression II", "Features and Basis Functions", "Overfitting and Regularization", "Cross Validation", "Linear Classification I", "Linear Classification II", "Support Vector Machines", "Kernel-based Classification", "Neural Networks I", "Neural Networks II", "K-Means Clustering", "Hierarchical Clustering", "Principal Component Analysis", "Latent Factor Models", "Markov Decision Processes", "Value Iteration", "Policy Iteration", "Model-based Reinforcement Learning", "Model-free Reinforcement Learning", "Wrap-up"];
-  const topicsZh = ["导论", "线性回归（一）", "线性回归（二）", "特征与基函数", "过拟合与正则化", "交叉验证", "线性分类（一）", "线性分类（二）", "支持向量机", "基于核的分类", "神经网络（一）", "神经网络（二）", "K-Means 聚类", "层次聚类", "主成分分析", "潜在因子模型", "马尔可夫决策过程", "价值迭代", "策略迭代", "基于模型的强化学习", "无模型强化学习", "课程总结"];
-  return sequencedCourseTasks("https://www.cs.princeton.edu/courses/archive/fall18/cos324/", topics, topicsZh, new Map([[2, 1], [6, 2], [11, 3], [13, 4], [16, 5], [19, 6]]), "https://www.cs.princeton.edu/courses/archive/fall18/cos324/#assignments", new Map([[12, "Midterm exam"], [22, "Final exam"]]));
+  const topics = ["Machine Learning through Linear Models", "Linear Regression", "Gradient Descent", "Logistic and Multiclass Regression", "Cross Validation and Interpretability", "K-Means Clustering", "Dimensionality Reduction and SVD", "Probability and N-Gram Models", "Evaluating Probabilistic Models", "Word Embeddings", "Sampling and Generalization", "Midterm Review", "Deep Neural Networks", "Backpropagation", "Convolutional Networks", "Convolutional Networks Continued", "Recurrent Networks", "Decision-Making under Uncertainty", "Markov Decision Processes", "Policy Optimization", "Game Playing and AlphaGo", "Ethics in Machine Learning", "Deep Learning and Language Models", "Course Review"];
+  const topicsZh = ["从线性模型认识机器学习", "线性回归", "梯度下降", "逻辑回归与多分类回归", "交叉验证与可解释性", "K-Means 聚类", "降维与奇异值分解", "概率与 N-Gram 模型", "概率模型评估", "词嵌入", "采样与泛化", "期中复习", "深度神经网络", "反向传播", "卷积神经网络", "卷积神经网络续篇", "循环神经网络", "不确定性下的决策", "马尔可夫决策过程", "策略优化", "博弈与 AlphaGo", "机器学习伦理", "深度学习与语言模型", "课程复习"];
+  return sequencedCourseTasks("https://www.cs.princeton.edu/courses/archive/fall20/cos324/", topics, topicsZh, new Map([[1, 0], [3, 1], [5, 2], [7, 3], [9, 4], [14, 5], [16, 6], [20, 7]]), "https://www.cs.princeton.edu/courses/archive/fall20/cos324/", new Map([[12, "Midterm exam"], [24, "Final review"]]));
 }
 
 function princetonCos418Tasks(): PlanTask[] {
   const topics = ["Distributed Systems Introduction", "Course Overview", "Go Systems Programming", "Network Communication and RPC", "Failures and RPCs", "Concurrency in Go and MapReduce", "Time and Logical Clocks I", "Time and Logical Clocks II", "RPCs in Go", "Distributed Snapshots", "Eventual Consistency and Bayou", "Snapshot Precept", "Peer-to-Peer Systems and DHTs", "Chord under Failures", "Bayou and Chord", "Replicated State Machines via Primary Backup", "View Changes and Consensus", "Consensus with Raft", "More Raft", "Raft Leader Election", "Strong Consistency", "Scalable Causal Consistency", "Raft Precept", "Atomic Commit and Concurrency Control", "Spanner I", "Consistency Precept", "Spanner II", "Concurrency Control Precept", "CAP, PRAM, SNOW, PORT, and FLP", "System Performance", "Spanner and SNOW", "Blockchains", "Tying It All Together"];
   const topicsZh = ["分布式系统导论", "课程概览", "Go 系统编程", "网络通信与远程过程调用", "故障与远程过程调用", "Go 并发与 MapReduce", "时间与逻辑时钟（一）", "时间与逻辑时钟（二）", "Go 远程过程调用", "分布式快照", "最终一致性与 Bayou", "快照习题课", "对等系统与分布式哈希表", "故障下的 Chord", "Bayou 与 Chord", "主备复制状态机", "视图变更与共识", "Raft 共识", "Raft 进阶", "Raft 领导者选举", "强一致性", "可扩展因果一致性", "Raft 习题课", "原子提交与并发控制", "Spanner（一）", "一致性习题课", "Spanner（二）", "并发控制习题课", "CAP、PRAM、SNOW、PORT 与 FLP", "系统性能", "Spanner 与 SNOW", "区块链", "课程综合"];
-  return sequencedCourseTasks("https://www.cs.princeton.edu/courses/archive/spring24/cos418/schedule.html", topics, topicsZh, new Map([[6, 1], [12, 2], [20, 3], [29, 4], [33, 5]]), "https://www.cs.princeton.edu/courses/archive/spring24/cos418/assignments.html", new Map([[17, "Midterm exam"], [33, "Final exam"]]));
+  return sequencedCourseTasks("https://www.cs.princeton.edu/courses/archive/fall26/cos418/schedule.html", topics, topicsZh, new Map([[6, 1], [12, 2], [20, 3], [29, 4], [33, 5]]), "https://www.cs.princeton.edu/courses/archive/fall26/cos418/assignments.html", new Map([[17, "Midterm exam"], [33, "Final exam"]]));
 }
 
 function princetonCos423Tasks(): PlanTask[] {
-  const topics = ["Counting in Binary and Efficiency", "Competitiveness and Self-adjusting Lists", "Binary Search Trees", "Balanced Binary Search Trees", "Self-Adjusting Search Trees", "Implicit and Pairing Heaps", "Rank-Pairing Heaps", "Shortest Paths I", "Shortest Paths II", "Minimum Spanning Trees", "Faster Minimum Spanning Trees", "Disjoint Sets and Compressed Trees", "Analysis of Path Compression", "Graph Search", "Strong Components and Blocks", "Dominators in Directed Graphs", "P, NP, and NP-Completeness", "Coping with NP-Completeness", "Graph Matching", "Nonbipartite Matching", "Maximum Flow", "Minimum-Cost Matchings and Flows", "Odds and Ends I", "Odds and Ends II"];
-  const topicsZh = ["二进制计数与效率", "竞争性与自调整链表", "二叉搜索树", "平衡二叉搜索树", "自调整搜索树", "隐式堆与配对堆", "秩配对堆", "最短路径（一）", "最短路径（二）", "最小生成树", "更快的最小生成树", "不相交集合与压缩树", "路径压缩分析", "图搜索", "强连通分量与块", "有向图支配点", "P、NP 与 NP 完全性", "应对 NP 完全性", "图匹配", "非二分图匹配", "最大流", "最小费用匹配与流", "其他专题（一）", "其他专题（二）"];
-  return sequencedCourseTasks("https://www.cs.princeton.edu/courses/archive/spring11/cos423/lectures.php", topics, topicsZh, new Map([[4, 1], [8, 2], [13, 3], [15, 4], [18, 5], [23, 6]]), "https://www.cs.princeton.edu/courses/archive/spr11/cos423/assignments.php", new Map());
+  const topics = ["Minimum Spanning Trees I", "Minimum Spanning Trees II", "Shortest Paths", "Graph Matchings", "Graph Matchings II", "Strongly Connected Components", "Maximum Flow", "Maximum Flow II", "K-d Trees", "Van Emde Boas Trees and X-fast Tries", "Y-fast Tries and Fusion Trees", "Disjoint Set Union", "Fibonacci Heaps", "Splay Trees", "Suffix Trees and Suffix Arrays", "String Matching", "External-Memory Algorithms", "Approximation Algorithms", "Integer Sorting", "Cell-Probe Lower Bounds"];
+  const topicsZh = ["最小生成树（一）", "最小生成树（二）", "最短路径", "图匹配", "图匹配（二）", "强连通分量", "最大流", "最大流（二）", "K-d 树", "Van Emde Boas 树与 X-fast Trie", "Y-fast Trie 与融合树", "并查集", "斐波那契堆", "伸展树", "后缀树与后缀数组", "字符串匹配", "外存算法", "近似算法", "整数排序", "Cell-Probe 下界"];
+  return sequencedCourseTasks("https://www.cs.princeton.edu/~hy2/teaching/spring26-cos423/index.html", topics, topicsZh, new Map([[2, 1], [6, 2], [10, 3], [14, 4], [18, 5]]), "https://www.cs.princeton.edu/~hy2/teaching/spring26-cos423/index.html#homework", new Map([[7, "Midterm 1"], [15, "Midterm 2"], [20, "Final exam"]]));
 }
 
 function princetonCos432Tasks(): PlanTask[] {
@@ -1144,14 +1058,14 @@ function cornellCs4820Tasks(): PlanTask[] {
 }
 
 function cornellCs1110Tasks(): PlanTask[] {
-  const lecturesUrl = "https://www.cs.cornell.edu/courses/cs1110/2025fa/lectures/";
-  const labsUrl = "https://www.cs.cornell.edu/courses/cs1110/2025fa/assessment/labs/";
+  const lecturesUrl = "https://www.cs.cornell.edu/courses/cs1110/2026fa/lectures/";
+  const labsUrl = "https://www.cs.cornell.edu/courses/cs1110/2026fa/assessment/labs/";
   const topics = ["Getting Started", "Expressions and Variables", "Modules", "Functions", "Strings", "Testing", "Conditionals", "Assignment 1 Workshop", "Objects", "Debugging", "Assertions", "Sequences", "For-Loops", "Assignment 3 Follow-Up", "Recursion I", "Recursion II", "Nested Lists and Dictionaries", "Blackjack", "Object-Oriented Design", "Subclasses", "Abstraction", "While Loops", "GUI Classes", "Advanced Error Handling", "Searching and Sorting", "Generators"];
   const topicsZh = ["入门准备", "表达式与变量", "模块", "函数", "字符串", "测试", "条件语句", "作业 1 工作坊", "对象", "调试", "断言", "序列", "For 循环", "作业 3 复盘", "递归（一）", "递归（二）", "嵌套列表与字典", "Blackjack", "面向对象设计", "子类", "抽象", "While 循环", "GUI 类", "高级错误处理", "搜索与排序", "生成器"];
   const tasks: PlanTask[] = topics.flatMap((title, index) => [{ id: `lesson-${index + 1}`, title: `Lesson ${index + 1}: ${title}`, titleZh: `第 ${index + 1} 课：${topicsZh[index]}`, url: lecturesUrl, kind: "session" as const }, { id: `lab-${index + 1}`, title: `Official lab: ${title}`, titleZh: `官方实验：${topicsZh[index]}`, url: labsUrl, kind: "assignment" as const }]);
-  const assignments = [["Currency", "货币换算"], ["Call Frames", "调用栈帧"], ["Color Models", "颜色模型"], ["Turtles", "海龟绘图"], ["Class Folders", "类文件夹"], ["Images", "图像处理"], ["Froggit", "Froggit 游戏"]] as const;
-  assignments.forEach(([title, titleZh], index) => tasks.push({ id: `assignment-${index + 1}`, title: `Assignment ${index + 1}: ${title}`, titleZh: `作业 ${index + 1}：${titleZh}`, url: "https://www.cs.cornell.edu/courses/cs1110/2025fa/assessment/assignments/", kind: "project" }));
-  tasks.push({ id: "prelim-1", title: "Prelim I", titleZh: "第一次阶段考试", url: "https://www.cs.cornell.edu/courses/cs1110/2025fa/assessment/exams/", kind: "exam" }, { id: "prelim-2", title: "Prelim II", titleZh: "第二次阶段考试", url: "https://www.cs.cornell.edu/courses/cs1110/2025fa/assessment/exams/", kind: "exam" }, { id: "final", title: "Final Exam", titleZh: "期末考试", url: "https://www.cs.cornell.edu/courses/cs1110/2025fa/assessment/exams/", kind: "exam" });
+  const assignments = [["Currency", "货币换算"], ["Call Frames", "调用栈帧"]] as const;
+  assignments.forEach(([title, titleZh], index) => tasks.push({ id: `assignment-${index + 1}`, title: `Assignment ${index + 1}: ${title}`, titleZh: `作业 ${index + 1}：${titleZh}`, url: "https://www.cs.cornell.edu/courses/cs1110/2026fa/assessment/assignments/", kind: "project" }));
+  tasks.push({ id: "prelim-1", title: "Prelim I", titleZh: "第一次阶段考试", url: "https://www.cs.cornell.edu/courses/cs1110/2026fa/assessment/exams/", kind: "exam" }, { id: "prelim-2", title: "Prelim II", titleZh: "第二次阶段考试", url: "https://www.cs.cornell.edu/courses/cs1110/2026fa/assessment/exams/", kind: "exam" }, { id: "final", title: "Final Exam", titleZh: "期末考试", url: "https://www.cs.cornell.edu/courses/cs1110/2026fa/assessment/exams/", kind: "exam" });
   return tasks;
 }
 
@@ -1233,7 +1147,7 @@ function stanfordAdvancedTasks(courseId:"cs103"|"cs161"|"cs144"|"cs143"|"cs148"|
  const d={
  cs103:{url:"https://web.stanford.edu/class/archive/cs/cs103/cs103.1264/",topics:[["Mathematical Proofs","数学证明"],["Sets and Functions","集合与函数"],["Relations","关系"],["Propositional Logic","命题逻辑"],["First-Order Logic","一阶逻辑"],["Induction","归纳法"],["Finite Automata","有限自动机"],["Regular Languages","正则语言"],["Context-Free Languages","上下文无关语言"],["Turing Machines","图灵机"],["Decidability","可判定性"],["Complexity Theory","复杂度理论"]],projects:[]},
  cs161:{url:"https://web.stanford.edu/class/cs161/",topics:[["Asymptotic Analysis","渐近分析"],["Divide and Conquer","分治"],["Randomized Algorithms","随机算法"],["Sorting and Selection","排序与选择"],["Hashing","哈希"],["Graph Search","图搜索"],["Shortest Paths","最短路径"],["Minimum Spanning Trees","最小生成树"],["Greedy Algorithms","贪心算法"],["Dynamic Programming","动态规划"],["Network Flow","网络流"],["Linear Programming","线性规划"],["NP-Completeness","NP 完全性"],["Approximation Algorithms","近似算法"]],projects:[]},
- cs144:{url:"https://web.stanford.edu/class/cs144/",topics:[["Internet Architecture","互联网体系结构"],["Application Layer","应用层"],["Reliable Transport","可靠传输"],["TCP","TCP"],["Congestion Control","拥塞控制"],["Network Layer","网络层"],["IP and Forwarding","IP 与转发"],["Routing","路由"],["Link Layer","链路层"],["Network Security","网络安全"],["Datacenter Networks","数据中心网络"],["Network Measurement","网络测量"]],projects:["Networking Warmup","Byte Stream","TCP Receiver","TCP Sender","Network Interface","IP Router","Network Integration"]},
+ cs144:{url:"https://www.scs.stanford.edu/10au-cs144/",topics:[["IP and Datagrams","IP 与数据报"],["Application Protocols","应用层协议"],["Transport and Reliability","传输与可靠性"],["TCP and Congestion Control","TCP 与拥塞控制"],["IP Forwarding","IP 转发"],["Intra-domain Routing","域内路由"],["Inter-domain Routing","域间路由"],["Physical and Link Layers","物理层与链路层"],["DNS","域名系统"],["DCCP and NAT","DCCP 与 NAT"],["Wireless Networking","无线网络"],["Queuing, Caching, and Content Distribution","队列、缓存与内容分发"],["Coding and Error Correction","编码与纠错"],["Network Security","网络安全"],["Multicast and IPv6","组播与 IPv6"],["Wireless Routing","无线路由"]],projects:["Reliable Transport: Stop and Wait","Reliable Transport: Sliding Window","Simple Router","Dynamic Routing","Network Address Translation"]},
  cs143:{url:"https://web.stanford.edu/class/cs143/",topics:[["Compiler Structure","编译器结构"],["Lexical Analysis","词法分析"],["Regular Expressions","正则表达式"],["Parsing","语法分析"],["Context-Free Grammars","上下文无关文法"],["Semantic Analysis","语义分析"],["Type Checking","类型检查"],["Runtime Organization","运行时组织"],["Code Generation","代码生成"],["Intermediate Representations","中间表示"],["Dataflow Analysis","数据流分析"],["Optimization","优化"]],projects:["Lexer","Parser","Semantic Analyzer","Code Generator"]},
  cs148:{url:"https://web.stanford.edu/class/cs148/lectures.html",topics:[["Graphics Pipeline","图形流水线"],["Geometry and Transforms","几何与变换"],["Rasterization","光栅化"],["Texture Mapping","纹理映射"],["Lighting and Shading","光照与着色"],["Ray Tracing","光线追踪"],["Curves and Surfaces","曲线与曲面"],["Animation","动画"],["Physical Simulation","物理模拟"],["Image Processing","图像处理"],["Rendering Systems","渲染系统"],["Interactive Graphics","交互式图形"]],projects:["Modeling","Rasterization","Shading","Animation","Final Graphics Project"]},
  cs221:{url:"https://stanford-cs221.github.io/spring2026/",topics:[["Machine Learning","机器学习"],["Search","搜索"],["Markov Decision Processes","马尔可夫决策过程"],["Game Playing","博弈"],["Constraint Satisfaction","约束满足"],["Bayesian Networks","贝叶斯网络"],["Logic","逻辑"],["Deep Learning","深度学习"],["Natural Language Processing","自然语言处理"],["Computer Vision","计算机视觉"],["Robotics","机器人"],["AI Ethics","人工智能伦理"]],projects:["Foundations","Sentiment Classification","Text Reconstruction","Blackjack","Pac-Man","Final AI Project"]},
@@ -1329,24 +1243,24 @@ structuredCoursePlans["stanford-cs109"] = { sourceUrl: "https://web.stanford.edu
 structuredCoursePlans["stanford-cs111"] = { sourceUrl: "https://web.stanford.edu/class/cs111/", detail: "full", tasks: stanfordCs111Tasks() };
 structuredCoursePlans["mit-6-004"] = { sourceUrl: "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/", detail: "full", tasks: mit6004Tasks() };
 structuredCoursePlans["mit-6-837"] = { sourceUrl: "https://ocw.mit.edu/courses/6-837-computer-graphics-fall-2012/", detail: "full", tasks: mit6837Tasks() };
-structuredCoursePlans["mit-6-824"] = { sourceUrl: "https://ocw.mit.edu/courses/6-824-distributed-computer-systems-engineering-spring-2006/", detail: "full", tasks: mit6824Tasks() };
-structuredCoursePlans["mit-6-858"] = { sourceUrl: "https://ocw.mit.edu/courses/6-858-computer-systems-security-fall-2014/", detail: "full", tasks: mit6858Tasks() };
-structuredCoursePlans["mit-6-s081"] = { sourceUrl: "https://pdos.csail.mit.edu/6.S081/2021/schedule.html", detail: "full", tasks: mit6s081Tasks() };
+structuredCoursePlans["mit-6-824"] = { sourceUrl: "https://pdos.csail.mit.edu/6.5840/schedule.html", detail: "full", tasks: mit6824Tasks() };
+structuredCoursePlans["mit-6-858"] = { sourceUrl: "https://css.csail.mit.edu/6.5660/2026/", detail: "full", tasks: mit6858Tasks() };
+structuredCoursePlans["mit-6-s081"] = { sourceUrl: "https://pdos.csail.mit.edu/6.S081/2026/schedule.html", detail: "full", tasks: mit6s081Tasks() };
 structuredCoursePlans["mit-6-172"] = { sourceUrl: "https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/", detail: "full", tasks: mit6172Tasks() };
-structuredCoursePlans["mit-6-830"] = { sourceUrl: "https://ocw.mit.edu/courses/6-830-database-systems-fall-2010/", detail: "full", tasks: mit6830Tasks() };
-structuredCoursePlans["mit-6-033"] = { sourceUrl: "https://ocw.mit.edu/courses/6-033-computer-system-engineering-spring-2018/", detail: "full", tasks: mit6033Tasks() };
+structuredCoursePlans["mit-6-830"] = { sourceUrl: "https://dsg.csail.mit.edu/6.5830/sched.php", detail: "full", tasks: mit6830Tasks() };
+structuredCoursePlans["mit-6-033"] = { sourceUrl: "https://web.mit.edu/6.1800/www/", detail: "full", tasks: mit6033Tasks() };
 structuredCoursePlans["mit-8-02"] = { sourceUrl: "https://ocw.mit.edu/courses/8-02-physics-ii-electricity-and-magnetism-spring-2019/", detail: "full", tasks: mit802Tasks() };
-structuredCoursePlans["mit-6-031"] = { sourceUrl: "https://web.mit.edu/6.031/www/fa21/", detail: "full", tasks: mit6031Tasks() };
+structuredCoursePlans["mit-6-031"] = { sourceUrl: "https://web.mit.edu/6.102/www/sp26/", detail: "full", tasks: mit6031Tasks() };
 structuredCoursePlans["mit-6-036"] = { sourceUrl: "https://openlearninglibrary.mit.edu/courses/course-v1%3AMITx%2B6.036%2B1T2019/course/", detail: "full", tasks: mit6036Tasks() };
 structuredCoursePlans["mit-6-253"] = { sourceUrl: "https://ocw.mit.edu/courses/6-253-convex-analysis-and-optimization-spring-2012/", detail: "full", tasks: mit6253Tasks() };
-structuredCoursePlans["princeton-cos126"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/spr26/cos126/schedule/", detail: "full", tasks: princetonCos126Tasks() };
+structuredCoursePlans["princeton-cos126"] = { sourceUrl: "https://introcs.cs.princeton.edu/java/lectures/", detail: "full", tasks: princetonCos126Tasks() };
 structuredCoursePlans["princeton-cos226"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/spring26/cos226/lectures.php", detail: "full", tasks: princetonCos226Tasks() };
-structuredCoursePlans["princeton-cos217"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/spring25/cos217/classes.php", detail: "full", tasks: princetonCos217Tasks() };
-structuredCoursePlans["princeton-cos240"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/fall25/cos240/", detail: "full", tasks: princetonCos240Tasks() };
+structuredCoursePlans["princeton-cos217"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/spring26/cos217/classes.php", detail: "full", tasks: princetonCos217Tasks() };
+structuredCoursePlans["princeton-cos240"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/spring26/cos240/", detail: "full", tasks: princetonCos240Tasks() };
 structuredCoursePlans["princeton-cos316"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/spring26/cos316/lectures.html", detail: "full", tasks: princetonCos316Tasks() };
-structuredCoursePlans["princeton-cos324"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/fall18/cos324/", detail: "full", tasks: princetonCos324Tasks() };
-structuredCoursePlans["princeton-cos418"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/spring24/cos418/schedule.html", detail: "full", tasks: princetonCos418Tasks() };
-structuredCoursePlans["princeton-cos423"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/spring11/cos423/lectures.php", detail: "full", tasks: princetonCos423Tasks() };
+structuredCoursePlans["princeton-cos324"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/fall20/cos324/", detail: "full", tasks: princetonCos324Tasks() };
+structuredCoursePlans["princeton-cos418"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/fall26/cos418/schedule.html", detail: "full", tasks: princetonCos418Tasks() };
+structuredCoursePlans["princeton-cos423"] = { sourceUrl: "https://www.cs.princeton.edu/~hy2/teaching/spring26-cos423/index.html", detail: "full", tasks: princetonCos423Tasks() };
 structuredCoursePlans["princeton-cos432"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/fall19/cos432/schedule/", detail: "full", tasks: princetonCos432Tasks() };
 structuredCoursePlans["princeton-cos461"] = { sourceUrl: "https://www.cs.princeton.edu/courses/archive/fall25/cos461/schedule.html", detail: "full", tasks: princetonCos461Tasks() };
 structuredCoursePlans["princeton-mat104"] = { sourceUrl: "https://web.math.princeton.edu/~nelson/104/", detail: "full", tasks: princetonMat104Tasks() };
@@ -1358,7 +1272,7 @@ structuredCoursePlans["cornell-cs6787"] = { sourceUrl: "https://www.cs.cornell.e
 structuredCoursePlans["cornell-cs2110"] = { sourceUrl: "https://www.cs.cornell.edu/courses/cs2110/2026sp/lectures/lec01/", detail: "full", tasks: cornellCs2110Tasks() };
 structuredCoursePlans["cornell-cs3110"] = { sourceUrl: "https://cs3110.github.io/textbook/cover.html", detail: "full", tasks: cornellCs3110Tasks() };
 structuredCoursePlans["cornell-cs4820"] = { sourceUrl: "https://www.cs.cornell.edu/courses/cs4820/2026sp/lectures/", detail: "full", tasks: cornellCs4820Tasks() };
-structuredCoursePlans["cornell-cs1110"] = { sourceUrl: "https://www.cs.cornell.edu/courses/cs1110/2025fa/lectures/", detail: "full", tasks: cornellCs1110Tasks() };
+structuredCoursePlans["cornell-cs1110"] = { sourceUrl: "https://www.cs.cornell.edu/courses/cs1110/2026fa/lectures/", detail: "full", tasks: cornellCs1110Tasks() };
 structuredCoursePlans["princeton-mat103"] = { sourceUrl: "https://web.math.princeton.edu/~nelson/103/", detail: "full", tasks: princetonFoundationTasks("mat103") };
 structuredCoursePlans["princeton-mat201"] = { sourceUrl: "https://www.math.princeton.edu/undergraduate/placement/MAT201", detail: "full", tasks: princetonFoundationTasks("mat201") };
 structuredCoursePlans["princeton-mat202"] = { sourceUrl: "https://www.math.princeton.edu/undergraduate/placement/MAT202", detail: "full", tasks: princetonFoundationTasks("mat202") };
@@ -1371,10 +1285,28 @@ for (const id of ["cs61b","cs161","cs188","cs162","cs186","cs189"] as const) str
 const berkeleyMath54Url = "https://math.berkeley.edu/courses/overview/lowerdivcourses/math54";
 const berkeleyMath54Topics = [["Linear Systems and Row Reduction", "线性方程组与行化简"], ["Matrix Algebra and Determinants", "矩阵代数与行列式"], ["Vector Spaces, Bases, and Dimension", "向量空间、基与维数"], ["Eigenvalues and Eigenvectors", "特征值与特征向量"], ["Orthogonality and Least Squares", "正交与最小二乘"], ["Symmetric Matrices, Quadratic Forms, and SVD", "对称矩阵、二次型与奇异值分解"], ["Linear Second-Order Differential Equations", "线性二阶微分方程"], ["Systems of Linear Differential Equations", "线性微分方程组"], ["Fourier Series", "傅里叶级数"], ["Official Math 54 Review", "Math 54 官方大纲复习"]] as const;
 structuredCoursePlans["berkeley-math54"] = { sourceUrl: berkeleyMath54Url, detail: "full", tasks: berkeleyMath54Topics.map(([title, titleZh], index) => ({ id: `official-unit-${index + 1}`, title: `Official unit ${index + 1}: ${title}`, titleZh: `官方单元 ${index + 1}：${titleZh}`, url: index === 5 ? "https://math.berkeley.edu/sites/default/files/lecture_notes_on_svd_for_math_54.pdf" : berkeleyMath54Url, kind: "session" })) };
-for(const id of ["cs103","cs161","cs144","cs143","cs148","cs221","cs155","cs244b"] as const) structuredCoursePlans[`stanford-${id}`]={sourceUrl:({cs103:"https://web.stanford.edu/class/archive/cs/cs103/cs103.1264/",cs161:"https://web.stanford.edu/class/cs161/",cs144:"https://web.stanford.edu/class/cs144/",cs143:"https://web.stanford.edu/class/cs143/",cs148:"https://web.stanford.edu/class/cs148/lectures.html",cs221:"https://stanford-cs221.github.io/spring2026/",cs155:"https://cs155.stanford.edu/syllabus.html",cs244b:"https://www.scs.stanford.edu/24sp-cs244b/sched/"}as const)[id],detail:"full",tasks:stanfordAdvancedTasks(id)};
+for(const id of ["cs103","cs161","cs144","cs143","cs148","cs221","cs155","cs244b"] as const) structuredCoursePlans[`stanford-${id}`]={sourceUrl:({cs103:"https://web.stanford.edu/class/archive/cs/cs103/cs103.1264/",cs161:"https://web.stanford.edu/class/cs161/",cs144:"https://www.scs.stanford.edu/10au-cs144/sched/",cs143:"https://web.stanford.edu/class/cs143/",cs148:"https://web.stanford.edu/class/cs148/lectures.html",cs221:"https://stanford-cs221.github.io/spring2026/",cs155:"https://cs155.stanford.edu/syllabus.html",cs244b:"https://www.scs.stanford.edu/24sp-cs244b/sched/"}as const)[id],detail:"full",tasks:stanfordAdvancedTasks(id)};
 const compactPlanSources={
- "washington-cse550":["https://courses.cs.washington.edu/courses/cse550/26sp/","systems"],"tsinghua-20740112":["https://pacman.cs.tsinghua.edu.cn/~hanwentao/dsa/","dataStructures"],"tsinghua-computer-graphics":["https://cg.cs.tsinghua.edu.cn/course/course_main.htm","graphics"],"pku-computing-intro":["https://courseweb.pku.edu.cn/course/CourseAction.do?course_id=87&dispatch=toIndex&longa=1&view=%2Fopencourse2%2Fcourse.jsp","programming"],"pku-data-structures":["https://courseweb.pku.edu.cn/course/CourseAction.do?course_id=121&dispatch=toIndex&longa=1&view=%2Fopencourse2%2Fcourse.jsp","dataStructures"],"pku-operating-systems":["https://ceca.pku.edu.cn/courses/2017fall/45ceca1228454.htm","systems"],"tsinghua-20740164":["https://pacman.cs.tsinghua.edu.cn/~hanwentao/cpct/","programming"],"tsinghua-database-technology":["https://dbgroup.cs.tsinghua.edu.cn/jnwang/ai-data-foundation/index.html","databases"],"uiuc-cs124":["https://www.cs124.org/","programming"],"uiuc-cs128":["https://www.cs128.org/","programming"],"uiuc-cs225":["https://courses.grainger.illinois.edu/cs225/sp2026/","dataStructures"],"gatech-cs1301":["https://syllabus.gatech.edu/syllabi/829/1301/B/pdf","programming"],"gatech-cs2110":["https://cs2110.gatech.edu/","systems"],"gatech-cs3510":["https://faculty.cc.gatech.edu/~ladha/S26/3510/","algorithms"],"harvard-cs61":["https://cs61.seas.harvard.edu/site/2025/","systems"]} as const;
+"washington-cse550":["https://courses.cs.washington.edu/courses/cse550/26sp/","systems"],"tsinghua-20740112":["https://pacman.cs.tsinghua.edu.cn/~hanwentao/dsa/","dataStructures"],"tsinghua-computer-graphics":["https://cg.cs.tsinghua.edu.cn/course/course_main.htm","graphics"],"pku-computing-intro":["https://courseweb.pku.edu.cn/course/CourseAction.do?course_id=87&dispatch=toIndex&longa=1&view=%2Fopencourse2%2Fcourse.jsp","programming"],"pku-data-structures":["https://courseweb.pku.edu.cn/course/CourseAction.do?course_id=121&dispatch=toIndex&longa=1&view=%2Fopencourse2%2Fcourse.jsp","dataStructures"],"pku-operating-systems":["https://ceca.pku.edu.cn/courses/2017fall/45ceca1228454.htm","systems"],"tsinghua-20740164":["https://pacman.cs.tsinghua.edu.cn/~hanwentao/cpct/","programming"],"tsinghua-database-technology":["https://dbgroup.cs.tsinghua.edu.cn/jnwang/ai-data-foundation/index.html","databases"],"uiuc-cs124":["https://www.cs124.org/","programming"],"uiuc-cs128":["https://www.cs128.org/","programming"],"uiuc-cs225":["https://courses.grainger.illinois.edu/cs225/sp2026/","dataStructures"],"gatech-cs1301":["https://syllabus.gatech.edu/syllabi/829/1301/B/pdf","programming"],"gatech-cs2110":["https://cs2110.gatech.edu/","systems"],"gatech-cs3510":["https://faculty.cc.gatech.edu/~ladha/S26/3510/","algorithms"],"harvard-cs61":["https://cs61.seas.harvard.edu/","systems"]} as const;
 for(const [id,[url,curriculum]] of Object.entries(compactPlanSources)) structuredCoursePlans[id]={sourceUrl:url,detail:"full",tasks:compactOfficialPlan(url,curriculum)};
+const harvardCs61Base = "https://cs61.seas.harvard.edu/site/2026";
+const harvardCs61Units = [
+  ["data-representation", "Data representation", "数据表示", "Datarep"],
+  ["assembly", "Assembly language and machine organization", "汇编语言与机器组成", "Asm"],
+  ["kernel", "Kernels and virtual memory", "内核与虚拟内存", "Kernel"],
+  ["storage", "Storage and caching", "存储与缓存", "Storage"],
+  ["process-control", "Process control", "进程控制", "Process"],
+  ["synchronization", "Threads and synchronization", "线程与同步", "Synch"],
+  ["networking", "Networking", "计算机网络", "Networking"],
+] as const;
+structuredCoursePlans["harvard-cs61"] = {
+  sourceUrl: `${harvardCs61Base}/`,
+  detail: "full",
+  tasks: [
+    ...harvardCs61Units.map(([id, title, titleZh, path]) => ({ id, title: `Official notes: ${title}`, titleZh: `官方讲义：${titleZh}`, url: `${harvardCs61Base}/${path}/`, kind: "session" as const, resourceType: "lectures" as const })),
+    { id: "pset-0", title: "Problem set 0: C++ and course-infrastructure warmup", titleZh: "作业 0：C++ 与课程环境热身", url: `${harvardCs61Base}/Pset0/`, kind: "assignment", resourceType: "assignments" },
+  ],
+};
 const harvardCs1610Source = "https://read.seas.harvard.edu/cs1610/2026/schedule/";
 const harvardCs1610Topics = [["Processor Architecture", "处理器体系结构"], ["x86-64 Page Tables", "x86-64 页表"], ["Multitasking and Preemption", "多任务与抢占"], ["Interrupts", "中断"], ["Multithreading and Synchronization", "多线程与同步"], ["Concurrency and Synchronization", "并发与同步"], ["Wait Queues", "等待队列"], ["Swapping and Memory Maps", "交换与内存映射"], ["Virtual Filesystems", "虚拟文件系统"], ["Storage Devices and Data Layout", "存储设备与数据布局"], ["Journaling", "日志文件系统"], ["Device Interactions", "设备交互"], ["Log-Structured Filesystems", "日志结构文件系统"], ["Synchronization and Memory Ordering", "同步与内存顺序"], ["DAC, MAC, and iOS", "自主访问控制、强制访问控制与 iOS"], ["High-Level-Language Kernels", "高级语言内核"], ["Scheduling", "调度"], ["Virtualization", "虚拟化"], ["Networking", "网络"], ["Ethics in Operating Systems", "操作系统伦理"], ["GPUs", "GPU"], ["Security", "安全"]] as const;
 const harvardCs1610Tasks: PlanTask[] = harvardCs1610Topics.map(([title, titleZh], index) => ({ id: `lecture-${index + 1}`, title: `Official lecture ${index + 1}: ${title}`, titleZh: `官方讲次 ${index + 1}：${titleZh}`, url: harvardCs1610Source, kind: "session", resourceType: "lectures" }));
@@ -1423,8 +1355,9 @@ function cmu15362Tasks(): PlanTask[] {
   ];
 }
 
-const cmuPlanSources={"cmu-15-112":["https://www.cs.cmu.edu/~15112q-f25/","programming"],"cmu-15-122":["https://www.cs.cmu.edu/~15122/","programming"],"cmu-15-213":["https://www.cs.cmu.edu/~213/","systems"],"cmu-15-451":["https://www.csd.cs.cmu.edu/course/15451/s26","algorithms"],"cmu-15-150":["https://www.cs.cmu.edu/~15150/","functional"],"cmu-15-210":["https://www.cs.cmu.edu/afs/cs/academic/class/15210-f18/www/","dataStructures"],"cmu-15-251":["https://www.cs.cmu.edu/~15251/","theory"],"cmu-21-120":["https://www.cmu.edu/math/undergrad/exams/precalculus-calculus-placement-exams.html","calculus"],"cmu-21-122":["https://www.math.cmu.edu/~handron/21_122/","calculus"],"cmu-15-151":["https://www.math.cmu.edu/~cnewstea/teaching/old/teaching/15-151-N17/","theory"],"cmu-21-241":["https://www.math.cmu.edu/~ldietric/21-241/","linearAlgebra"],"cmu-15-259":["https://www.cs.cmu.edu/~harchol/PnC/class.html","probability"],"cmu-15-440":["https://www.csd.cs.cmu.edu/15440640-distributed-systems","distributed"],"cmu-15-312":["https://www.csd.cs.cmu.edu/course/15312/f26","programmingLanguages"],"cmu-15-281":["https://www.cs.cmu.edu/~15281/","ai"],"cmu-15-330":["https://www.cs.cmu.edu/~rdriley/330/index.html","security"]} as const;
+const cmuPlanSources={"cmu-15-112":["https://www.cs.cmu.edu/~15112q-f25/","programming"],"cmu-15-122":["https://www.cs.cmu.edu/~15122/","programming"],"cmu-15-213":["https://www.cs.cmu.edu/~213/","systems"],"cmu-15-451":["https://www.csd.cs.cmu.edu/course/15451/s26","algorithms"],"cmu-15-150":["https://www.cs.cmu.edu/~15150/","functional"],"cmu-15-210":["https://www.cs.cmu.edu/~15210/schedule.html","dataStructures"],"cmu-15-251":["https://www.cs.cmu.edu/~15251/","theory"],"cmu-21-120":["https://www.cmu.edu/math/undergrad/exams/precalculus-calculus-placement-exams.html","calculus"],"cmu-21-122":["https://www.math.cmu.edu/~handron/21_122/","calculus"],"cmu-15-151":["https://www.math.cmu.edu/~cnewstea/teaching/old/teaching/15-151-N17/","theory"],"cmu-21-241":["https://www.math.cmu.edu/~ldietric/21-241/","linearAlgebra"],"cmu-15-259":["https://www.cs.cmu.edu/~harchol/PnC/class.html","probability"],"cmu-15-440":["https://www.andrew.cmu.edu/course/15-440/","distributed"],"cmu-15-312":["https://www.csd.cs.cmu.edu/course/15312/f26","programmingLanguages"],"cmu-15-281":["https://www.cs.cmu.edu/~15281/","ai"],"cmu-15-330":["https://www.cs.cmu.edu/~rdriley/330/index.html","security"]} as const;
 for(const [id,[url,curriculum]] of Object.entries(cmuPlanSources)) structuredCoursePlans[id]={sourceUrl:url,detail:"full",tasks:compactOfficialPlan(url,curriculum)};
+structuredCoursePlans["cmu-15-112"] = { sourceUrl: "https://www.cs.cmu.edu/~112/schedule.html", detail: "full", tasks: compactOfficialPlan("https://www.cs.cmu.edu/~112/schedule.html", "programming") };
 structuredCoursePlans["cmu-15-445"] = { sourceUrl: `${cmu15445Archive}/schedule.html`, detail: "full", tasks: cmu15445Tasks() };
 structuredCoursePlans["cmu-15-362"] = { sourceUrl: cmu15362Base, detail: "full", tasks: cmu15362Tasks() };
 const cmu15418Base = "https://www.cs.cmu.edu/afs/cs/academic/class/15418-s26/www";
@@ -1496,7 +1429,7 @@ for (let index = 1; index <= 6; index += 1) uiucCs357Tasks.push({ id: `quiz-${in
 uiucCs357Tasks.push({ id: "final", title: "Official final examination", titleZh: "官方期末考试", url: "https://cs357.cs.illinois.edu/pages/syllabus.html", kind: "exam" });
 structuredCoursePlans["uiuc-cs357"] = { sourceUrl: uiucCs357Resources, detail: "full", tasks: uiucCs357Tasks };
 
-const uiucCs361Syllabus = "https://ws.engr.illinois.edu/custom/getsyllabus.asp?id=3220";
+const uiucCs361Syllabus = "https://courses.illinois.edu/schedule/2026/fall/CS/361";
 const uiucCs361Topics = [["Data Visualization and Summaries", "数据可视化与汇总"], ["Descriptive Statistics", "描述统计"], ["Conditional Probability", "条件概率"], ["Independence", "独立性"], ["Bayes' Theorem", "贝叶斯定理"], ["Random Variables", "随机变量"], ["Joint and Conditional Distributions", "联合与条件分布"], ["Expectation", "期望"], ["Variance and Covariance", "方差与协方差"], ["Central Limit Theorem", "中心极限定理"], ["Markov and Chebyshev Inequalities", "Markov 与 Chebyshev 不等式"], ["Law of Large Numbers", "大数定律"], ["Markov Chains", "马尔可夫链"], ["Simulation and PageRank", "模拟与 PageRank"], ["Populations and Sampling", "总体与抽样"], ["Sample Mean and Standard Error", "样本均值与标准误"], ["Maximum-Likelihood Estimation", "最大似然估计"], ["Bayesian Estimation", "贝叶斯估计"], ["Hypothesis Testing", "假设检验"], ["Confidence Intervals", "置信区间"], ["Linear Regression", "线性回归"], ["Principal Component Analysis", "主成分分析"], ["Classification", "分类"], ["Decision Trees", "决策树"]] as const;
 structuredCoursePlans["uiuc-cs361"] = { sourceUrl: uiucCs361Syllabus, detail: "full", tasks: catalogTopicPlan(uiucCs361Syllabus, uiucCs361Topics) };
 

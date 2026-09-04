@@ -26,6 +26,9 @@ const officialHosts = new Set([
   "stanford-cs221.github.io",
   "web.mit.edu",
   "pdos.csail.mit.edu",
+  "css.csail.mit.edu",
+  "dsg.csail.mit.edu",
+  "introcs.cs.princeton.edu",
   "cs162.org",
   "cs170.org",
   "cs186berkeley.net",
@@ -65,6 +68,7 @@ const officialHosts = new Set([
   "ece.illinois.edu",
   "cs341.cs.illinois.edu",
   "cs357.cs.illinois.edu",
+  "siebelschool.illinois.edu",
   "ws.engr.illinois.edu",
   "syllabus.gatech.edu",
   "catalog.gatech.edu",
@@ -96,6 +100,7 @@ const officialHosts = new Set([
   "hpa.princeton.edu",
   "www.math.cmu.edu",
   "www.cmu.edu",
+  "www.andrew.cmu.edu",
   "coursecatalog.web.cmu.edu",
   "db.cs.cmu.edu",
   "15445.courses.cs.cmu.edu",
@@ -322,7 +327,7 @@ test("Illinois's public foundations and core courses are present without unsuppo
   for (const id of ["uiuc-math221", "uiuc-math231", "uiuc-cs173", "uiuc-cs341", "uiuc-cs357", "uiuc-cs361", "uiuc-cs374"]) {
     assert.equal(byId.get(id)?.university, "University of Illinois Urbana-Champaign");
   }
-  assert.equal(byId.get("uiuc-cs341")?.year, null);
+  assert.equal(byId.get("uiuc-cs341")?.year, 2026);
   assert.equal(byId.get("uiuc-cs361")?.hasAssignments, null);
   assert.equal(byId.get("uiuc-cs374")?.hasSolutions, null);
 });
