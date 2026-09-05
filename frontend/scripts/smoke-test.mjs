@@ -1,4 +1,7 @@
 const base = (process.env.OPENSTUDY_SMOKE_URL ?? "http://localhost:3000").replace(/\/+$/, "");
+const expectedCanonicalOrigin = process.env.OPENSTUDY_CANONICAL_URL
+  ? new URL(process.env.OPENSTUDY_CANONICAL_URL).origin
+  : null;
 
 const checks = [
   ["/", "OpenStudy"],
@@ -50,6 +53,9 @@ const sitemapDirective = robots.match(/^Sitemap:\s*(\S+)$/im)?.[1];
 if (!sitemapDirective) throw new Error("robots.txt is missing an absolute sitemap URL");
 const canonicalSitemapUrl = new URL(sitemapDirective);
 if (canonicalSitemapUrl.pathname !== "/sitemap.xml") throw new Error("robots.txt points to the wrong sitemap path");
+if (expectedCanonicalOrigin && canonicalSitemapUrl.origin !== expectedCanonicalOrigin) {
+  throw new Error(`robots.txt uses ${canonicalSitemapUrl.origin}; expected ${expectedCanonicalOrigin}`);
+}
 
 const sitemapLocations = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => new URL(match[1]));
 if (!sitemapLocations.some(({ pathname }) => pathname === "/courses/mit-18-01sc")) throw new Error("sitemap.xml is missing course detail URLs");
