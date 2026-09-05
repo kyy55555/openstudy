@@ -46,8 +46,14 @@ const [robotsResponse, sitemapResponse] = await Promise.all([
 if (!robotsResponse.ok || !sitemapResponse.ok) throw new Error("robots.txt or sitemap.xml is unavailable");
 
 const [robots, sitemap] = await Promise.all([robotsResponse.text(), sitemapResponse.text()]);
-if (!robots.includes(`${base}/sitemap.xml`)) throw new Error("robots.txt points to the wrong sitemap URL");
-if (!sitemap.includes(`${base}/courses/mit-18-01sc`)) throw new Error("sitemap.xml is missing course detail URLs");
-if (sitemap.includes(`${base}//`)) throw new Error("sitemap.xml contains double-slash paths");
+const sitemapDirective = robots.match(/^Sitemap:\s*(\S+)$/im)?.[1];
+if (!sitemapDirective) throw new Error("robots.txt is missing an absolute sitemap URL");
+const canonicalSitemapUrl = new URL(sitemapDirective);
+if (canonicalSitemapUrl.pathname !== "/sitemap.xml") throw new Error("robots.txt points to the wrong sitemap path");
+
+const sitemapLocations = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => new URL(match[1]));
+if (!sitemapLocations.some(({ pathname }) => pathname === "/courses/mit-18-01sc")) throw new Error("sitemap.xml is missing course detail URLs");
+if (sitemapLocations.some(({ origin }) => origin !== canonicalSitemapUrl.origin)) throw new Error("sitemap.xml mixes canonical origins");
+if (sitemapLocations.some(({ pathname }) => pathname.includes("//"))) throw new Error("sitemap.xml contains double-slash paths");
 
 console.log(`Smoke test passed for ${results.length + 2} public endpoints at ${base}.`);
