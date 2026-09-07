@@ -145,6 +145,8 @@ export function suggestedGentlePlanDays(
   const current = new Date(today.getFullYear(), today.getMonth(), today.getDate());
   if (Number.isNaN(created.getTime())) return null;
   const elapsedDays = Math.max(1, Math.floor((current.getTime() - created.getTime()) / 86_400_000) + 1);
+  const graceDays = Math.min(7, Math.max(2, Math.ceil(currentDays * 0.2)));
+  if (elapsedDays < graceDays) return null;
   const expectedCompleted = Math.floor(totalTasks * Math.min(elapsedDays / currentDays, 1));
   if (elapsedDays <= currentDays && completedTasks >= expectedCompleted) return null;
   const completionRate = completedTasks / totalTasks;

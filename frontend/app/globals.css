@@ -133,6 +133,10 @@ html.dark .course-shortcut:hover { background-color: #172033; border-color: #8b5
 html.dark .course-shortcut-title { color: #f1f5f9; }
 html.dark .course-plan-shortcut { background-color: #2e1065; border-color: #6d28d9; }
 html.dark .course-plan-shortcut .text-violet-950 { color: #f5f3ff; }
+html.dark .course-study-plan {
+  background: linear-gradient(135deg, #17122b 0%, #111827 60%, #161f38 100%);
+  border-color: #5b3b8a;
+}
 html.dark .learning-journey {
   border-color: #4c1d95;
   background: linear-gradient(135deg, #17122b 0%, #101b34 54%, #27170f 100%);

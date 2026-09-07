@@ -137,6 +137,9 @@ test("resource progress keys include both course and official URL", () => {
 
 test("gentle replanning only extends an unfinished plan when pace falls behind", () => {
   const today = new Date(2026, 7, 16);
+  assert.equal(suggestedGentlePlanDays(30, "2026-08-16", 0, 35, today), null);
+  assert.equal(suggestedGentlePlanDays(30, "2026-08-13", 0, 35, today), null);
+  assert.equal(suggestedGentlePlanDays(5, "2026-08-16", 0, 5, today), null);
   assert.equal(suggestedGentlePlanDays(30, "2026-08-01", 20, 30, today), null);
   assert.equal(suggestedGentlePlanDays(30, "2026-08-01", 3, 30, today), 184);
   assert.equal(suggestedGentlePlanDays(30, "2026-07-01", 0, 30, today), 89);
