@@ -68,6 +68,7 @@ export default function CourseDetailPage() {
   const taskCompleted = (task: (typeof generatedTasks)[number]) => Boolean(taskCompletionId(task));
   const totalPlanTasks = generatedTasks.length;
   const nextTask = generatedTasks.find((task) => !taskCompleted(task));
+  const activationTask = nextTask ?? planDefinition?.tasks[0] ?? null;
   const completedPlanTasks = generatedTasks.filter(taskCompleted).length;
   const suggestedDays = savedPlan && !savedPlan.paused ? suggestedGentlePlanDays(savedPlan.days, savedPlan.createdOn, completedPlanTasks, totalPlanTasks) : null;
   const value = (verified: boolean | null) => verified === null ? (language === "zh" ? "尚未核实" : "Not verified") : verified ? (language === "zh" ? "有" : "Available") : (language === "zh" ? "无" : "Not available");
@@ -88,7 +89,47 @@ export default function CourseDetailPage() {
         </div>
         <div className="p-7">
 
-        <nav aria-label={language === "zh" ? "课程内容快速入口" : "Course content shortcuts"} className="-mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+        <section className="course-activation overflow-hidden rounded-2xl border border-violet-200 bg-gradient-to-br from-violet-50 via-white to-indigo-50 shadow-sm">
+          <div className="grid gap-5 p-5 sm:grid-cols-[1fr_auto] sm:items-center sm:p-6">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-violet-700">{language === "zh" ? "从第一小步开始" : "Start with one small step"}</p>
+              <h2 className="mt-2 text-xl font-bold text-slate-950">
+                {activationTask
+                  ? (language === "zh" ? activationTask.titleZh : activationTask.title)
+                  : (language === "zh" ? "打开官方课程" : "Open the official course")}
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                {language === "zh"
+                  ? "无需先选路线或注册账号。直接开始一项真实的官方内容，OpenStudy 会替你记住学习位置。"
+                  : "No path choice or account is required. Start one real official item and OpenStudy will remember where you left off."}
+              </p>
+            </div>
+            <div className="flex flex-col gap-2 sm:min-w-56">
+              <a
+                href={activationTask?.url ?? course.courseUrl}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => recordResourceOpen(
+                  course.id,
+                  activationTask?.url ?? course.courseUrl,
+                  activationTask?.title ?? course.title,
+                  activationTask?.titleZh ?? course.titleZh,
+                  activationTask?.kind ?? "course_home",
+                )}
+                className="inline-flex min-h-12 items-center justify-center rounded-xl bg-violet-700 px-5 py-3 text-center text-sm font-bold text-white shadow-md shadow-violet-200 transition hover:-translate-y-0.5 hover:bg-violet-800"
+              >
+                {activationTask
+                  ? (savedPlan ? (language === "zh" ? "继续下一项 ↗" : "Continue next item ↗") : (language === "zh" ? "立即开始第一节 ↗" : "Start the first lesson ↗"))
+                  : (language === "zh" ? "进入官方课程 ↗" : "Open official course ↗")}
+              </a>
+              {planDefinition && <a href="#study-plan" className="inline-flex min-h-11 items-center justify-center rounded-xl border border-violet-300 bg-white px-5 py-2.5 text-center text-sm font-bold text-violet-900 transition hover:border-violet-500 hover:bg-violet-50">
+                {savedPlan ? (language === "zh" ? "查看我的轻量计划" : "View my gentle plan") : (language === "zh" ? "生成轻量学习计划" : "Build a gentle study plan")}
+              </a>}
+            </div>
+          </div>
+        </section>
+
+        <nav aria-label={language === "zh" ? "课程内容快速入口" : "Course content shortcuts"} className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
           {contentGroups.map((group) => (
             <a key={group.kind} href={`#resource-${group.kind}`} className="course-shortcut group flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition hover:-translate-y-0.5 hover:border-violet-300 hover:shadow-md">
               <span className="flex min-w-0 items-center gap-2.5"><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-violet-100 font-bold text-violet-800">{group.icon}</span><span className="course-shortcut-title truncate text-sm font-bold text-slate-800">{group.title}</span></span>

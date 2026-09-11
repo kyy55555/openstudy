@@ -289,22 +289,42 @@ with recent as (
   select anonymous_id, event_name
   from public.product_events
   where created_at >= now() - interval '30 days'
+), visitor_steps as (
+  select
+    anonymous_id,
+    bool_or(event_name = 'course_search') as searched,
+    bool_or(event_name = 'course_opened') as opened_course,
+    bool_or(event_name = 'resource_opened') as opened_resource,
+    bool_or(event_name = 'favorite_added') as saved_course,
+    bool_or(event_name = 'study_plan_created') as created_plan,
+    bool_or(event_name = 'study_task_completed') as completed_task,
+    bool_or(event_name = 'signup_completed') as signed_up
+  from recent
+  group by anonymous_id
 ), totals as (
   select
-    count(distinct anonymous_id)::bigint as active_visitors,
-    count(distinct anonymous_id) filter (where event_name = 'course_search')::bigint as searched,
-    count(distinct anonymous_id) filter (where event_name = 'course_opened')::bigint as opened_course,
-    count(distinct anonymous_id) filter (where event_name = 'resource_opened')::bigint as opened_resource,
-    count(distinct anonymous_id) filter (where event_name = 'favorite_added')::bigint as saved_course,
-    count(distinct anonymous_id) filter (where event_name = 'study_plan_created')::bigint as created_plan,
-    count(distinct anonymous_id) filter (where event_name = 'study_task_completed')::bigint as completed_task,
-    count(distinct anonymous_id) filter (where event_name = 'signup_completed')::bigint as signed_up
-  from recent
+    count(*)::bigint as active_visitors,
+    count(*) filter (where searched)::bigint as searched,
+    count(*) filter (where opened_course)::bigint as opened_course,
+    count(*) filter (where opened_resource)::bigint as opened_resource,
+    count(*) filter (where saved_course)::bigint as saved_course,
+    count(*) filter (where created_plan)::bigint as created_plan,
+    count(*) filter (where completed_task)::bigint as completed_task,
+    count(*) filter (where signed_up)::bigint as signed_up,
+    count(*) filter (where searched and opened_course)::bigint as searched_and_opened
+  from visitor_steps
 )
 select
-  *,
+  active_visitors,
+  searched,
+  opened_course,
+  opened_resource,
+  saved_course,
+  created_plan,
+  completed_task,
+  signed_up,
   round(100.0 * searched / nullif(active_visitors, 0), 1) as search_rate,
-  round(100.0 * opened_course / nullif(searched, 0), 1) as search_to_course_rate,
+  round(100.0 * searched_and_opened / nullif(searched, 0), 1) as search_to_course_rate,
   round(100.0 * opened_resource / nullif(opened_course, 0), 1) as course_to_resource_rate,
   round(100.0 * created_plan / nullif(opened_course, 0), 1) as course_to_plan_rate,
   round(100.0 * completed_task / nullif(created_plan, 0), 1) as plan_to_task_rate
