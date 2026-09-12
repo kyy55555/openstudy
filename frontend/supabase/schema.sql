@@ -333,3 +333,95 @@ from totals;
 revoke all on table public.product_daily_summary from anon, authenticated;
 revoke all on table public.product_retention from anon, authenticated;
 revoke all on table public.product_funnel_30d from anon, authenticated;
+
+-- Internal operations dashboard. Add an administrator only from the Supabase SQL
+-- editor, for example:
+-- insert into public.site_admins (user_id)
+-- select id from auth.users where email = 'YOUR_ACCOUNT_EMAIL';
+create table if not exists public.site_admins (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  created_at timestamptz not null default now()
+);
+
+alter table public.site_admins enable row level security;
+revoke all on table public.site_admins from anon, authenticated;
+
+create or replace function public.is_site_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select auth.uid() is not null
+    and exists (select 1 from public.site_admins where user_id = auth.uid());
+$$;
+
+revoke all on function public.is_site_admin() from public;
+grant execute on function public.is_site_admin() to authenticated;
+
+create or replace function public.get_internal_dashboard()
+returns jsonb
+language plpgsql
+stable
+security definer
+set search_path = public, auth
+as $$
+declare
+  v_feedback_counts jsonb;
+  v_recent_feedback jsonb;
+  v_funnel jsonb;
+  v_user_count bigint;
+begin
+  if not public.is_site_admin() then
+    raise exception 'Administrator access required' using errcode = '42501';
+  end if;
+
+  select count(*) into v_user_count from auth.users;
+  select coalesce(jsonb_object_agg(status, total), '{}'::jsonb)
+    into v_feedback_counts
+    from (select status, count(*)::bigint as total from public.feedback group by status) counts;
+  select coalesce(jsonb_agg(to_jsonb(item)), '[]'::jsonb)
+    into v_recent_feedback
+    from (
+      select id, issue_type, status, message, email, page_url, language, viewport, app_version, created_at
+      from public.feedback
+      order by created_at desc
+      limit 50
+    ) item;
+  select coalesce(to_jsonb(funnel), '{}'::jsonb)
+    into v_funnel
+    from public.product_funnel_30d funnel;
+
+  return jsonb_build_object(
+    'userCount', v_user_count,
+    'feedbackCounts', v_feedback_counts,
+    'recentFeedback', v_recent_feedback,
+    'funnel30d', v_funnel,
+    'generatedAt', now()
+  );
+end;
+$$;
+
+revoke all on function public.get_internal_dashboard() from public;
+grant execute on function public.get_internal_dashboard() to authenticated;
+
+create or replace function public.update_feedback_status(p_feedback_id bigint, p_status text)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not public.is_site_admin() then
+    raise exception 'Administrator access required' using errcode = '42501';
+  end if;
+  if p_status not in ('new', 'reviewing', 'resolved', 'closed') then
+    raise exception 'Invalid feedback status' using errcode = '22023';
+  end if;
+  update public.feedback set status = p_status where id = p_feedback_id;
+end;
+$$;
+
+revoke all on function public.update_feedback_status(bigint, text) from public;
+grant execute on function public.update_feedback_status(bigint, text) to authenticated;

@@ -33,5 +33,5 @@ export default function ThemeToggle({ language }: { language: "en" | "zh" }) {
     ? (dark ? "浅色" : "深色")
     : (dark ? "Light" : "Dark");
 
-  return <button type="button" onClick={toggleTheme} aria-label={language === "zh" ? `切换到${label}模式` : `Switch to ${label.toLowerCase()} mode`} className="theme-toggle rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium shadow-lg hover:border-gray-400"><span aria-hidden="true" className="mr-1.5">{dark ? "☀" : "☾"}</span>{label}</button>;
+  return <button type="button" onClick={toggleTheme} aria-label={language === "zh" ? `切换到${label}模式` : `Switch to ${label.toLowerCase()} mode`} className="theme-toggle flex min-h-11 flex-1 items-center justify-center rounded-full border border-gray-200 bg-white px-2 py-2 text-xs font-semibold shadow-lg hover:border-gray-400 sm:flex-none sm:px-4 sm:text-sm"><span aria-hidden="true" className="sm:mr-1.5">{dark ? "☀" : "☾"}</span><span className="hidden sm:inline">{label}</span></button>;
 }

@@ -6,6 +6,7 @@ import type { CourseLibraryState, CourseProgress } from "../data/courseLibrary";
 import { courseResourceKey } from "../data/courseLibrary";
 import { getSupabaseBrowserClient } from "../lib/supabase/client";
 import { trackProductEvent } from "../lib/productAnalytics";
+import { guestStudyMilestoneEvent } from "../data/signupNudge";
 
 function accountLibraryStorageKey(userId: string) {
   return `${courseLibraryStorageKey}-user-${userId}`;
@@ -295,7 +296,10 @@ export function useCourseLibrary() {
         [courseId]: removing ? { ...plan, completedTaskIds } : recordStudyTaskCompletion(plan, taskId, localDateKey()),
       },
     });
-    if (!removing) trackProductEvent({ eventName: "study_task_completed", courseId });
+    if (!removing) {
+      trackProductEvent({ eventName: "study_task_completed", courseId });
+      if (!userId.current) window.dispatchEvent(new Event(guestStudyMilestoneEvent));
+    }
   }
 
   function completeDailyTask(courseId: string, taskId: string, dateKey: string) {
@@ -304,6 +308,7 @@ export function useCourseLibrary() {
     if (!plan || plan.completedTaskIds.includes(taskId)) return;
     update({ ...current, studyPlans: { ...current.studyPlans, [courseId]: recordStudyTaskCompletion(plan, taskId, dateKey) } });
     trackProductEvent({ eventName: "study_task_completed", courseId });
+    if (!userId.current) window.dispatchEvent(new Event(guestStudyMilestoneEvent));
   }
 
   function removeStudyPlan(courseId: string) {

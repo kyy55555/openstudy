@@ -15,6 +15,7 @@ Launch only when all items below are true:
 - When two signed-in browsers edit after one becomes stale, the older browser shows a conflict instead of silently overwriting the newer cloud record; verify both resolution choices using disposable test progress.
 - Guest progress remains separate before and after account sign-in.
 - One feedback submission appears in Supabase and the test row is then removed.
+- `/internal` rejects normal accounts and loads only for an account listed in `public.site_admins`.
 - The privacy notice matches the services actually enabled in production.
 
 ## Manual learner journey
@@ -48,6 +49,15 @@ Record problems by severity:
 - **P2:** confusing copy, missing course, isolated broken link, or layout issue. Keep testing and schedule the fix.
 
 In the Supabase feedback table, triage every `new` row within 48 hours: change it to `reviewing` when accepted, then `resolved` after the fix is deployed or `closed` when no action is needed. Filter by `issue_type`, `viewport`, and `app_version` to identify repeated failures without collecting browsing histories. Never change or delete the original message while resolving an item.
+
+The same queue is available at `/internal` after applying the latest `supabase/schema.sql`. Grant access from the Supabase SQL editor with an exact existing account email:
+
+```sql
+insert into public.site_admins (user_id)
+select id from auth.users where email = 'YOUR_ACCOUNT_EMAIL';
+```
+
+Do not put the administrator list in client code. The database RPC checks the signed-in user before returning registration totals, funnel metrics, feedback messages, or reply emails.
 
 ## Privacy-preserving Beta signals
 

@@ -118,6 +118,14 @@ html.dark .course-activation {
   border-color: #6d4aa3;
 }
 html.dark .theme-toggle { background-color: #172033; color: #f8fafc; }
+html.dark .feedback-launcher { background-color: #172033; color: #ede9fe; border-color: #6d4aa3; }
+
+@media (max-width: 639px) {
+  html.dark .account-shortcuts {
+    background-color: rgb(15 23 42 / 0.94);
+    border: 1px solid #334155;
+  }
+}
 html.dark footer.bg-white { background-color: #0b1220; }
 html.dark .today-primary-action {
   background-color: #ede9fe;

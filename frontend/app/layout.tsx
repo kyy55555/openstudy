@@ -6,6 +6,8 @@ import "./globals.css";
 import AccountMenu from "./AccountMenu";
 import DocumentLanguage from "./DocumentLanguage";
 import SiteFooter from "./SiteFooter";
+import FeedbackLauncher from "./FeedbackLauncher";
+import SignupNudge from "./SignupNudge";
 import { publicSiteUrl } from "../lib/siteUrl";
 
 const geistSans = Geist({
@@ -40,7 +42,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col"><script dangerouslySetInnerHTML={{ __html: `try{const t=localStorage.getItem('openstudy-theme');const d=t==='dark'||(!t&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d);document.documentElement.style.colorScheme=d?'dark':'light'}catch{}` }} /><a href="#main-content" className="skip-link">Skip to main content / 跳到主要内容</a><Suspense><DocumentLanguage /></Suspense><div id="main-content" tabIndex={-1} className="contents">{children}</div><Suspense><SiteFooter /></Suspense><Suspense><AccountMenu /></Suspense><Analytics /></body>
+      <body className="min-h-full flex flex-col"><script dangerouslySetInnerHTML={{ __html: `try{const t=localStorage.getItem('openstudy-theme');const d=t==='dark'||(!t&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d);document.documentElement.style.colorScheme=d?'dark':'light'}catch{}` }} /><a href="#main-content" className="skip-link">Skip to main content / 跳到主要内容</a><Suspense><DocumentLanguage /></Suspense><div id="main-content" tabIndex={-1} className="contents">{children}</div><Suspense><SiteFooter /></Suspense><Suspense><FeedbackLauncher /></Suspense><Suspense><SignupNudge /></Suspense><Suspense><AccountMenu /></Suspense><Analytics /></body>
     </html>
   );
 }

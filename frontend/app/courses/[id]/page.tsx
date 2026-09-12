@@ -74,20 +74,20 @@ export default function CourseDetailPage() {
   const value = (verified: boolean | null) => verified === null ? (language === "zh" ? "尚未核实" : "Not verified") : verified ? (language === "zh" ? "有" : "Available") : (language === "zh" ? "无" : "Not available");
 
   return (
-    <main className="mx-auto max-w-4xl px-6 py-10">
+    <main className="mx-auto max-w-4xl px-4 pb-32 pt-7 sm:px-6 sm:py-10">
       <header className="flex items-start justify-between gap-4">
         <Link href={language === "zh" ? "/courses?lang=zh" : "/courses"} className="text-sm text-gray-500 hover:text-black">← {language === "zh" ? "全部课程" : "All courses"}</Link>
         <button onClick={() => router.replace(courseDetailPath(course, language === "zh" ? "en" : "zh"))} className="rounded-full border px-4 py-2 text-sm font-medium">{language === "zh" ? "English" : "中文"}</button>
       </header>
 
       <section className="mt-8 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-        <div className="bg-gradient-to-br from-slate-950 via-violet-950 to-indigo-900 p-7 text-white">
+        <div className="bg-gradient-to-br from-slate-950 via-violet-950 to-indigo-900 p-5 text-white sm:p-7">
         <p className="text-sm font-medium text-gray-500">{course.university} · {courseCode(course)}</p>
         <h1 className="mt-2 text-3xl font-bold">{language === "zh" ? course.titleZh : course.title}</h1>
         <p className="mt-2 text-violet-200">{language === "zh" ? course.title : course.titleZh}</p>
         <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-200">{language === "zh" ? course.descriptionZh : course.description}</p>
         </div>
-        <div className="p-7">
+        <div className="p-4 sm:p-7">
 
         <section className="course-activation overflow-hidden rounded-2xl border border-violet-200 bg-gradient-to-br from-violet-50 via-white to-indigo-50 shadow-sm">
           <div className="grid gap-5 p-5 sm:grid-cols-[1fr_auto] sm:items-center sm:p-6">

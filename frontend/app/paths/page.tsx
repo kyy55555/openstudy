@@ -30,7 +30,7 @@ function PathsContent() {
   }
 
   return (
-    <main className="mx-auto max-w-5xl px-6 py-10">
+    <main className="mx-auto max-w-5xl px-4 pb-32 pt-8 sm:px-6 sm:py-10">
       <header className="flex items-start justify-between gap-4">
         <div>
           <Link href={language === "zh" ? "/?lang=zh" : "/"} className="text-sm text-gray-500 hover:text-black">← OpenStudy</Link>
