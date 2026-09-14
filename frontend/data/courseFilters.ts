@@ -97,6 +97,13 @@ function searchAlternatives(term: string): readonly string[] {
   return searchSynonymGroups.find((group) => group.some((alias) => alias === term)) ?? [term];
 }
 
+function queryAlternatives(searchTerm: string) {
+  const normalizedSearch = searchTerm.trim().toLowerCase();
+  const phraseAlternatives = searchAlternatives(normalizedSearch);
+  if (phraseAlternatives.length > 1) return [...phraseAlternatives];
+  return normalizedSearch.split(/\s+/).flatMap((word) => searchAlternatives(word));
+}
+
 function searchMatches(searchableText: string, searchTerm: string) {
   const normalizedSearch = searchTerm.trim().toLowerCase();
   if (!normalizedSearch) return true;
@@ -241,19 +248,37 @@ export function filterCourses(courses: Course[], filters: CourseFilters) {
 export function rankCoursesForSearch(courses: Course[], searchTerm: string) {
   const query = searchTerm.trim().toLowerCase();
   if (!query) return [...courses];
+  const alternatives = queryAlternatives(searchTerm);
   function score(course: Course) {
     const code = courseCode(course).toLowerCase();
     const titles = [course.title, course.titleZh].filter((value): value is string => Boolean(value)).map((value) => value.toLowerCase());
     const subjects = [course.subject, course.subjectZh].map((value) => value.toLowerCase());
+    const keywords = course.searchKeywords.map((value) => value.toLowerCase());
     if (code === query) return 0;
     if (titles.some((title) => title === query)) return 1;
     if (code.startsWith(query)) return 2;
     if (titles.some((title) => title.startsWith(query))) return 3;
-    if (titles.some((title) => title.includes(query))) return 4;
-    if (subjects.some((subject) => subject.includes(query))) return 5;
-    return 6;
+    if (titles.some((title) => alternatives.some((alternative) => title.includes(alternative)))) return 4;
+    if (subjects.some((subject) => alternatives.some((alternative) => subject.includes(alternative)))) return 5;
+    if (keywords.some((keyword) => alternatives.some((alternative) => keyword.includes(alternative)))) return 6;
+    return 7;
   }
   return [...courses].sort((a, b) => score(a) - score(b));
+}
+
+export type CourseSearchMatchReason = "code" | "title" | "university" | "subject" | "topic";
+
+export function courseSearchMatchReason(course: Course, searchTerm: string): CourseSearchMatchReason | null {
+  const query = searchTerm.trim().toLowerCase();
+  if (!query) return null;
+  const alternatives = queryAlternatives(searchTerm);
+  const containsAlternative = (value: string) => alternatives.some((alternative) => value.toLowerCase().includes(alternative));
+
+  if (courseCode(course).toLowerCase().includes(query)) return "code";
+  if ([course.title, course.titleZh].some((value) => value && containsAlternative(value))) return "title";
+  if (course.university.toLowerCase().includes(query)) return "university";
+  if ([course.subject, course.subjectZh].some(containsAlternative)) return "subject";
+  return "topic";
 }
 
 export function sortCourses(courses: Course[], sort: CourseSort, favoriteCounts: Record<string, number> = {}) {

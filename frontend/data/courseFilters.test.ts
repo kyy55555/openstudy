@@ -7,6 +7,7 @@ import {
   courseDifficultyRank,
   displayCourseSubjects,
   courseSearchSuggestions,
+  courseSearchMatchReason,
   courseProgrammingLanguages,
   courseSubjectLabel,
   programmingLanguageSubjectPrefix,
@@ -113,6 +114,15 @@ test("search results prioritize exact course codes and titles", () => {
   const matches = filterCourses(courses, { ...defaults, searchTerm: "CS 61A" });
   assert.equal(rankCoursesForSearch(matches, "CS 61A")[0]?.id, "berkeley-cs61a");
   assert.ok(courseSearchSuggestions(courses, "CS50").includes("CS50P"));
+});
+
+test("search results explain why a course matched", () => {
+  const cs61a = courses.find(({ id }) => id === "berkeley-cs61a");
+  const cs50Web = courses.find(({ id }) => id === "harvard-cs50-web");
+  assert.ok(cs61a);
+  assert.ok(cs50Web);
+  assert.equal(courseSearchMatchReason(cs61a, "CS 61A"), "code");
+  assert.equal(courseSearchMatchReason(cs50Web, "website"), "title");
 });
 
 test("search understands common bilingual synonyms instead of requiring exact wording", () => {

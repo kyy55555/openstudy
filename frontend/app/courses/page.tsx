@@ -11,6 +11,7 @@ import { courseDetailPath } from "../../data/courseNavigation";
 import {
   filterCourses,
   courseSearchSuggestions,
+  courseSearchMatchReason,
   displayCourseSubjects,
   courseSubjectLabel,
   programmingLanguageSubjectPrefix,
@@ -101,6 +102,12 @@ const translations = {
     goalSearchPlaceholder: "e.g. Distributed Systems or Machine Learning",
     findGoalPath: "Build a starting path",
     noGoalPath: "This goal does not have a verified starting path yet. You can request it below.",
+    resultsFor: (query: string) => `Results for “${query}”`,
+    clearSearch: "Clear search",
+    matchReason: { code: "Course code match", title: "Course name match", university: "University match", subject: "Subject match", topic: "Related course content" },
+    goalAlternativeTitle: "Searching for a learning direction instead?",
+    goalAlternativeDescription: "Describe what you want to learn in the separate goal planner. It will suggest an ordered starting sequence, not search course titles.",
+    goalAlternativeAction: "Plan by learning goal",
   },
   zh: {
     subtitle: "探索已核实的大学公开课，直接进入讲义、作业、项目与考试；更多专业正在持续加入 OpenStudy。",
@@ -172,6 +179,12 @@ const translations = {
     goalSearchPlaceholder: "例如：分布式系统、机器学习",
     findGoalPath: "生成起步路线",
     noGoalPath: "这个目标暂时还没有已核实的起步路线，你可以在下方提交需求。",
+    resultsFor: (query: string) => `“${query}”的搜索结果`,
+    clearSearch: "清除搜索",
+    matchReason: { code: "课程编号匹配", title: "课程名称匹配", university: "大学匹配", subject: "学科匹配", topic: "课程内容相关" },
+    goalAlternativeTitle: "其实是在寻找学习方向？",
+    goalAlternativeDescription: "请使用独立的学习目标规划器描述你想学什么；它会排列起步顺序，不会混入课程名称搜索。",
+    goalAlternativeAction: "按学习目标规划",
   },
 } as const;
 
@@ -582,14 +595,16 @@ type CourseCardProps = {
   favorite: boolean;
   favoriteCount: number | null;
   onToggleFavorite: () => void;
+  searchTerm: string;
 };
 
-function CourseCard({ course, language, copy, favorite, favoriteCount, onToggleFavorite }: CourseCardProps) {
+function CourseCard({ course, language, copy, favorite, favoriteCount, onToggleFavorite, searchTerm }: CourseCardProps) {
   const router = useRouter();
   const field = courseField(course);
   const studyStage = suggestedStudyStage(course);
   const displayedSubjects = displayCourseSubjects(course, language);
   const detailPath = courseDetailPath(course, language);
+  const matchReason = courseSearchMatchReason(course, searchTerm);
   const planTasks = structuredCoursePlans[course.id]?.tasks ?? [];
   const resourceBadges = [
     { key: "lectures", label: language === "zh" ? "讲义 / 视频" : "Lectures / video", icon: "▶", kind: "session", className: "border-blue-200 bg-blue-50 text-blue-900" },
@@ -642,6 +657,7 @@ function CourseCard({ course, language, copy, favorite, favoriteCount, onToggleF
       </div>
 
       <div className="p-5">
+      {matchReason && <p className="mb-3 inline-flex rounded-full bg-violet-50 px-2.5 py-1 text-xs font-bold text-violet-800 ring-1 ring-violet-100">{copy.matchReason[matchReason]}</p>}
       <p className="line-clamp-2 min-h-12 text-sm leading-6 text-slate-600">
         {language === "zh" ? course.descriptionZh : course.description}
       </p>
@@ -848,9 +864,10 @@ function CourseExplorer() {
 
       <section id="course-results" className="mt-10 scroll-mt-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <h2 className="text-2xl font-semibold">
-            {copy.courses}
-          </h2>
+          <div>
+            <h2 className="text-2xl font-semibold">{searchTerm ? copy.resultsFor(searchTerm) : copy.courses}</h2>
+            {searchTerm && <button type="button" onClick={() => handleSearch("")} className="mt-1 text-sm font-semibold text-violet-700 hover:underline">{copy.clearSearch}</button>}
+          </div>
 
           <div className="flex flex-wrap items-center gap-4">
             <label className="flex items-center gap-2 text-sm">
@@ -888,6 +905,7 @@ function CourseExplorer() {
             {relatedSearches.length > 0 && <div className="mt-4"><p className="text-xs font-semibold uppercase tracking-wide text-gray-500">{copy.relatedSearches}</p><div className="mt-2 flex flex-wrap justify-center gap-2">{relatedSearches.map((suggestion) => <button key={suggestion} type="button" onClick={() => { setSearchInput(suggestion); handleSearch(suggestion); }} className="rounded-full border border-gray-300 px-3 py-1.5 text-sm hover:border-black">{suggestion}</button>)}</div></div>}
             <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row"><Link href={requestCoursePath} className="rounded-lg bg-violet-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-violet-800">{copy.requestCourse} →</Link><button type="button" onClick={handleResetFilters} className="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium hover:bg-gray-50">{copy.reset}</button></div>
             <p className="mx-auto mt-4 max-w-xl text-xs leading-5 text-gray-500">{copy.requestCourseHelp}</p>
+            <div className="mx-auto mt-6 max-w-xl border-t border-gray-200 pt-5"><p className="font-semibold">{copy.goalAlternativeTitle}</p><p className="mt-1 text-sm leading-6 text-gray-500">{copy.goalAlternativeDescription}</p><Link href={language === "zh" ? "/goals?lang=zh" : "/goals"} className="mt-3 inline-flex rounded-lg border border-violet-300 px-4 py-2.5 text-sm font-bold text-violet-800 hover:bg-violet-50">{copy.goalAlternativeAction} →</Link></div>
           </div>
         ) : (
           <div className="mt-6 grid items-stretch gap-5 md:grid-cols-2 xl:grid-cols-3">
@@ -904,6 +922,7 @@ function CourseExplorer() {
                   toggleFavorite(course.id);
                   favoriteCounts.adjust(course.id, wasFavorite ? -1 : 1);
                 }}
+                searchTerm={searchTerm}
               />
             ))}
           </div>
