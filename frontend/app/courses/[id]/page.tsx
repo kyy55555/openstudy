@@ -131,10 +131,13 @@ export default function CourseDetailPage() {
 
         <nav aria-label={language === "zh" ? "课程内容快速入口" : "Course content shortcuts"} className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
           {contentGroups.map((group) => (
-            <a key={group.kind} href={`#resource-${group.kind}`} className="course-shortcut group flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition hover:-translate-y-0.5 hover:border-violet-300 hover:shadow-md">
-              <span className="flex min-w-0 items-center gap-2.5"><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-violet-100 font-bold text-violet-800">{group.icon}</span><span className="course-shortcut-title truncate text-sm font-bold text-slate-800">{group.title}</span></span>
-              <span className="rounded-full bg-slate-100 px-2 py-1 text-xs font-bold text-slate-600">{group.tasks.length}</span>
-            </a>
+            <div key={group.kind} className="course-shortcut overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-violet-300 hover:shadow-md">
+              <a href={group.tasks[0].url} target="_blank" rel="noreferrer" onClick={() => recordResourceOpen(course.id, group.tasks[0].url, group.tasks[0].title, group.tasks[0].titleZh, group.kind)} className="group flex min-h-24 flex-col justify-between gap-3 p-3">
+                <span className="flex items-start justify-between gap-2"><span className="flex min-w-0 items-center gap-2.5"><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-violet-100 font-bold text-violet-800">{group.icon}</span><span className="course-shortcut-title text-sm font-bold text-slate-800">{group.title}</span></span><span aria-hidden="true" className="text-violet-600">↗</span></span>
+                <span className="line-clamp-2 text-xs leading-5 text-slate-500">{language === "zh" ? group.tasks[0].titleZh : group.tasks[0].title}</span>
+              </a>
+              <a href={`#resource-${group.kind}`} className="flex items-center justify-between border-t border-slate-100 px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-violet-50 hover:text-violet-900"><span>{language === "zh" ? "查看全部" : "View all"}</span><span>{group.tasks.length} →</span></a>
+            </div>
           ))}
           <a href="#study-plan" className="course-plan-shortcut group flex items-center justify-between gap-3 rounded-xl border border-violet-200 bg-violet-50 p-3 shadow-sm transition hover:-translate-y-0.5 hover:border-violet-400 hover:shadow-md">
             <span className="flex min-w-0 items-center gap-2.5"><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-violet-700 font-bold text-white">→</span><span className="truncate text-sm font-bold text-violet-950">{language === "zh" ? "制定学习计划" : "Build study plan"}</span></span>
