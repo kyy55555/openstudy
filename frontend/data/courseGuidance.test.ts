@@ -25,6 +25,19 @@ test("goal guidance exposes bilingual choices for the dedicated planner", () => 
     "Operating Systems",
     "Web Development",
     "Databases",
+    "Artificial Intelligence",
+    "Cybersecurity",
+    "Computer Networks",
+    "Computer Graphics",
   ]);
   assert.ok(courseGoalOptions.every(({ topicZh }) => topicZh.length > 0));
+});
+
+test("every learning goal explains each verified course step", () => {
+  for (const option of courseGoalOptions) {
+    const sequence = courseGoalSequence(courses, option.topic);
+    assert.ok(sequence, `${option.topic} should resolve`);
+    assert.equal(sequence.steps.length, sequence.courses.length);
+    assert.ok(sequence.steps.every(({ reason, reasonZh }) => reason.length > 20 && reasonZh.length > 8));
+  }
 });

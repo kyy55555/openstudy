@@ -22,6 +22,7 @@ const copy = {
     request: "Request this learning goal",
     disclaimer: "This is an OpenStudy prerequisite-based self-study suggestion, not an official university degree requirement or guarantee of credit equivalence.",
     foundation: "Foundation", advanced: "Advanced option", step: (index: number) => `Step ${index + 1}`, stage: "Suggested stage", switchLanguage: "中文",
+    why: "Why this step",
   },
   zh: {
     back: "← 浏览课程", eyebrow: "按学习目标规划", title: "你想学什么？",
@@ -33,6 +34,7 @@ const copy = {
     request: "提交这个学习目标",
     disclaimer: "这是 OpenStudy 根据先修关系整理的个人自学建议，不是大学官方培养要求，也不代表可以获得或替代学分。",
     foundation: "基础", advanced: "进阶选修", step: (index: number) => `第 ${index + 1} 步`, stage: "建议阶段", switchLanguage: "English",
+    why: "为什么安排这一步",
   },
 } as const;
 
@@ -110,12 +112,13 @@ function GoalPlanner() {
           <h2 className="text-2xl font-bold text-slate-950 sm:text-3xl">{labels.result(language === "zh" ? sequence.topicZh : sequence.topic)}</h2>
           <p className="mt-3 max-w-3xl leading-7 text-slate-600">{labels.resultIntro}</p>
           <ol className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {sequence.courses.map((course, index) => (
+            {sequence.steps.map(({ course, reason, reasonZh }, index) => (
               <li key={course.id} className="rounded-2xl border border-violet-100 bg-white p-5 shadow-sm">
                 <p className="text-xs font-bold uppercase tracking-[0.14em] text-violet-700">{index === 0 ? labels.foundation : index === sequence.courses.length - 1 ? labels.advanced : labels.step(index)}</p>
                 <Link href={courseDetailPath(course, language)} className="mt-3 block text-lg font-bold leading-6 text-slate-950 hover:text-violet-700"><span className="text-violet-700">{courseCode(course)}</span>{" "}{language === "zh" ? (course.titleZh ?? course.title) : course.title}</Link>
                 <p className="mt-3 text-sm text-slate-500">{course.university}</p>
                 <p className="mt-1 text-xs text-slate-400">{labels.stage}: {stageLabel(course, language)}</p>
+                <div className="mt-4 border-t border-slate-100 pt-4"><p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-400">{labels.why}</p><p className="mt-1 text-sm leading-6 text-slate-600">{language === "zh" ? reasonZh : reason}</p></div>
               </li>
             ))}
           </ol>
