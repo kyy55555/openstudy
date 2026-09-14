@@ -289,29 +289,60 @@ with recent as (
   select anonymous_id, event_name
   from public.product_events
   where created_at >= now() - interval '30 days'
-), visitor_steps as (
+), visitor_first as (
   select
     anonymous_id,
-    bool_or(event_name = 'course_search') as searched,
-    bool_or(event_name = 'course_opened') as opened_course,
-    bool_or(event_name = 'resource_opened') as opened_resource,
-    bool_or(event_name = 'favorite_added') as saved_course,
-    bool_or(event_name = 'study_plan_created') as created_plan,
-    bool_or(event_name = 'study_task_completed') as completed_task,
-    bool_or(event_name = 'signup_completed') as signed_up
+    min(created_at) filter (where event_name = 'course_search') as searched_at,
+    min(created_at) filter (where event_name = 'course_opened') as course_opened_at,
+    min(created_at) filter (where event_name = 'resource_opened') as resource_opened_at,
+    min(created_at) filter (where event_name = 'favorite_added') as saved_course_at,
+    min(created_at) filter (where event_name = 'study_plan_created') as plan_created_at,
+    min(created_at) filter (where event_name = 'study_task_completed') as task_completed_at,
+    min(created_at) filter (where event_name = 'signup_completed') as signed_up_at
   from recent
   group by anonymous_id
+), visitor_steps as (
+  select
+    visitor_first.*,
+    exists (
+      select 1 from recent as next
+      where next.anonymous_id = visitor_first.anonymous_id
+        and next.event_name = 'course_opened'
+        and next.created_at >= visitor_first.searched_at
+    ) as searched_then_opened,
+    exists (
+      select 1 from recent as next
+      where next.anonymous_id = visitor_first.anonymous_id
+        and next.event_name = 'resource_opened'
+        and next.created_at >= visitor_first.course_opened_at
+    ) as course_then_resource,
+    exists (
+      select 1 from recent as next
+      where next.anonymous_id = visitor_first.anonymous_id
+        and next.event_name = 'study_plan_created'
+        and next.created_at >= visitor_first.course_opened_at
+    ) as course_then_plan,
+    exists (
+      select 1 from recent as next
+      where next.anonymous_id = visitor_first.anonymous_id
+        and next.event_name = 'study_task_completed'
+        and next.created_at >= visitor_first.plan_created_at
+    ) as plan_then_task
+  from visitor_first
 ), totals as (
   select
     count(*)::bigint as active_visitors,
-    count(*) filter (where searched)::bigint as searched,
-    count(*) filter (where opened_course)::bigint as opened_course,
-    count(*) filter (where opened_resource)::bigint as opened_resource,
-    count(*) filter (where saved_course)::bigint as saved_course,
-    count(*) filter (where created_plan)::bigint as created_plan,
-    count(*) filter (where completed_task)::bigint as completed_task,
-    count(*) filter (where signed_up)::bigint as signed_up,
-    count(*) filter (where searched and opened_course)::bigint as searched_and_opened
+    count(*) filter (where searched_at is not null)::bigint as searched,
+    count(*) filter (where course_opened_at is not null)::bigint as opened_course,
+    count(*) filter (where resource_opened_at is not null)::bigint as opened_resource,
+    count(*) filter (where saved_course_at is not null)::bigint as saved_course,
+    count(*) filter (where plan_created_at is not null)::bigint as created_plan,
+    count(*) filter (where task_completed_at is not null)::bigint as completed_task,
+    count(*) filter (where signed_up_at is not null)::bigint as signed_up,
+    count(*) filter (where searched_then_opened)::bigint as searched_and_opened,
+    count(*) filter (where course_then_resource)::bigint as course_and_resource,
+    count(*) filter (where course_then_plan)::bigint as course_and_plan,
+    count(*) filter (where plan_then_task)::bigint as plan_and_task
   from visitor_steps
 )
 select
@@ -325,9 +356,9 @@ select
   signed_up,
   round(100.0 * searched / nullif(active_visitors, 0), 1) as search_rate,
   round(100.0 * searched_and_opened / nullif(searched, 0), 1) as search_to_course_rate,
-  round(100.0 * opened_resource / nullif(opened_course, 0), 1) as course_to_resource_rate,
-  round(100.0 * created_plan / nullif(opened_course, 0), 1) as course_to_plan_rate,
-  round(100.0 * completed_task / nullif(created_plan, 0), 1) as plan_to_task_rate
+  round(100.0 * course_and_resource / nullif(opened_course, 0), 1) as course_to_resource_rate,
+  round(100.0 * course_and_plan / nullif(opened_course, 0), 1) as course_to_plan_rate,
+  round(100.0 * plan_and_task / nullif(created_plan, 0), 1) as plan_to_task_rate
 from totals;
 
 revoke all on table public.product_daily_summary from anon, authenticated;

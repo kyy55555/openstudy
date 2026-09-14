@@ -30,9 +30,13 @@ test("product analytics rejects invalid anonymous identifiers", () => {
   assert.equal(sanitizeProductEvent({ eventName: "course_opened", courseId: "mit-6-006" }, { ...context, anonymousId: "not-a-uuid" }), null);
 });
 
-test("the search funnel only counts course openers who also searched", () => {
+test("conversion rates only count actions that happen after their prior funnel step", () => {
   const schema = readFileSync(new URL("../supabase/schema.sql", import.meta.url), "utf8");
-  assert.match(schema, /count\(\*\) filter \(where searched and opened_course\)::bigint as searched_and_opened/);
+  assert.match(schema, /event_name = 'course_opened'[\s\S]*created_at >= visitor_first\.searched_at/);
+  assert.match(schema, /event_name = 'resource_opened'[\s\S]*created_at >= visitor_first\.course_opened_at/);
+  assert.match(schema, /event_name = 'study_plan_created'[\s\S]*created_at >= visitor_first\.course_opened_at/);
+  assert.match(schema, /event_name = 'study_task_completed'[\s\S]*created_at >= visitor_first\.plan_created_at/);
   assert.match(schema, /searched_and_opened \/ nullif\(searched, 0\).*search_to_course_rate/);
+  assert.match(schema, /course_and_resource \/ nullif\(opened_course, 0\).*course_to_resource_rate/);
   assert.doesNotMatch(schema, /opened_course \/ nullif\(searched, 0\).*search_to_course_rate/);
 });

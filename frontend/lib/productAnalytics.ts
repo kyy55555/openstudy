@@ -23,15 +23,15 @@ function viewport(): ProductEventRow["viewport"] {
   return "desktop";
 }
 
-export function trackProductEvent(input: ProductEventInput, options?: { oncePerSession?: string }) {
+export async function trackProductEvent(input: ProductEventInput, options?: { oncePerSession?: string }) {
   if (typeof window === "undefined" || navigator.doNotTrack === "1") return;
   const client = getSupabaseBrowserClient();
   if (!client) return;
+  let dedupeKey: string | null = null;
   if (options?.oncePerSession) {
     try {
-      const key = `${dedupePrefix}${options.oncePerSession}`;
-      if (window.sessionStorage.getItem(key)) return;
-      window.sessionStorage.setItem(key, "1");
+      dedupeKey = `${dedupePrefix}${options.oncePerSession}`;
+      if (window.sessionStorage.getItem(dedupeKey)) return;
     } catch {
       // Analytics must never interfere with learning when storage is unavailable.
     }
@@ -43,11 +43,11 @@ export function trackProductEvent(input: ProductEventInput, options?: { oncePerS
     viewport: viewport(),
   });
   if (!row) return;
-  void (async () => {
-    try {
-      await client.from("product_events").insert(row);
-    } catch {
-      // Product analytics is best-effort and must not surface errors to learners.
-    }
-  })();
+  try {
+    const { error } = await client.from("product_events").insert(row);
+    if (error) return;
+    if (dedupeKey) window.sessionStorage.setItem(dedupeKey, "1");
+  } catch {
+    // Product analytics is best-effort and must not surface errors to learners.
+  }
 }

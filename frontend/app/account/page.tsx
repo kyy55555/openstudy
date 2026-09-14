@@ -53,14 +53,14 @@ function AccountContent() {
     setBusy(false);
     if (result.error) setMessage(authErrorMessage(result.error.message, language));
     else if (mode === "signup" && !result.data.session) {
-      trackProductEvent({ eventName: "signup_completed", language });
+      await trackProductEvent({ eventName: "signup_completed", language }, { oncePerSession: "signup-completed" });
       setPassword("");
       setShowPassword(false);
       setMessage(language === "zh" ? "注册成功，请检查邮箱并确认账号。" : "Account created. Check your email to confirm it.");
     }
     else if (mode === "signin") router.replace(language === "zh" ? "/courses?lang=zh" : "/courses");
     else {
-      trackProductEvent({ eventName: "signup_completed", language });
+      await trackProductEvent({ eventName: "signup_completed", language }, { oncePerSession: "signup-completed" });
       setMessage(language === "zh" ? "登录成功，正在同步学习记录。" : "Signed in. Your learning record is syncing.");
     }
   }
